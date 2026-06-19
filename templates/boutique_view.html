@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ boutique.nom }} - NovaTrade</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        :root {
+            --primary: #5a57e3;
+            --primary-dark: #4745c4;
+            --secondary: #f5576c;
+            --accent: #f093fb;
+            --success: #009efd;
+            --warning: #ffd700;
+            --bg: #f8f9fe;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+            --radius: 16px;
+            --radius-sm: 12px;
+        }
+
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 30px 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(255,255,255,0.2);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .header-info {
+            flex: 1;
+        }
+
+        .header-info h1 {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+
+        .header-info .stats {
+            font-size: 14px;
+            opacity: 0.9;
+            display: flex;
+            gap: 20px;
+        }
+
+        .header-info .stats i {
+            margin-right: 4px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Card */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-accent {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-accent:hover {
+            background: #e0445a;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-ghost {
+            background: rgba(90, 87, 227, 0.1);
+            color: var(--primary);
+        }
+
+        .btn-ghost:hover {
+            background: rgba(90, 87, 227, 0.2);
+        }
+
+        .btn-danger {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e0445a;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Rating */
+        .rating {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #fff9e6, #fff3cd);
+            padding: 10px 20px;
+            border-radius: 24px;
+            font-weight: 700;
+            font-size: 15px;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        .rating i {
+            color: var(--warning);
+            font-size: 16px;
+        }
+
+        /* Products Grid */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+            background: rgba(90, 87, 227, 0.1);
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            font-size: 18px;
+        }
+
+        .badge {
+            background: rgba(90, 87, 227, 0.1);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf4 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 56px;
+            color: #cbd5e0;
+            position: relative;
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--secondary);
+            color: white;
+            padding: 5px 14px;
+            border-radius: 14px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .product-info {
+            padding: 18px;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .product-desc {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 14px;
+            line-height: 1.4;
+        }
+
+        .product-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .product-price {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .product-price small {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        .btn-sm {
+            padding: 10px 20px;
+            font-size: 13px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state .icon {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, rgba(90, 87, 227, 0.1), rgba(118, 75, 162, 0.1));
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 56px;
+            color: var(--primary);
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 25px;
+        }
+
+        /* Flash Messages */
+        .flash {
+            padding: 16px 20px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 15px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .flash.success {
+            background: rgba(0, 158, 253, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(0, 158, 253, 0.2);
+        }
+
+        .flash.error {
+            background: rgba(245, 87, 108, 0.1);
+            color: var(--secondary);
+            border: 1px solid rgba(245, 87, 108, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px 16px;
+            }
+
+            .header-icon {
+                width: 56px;
+                height: 56px;
+                font-size: 22px;
+            }
+
+            .header-info h1 {
+                font-size: 22px;
+            }
+
+            .header-info .stats {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .container {
+                padding: 16px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                justify-content: center;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fa fa-store"></i>
+            </div>
+            <div class="header-info">
+                <h1>{{ boutique.nom }}</h1>
+                <div class="stats">
+                    <span><i class="fa fa-box"></i> {{ produits|length }} produit{{ 's' if produits|length > 1 else '' }}</span>
+                    <span><i class="fa fa-star"></i> {% if note_moyenne > 0 %}{{ "%.1f"|format(note_moyenne) }}/5{% else %}Nouvelle{% endif %}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ 'success' if category == 'success' else 'error' }}">
+                        <i class="fa {{ 'fa-check-circle' if category == 'success' else 'fa-exclamation-circle' }}"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="card">
+            {% if boutique.description %}
+                <p style="color: var(--text-light); line-height: 1.6; margin-bottom: 15px;">{{ boutique.description }}</p>
+            {% endif %}
+
+            <div class="rating">
+                <i class="fa fa-star"></i>
+                {% if note_moyenne > 0 %}
+                    {{ "%.1f"|format(note_moyenne) }}/5 ({{ nb_avis }} avis)
+                {% else %}
+                    Pas encore d'avis
+                {% endif %}
+            </div>
+
+            <div class="actions">
+                {% if user and boutique.user_id == user.id %}
+                    <a href="{{ url_for('configurer_boutique', boutique_id=boutique.id) }}" class="btn btn-primary">
+                        <i class="fa fa-cog"></i> Configurer
+                    </a>
+                    <a href="{{ url_for('ajouter_produit', boutique_id=boutique.id) }}" class="btn btn-accent">
+                        <i class="fa fa-plus"></i> Nouveau produit
+                    </a>
+                    <a href="{{ url_for('supprimer_boutique', boutique_id=boutique.id) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette boutique ? Tous les produits seront également supprimés.')">
+                        <i class="fa fa-trash"></i> Supprimer
+                    </a>
+                {% endif %}
+                <a href="{{ url_for('dashboard_page') }}" class="btn btn-ghost">
+                    <i class="fa fa-arrow-left"></i> Retour
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="section-header">
+                <div class="section-title">
+                    <i class="fa fa-shopping-bag"></i>
+                    Produits
+                </div>
+                <span class="badge">{{ produits|length }} article{{ 's' if produits|length > 1 else '' }}</span>
+            </div>
+
+            {% if produits %}
+                <div class="products-grid">
+                    {% for produit in produits %}
+                        <div class="product-card">
+                            <div class="product-image">
+                                <i class="fa fa-image"></i>
+                                {% if produit.est_en_promo %}
+                                    <span class="product-badge">PROMO</span>
+                                {% endif %}
+                            </div>
+                            <div class="product-info">
+                                <div class="product-name">{{ produit.nom }}</div>
+                                {% if produit.description %}
+                                    <div class="product-desc">{{ produit.description[:80] }}...</div>
+                                {% endif %}
+                                <div class="product-footer">
+                                    <div class="product-price">
+                                        {{ "%.0f"|format(produit.prix) }} <small>{{ produit.devise or 'XOF' }}</small>
+                                    </div>
+                                    <a href="{{ url_for('voir_produit', produit_id=produit.id) }}" class="btn btn-primary btn-sm">
+                                        Voir
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="icon">
+                        <i class="fa fa-store-alt"></i>
+                    </div>
+                    <h3>Aucun produit</h3>
+                    <p>Cette boutique n'a pas encore de produits disponibles.</p>
+                    {% if user and boutique.user_id == user.id %}
+                        <a href="{{ url_for('ajouter_produit', boutique_id=boutique.id) }}" class="btn btn-accent">
+                            <i class="fa fa-plus"></i> Ajouter le premier produit
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaTrade | Accès Membre</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+        
+        :root {
+            --primary: #5a57e3;
+            --primary-dark: #4745c4;
+            --secondary: #f5576c;
+            --success: #009efd;
+            --bg: #f8f9fe;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+            --radius: 16px;
+            --radius-sm: 12px;
+        }
+        
+        body {
+            background: var(--bg);
+            background-image: radial-gradient(at 0% 0%, rgba(90, 87, 227, 0.08) 0px, transparent 50%),
+                              radial-gradient(at 100% 100%, rgba(0, 158, 253, 0.06) 0px, transparent 50%);
+            min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px;
+        }
+        .login-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 35px;
+            width: 100%; max-width: 440px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+        }
+        .header-box {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            margin: -35px -35px 25px -35px;
+            padding: 25px;
+            border-radius: var(--radius) var(--radius) 0 0;
+            display: flex; align-items: center;
+            justify-content: center; color: white;
+            box-shadow: 0 4px 15px rgba(90, 87, 227, 0.3);
+        }
+        .header-box img { width: 50px; height: 50px; border-radius: 14px; margin-right: 12px; background: rgba(255,255,255,0.2); padding: 6px; }
+        .header-box h2 { font-size: 22px; font-weight: 800; }
+        .title-section h1 { font-size: 22px; color: #333; margin-bottom: 8px; font-weight: 700; }
+        .title-section p { font-size: 13px; color: #666; margin-bottom: 25px; }
+        .input-group { position: relative; margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 8px; margin-left: 5px; }
+        .input-field { position: relative; }
+        .input-field i.prefix-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #8e54e9; font-size: 16px; }
+        .input-field input {
+            width: 100%; padding: 13px 15px 13px 45px; border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.8); font-size: 14px; outline: none; transition: 0.3s ease;
+        }
+        .input-field input:focus { border-color: #4776e6; background: #fff; box-shadow: 0 0 15px rgba(71, 118, 230, 0.1); }
+        .password-toggle { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; cursor: pointer; }
+        .policy-check { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; text-align: left; font-size: 12px; color: #444; cursor: pointer; }
+        .policy-check input { cursor: pointer; width: 17px; height: 17px; accent-color: #5a57e3; }
+        #policy-box { display: none; background: rgba(255, 255, 255, 0.8); border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px dashed #5a57e3; text-align: left; animation: slideDown 0.4s ease-out; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; } }
+        .btn-login {
+            width: 100%; padding: 15px; border: none; border-radius: 15px; background: #5a57e3; color: white;
+            font-weight: 600; font-size: 16px; cursor: pointer; transition: 0.3s ease; box-shadow: 0 6px 20px rgba(90, 87, 227, 0.2);
+            margin-top: 5px; display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .btn-login:disabled { opacity: 0.5; cursor: not-allowed; }
+        .loader { display: none; width: 18px; height: 18px; border: 2px solid #ffffff; border-bottom-color: transparent; border-radius: 50%; animation: rotation 0.8s linear infinite; }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .alert { padding: 12px; border-radius: 12px; font-size: 13px; margin-bottom: 20px; text-align: left; }
+        .alert-danger { background: rgba(254, 226, 226, 0.8); color: #b91c1c; }
+        .alert-success { background: rgba(220, 252, 231, 0.8); color: #16a34a; }
+        .footer-links { margin-top: 25px; font-size: 13px; color: #666; }
+        .footer-links a { color: #5a57e3; text-decoration: none; font-weight: 700; }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div style="background: red; color: white; font-size: 40px; font-weight: bold; text-align: center; padding: 20px; margin-bottom: 20px;">TEST_CLINE_2026</div>
+        <div class="header-box">
+            <img src="{{ url_for('static', filename='images/n.jpg') }}" alt="NovaTrade">
+            <h2>NovaTrade</h2>
+        </div>
+
+        <div class="title-section">
+            <h1>Bon retour !</h1>
+            <p>Connectez-vous pour accéder à votre espace.</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="/connexion" onsubmit="return handleLogin(event);">
+            <div class="input-group">
+                <label>Nom d'utilisateur</label>
+                <div class="input-field">
+                    <i class="fa fa-user prefix-icon"></i>
+                    <input type="text" name="username" placeholder="Votre nom d'utilisateur" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Mot de passe</label>
+                <div class="input-field">
+                    <i class="fa fa-lock prefix-icon"></i>
+                    <input type="password" id="pass" name="password" placeholder="Votre mot de passe" required>
+                    <i class="fa fa-eye password-toggle" onclick="togglePass()"></i>
+                </div>
+                <a href="/reset-password" class="forgot-password" style="font-size: 12px; color: #888; text-decoration: none; display: block; margin-top: 8px; text-align: left;">Mot de passe oublié ?</a>
+            </div>
+
+            <label class="policy-check">
+                <input type="checkbox" id="check-policy" onchange="togglePolicies()">
+                <span>J'accepte les politiques d'utilisation</span>
+            </label>
+
+            <div id="policy-box">
+                <h4 style="font-size: 13px; color: #5a57e3; margin-bottom: 8px;"><i class="fa fa-shield-alt"></i> Engagement</h4>
+                <ul style="list-style: none; font-size: 11px; color: #555; line-height: 1.4;">
+                    <li><i class="fa fa-check-circle" style="color: #22c55e;"></i> Compte Unique autorisé.</li>
+                    <li><i class="fa fa-check-circle" style="color: #22c55e;"></i> Toute fraude entraîne un bannissement.</li>
+                </ul>
+            </div>
+
+            <button type="submit" class="btn-login" id="login-btn" disabled>
+                <span id="btn-text">Se connecter</span>
+                <div class="loader" id="loader"></div>
+            </button>
+        </form>
+
+        <div class="footer-links">
+            Pas encore de compte ? <a href="/inscription">Créer un compte</a>
+        </div>
+    </div>
+
+    <script>
+        function togglePass() {
+            const input = document.getElementById("pass");
+            input.type = input.type === "password" ? "text" : "password";
+        }
+
+        function togglePolicies() {
+            const check = document.getElementById('check-policy');
+            document.getElementById('policy-box').style.display = check.checked ? 'block' : 'none';
+            document.getElementById('login-btn').disabled = !check.checked;
+        }
+
+        function handleLogin(event) {
+            const btn = document.getElementById('login-btn');
+            const loader = document.getElementById('loader');
+            const text = document.getElementById('btn-text');
+
+            btn.disabled = true;
+            loader.style.display = 'inline-block';
+            text.innerText = 'Connexion en cours...';
+            return true; // Envoi direct du formulaire
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détail du Produit - E-Shop</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-shopping-bag"></i>
+                E-Shop
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="products.html">Produits</a></li>
+                <li><a href="cart.html">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="burger">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Product Detail Section -->
+    <section class="product-detail">
+        <div class="container">
+            <!-- Breadcrumb -->
+            <div style="margin-bottom: 30px;">
+                <a href="index.html" style="color: var(--primary-color);">Accueil</a> / 
+                <a href="products.html" style="color: var(--primary-color);">Produits</a> / 
+                <span id="product-breadcrumb" style="color: var(--text-light);">Détail</span>
+            </div>
+
+            <div class="product-detail-container" id="product-detail-container">
+                <!-- Product details will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Products Section -->
+    <section class="featured-products" style="padding-top: 0;">
+        <div class="container">
+            <h2>Produits Similaires</h2>
+            <div class="products-grid" id="related-products">
+                <!-- Related products will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>E-Shop</h4>
+                    <p>Votre boutique en ligne de confiance pour tous vos achats.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Liens Utiles</h4>
+                    <ul>
+                        <li><a href="index.html">Accueil</a></li>
+                        <li><a href="products.html">Produits</a></li>
+                        <li><a href="cart.html">Panier</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-envelope"></i> contact@eshop.com</p>
+                    <p><i class="fas fa-phone"></i> +33 1 23 45 67 89</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Suivez-nous</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 E-Shop. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Load related products
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = parseInt(urlParams.get('id'));
+            
+            if (productId) {
+                const currentProduct = getProductById(productId);
+                if (currentProduct) {
+                    // Update breadcrumb
+                    document.getElementById('product-breadcrumb').textContent = currentProduct.name;
+                    
+                    // Load related products (same category, excluding current product)
+                    const relatedProductsContainer = document.getElementById('related-products');
+                    const relatedProducts = products
+                        .filter(p => p.category === currentProduct.category && p.id !== productId)
+                        .slice(0, 4);
+                    
+                    if (relatedProducts.length > 0) {
+                        renderProducts(relatedProducts, relatedProductsContainer);
+                    } else {
+                        // If no related products in same category, show other products
+                        const otherProducts = products
+                            .filter(p => p.id !== productId)
+                            .slice(0, 4);
+                        renderProducts(otherProducts, relatedProductsContainer);
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

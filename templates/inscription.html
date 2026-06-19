@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaTrade | Inscription</title>
+
+    <meta property="og:title" content="NovaTrade | Inscription Gratuite">
+    <meta property="og:description" content="Rejoignez NovaTrade, la plateforme d'affiliation leader. Créez votre compte et commencez à gagner dès aujourd'hui.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://nova-trade.cc/inscription">
+    <meta property="og:image" content="https://nova-trade.cc/static/images/n.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="NovaTrade Logo">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="NovaTrade | Inscription">
+    <meta name="twitter:description" content="Rejoignez NovaTrade et commencez à gagner grâce à notre programme d'affiliation.">
+    <meta name="twitter:image" content="https://nova-trade.cc/static/images/n.jpg">
+
+    <link rel="icon" href="/static/images/n.jpg" type="image/jpeg">
+    <meta name="theme-color" content="#5a57e3">
+    <link rel="manifest" href="/static/manifest.json">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+        body { background: #e1e9ff; background-image: radial-gradient(at 0% 0%, rgba(197, 202, 255, 0.5) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(225, 200, 255, 0.4) 0px, transparent 50%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .register-card { background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 25px; padding: 25px; width: 100%; max-width: 480px; box-shadow: 0 10px 30px rgba(100, 100, 100, 0.05); }
+        .header-box { background: linear-gradient(135deg, #8e54e9 0%, #4776e6 100%); margin: -25px -25px 25px -25px; padding: 20px; border-radius: 25px 25px 15px 15px; display: flex; align-items: center; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .header-box img { width: 45px; height: 45px; border-radius: 12px; margin-right: 15px; background: white; padding: 4px; }
+        .header-box h2 { font-size: 22px; font-weight: 600; }
+        .title-section { text-align: center; margin-bottom: 20px; }
+        .title-section h1 { font-size: 20px; color: #444; margin-bottom: 5px; font-weight: 700; }
+        .title-section p { font-size: 13px; color: #666; }
+        label { display: block; font-size: 12px; font-weight: 700; color: #5a57e3; text-transform: uppercase; margin-bottom: 6px; margin-left: 5px; }
+        .input-wrapper { position: relative; margin-bottom: 15px; }
+        .input-wrapper input, .input-wrapper select { width: 100%; padding: 12px 15px; border-radius: 15px; border: 1px solid white; background: rgba(255, 255, 255, 0.8); font-size: 14px; color: #333; outline: none; transition: 0.3s ease; }
+        .password-toggle { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; cursor: pointer; }
+        .policy-check { display: flex; align-items: center; gap: 10px; margin: 15px 0; text-align: left; font-size: 13px; color: #444; cursor: pointer; }
+        .policy-check input { width: 18px; height: 18px; accent-color: #5a57e3; }
+        #policy-box { display: none; background: rgba(255, 255, 255, 0.8); border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px dashed #5a57e3; text-align: left; animation: slideDown 0.4s ease-out; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; } }
+        #policy-box ul { list-style: none; font-size: 11px; color: #555; line-height: 1.4; }
+        #policy-box ul li { margin-bottom: 5px; display: flex; gap: 8px; }
+        #policy-box ul li i { color: #22c55e; }
+        .btn-submit { width: 100%; padding: 14px; border: none; border-radius: 15px; background: #5a57e3; color: white; font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+        .loader { display: none; width: 18px; height: 18px; border: 2px solid #ffffff; border-bottom-color: transparent; border-radius: 50%; animation: rotation 0.8s linear infinite; }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .alert { padding: 12px; border-radius: 12px; margin-bottom: 15px; font-size: 13px; text-align: center; }
+        .flash.danger { background: #fee2e2; color: #dc2626; }
+        .flash.success { background: #dcfce7; color: #16a34a; }
+        .login-footer { text-align: center; margin-top: 15px; font-size: 13px; color: #666; }
+        .login-footer a { color: #5a57e3; text-decoration: none; font-weight: 700; }
+    </style>
+</head>
+<body>
+
+    <div class="register-card">
+        <div class="header-box">
+            <img src="/static/images/n.jpg" alt="NovaTrade">
+            <h2>NovaTrade</h2>
+        </div>
+
+        <div class="title-section">
+            <h1>Inscription gratuite</h1>
+            <p>Rejoignez Novatrade et commencez à gagner.</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('inscription_page') }}" onsubmit="showLoading();">
+            <label>Nom d'utilisateur</label>
+            <div class="input-wrapper">
+                <input type="text" name="username" placeholder="Pseudo" required value="{{ request.form.get('username','') }}">
+            </div>
+
+            <label>Adresse email</label>
+            <div class="input-wrapper">
+                <input type="email" name="email" placeholder="votre@email.com" required value="{{ request.form.get('email','') }}">
+            </div>
+
+            <label>Pays</label>
+            <div class="input-wrapper">
+                <select name="country" required>
+                    <option value="" disabled selected>Choisir un pays</option>
+                    {% for c in ["Togo","Bénin","Côte d'Ivoire","Cameroun","Sénégal","Burkina Faso","Congo Brazzaville","Congo Kinshasa","Niger","Gabon","Mali"] %}
+                        <option value="{{ c }}">{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <label>Téléphone</label>
+            <div class="input-wrapper">
+                <input type="tel" name="phone" placeholder="Numéro sans indicatif" required>
+            </div>
+
+            <label>Parrain</label>
+            <div class="input-wrapper">
+                <input type="text" name="parrain" value="{{ request.form.get('parrain', code_ref) }}" readonly style="background:rgba(0,0,0,0.05);">
+            </div>
+
+            <label>Mot de passe</label>
+            <div class="input-wrapper">
+                <input type="password" id="pass" name="password" placeholder="••••••••" required>
+                <i class="fa fa-eye password-toggle" onclick="togglePass('pass')"></i>
+            </div>
+
+            <label>Confirmation</label>
+            <div class="input-wrapper">
+                <input type="password" id="conf" name="confirm_password" placeholder="••••••••" required>
+                <i class="fa fa-eye password-toggle" onclick="togglePass('conf')"></i>
+            </div>
+
+            <label class="policy-check">
+                <input type="checkbox" id="check-policy" onchange="togglePolicies()">
+                <span>J'accepte les politiques d'utilisation</span>
+            </label>
+
+            <div id="policy-box">
+                <h4 style="font-size: 13px; color: #5a57e3; margin-bottom: 8px;">Engagement :</h4>
+                <ul>
+                    <li><i class="fa fa-check-circle"></i> <b>Compte Unique :</b> Un seul compte autorisé.</li>
+                    <li><i class="fa fa-check-circle"></i> <b>Fraude :</b> Bannissement immédiat en cas de fraude.</li>
+                </ul>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submit-btn" disabled>
+                <span id="btn-text">S'inscrire maintenant</span>
+                <div class="loader" id="loader"></div>
+            </button>
+        </form>
+
+        <div class="login-footer">
+            Déjà inscrit ? <a href="{{ url_for('connexion_page') }}">Se connecter</a>
+        </div>
+    </div>
+
+    <script>
+        function togglePass(id) {
+            const input = document.getElementById(id);
+            const icon = input.nextElementSibling;
+            input.type = input.type === "password" ? "text" : "password";
+            icon.classList.toggle("fa-eye");
+            icon.classList.toggle("fa-eye-slash");
+        }
+
+        function togglePolicies() {
+            const check = document.getElementById('check-policy');
+            const box = document.getElementById('policy-box');
+            const btn = document.getElementById('submit-btn');
+            box.style.display = check.checked ? 'block' : 'none';
+            btn.disabled = !check.checked;
+        }
+
+        function showLoading() {
+            const btn = document.getElementById('submit-btn');
+            const loader = document.getElementById('loader');
+            const btnText = document.getElementById('btn-text');
+            btn.disabled = true;
+            loader.style.display = 'inline-block';
+            btnText.innerText = 'Création du compte...';
+        }
+    </script>
+</body>
+</html>

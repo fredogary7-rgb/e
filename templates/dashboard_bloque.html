@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activation NovaTrade</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* BASE STYLE NOVATRADE */
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+        
+        body {
+            background: #e1e9ff;
+            background-image: radial-gradient(at 0% 0%, rgba(197, 202, 255, 0.5) 0px, transparent 50%),
+                              radial-gradient(at 100% 100%, rgba(225, 200, 255, 0.4) 0px, transparent 50%);
+            min-height: 100vh;
+            color: #444;
+        }
+
+        /* TOPBAR & SIDEBAR */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .topbar .menu-toggle { font-size: 24px; cursor: pointer; color: #5a57e3; }
+        .topbar .user { font-weight: 700; font-size: 14px; background: #5a57e3; color: white; padding: 5px 12px; border-radius: 20px; }
+
+        .sidebar {
+            position: fixed;
+            left: -260px;
+            top: 0;
+            height: 100%;
+            width: 260px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            transition: 0.4s;
+            padding-top: 80px;
+            z-index: 999;
+            border-right: 1px solid white;
+        }
+        .sidebar.active { left: 0; }
+        .sidebar a { display: block; padding: 14px 25px; font-size: 14px; color: #444; text-decoration: none; transition: 0.3s; }
+        .sidebar a i { margin-right: 12px; width: 20px; text-align: center; }
+        .sidebar a:hover { background: #f1f0ff; color: #5a57e3; }
+
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); visibility: hidden; opacity: 0; z-index: 998; transition: 0.3s; }
+        .overlay.active { visibility: visible; opacity: 1; }
+
+        .main { padding: 20px; max-width: 600px; margin: 0 auto; }
+
+        /* BLOCK STYLE */
+        .block {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .block h2 { font-size: 18px; font-weight: 700; margin-bottom: 15px; color: #1e293b; display: flex; align-items: center; gap: 10px; }
+        .block p { font-size: 13px; color: #64748b; line-height: 1.6; margin-bottom: 15px; }
+
+        .phone-display {
+            background: #5a57e3;
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin: 10px 0;
+        }
+
+        .info-item { font-size: 14px; margin-top: 8px; color: #475569; }
+        .info-item span { font-weight: 600; color: #94a3b8; }
+
+        /* FORM ELEMENTS */
+        .payment-section { background: rgba(255, 255, 255, 0.4); border-radius: 20px; padding: 20px; }
+        .label { font-size: 12px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 5px; margin-top: 15px; }
+        
+        .payment-section input, .payment-section select {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.05);
+            background: white;
+            font-size: 15px;
+            font-weight: 600;
+            color: #334155;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .payment-section input:focus, .payment-section select:focus { border-color: #5a57e3; box-shadow: 0 0 0 3px rgba(90, 87, 227, 0.1); }
+
+        .pay-btn {
+            margin-top: 25px;
+            width: 100%;
+            background: linear-gradient(135deg, #5a57e3, #8e54e9);
+            color: #fff;
+            padding: 16px;
+            font-weight: 700;
+            border-radius: 15px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 10px 20px rgba(90, 87, 227, 0.2);
+            transition: 0.3s;
+        }
+        .pay-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 25px rgba(90, 87, 227, 0.3); }
+
+        footer { text-align: center; padding: 20px; font-size: 12px; color: #94a3b8; }
+
+        /* SUPPORT FLOAT */
+        .support-float {
+            position: fixed;
+            bottom: 30px;
+            right: 20px;
+            width: 55px;
+            height: 55px;
+            background: #25d366; /* Style WhatsApp */
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="sidebar" id="sidebar">
+    <a href="/dashboard"><i class="fa fa-home"></i> Tableau de bord</a>
+    <a href="/dashboard_bloque" style="background:#5a57e3; color:white;"><i class="fa fa-lock"></i> Activation</a>
+    <a href="#"><i class="fa fa-wallet"></i> Recharger</a>
+    <a href="/logout"><i class="fa fa-sign-out-alt"></i> Déconnexion</a>
+</div>
+
+<div class="topbar">
+    <div class="menu-toggle" id="menuToggle"><i class="fa fa-bars"></i></div>
+    <div class="user"><i class="fa fa-user-circle"></i> {{ user.username }}</div>
+</div>
+
+<div class="main">
+
+    <div class="block">
+        <h2><i class="fa fa-shield-alt" style="color:#5a57e3;"></i> Activation requise</h2>
+        <p>Pour sécuriser votre accès et activer le minage de vos revenus, veuillez finaliser le dépôt de garantie de 4500 donc 250 pour les frais et 4250 pour l'activation :</p>
+        
+        <div class="phone-display">{{ user.phone }}</div>
+        
+        <div class="info-item"><span>Titulaire :</span> {{ user.username }}</div>
+        <div class="info-item"><span>Référence :</span> {{ user.email }}</div>
+    </div>
+
+    <div class="block">
+        <h2><i class="fa fa-credit-card" style="color:#5a57e3;"></i> Formulaire de dépôt</h2>
+
+        <form method="POST" action="{{ url_for('dashboard_bloque') }}">
+            <div class="payment-section">
+                <div class="label">Propriétaire du compte</div>
+                <input type="text" name="fullname" value="{{ user.username }}" readonly>
+
+                <div class="label">Numéro Mobile Money</div>
+                <input type="text" name="phone" value="{{ user.phone }}" required>
+
+                <div class="label">Montant d'activation (XOF)</div>
+                <input type="number" name="montant" value="4500" readonly style="background: #f8fafc; color: #64748b;">
+
+                <div class="label">Région</div>
+                <input type="text" name="country" value="{{ user.country }}" readonly style="background: #f8fafc;">
+
+                <div class="label">Mode de paiement</div>
+                <select name="operator" required>
+                    <option value="">Sélectionnez votre opérateur</option>
+                    {% for service in services_by_country[country_code] %}
+                        <option value="{{ service.name }}">{{ service.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" class="pay-btn">Activer mon compte NovaTrade</button>
+            </div>
+        </form>
+    </div>
+
+    <footer>
+        2026 © NovaTrade • Plateforme Sécurisée
+    </footer>
+</div>
+
+<a href="#" class="support-float">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+<script>
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const menuToggle = document.getElementById("menuToggle");
+
+    menuToggle.onclick = () => { sidebar.classList.add("active"); overlay.classList.add("active"); };
+    overlay.onclick = () => { sidebar.classList.remove("active"); overlay.classList.remove("active"); };
+</script>
+
+</body>
+</html>

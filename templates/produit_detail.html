@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ produit.nom }} - NovaTrade</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        :root {
+            --primary: #5a57e3;
+            --primary-dark: #4745c4;
+            --secondary: #f5576c;
+            --success: #009efd;
+            --danger: #e53e3e;
+            --bg: #f8f9fe;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+            --radius: 16px;
+            --radius-sm: 12px;
+        }
+
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            background: rgba(90, 87, 227, 0.1);
+            border-radius: var(--radius-sm);
+            transition: all 0.2s;
+        }
+
+        .back-link:hover {
+            background: rgba(90, 87, 227, 0.2);
+        }
+
+        .product-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf4 100%);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .product-image i {
+            font-size: 80px;
+            color: #cbd5e0;
+        }
+
+        .product-info h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .product-price {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--primary);
+            margin: 15px 0;
+        }
+
+        .product-price small {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        .product-price .old-price {
+            font-size: 20px;
+            color: var(--text-light);
+            text-decoration: line-through;
+            margin-left: 10px;
+            font-weight: 400;
+        }
+
+        .product-description {
+            font-size: 15px;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+
+        .product-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .meta-item i {
+            color: var(--primary);
+            width: 20px;
+            text-align: center;
+        }
+
+        .meta-item strong {
+            color: var(--text);
+        }
+
+        .size-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .size-tag {
+            padding: 6px 14px;
+            background: rgba(90, 87, 227, 0.1);
+            color: var(--primary);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 24px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-accent {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-accent:hover {
+            background: #e0445a;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #0088dd;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c53030;
+        }
+
+        .share-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(90, 87, 227, 0.05);
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            margin-top: 15px;
+        }
+
+        .share-link input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            color: var(--text);
+            outline: none;
+        }
+
+        .btn-copy {
+            padding: 8px 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-copy:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-copy.copied {
+            background: var(--success);
+        }
+
+        .btn-favorite {
+            background: white;
+            color: var(--secondary);
+            border: 2px solid var(--secondary);
+        }
+
+        .btn-favorite:hover, .btn-favorite.active {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+
+        .btn-whatsapp:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .image-gallery {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .gallery-thumb {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .gallery-thumb:hover, .gallery-thumb.active {
+            border-color: var(--primary);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: var(--radius-sm);
+            background: var(--card-bg);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .notification.info {
+            border-left: 4px solid var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .product-detail {
+                grid-template-columns: 1fr;
+            }
+
+            .product-image {
+                height: 300px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Notification Toast -->
+    <div class="notification" id="notification">
+        <i class="fa fa-check-circle" style="color: var(--success);"></i>
+        <span id="notificationText">Action réussie</span>
+    </div>
+
+    <div class="container">
+        <a href="{{ url_for('ma_boutique', boutique_id=produit.boutique.id) }}" class="back-link">
+            <i class="fa fa-arrow-left"></i>
+            Retour à la boutique
+        </a>
+
+        <div class="card">
+            <div class="product-detail">
+                <div class="product-image">
+                    {% if produit.images %}
+                        <img src="{{ produit.liste_images[0] if produit.liste_images else '' }}" alt="{{ produit.nom }}" id="mainImage">
+                        {% if produit.liste_images and produit.liste_images|length > 1 %}
+                            <div class="image-gallery">
+                                {% for img in produit.liste_images %}
+                                    <img src="{{ img }}" alt="Image {{ loop.index }}" class="gallery-thumb {{ 'active' if loop.first else '' }}" onclick="changeImage('{{ img }}', this)">
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% elif produit.image %}
+                        <img src="{{ url_for('static', filename='uploads/' + produit.image) }}" alt="{{ produit.nom }}" id="mainImage">
+                    {% else %}
+                        <i class="fa fa-image"></i>
+                    {% endif %}
+                </div>
+
+                <div class="product-info">
+                    <h1>{{ produit.nom }}</h1>
+
+                    <div class="product-price">
+                        {% if produit.prix_promo and produit.prix_promo < produit.prix %}
+                            {{ "%.0f"|format(produit.prix_promo) }} <small>{{ produit.devise or 'XOF' }}</small>
+                            <span class="old-price">{{ "%.0f"|format(produit.prix) }} {{ produit.devise or 'XOF' }}</span>
+                        {% else %}
+                            {{ "%.0f"|format(produit.prix) }} <small>{{ produit.devise or 'XOF' }}</small>
+                        {% endif %}
+                    </div>
+
+                    {% if produit.description %}
+                        <div class="product-description">
+                            {{ produit.description }}
+                        </div>
+                    {% endif %}
+
+                    <div class="product-meta">
+                        <div class="meta-item">
+                            <i class="fa fa-store"></i>
+                            <strong>Boutique:</strong> {{ produit.boutique.nom }}
+                        </div>
+
+                        {% if produit.categorie %}
+                        <div class="meta-item">
+                            <i class="fa fa-th-large"></i>
+                            <strong>Catégorie:</strong> {{ produit.categorie.nom }}
+                        </div>
+                        {% endif %}
+
+                        {% if produit.quantite is defined and produit.quantite != None %}
+                        <div class="meta-item">
+                            <i class="fa fa-box"></i>
+                            <strong>Quantité:</strong> {{ produit.quantite }} disponible{{ 's' if produit.quantite > 1 else '' }}
+                        </div>
+                        {% endif %}
+
+                        {% if produit.tailles %}
+                        <div class="meta-item">
+                            <i class="fa fa-ruler"></i>
+                            <strong>Tailles:</strong>
+                            <div class="size-options">
+                                {% for taille in produit.liste_tailles %}
+                                    <span class="size-tag">{{ taille }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if produit.couleurs %}
+                        <div class="meta-item">
+                            <i class="fa fa-palette"></i>
+                            <strong>Couleurs:</strong>
+                            <div class="size-options">
+                                {% for couleur in produit.liste_couleurs %}
+                                    <span class="size-tag">{{ couleur }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="meta-item">
+                            <i class="fa fa-eye"></i>
+                            <strong>Vues:</strong> {{ produit.vues or 0 }}
+                        </div>
+                    </div>
+
+                    <div class="share-link">
+                        <i class="fa fa-share-alt" style="color: var(--primary);"></i>
+                        <input type="text" value="{{ request.url }}" readonly id="shareUrl">
+                        <button class="btn-copy" onclick="copyLink()" id="copyBtn">
+                            <i class="fa fa-copy"></i> Copier
+                        </button>
+                    </div>
+
+                    <div class="actions">
+                        <!-- Bouton Commander via WhatsApp -->
+                        <button onclick="commanderWhatsApp()" class="btn btn-whatsapp">
+                            <i class="fa-brands fa-whatsapp"></i> Commander
+                        </button>
+
+                        <!-- Bouton Favoris -->
+                        <button onclick="toggleFavorite()" class="btn btn-favorite" id="favBtn">
+                            <i class="fa fa-heart"></i> <span id="favText">Ajouter aux favoris</span>
+                        </button>
+
+                        {% if user and produit.boutique.user_id == user.id %}
+                            <a href="{{ url_for('modifier_produit', boutique_id=produit.boutique.id, produit_id=produit.id) }}" class="btn btn-primary">
+                                <i class="fa fa-edit"></i> Modifier
+                            </a>
+                            <a href="{{ url_for('supprimer_produit', boutique_id=produit.boutique.id, produit_id=produit.id) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')">
+                                <i class="fa fa-trash"></i> Supprimer
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Données du produit pour JavaScript
+        const produitData = {
+            id: {{ produit.id }},
+            nom: "{{ produit.nom|replace('"', '\\"') }}",
+            prix: {{ produit.prix }},
+            boutique: "{{ produit.boutique.nom|replace('"', '\\"') }}",
+            whatsapp: "{{ produit.boutique.whatsapp or '' }}"
+        };
+
+        function copyLink() {
+            const input = document.getElementById('shareUrl');
+            const btn = document.getElementById('copyBtn');
+            
+            navigator.clipboard.writeText(input.value).then(() => {
+                btn.innerHTML = '<i class="fa fa-check"></i> Copié!';
+                btn.classList.add('copied');
+                
+                showNotification('Lien copié avec succès !');
+                
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fa fa-copy"></i> Copier';
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(() => {
+                input.select();
+                document.execCommand('copy');
+                btn.innerHTML = '<i class="fa fa-check"></i> Copié!';
+                btn.classList.add('copied');
+                showNotification('Lien copié avec succès !');
+            });
+        }
+
+        function changeImage(src, thumb) {
+            const mainImage = document.getElementById('mainImage');
+            mainImage.src = src;
+            
+            // Mettre à jour la classe active
+            document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
+        }
+
+        function commanderWhatsApp() {
+            // Récupérer le numéro WhatsApp de la boutique
+            let phone = produitData.whatsapp;
+            
+            if (!phone) {
+                showNotification('Aucun numero WhatsApp disponible pour cette boutique.', 'error');
+                return;
+            }
+
+            // Nettoyer le numero (enlever les espaces, +, etc.)
+            phone = phone.replace(/[\s\+\-\(\)]/g, '');
+            
+            // Ajouter l'indicatif si necessaire (exemple pour pays francophones)
+            if (!phone.startsWith('+') && phone.length < 10) {
+                // Tu peux adapter selon ton pays
+                phone = '225' + phone; // Exemple Cote d'Ivoire
+            }
+
+            // Creer le message pre-rempli
+            var message = 'Bonjour, je suis interesse par votre produit :\n\n';
+            message += '*' + produitData.nom + '*\n';
+            message += 'Prix : ' + produitData.prix + ' XOF\n';
+            message += 'Boutique : ' + produitData.boutique + '\n\n';
+            message += 'Je souhaiterais passer une commande. Merci de me confirmer la disponibilite.';
+
+            // Encoder le message pour l'URL
+            var encodedMessage = encodeURIComponent(message);
+            
+            // Creer l'URL WhatsApp
+            var whatsappUrl = 'https://wa.me/' + phone + '?text=' + encodedMessage;
+            
+            // Ouvrir WhatsApp
+            window.open(whatsappUrl, '_blank');
+            
+            showNotification('Redirection vers WhatsApp...');
+        }
+
+        function toggleFavorite() {
+            const btn = document.getElementById('favBtn');
+            const text = document.getElementById('favText');
+            const icon = btn.querySelector('i');
+            
+            // Vérifier si déjà favori
+            const isFavorite = btn.classList.contains('active');
+            
+            if (isFavorite) {
+                // Retirer des favoris
+                btn.classList.remove('active');
+                icon.classList.remove('fa-solid');
+                icon.classList.add('fa-heart');
+                text.textContent = 'Ajouter aux favoris';
+                showNotification('Produit retiré des favoris');
+                
+                // Ici tu pourrais appeler une API pour retirer le favori
+                // fetch('/api/favorite/remove/' + produitData.id, { method: 'POST' });
+            } else {
+                // Ajouter aux favoris
+                btn.classList.add('active');
+                icon.classList.remove('fa-heart');
+                icon.classList.add('fa-solid');
+                text.textContent = 'Retirer des favoris';
+                showNotification('Produit ajouté aux favoris ❤️');
+                
+                // Ici tu pourrais appeler une API pour ajouter le favori
+                // fetch('/api/favorite/add/' + produitData.id, { method: 'POST' });
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            const icon = notification.querySelector('i');
+            
+            notificationText.textContent = message;
+            
+            if (type === 'error') {
+                notification.classList.remove('success');
+                notification.style.borderLeftColor = 'var(--danger)';
+                icon.className = 'fa fa-exclamation-circle';
+                icon.style.color = 'var(--danger)';
+            } else {
+                notification.classList.remove('error');
+                notification.style.borderLeftColor = 'var(--success)';
+                icon.className = 'fa fa-check-circle';
+                icon.style.color = 'var(--success)';
+            }
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Vérifier si le produit est déjà en favori au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ici tu pourrais vérifier dans le localStorage ou appeler une API
+            // const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+            // if (favorites.includes(produitData.id)) {
+            //     toggleFavorite(); // Pour mettre à jour l'état
+            // }
+        });
+    </script>
+</body>
+</html>

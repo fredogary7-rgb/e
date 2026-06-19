@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notre Chaîne - NovaTrade</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        :root {
+            --primary: #5a57e3;
+            --primary-dark: #4745c4;
+            --secondary: #f5576c;
+            --success: #009efd;
+            --bg: #f8f9fe;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+            --radius: 16px;
+            --radius-sm: 12px;
+        }
+
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 30px 20px;
+            color: white;
+            padding-bottom: 60px;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .header .back-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            margin-top: -40px;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-badge {
+            background: var(--card-bg);
+            padding: 15px 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .stat-badge i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .stat-badge .stat-number {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--text);
+        }
+
+        .stat-badge .stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--primary);
+        }
+
+        .message-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message-item {
+            padding: 20px;
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            border-left: 4px solid var(--primary);
+            transition: all 0.2s;
+        }
+
+        .message-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow);
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .message-content {
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .message-media {
+            margin-top: 12px;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+
+        .message-media img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+        }
+
+        .message-reactions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .reaction-btn {
+            padding: 6px 12px;
+            background: rgba(90, 87, 227, 0.1);
+            border: none;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .reaction-btn:hover {
+            background: rgba(90, 87, 227, 0.2);
+        }
+
+        .join-section {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .join-section i {
+            font-size: 60px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .join-section h2 {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .join-section p {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        @media (max-width: 768px) {
+            .stats-bar { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <a href="{{ url_for('dashboard_page') }}" class="back-btn">
+                <i class="fa fa-arrow-left"></i>
+            </a>
+            <h1>Notre Chaîne</h1>
+            <div style="width: 40px;"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="stats-bar">
+            <div class="stat-badge">
+                <i class="fa fa-users"></i>
+                <div>
+                    <div class="stat-number">{{ sub_count }}</div>
+                    <div class="stat-label">Abonnés</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <i class="fa fa-broadcast-tower"></i>
+                    Messages de l'équipe
+                </div>
+            </div>
+
+            <div class="message-list">
+                {% for message in messages %}
+                <div class="message-item">
+                    <div class="message-header">
+                        <span style="font-weight: 600; color: var(--primary);">NovaTrade Official</span>
+                        <span class="message-time">{{ message.timestamp.strftime('%d/%m %H:%M') }}</span>
+                    </div>
+                    
+                    {% if message.content %}
+                    <div class="message-content">{{ message.content }}</div>
+                    {% endif %}
+                    
+                    {% if message.media_url %}
+                    <div class="message-media">
+                        {% if message.media_type == 'image' %}
+                        <img src="{{ message.media_url }}" alt="Media">
+                        {% elif message.media_type == 'video' %}
+                        <video controls style="width: 100%;">
+                            <source src="{{ message.media_url }}" type="video/mp4">
+                        </video>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <div class="message-reactions">
+                        {% if message.reactions %}
+                            {% for emoji, count in message.reactions.items() %}
+                            <button class="reaction-btn" onclick="react({{ message.id }}, '{{ emoji }}')">
+                                {{ emoji }} {{ count }}
+                            </button>
+                            {% endfor %}
+                        {% else %}
+                            <button class="reaction-btn" onclick="react({{ message.id }}, '\uD83D\uDD25')">🔥</button>
+                            <button class="reaction-btn" onclick="react({{ message.id }}, '\uD83D\uDE80')">🚀</button>
+                            <button class="reaction-btn" onclick="react({{ message.id }}, '\u2764\uFE0F')">❤️</button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% else %}
+                <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                    <i class="fa fa-inbox" style="font-size: 40px; margin-bottom: 15px;"></i>
+                    <p>Aucun message pour le moment</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if not is_sub %}
+        <div class="card join-section">
+            <i class="fa fa-bell"></i>
+            <h2>Rejoignez notre chaîne</h2>
+            <p>Recevez les dernières nouvelles et annonces directement</p>
+            <form action="{{ url_for('join_channel') }}" method="POST">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-plus"></i>
+                    Rejoindre la chaîne
+                </button>
+            </form>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 20px;">
+            <a href="{{ url_for('leave_channel') }}" class="btn" style="background: var(--bg); color: var(--text);">
+                <i class="fa fa-times"></i>
+                Quitter la chaîne
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function react(messageId, emoji) {
+            fetch(`/channel/react/${messageId}/${encodeURIComponent(emoji)}`, {
+                method: 'POST'
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.success) {
+                      location.reload();
+                  }
+              });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NovaTrade</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="icon" href="/static/images/favicon-48.png" sizes="48x48" type="image/png">
+<link rel="icon" href="/static/images/lu.png" sizes="192x192" type="image/png">
+
+<style>
+/* RESET & BASE */
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+
+body {
+    background: #e1e9ff;
+    background-image: radial-gradient(at 0% 0%, rgba(197, 202, 255, 0.5) 0px, transparent 50%),
+                      radial-gradient(at 100% 100%, rgba(225, 200, 255, 0.4) 0px, transparent 50%);
+    min-height: 100vh;
+    color: #333;
+    overflow-x: hidden;
+}
+
+/* TOPBAR GLASS */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.topbar .menu-toggle { font-size: 22px; cursor: pointer; color: #5a57e3; }
+.topbar .user { font-weight: 600; color: #444; font-size: 14px; }
+
+/* SIDEBAR */
+.sidebar {
+    position: fixed;
+    left: -280px;
+    top: 0;
+    width: 280px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    padding-top: 60px;
+    z-index: 1100;
+    overflow-y: auto;
+    box-shadow: 10px 0 30px rgba(0,0,0,0.05);
+}
+
+.sidebar.active { left: 0; }
+.sidebar a {
+    display: block;
+    padding: 12px 25px;
+    font-size: 14px;
+    color: #444;
+    text-decoration: none;
+    transition: 0.2s;
+    border-left: 4px solid transparent;
+}
+.sidebar a:hover { background: #f0f3ff; color: #5a57e3; border-left-color: #5a57e3; }
+.sidebar a i { margin-right: 12px; width: 20px; text-align: center; }
+.sub-menu { display: none; background: #fafbff; padding-left: 15px; }
+.rotate { transform: rotate(180deg); }
+
+/* OVERLAY */
+.overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.3); opacity: 0; visibility: hidden; transition: 0.3s; z-index: 1050;
+}
+.overlay.active { opacity: 1; visibility: visible; }
+
+/* MAIN CONTENT */
+.main { padding: 15px; max-width: 600px; margin: 0 auto; }
+
+/* GLASS CARD */
+.glass-card {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 24px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 20px rgba(100, 100, 100, 0.05);
+}
+
+.welcome-holder p { font-size: 14px; color: #555; line-height: 1.5; }
+
+/* STAT BOXES */
+.stat-row { display: flex; gap: 12px; margin-bottom: 12px; }
+.stat-box {
+    flex: 1;
+    padding: 18px;
+    border-radius: 20px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    min-height: 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+.depenses-box { background: linear-gradient(135deg, #8e54e9, #4776e6); }
+.profit-box { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+.tasks-box { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
+.retraits-box { background: linear-gradient(135deg, #2af598, #009efd); }
+.orange-box { background: linear-gradient(135deg, #f093fb, #f5576c); }
+.revenu-box { background: linear-gradient(135deg, #11998e, #38ef7d); }
+.bonus-box { background: linear-gradient(135deg, #f2994a, #f2c94c); }
+
+.stat-title { font-size: 13px; font-weight: 500; opacity: 0.95; margin-bottom: 4px; }
+.stat-amount { font-size: 17px; font-weight: 700; }
+
+/* WHATSAPP SECTION */
+.whatsapp-card h3 { font-size: 16px; margin-bottom: 5px; color: #222; }
+.whatsapp-card p { font-size: 13px; color: #666; margin-bottom: 15px; }
+
+.phone-group { display: flex; gap: 8px; background: #fff; border-radius: 12px; padding: 5px; border: 1px solid #eee; }
+.country-select { border: none; background: transparent; padding: 10px; font-size: 13px; outline: none; width: 45%; border-right: 1px solid #eee; }
+.phone-input { border: none; background: transparent; padding: 10px; font-size: 14px; outline: none; width: 55%; }
+.whatsapp-btn {
+    width: 100%; margin-top: 12px; padding: 12px; border: none; border-radius: 12px;
+    background: #4776e6; color: #fff; font-weight: 600; cursor: pointer; transition: 0.3s;
+}
+
+/* REF BOX */
+.ref-label { display: block; font-size: 14px; color: #666; margin-bottom: 10px; text-align: center; }
+.ref-link-display {
+    background: #fff; padding: 12px; border-radius: 12px; font-size: 13px;
+    color: #444; border: 1px dashed #ccc; margin-bottom: 12px; word-break: break-all; text-align: center;
+}
+.copy-btn {
+    display: block; width: 120px; margin: 0 auto; padding: 10px; border: none;
+    border-radius: 12px; background: #5a57e3; color: white; font-weight: 600; cursor: pointer;
+}
+
+/* VIDEO PLAYER */
+.video-box h3 { font-size: 15px; margin-bottom: 12px; color: #444; text-align: center; }
+.video-container {
+    background: #000; border-radius: 18px; overflow: hidden; line-height: 0;
+}
+.video-box video { width: 100%; display: block; }
+
+/* SCHEDULE LIST */
+.schedule-item {
+    display: flex; justify-content: space-between; align-items: center;
+    background: #fff; padding: 12px 18px; border-radius: 16px; margin-bottom: 10px;
+    border: 1px solid rgba(0,0,0,0.03);
+}
+.schedule-left { display: flex; align-items: center; gap: 12px; }
+.schedule-icon { width: 35px; height: 35px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 15px; }
+.schedule-text strong { font-size: 13px; color: #333; display: block; }
+.day-badge { background: #f0f3ff; padding: 5px 15px; border-radius: 10px; font-size: 12px; font-weight: 600; color: #5a57e3; }
+
+/* FOOTER */
+footer { text-align: center; padding: 20px; font-size: 12px; color: #888; }
+
+.user-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.user-icon {
+    font-size: 18px;
+    color: #5a57e3;
+    opacity: 0.9;
+}
+
+.user {
+    font-weight: 600;
+    font-size: 13px;
+    color: #444;
+    text-transform: capitalize;
+}
+
+.sidebar-header {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 10px;
+}
+
+.sidebar-header img {
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    background: white;
+    padding: 3px;
+}
+
+.brand-name {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.nova { color: #8e54e9; }
+.trade { color: #4776e6; }
+
+.sidebar a { margin: 2px 15px; border-radius: 10px; }
+
+.wide-box {
+    width: 100%;
+    padding: 15px 25px;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.wide-box .stat-title { margin-bottom: 0; font-weight: 600; }
+.wide-box .stat-amount { font-size: 18px; }
+
+.ref-section { background: #fff; padding: 20px; border-radius: 20px; text-align: center; border: 1px solid #eee; margin-bottom: 20px; }
+.ref-link { background: #F4F7FE; padding: 12px; border-radius: 12px; font-size: 11px; font-weight: 700; margin: 15px 0; color: #5D5FEF; word-break: break-all; }
+.btn-copy { width: 100%; padding: 12px; border: none; border-radius: 12px; background: #FF7A00; color: #fff; font-weight: 700; cursor: pointer; }
+
+/* BOUTIQUE LINK STYLE */
+.boutique-link {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    color: white !important;
+    border-radius: 12px;
+    margin: 2px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(245, 87, 108, 0.3);
+    transition: 0.3s;
+}
+.boutique-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(245, 87, 108, 0.4);
+}
+.boutique-link i { margin-right: 10px; }
+.boutique-link .badge-new {
+    background: rgba(255,255,255,0.3);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <img src="/static/images/n.jpg" alt="Logo">
+        <span class="brand-name"><span class="nova">Nova</span><span class="trade">Trade</span></span>
+    </div>
+    <a href="/dashboard"><i class="fa fa-home"></i> Tableau de bord</a>
+    <a href="/revenus"><i class="fa fa-wallet"></i> Revenus</a>
+
+    <!-- BOUTIQUE LINK -->
+    <a href="/boutique/creer" class="boutique-link">
+        <span><i class="fa fa-store"></i> Ma Boutique</span>
+        <span class="badge-new">Nouveau</span>
+    </a>
+
+    <a href="javascript:void(0);" id="channelsToggle"><i class="fa fa-tv"></i> Nos Chaînes <i class="fa fa-chevron-down" style="float:right;"></i></a>
+    <div class="sub-menu" id="subChannels">
+        <a href="/chaine" class="menu-item">
+            <i class="fa fa-bullhorn"></i>
+            <span>Canal Officiel</span>
+            <span class="badge" style="background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px;">New</span>
+        </a>
+        <a href="/nous"><i class="fa fa-envelope"></i> Nous Contactez</a>
+    </div>
+
+    <a href="javascript:void(0);" id="formationToggle"><i class="fa fa-graduation-cap"></i> Formation <i class="fa fa-chevron-down" style="float:right;"></i></a>
+    <div class="sub-menu" id="subFormation">
+        <a href="/trade"><i class="fa fa-chart-line"></i> Trading</a>
+        <a href="/ecom"><i class="fa fa-store"></i> E-commerce</a>
+    </div>
+
+    <a href="javascript:void(0);" id="tasksToggle"><i class="fa fa-tasks"></i> Tâches <i class="fa fa-chevron-down" style="float:right;"></i></a>
+    <div class="sub-menu" id="subTasks">
+        <a href="{{ url_for('glass_bridge_page') }}"><i class="fa fa-gamepad"></i> Game jeudi</a>
+        <a href="/youtube"><i class="fab fa-youtube"></i> Vidéo YouTube</a>
+        <a href="/tiktok"><i class="fab fa-tiktok"></i> Vidéo TikTok</a>
+        <a href="/instagram"><i class="fab fa-instagram"></i> Vidéo Insta</a>
+        <a href="{{ url_for('apple_game_page') }}"><i class="fa fa-gamepad"></i> Game lundi</a>
+    </div>
+
+    <a href="javascript:void(0);" id="retraitsToggle"><i class="fa fa-money-bill"></i> Retraits <i class="fa fa-chevron-down" style="float:right;"></i></a>
+    <div class="sub-menu" id="subRetraits">
+        <a href="/retrait"><i class="fa fa-wallet"></i> Solde retrait</a>
+        <a href="/retrait-casino"><i class="fa fa-dice"></i> Retrait Casino</a>
+        <a href="/retrait-jeux"><i class="fa fa-trophy"></i> Retrait Jeux</a>
+        <a href="{{ url_for('retrait_points_page') }}"><i class="fa fa-coins"></i> Solde des points</a>
+        <a href="/mes-retraits"><i class="fa fa-history"></i> Mes retraits</a>
+    </div>
+
+    <a href="javascript:void(0);" id="moiToggle"><i class="fa fa-user"></i> Moi <i class="fa fa-chevron-down" style="float:right;"></i></a>
+    <div class="sub-menu" id="subMoi">
+        <a href="/profile"><i class="fa fa-user"></i> Mon profile</a>
+        <a href="/team"><i class="fa fa-users"></i> Mon équipes</a>
+    </div>
+
+    <a href="/download/contact"><i class="fa fa-address-book"></i> Contacts vcf</a>
+    <a href="/academy/tiktok"><i class="fab fa-tiktok"></i> Formation Tiktok</a>
+    <a href="/academy/affiliation"><i class="fa fa-info-circle"></i> Présentation de Novatrade</a>
+    <a href="/academy/design"><i class="fa fa-palette"></i> Formation Design Graphique</a>
+    <a href="/apk"><i class="fa fa-th"></i> Apk Premium</a>
+    <a href="/apk-canal"><i class="fa fa-tv"></i> Télécharger Canal+</a>
+    <a href="/netflix-view"><i class="fa fa-play-circle"></i> Netflix Direct</a>
+    <a href="/about"><i class="fa fa-info-circle"></i> À propos</a>
+    <a href="/logout" style="color:#e74c3c;"><i class="fa fa-sign-out"></i> Déconnexion</a>
+</div>
+
+<div class="topbar">
+    <div class="menu-toggle" id="menuToggle"><i class="fa fa-bars"></i></div>
+    <div class="user-container">
+        <i class="fa fa-user user-icon"></i>
+        <div class="user">{{ user.username }}</div>
+    </div>
+</div>
+
+<div class="main">
+    
+    <div class="glass-card welcome-holder">
+        <p>Chez NovaTrade, accédez à des activités diversifiée des produits numériques adaptés à résoudre vos problèmes.</p>
+    </div>
+
+    <div class="stat-row">
+        <div class="stat-box depenses-box">
+            <span class="stat-title">Dépenses</span>
+            <span class="stat-amount">XOF 4500</span>
+        </div>
+        <div class="stat-box profit-box">
+            <span class="stat-title">Profit</span>
+            <span class="stat-amount">XOF {{ "{:,}".format(user.solde_revenu or 0) }}</span>
+        </div>
+    </div>
+
+    <div class="wide-box">
+        <span class="stat-title"><i class="fa fa-gamepad"></i> Solde des jeux</span>
+        <span class="stat-amount">XOF {{ "{:,}".format(user.solde_jeux or 0) }}</span>
+    </div>
+
+    {% if not user.whatsapp_number %}
+    <div class="glass-card whatsapp-card">
+        <h3>Ajoutez votre WhatsApp</h3>
+        <p>Sélectionnez votre pays puis entrez votre numéro WhatsApp</p>
+        
+        <form method="POST" action="/whatsapp-number" onsubmit="prepareWhatsappNumber()">
+            <div class="phone-group">
+                <select id="countryCode" class="country-select" required>
+                <option value="+228">🇹🇬 Togo (+228)</option>
+                <option value="+229">🇧🇯 Bénin (+229)</option>
+                <option value="+237">🇨🇲 Cameroun (+237)</option>
+                <option value="+242">🇨🇬 Congo Brazzaville (+242)</option>
+                <option value="+225">🇨🇮 Côte d'Ivoire (+225)</option>
+                <option value="+226">🇧🇫 Burkina Faso (+226)</option>
+                <option value="+223">🇲🇱 Mali (+223)</option>
+                <option value="+221">🇸🇳 Sénégal (+221)</option>
+                <option value="+243">🇨🇩 Congo Kinshasa (+243)</option>
+                <option value="+227">🇳🇪 Niger (+227)</option>
+                <option value="+241">🇬🇦 Gabon (+241)</option>
+                </select>
+                <input type="tel" id="phoneNumber" class="phone-input" placeholder="Numéro WhatsApp" required>
+            </div>
+            <input type="hidden" name="number" id="fullWhatsapp">
+            <button type="submit" class="whatsapp-btn">Enregistrer</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <div class="stat-row">
+        <div class="stat-box revenu-box">
+            <span class="stat-title">Solde Revenu</span>
+            <span class="stat-amount">XOF {{ "{:,}".format(user.solde_parrainage or 0) }}</span>
+        </div>
+        <div class="stat-box bonus-box">
+            <span class="stat-title">Solde Fortune</span>
+            <span class="stat-amount">XOF {{ "{:,}".format(user.bonus or 0) }}</span>
+        </div>
+    </div>
+
+    <div class="stat-row">
+        <div class="stat-box tasks-box">
+            <span class="stat-title">Point des tâches</span>
+            <span class="stat-amount">{{ user.points or 0 }} pts</span>
+        </div>
+        <div class="stat-box retraits-box">
+            <span class="stat-title">Retraits totaux</span>
+            <span class="stat-amount">XOF {{ "{:,}".format(total_withdrawn_user or 0) }}</span>
+        </div>
+    </div>
+
+    <div class="video-box">
+        <h3>Présentation NovaTrade</h3>
+        <div class="video-container">
+            <video controls playsinline>
+                <source src="{{ url_for('static', filename='videos/lu.mp4') }}" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
+    <div class="glass" style="margin-top: 20px; padding: 20px; border-left: 5px solid #5a57e3; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+        
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="background: #5a57e3; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white;">
+                    <i class="fas fa-apple-alt"></i>
+                </div>
+                <div>
+                    <h3 style="font-size: 16px; font-weight: 700; color: #333; margin: 0;">Apple of Fortune</h3>
+                    <p style="font-size: 11px; color: #666; margin: 0;">{{ rounds_left }} essais restants</p>
+                </div>
+            </div>
+
+            {% if is_blocked_500 %}
+                <span style="background: #000; color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 10px;">FINI</span>
+            {% elif not can_play %}
+                <span style="background: #fee2e2; color: #dc2626; padding: 4px 10px; border-radius: 20px; font-size: 10px;">VERROUILLÉ</span>
+            {% else %}
+                <span style="background: #dcfce7; color: #16a34a; padding: 4px 10px; border-radius: 20px; font-size: 10px;">ACTIF</span>
+            {% endif %}
+        </div>
+
+        <div style="background: rgba(90, 87, 227, 0.05); padding: 15px; border-radius: 15px; margin-bottom: 15px;">
+            {% if is_blocked_500 %}
+                <p style="font-size: 13px; color: #000; margin: 0;">💰 Objectif atteint ou rounds terminés.</p>
+            {% elif not can_play %}
+                <p style="font-size: 13px; color: #dc2626; margin: 0;">
+                    ⏳ <strong>Attente :</strong> Prochain round le {{ next_date.strftime('%d/%m à %H:%M') }}.
+                </p>
+            {% else %}
+                <p style="font-size: 13px; color: #16a34a; margin: 0;">
+                    ✅ <strong>Disponible :</strong> Vous avez 24h pour jouer ce round !
+                </p>
+            {% endif %}
+        </div>
+
+        {% if is_blocked_500 %}
+            <button disabled style="width: 100%; background: #000; color: white; padding: 12px; border-radius: 12px; border: none; font-weight: 600; cursor: not-allowed;">
+                Session terminée
+            </button>
+        {% elif not can_play %}
+            <button disabled style="width: 100%; background: #cbd5e1; color: #64748b; padding: 12px; border-radius: 12px; border: none; font-weight: 600; cursor: not-allowed;">
+                Indisponible
+            </button>
+        {% else %}
+            <a href="{{ url_for('apple_game') }}" style="display: block; text-align: center; background: #5a57e3; color: white; padding: 12px; border-radius: 12px; text-decoration: none; font-weight: 600; transition: 0.3s;">
+                Jouer maintenant
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="ref-section">
+        <p style="font-weight: 700; font-size: 14px; color: #444;">Lien de parrainage</p>
+        <div class="ref-link" id="refLink">{{ referral_link }}</div>
+        <button class="btn-copy" onclick="copyReferral()">Copier le lien</button>
+    </div>
+
+    <div class="glass-card schedule-card">
+        <h3 style="text-align: center; margin-bottom: 20px; font-size: 16px;">Horaire NovaTrade</h3>
+
+        <div class="schedule-item">
+            <div class="schedule-left">
+                <div class="schedule-icon" style="background: #94a3b8;"><i class="fa fa-gamepad"></i></div>
+                <div class="schedule-text">
+                    <strong>Game lundi</strong>
+                    <span style="font-size: 11px; color: #888;">08h00</span>
+                </div>
+            </div>
+            <div class="day-badge">Lundi</div>
+        </div>
+
+        <div class="schedule-item">
+            <div class="schedule-left">
+                <div class="schedule-icon" style="background: #ff2d55;"><i class="fab fa-tiktok"></i></div>
+                <div class="schedule-text">
+                    <strong>Vidéos TikTok</strong>
+                    <span style="font-size: 11px; color: #888;">08h00</span>
+                </div>
+            </div>
+            <div class="day-badge" style="color: #ff2d55; background: rgba(255, 45, 85, 0.1);">Mardi</div>
+        </div>
+
+        <div class="schedule-item">
+            <div class="schedule-left">
+                <div class="schedule-icon" style="background: #ff0000;"><i class="fab fa-youtube"></i></div>
+                <div class="schedule-text">
+                    <strong>Vidéos YouTube</strong>
+                    <span style="font-size: 11px; color: #888;">08h00</span>
+                </div>
+            </div>
+            <div class="day-badge" style="color: #ff0000; background: rgba(255, 0, 0, 0.1);">Mercredi</div>
+        </div>
+
+        <div class="schedule-item">
+            <div class="schedule-left">
+                <div class="schedule-icon" style="background: #ffb300;"><i class="fa fa-gamepad"></i></div>
+                <div class="schedule-text">
+                    <strong>Game jeudi</strong>
+                    <span style="font-size: 11px; color: #888;">08h00</span>
+                </div>
+            </div>
+            <div class="day-badge" style="color: #ffb300; background: rgba(255, 179, 0, 0.1);">Jeudi</div>
+        </div>
+
+        <div class="schedule-item">
+            <div class="schedule-left">
+                <div class="schedule-icon" style="background: #8a3ab9;"><i class="fab fa-instagram"></i></div>
+                <div class="schedule-text">
+                    <strong>Vidéos Instagram</strong>
+                    <span style="font-size: 11px; color: #888;">08h00</span>
+                </div>
+            </div>
+            <div class="day-badge" style="color: #8a3ab9; background: rgba(138, 58, 185, 0.1);">Vendredi</div>
+        </div>
+    </div>
+
+    <footer>2026 © NovaTrade by Nina Academy</footer>
+</div>
+
+<script>
+function copyReferral() {
+    const refLink = document.getElementById("refLink").textContent;
+    navigator.clipboard.writeText(refLink).then(() => {
+        alert("Lien de parrainage copié !");
+    });
+}
+
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+const menuToggle = document.getElementById("menuToggle");
+
+menuToggle.onclick = () => {
+    sidebar.classList.add("active");
+    overlay.classList.add("active");
+};
+
+overlay.onclick = () => {
+    sidebar.classList.remove("active");
+    overlay.classList.remove("active");
+};
+
+function setupToggle(toggleId, menuId) {
+    const toggle = document.getElementById(toggleId);
+    const menu = document.getElementById(menuId);
+    if(toggle && menu) {
+        toggle.onclick = () => {
+            const isHidden = menu.style.display === "none" || menu.style.display === "";
+            menu.style.display = isHidden ? "block" : "none";
+            toggle.querySelector(".fa-chevron-down").classList.toggle("rotate", isHidden);
+        };
+    }
+}
+
+setupToggle("channelsToggle", "subChannels");
+setupToggle("formationToggle", "subFormation");
+setupToggle("tasksToggle", "subTasks");
+setupToggle("retraitsToggle", "subRetraits");
+
+const moiToggle = document.getElementById("moiToggle");
+const subMoi = document.getElementById("subMoi");
+
+moiToggle.onclick = () => {
+    if(subMoi.style.display === "none"){
+        subMoi.style.display = "block";
+        moiToggle.querySelector(".fa-chevron-down").classList.add("rotate");
+    } else {
+        subMoi.style.display = "none";
+        moiToggle.querySelector(".fa-chevron-down").classList.remove("rotate");
+    }
+};
+
+function prepareWhatsappNumber() {
+    const code = document.getElementById("countryCode").value;
+    const phone = document.getElementById("phoneNumber").value.replace(/\s+/g, '');
+    document.getElementById("fullWhatsapp").value = code + phone;
+}
+</script>
+
+</body>
+</html>
