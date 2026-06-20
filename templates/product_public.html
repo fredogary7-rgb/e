@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ produit.nom }} - NovaTrade</title>
+    <title>{{ produit.nom }} - Boutique en ligne</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
@@ -34,14 +34,88 @@
         body {
             background: var(--gradient-bg);
             min-height: 100vh;
-            padding: 20px;
+            padding: 0;
             font-style: italic;
             color: var(--text-primary);
         }
 
-        .container {
-            max-width: 1000px;
+        /* Navigation */
+        .navbar {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-content {
+            max-width: 1200px;
             margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-logo {
+            font-style: italic;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--accent-blue);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .navbar-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-style: italic;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .navbar-links a:hover {
+            color: var(--accent-blue);
+        }
+
+        .cart-icon {
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .cart-icon:hover {
+            color: var(--accent-blue);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--gradient-pink);
+            color: white;
+            font-size: 11px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
         }
 
         .modern-card {
@@ -51,44 +125,26 @@
             border: 1px solid var(--border-color);
             border-radius: var(--radius-2xl);
             padding: 30px;
-            box-shadow: var(--shadow-medium);
-        }
-
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--accent-blue);
-            text-decoration: none;
-            font-style: italic;
-            font-weight: 600;
             margin-bottom: 20px;
-            padding: 8px 16px;
-            background: rgba(56, 189, 248, 0.1);
-            border-radius: var(--radius-lg);
-            transition: all 0.2s;
-        }
-
-        .back-link:hover {
-            background: rgba(56, 189, 248, 0.2);
+            box-shadow: var(--shadow-medium);
         }
 
         .product-detail {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            gap: 40px;
         }
 
         .product-image {
+            position: relative;
             width: 100%;
-            height: 400px;
             background: rgba(56, 189, 248, 0.05);
             border-radius: var(--radius-xl);
+            overflow: hidden;
+            min-height: 400px;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-            position: relative;
         }
 
         .product-image img {
@@ -98,9 +154,32 @@
         }
 
         .product-image i {
-            font-size: 80px;
+            font-size: 100px;
             color: var(--accent-blue);
             opacity: 0.3;
+        }
+
+        .image-gallery {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .gallery-thumb {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .gallery-thumb:hover, .gallery-thumb.active {
+            border-color: var(--accent-blue);
         }
 
         .product-info h1 {
@@ -109,6 +188,7 @@
             font-weight: 800;
             color: var(--text-primary);
             margin-bottom: 10px;
+            line-height: 1.3;
         }
 
         .product-price {
@@ -137,8 +217,9 @@
             font-style: italic;
             font-size: 15px;
             color: var(--text-secondary);
-            line-height: 1.6;
+            line-height: 1.7;
             margin: 20px 0;
+            white-space: pre-wrap;
         }
 
         .product-meta {
@@ -164,6 +245,16 @@
 
         .meta-item strong {
             color: var(--text-primary);
+        }
+
+        .meta-item a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .meta-item a:hover {
+            text-decoration: underline;
         }
 
         .size-options {
@@ -193,6 +284,7 @@
         .btn {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             padding: 14px 24px;
             border-radius: var(--radius-lg);
@@ -216,16 +308,6 @@
             box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
         }
 
-        .btn-pink {
-            background: var(--gradient-pink);
-            color: white;
-            box-shadow: 0 6px 20px rgba(249, 168, 212, 0.3);
-        }
-
-        .btn-pink:hover {
-            box-shadow: 0 8px 25px rgba(249, 168, 212, 0.4);
-        }
-
         .btn-success {
             background: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
             color: white;
@@ -244,6 +326,16 @@
         .btn-whatsapp:hover {
             background: #128C7E;
             transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--accent-blue);
+            border: 2px solid var(--accent-blue);
+        }
+
+        .btn-outline:hover {
+            background: rgba(56, 189, 248, 0.1);
         }
 
         .share-link {
@@ -287,27 +379,79 @@
             background: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
         }
 
-        .image-gallery {
+        .similar-products {
+            margin-top: 40px;
+        }
+
+        .section-title {
+            font-style: italic;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(56, 189, 248, 0.15);
+        }
+
+        .product-card-image {
+            width: 100%;
+            height: 180px;
+            background: rgba(56, 189, 248, 0.05);
             display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            overflow-x: auto;
-            padding-bottom: 10px;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
 
-        .gallery-thumb {
-            width: 60px;
-            height: 60px;
-            border-radius: 8px;
-            object-fit: cover;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-            flex-shrink: 0;
+        .product-card-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
         }
 
-        .gallery-thumb:hover, .gallery-thumb.active {
-            border-color: var(--accent-blue);
+        .product-card-info {
+            padding: 15px;
+        }
+
+        .product-card-name {
+            font-style: italic;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .product-card-price {
+            font-style: italic;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--accent-blue);
         }
 
         .notification {
@@ -340,13 +484,25 @@
             border-left: 4px solid var(--accent-blue);
         }
 
+        .admin-badge {
+            display: inline-block;
+            background: var(--gradient-pink);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-style: italic;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
         @media (max-width: 768px) {
             .product-detail {
                 grid-template-columns: 1fr;
             }
 
             .product-image {
-                height: 300px;
+                min-height: 300px;
             }
 
             .actions {
@@ -356,10 +512,36 @@
             .btn {
                 justify-content: center;
             }
+
+            .navbar-links {
+                gap: 15px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="{{ url_for('index_page') }}" class="navbar-logo">
+                <i class="fa-solid fa-store"></i> NovaTrade
+            </a>
+            <div class="navbar-links">
+                <a href="{{ url_for('liste_produits') }}">Produits</a>
+                <a href="{{ url_for('liste_boutiques') }}">Boutiques</a>
+<a href="/cart" class="cart-icon">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+                {% if user %}
+                    <a href="{{ url_for('dashboard_page') }}">Mon compte</a>
+                {% else %}
+                    <a href="{{ url_for('connexion_page') }}">Connexion</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
     <!-- Notification Toast -->
     <div class="notification" id="notification">
         <i class="fa fa-check-circle" style="color: var(--accent-green);"></i>
@@ -367,11 +549,6 @@
     </div>
 
     <div class="container">
-        <a href="{{ url_for('ma_boutique', boutique_id=produit.boutique.id) }}" class="back-link">
-            <i class="fa fa-arrow-left"></i>
-            Retour à la boutique
-        </a>
-
         <div class="modern-card">
             <div class="product-detail">
                 <div class="product-image">
@@ -386,7 +563,12 @@
                 </div>
 
                 <div class="product-info">
-                    <h1>{{ produit.nom }}</h1>
+                    <h1>
+                        {{ produit.nom }}
+                        {% if is_owner %}
+                            <span class="admin-badge">Votre produit</span>
+                        {% endif %}
+                    </h1>
 
                     <div class="product-price">
                         {% if produit.prix_promo and produit.prix_promo < produit.prix %}
@@ -406,7 +588,10 @@
                     <div class="product-meta">
                         <div class="meta-item">
                             <i class="fa fa-store"></i>
-                            <strong>Boutique:</strong> {{ produit.boutique.nom }}
+                            <strong>Boutique:</strong>
+                            <a href="{{ url_for('boutique_publique', username=produit.boutique.proprietaire.username) }}">
+                                {{ produit.boutique.nom }}
+                            </a>
                         </div>
 
                         {% if produit.categorie %}
@@ -416,7 +601,7 @@
                         </div>
                         {% endif %}
 
-                        {% if produit.quantite is defined and produit.quantite != None %}
+                        {% if produit.quantite is defined and produit.quantite != None and produit.quantite > 0 %}
                         <div class="meta-item">
                             <i class="fa fa-box"></i>
                             <strong>Quantité:</strong> {{ produit.quantite }} disponible{{ 's' if produit.quantite > 1 else '' }}
@@ -452,43 +637,65 @@
                             <strong>Vues:</strong> {{ produit.vues or 0 }}
                         </div>
 
-                        {% if produit.ajouts_panier is defined %}
                         <div class="meta-item">
-                            <i class="fa fa-shopping-cart"></i>
-                            <strong>Ajouts panier:</strong> {{ produit.ajouts_panier or 0 }}
+                            <i class="fa fa-calendar"></i>
+                            <strong>Ajouté le:</strong> {{ produit.date_creation.strftime('%d/%m/%Y') if produit.date_creation else 'N/A' }}
                         </div>
-                        {% endif %}
                     </div>
 
+                    {% if is_owner %}
                     <div class="share-link">
                         <i class="fa fa-share-alt" style="color: var(--accent-blue);"></i>
-                        <input type="text" value="{{ request.url }}" readonly id="shareUrl">
+                        <input type="text" value="{{ produit.public_url }}" readonly id="shareUrl">
                         <button class="btn-copy" onclick="copyLink()" id="copyBtn">
-                            <i class="fa fa-copy"></i> Copier
+                            <i class="fa fa-copy"></i> Copier le lien
                         </button>
                     </div>
+                    {% endif %}
 
                     <div class="actions">
+                        <button onclick="addToCart({{ produit.id }})" class="btn btn-primary" id="addToCartBtn">
+                            <i class="fa fa-shopping-cart"></i> Ajouter au panier
+                        </button>
+
                         <button onclick="commanderWhatsApp()" class="btn btn-whatsapp">
                             <i class="fa-brands fa-whatsapp"></i> Commander
                         </button>
 
-                        <button onclick="toggleFavorite()" class="btn btn-pink" id="favBtn">
-                            <i class="fa fa-heart"></i> <span id="favText">Ajouter aux favoris</span>
-                        </button>
-
-                        {% if user and produit.boutique.user_id == user.id %}
-                            <a href="{{ url_for('modifier_produit', boutique_id=produit.boutique.id, produit_id=produit.id) }}" class="btn btn-primary">
+                        {% if is_owner %}
+                            <a href="{{ url_for('modifier_produit', boutique_id=produit.boutique.id, produit_id=produit.id) }}" class="btn btn-outline">
                                 <i class="fa fa-edit"></i> Modifier
-                            </a>
-                            <a href="{{ url_for('supprimer_produit', boutique_id=produit.boutique.id, produit_id=produit.id) }}" class="btn btn-pink" onclick="return confirm('Êtes-vous sûr ?')">
-                                <i class="fa fa-trash"></i> Supprimer
                             </a>
                         {% endif %}
                     </div>
                 </div>
             </div>
         </div>
+
+        {% if produits_similaires %}
+        <div class="similar-products">
+            <h2 class="section-title">Produits similaires</h2>
+            <div class="products-grid">
+                {% for p in produits_similaires %}
+                <a href="{{ url_for('voir_produit_public', slug=p.slug) }}" class="product-card">
+                    <div class="product-card-image">
+                        <img src="{{ p.image_principale }}" alt="{{ p.nom }}">
+                    </div>
+                    <div class="product-card-info">
+                        <div class="product-card-name">{{ p.nom }}</div>
+                        <div class="product-card-price">
+                            {% if p.prix_promo and p.prix_promo < p.prix %}
+                                {{ "%.0f"|format(p.prix_promo) }} <small>{{ p.devise or 'XOF' }}</small>
+                            {% else %}
+                                {{ "%.0f"|format(p.prix) }} <small>{{ p.devise or 'XOF' }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
     </div>
 
     <script>
@@ -500,6 +707,12 @@
             whatsapp: "{{ produit.boutique.whatsapp or '' }}"
         };
 
+        function changeImage(src, thumb) {
+            document.getElementById('mainImage').src = src;
+            document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
+        }
+
         function copyLink() {
             const input = document.getElementById('shareUrl');
             const btn = document.getElementById('copyBtn');
@@ -509,7 +722,7 @@
                 btn.classList.add('copied');
                 showNotification('Lien copié avec succès !');
                 setTimeout(() => {
-                    btn.innerHTML = '<i class="fa fa-copy"></i> Copier';
+                    btn.innerHTML = '<i class="fa fa-copy"></i> Copier le lien';
                     btn.classList.remove('copied');
                 }, 2000);
             }).catch(() => {
@@ -521,44 +734,60 @@
             });
         }
 
-        function changeImage(src, thumb) {
-            document.getElementById('mainImage').src = src;
-            document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
-            thumb.classList.add('active');
-        }
-
         function commanderWhatsApp() {
             let phone = produitData.whatsapp;
             if (!phone) {
-                showNotification('Aucun numero WhatsApp disponible.');
+                showNotification('Aucun numéro WhatsApp disponible.');
                 return;
             }
             phone = phone.replace(/[\s\+\-\(\)]/g, '');
             if (!phone.startsWith('+') && phone.length < 10) {
                 phone = '225' + phone;
             }
-            var message = 'Bonjour, je suis interesse par :\n\n*' + produitData.nom + '*\nPrix : ' + produitData.prix + ' XOF\nBoutique : ' + produitData.boutique;
+            var message = 'Bonjour, je suis intéressé par :\n\n*' + produitData.nom + '*\nPrix : ' + produitData.prix + ' XOF\nBoutique : ' + produitData.boutique;
             var whatsappUrl = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(message);
             window.open(whatsappUrl, '_blank');
         }
 
-        function toggleFavorite() {
-            const btn = document.getElementById('favBtn');
-            const text = document.getElementById('favText');
-            const icon = btn.querySelector('i');
-            const isFavorite = btn.classList.contains('active');
+        function addToCart(productId) {
+            const btn = document.getElementById('addToCartBtn');
+            const originalHTML = btn.innerHTML;
             
-            if (isFavorite) {
-                btn.classList.remove('active');
-                icon.classList.remove('fa-solid');
-                icon.classList.add('fa-heart');
-                text.textContent = 'Ajouter aux favoris';
+            btn.innerHTML = '<i class="fa fa-check"></i> Ajouté au panier!';
+            btn.style.background = 'linear-gradient(135deg, #bbf7d0 0%, #86efac 100%)';
+            
+            fetch('/api/panier/ajouter', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ produit_id: productId, quantite: 1 })
+            }).then(r => r.json()).then(data => {
+                if (data.success) {
+                    updateCartCount(data.item_count);
+                    showNotification('Produit ajouté au panier!');
+                } else {
+                    showNotification(data.message || 'Erreur lors de l\'ajout');
+                }
+            }).catch(() => {
+                showNotification('Erreur lors de l\'ajout au panier');
+            });
+            
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.style.background = '';
+            }, 1500);
+        }
+
+        function updateCartCount(count) {
+            const cartCount = document.getElementById('cartCount');
+            if (count !== undefined) {
+                cartCount.textContent = count;
             } else {
-                btn.classList.add('active');
-                icon.classList.remove('fa-heart');
-                icon.classList.add('fa-solid');
-                text.textContent = 'Retirer des favoris';
-                showNotification('Produit ajouté aux favoris ❤️');
+                // Charger le compteur depuis l'API
+                fetch('/api/panier/count')
+                    .then(r => r.json())
+                    .then(data => {
+                        cartCount.textContent = data.count;
+                    });
             }
         }
 
@@ -568,6 +797,11 @@
             notification.classList.add('show');
             setTimeout(() => notification.classList.remove('show'), 3000);
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Charger le compteur du panier depuis l'API
+            updateCartCount();
+        });
     </script>
 </body>
 </html>

@@ -4,39 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mes Revenus - NovaTrade</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        /* RESET & BASE */
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
         
         :root {
-            --primary: #5a57e3;
-            --primary-dark: #4745c4;
-            --secondary: #f5576c;
-            --success: #009efd;
-            --warning: #ffd700;
-            --bg: #f8f9fe;
-            --card-bg: #ffffff;
-            --text: #2d3748;
-            --text-light: #718096;
-            --border: #e2e8f0;
-            --shadow: 0 4px 6px rgba(0,0,0,0.07);
-            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
-            --radius: 16px;
-            --radius-sm: 12px;
+            --bg-primary: #f8fafc;
+            --bg-secondary: rgba(255, 255, 255, 0.8);
+            --bg-card: rgba(255, 255, 255, 0.7);
+            --accent-blue: #38bdf8;
+            --accent-blue-light: #7dd3fc;
+            --accent-green: #86efac;
+            --accent-pink: #f9a8d4;
+            --accent-purple: #a78bfa;
+            --text-primary: #334155;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.2);
+            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
+            --gradient-purple: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 100%);
+            --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
+            --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-2xl: 24px;
+            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
         }
 
         body {
-            background: var(--bg);
+            background: var(--gradient-bg);
             min-height: 100vh;
             padding-bottom: 80px;
+            font-style: italic;
+            color: var(--text-primary);
         }
 
         .header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            padding: 30px 20px;
-            color: white;
-            padding-bottom: 60px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .header-content {
@@ -48,28 +62,34 @@
         }
 
         .header h1 {
+            font-style: italic;
             font-size: 24px;
             font-weight: 800;
+            color: var(--text-primary);
         }
 
-        .header .back-btn {
+        .back-btn {
             width: 40px;
             height: 40px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 12px;
+            background: rgba(56, 189, 248, 0.1);
+            border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: var(--accent-blue);
             text-decoration: none;
             font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(56, 189, 248, 0.2);
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
-            margin-top: -40px;
+            padding: 20px;
         }
 
         .stats-grid {
@@ -80,10 +100,13 @@
         }
 
         .stat-card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
             padding: 20px;
-            box-shadow: var(--shadow-lg);
+            box-shadow: var(--shadow-medium);
             position: relative;
             overflow: hidden;
         }
@@ -97,15 +120,15 @@
             height: 100%;
         }
 
-        .stat-card:nth-child(1)::before { background: var(--primary); }
-        .stat-card:nth-child(2)::before { background: var(--success); }
-        .stat-card:nth-child(3)::before { background: var(--warning); }
-        .stat-card:nth-child(4)::before { background: var(--secondary); }
+        .stat-card:nth-child(1)::before { background: var(--gradient-blue); }
+        .stat-card:nth-child(2)::before { background: var(--gradient-green); }
+        .stat-card:nth-child(3)::before { background: var(--gradient-purple); }
+        .stat-card:nth-child(4)::before { background: var(--gradient-pink); }
 
         .stat-icon {
             width: 45px;
             height: 45px;
-            border-radius: 12px;
+            border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -113,30 +136,34 @@
             font-size: 18px;
         }
 
-        .stat-card:nth-child(1) .stat-icon { background: rgba(90, 87, 227, 0.1); color: var(--primary); }
-        .stat-card:nth-child(2) .stat-icon { background: rgba(0, 158, 253, 0.1); color: var(--success); }
-        .stat-card:nth-child(3) .stat-icon { background: rgba(255, 215, 0, 0.1); color: var(--warning); }
-        .stat-card:nth-child(4) .stat-icon { background: rgba(245, 87, 108, 0.1); color: var(--secondary); }
+        .stat-card:nth-child(1) .stat-icon { background: rgba(56, 189, 248, 0.1); color: var(--accent-blue); }
+        .stat-card:nth-child(2) .stat-icon { background: rgba(134, 239, 172, 0.1); color: var(--accent-green); }
+        .stat-card:nth-child(3) .stat-icon { background: rgba(167, 139, 250, 0.1); color: var(--accent-purple); }
+        .stat-card:nth-child(4) .stat-icon { background: rgba(249, 168, 212, 0.1); color: var(--accent-pink); }
 
         .stat-label {
+            font-style: italic;
             font-size: 12px;
-            color: var(--text-light);
+            color: var(--text-muted);
             margin-bottom: 4px;
         }
 
         .stat-value {
+            font-style: italic;
             font-size: 24px;
             font-weight: 900;
-            color: var(--text);
+            color: var(--text-primary);
         }
 
         .card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-2xl);
             padding: 24px;
             margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
+            box-shadow: var(--shadow-medium);
         }
 
         .card-header {
@@ -147,16 +174,17 @@
         }
 
         .card-title {
+            font-style: italic;
             font-size: 18px;
             font-weight: 700;
-            color: var(--text);
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
         .card-title i {
-            color: var(--primary);
+            color: var(--accent-blue);
             font-size: 20px;
         }
 
@@ -171,14 +199,14 @@
             align-items: center;
             justify-content: space-between;
             padding: 15px;
-            background: var(--bg);
-            border-radius: var(--radius-sm);
+            background: rgba(56, 189, 248, 0.05);
+            border-radius: var(--radius-lg);
             transition: all 0.2s;
         }
 
         .point-item:hover {
             transform: translateX(5px);
-            background: rgba(90, 87, 227, 0.05);
+            background: rgba(56, 189, 248, 0.1);
         }
 
         .point-item-left {
@@ -190,7 +218,7 @@
         .point-item-icon {
             width: 40px;
             height: 40px;
-            border-radius: 10px;
+            border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -200,20 +228,22 @@
         .point-item-icon.youtube { background: #FF0000; color: white; }
         .point-item-icon.tiktok { background: #000000; color: white; }
         .point-item-icon.instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: white; }
-        .point-item-icon.ads { background: var(--primary); color: white; }
-        .point-item-icon.spin { background: var(--warning); color: white; }
-        .point-item-icon.games { background: var(--success); color: white; }
+        .point-item-icon.ads { background: var(--gradient-blue); color: white; }
+        .point-item-icon.spin { background: var(--gradient-purple); color: white; }
+        .point-item-icon.games { background: var(--gradient-green); color: white; }
 
         .point-item-name {
+            font-style: italic;
             font-size: 14px;
             font-weight: 600;
-            color: var(--text);
+            color: var(--text-primary);
         }
 
         .point-item-value {
+            font-style: italic;
             font-size: 18px;
             font-weight: 900;
-            color: var(--primary);
+            color: var(--accent-blue);
         }
 
         .btn {
@@ -222,7 +252,8 @@
             justify-content: center;
             gap: 8px;
             padding: 14px 28px;
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius-lg);
+            font-style: italic;
             font-weight: 700;
             font-size: 14px;
             text-decoration: none;
@@ -232,23 +263,25 @@
         }
 
         .btn-primary {
-            background: var(--primary);
+            background: var(--gradient-blue);
             color: white;
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
         }
 
         .btn-primary:hover {
-            background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
         }
 
         .btn-success {
-            background: var(--success);
+            background: var(--gradient-green);
             color: white;
+            box-shadow: 0 6px 20px rgba(134, 239, 172, 0.3);
         }
 
         .btn-success:hover {
-            background: #0088dd;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(134, 239, 172, 0.4);
         }
 
         .team-stats {
@@ -261,19 +294,21 @@
         .team-stat {
             text-align: center;
             padding: 20px;
-            background: var(--bg);
-            border-radius: var(--radius-sm);
+            background: rgba(56, 189, 248, 0.05);
+            border-radius: var(--radius-lg);
         }
 
         .team-stat-value {
+            font-style: italic;
             font-size: 28px;
             font-weight: 900;
-            color: var(--primary);
+            color: var(--accent-blue);
         }
 
         .team-stat-label {
+            font-style: italic;
             font-size: 12px;
-            color: var(--text-light);
+            color: var(--text-muted);
             margin-top: 5px;
         }
 
@@ -403,7 +438,7 @@
             </div>
             <div class="team-stats">
                 <div class="team-stat">
-                    <div class="team-stat-value">{{ (user.downlines | length) if user.downlines else 0 }}</div>
+<div class="team-stat-value">{{ user.downlines.count() if user.downlines else 0 }}</div>
                     <div class="team-stat-label">Niveau 1</div>
                 </div>
                 <div class="team-stat">

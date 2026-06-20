@@ -4,205 +4,228 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Réinitialisation du mot de passe - NovaTrade</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        /* RESET & BASE */
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
         
         :root {
-            --primary: #5a57e3;
-            --primary-dark: #4745c4;
-            --secondary: #f5576c;
-            --success: #009efd;
-            --bg: #f8f9fe;
-            --card-bg: #ffffff;
-            --text: #2d3748;
-            --text-light: #718096;
-            --border: #e2e8f0;
-            --shadow: 0 4px 6px rgba(0,0,0,0.07);
-            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
-            --radius: 16px;
-            --radius-sm: 12px;
+            --bg-primary: #f8fafc;
+            --bg-secondary: rgba(255, 255, 255, 0.8);
+            --bg-card: rgba(255, 255, 255, 0.7);
+            --accent-blue: #38bdf8;
+            --accent-blue-light: #7dd3fc;
+            --accent-green: #86efac;
+            --accent-pink: #f9a8d4;
+            --text-primary: #334155;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.2);
+            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+            --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-2xl: 24px;
+            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
         }
 
         body {
-            background: var(--bg);
+            background: var(--gradient-bg);
             min-height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             padding: 20px;
+            font-style: italic;
         }
 
-        .container {
-            max-width: 450px;
+        .reset-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-2xl);
+            padding: 35px;
             width: 100%;
+            max-width: 440px;
+            box-shadow: var(--shadow-medium);
+            text-align: center;
         }
 
-        .card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 40px;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border);
-        }
-
-        .logo {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            border-radius: 18px;
+        .header-box {
+            background: var(--gradient-blue);
+            margin: -35px -35px 25px -35px;
+            padding: 25px;
+            border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 28px;
             color: white;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
         }
 
-        h1 {
+        .header-box .icon-box {
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .title-section h1 {
+            font-style: italic;
             font-size: 22px;
-            font-weight: 800;
-            color: var(--text);
-            text-align: center;
+            color: var(--text-primary);
             margin-bottom: 8px;
+            font-weight: 700;
         }
 
-        .subtitle {
+        .title-section p {
+            font-style: italic;
             font-size: 13px;
-            color: var(--text-light);
-            text-align: center;
-            margin-bottom: 30px;
-            line-height: 1.5;
+            color: var(--text-secondary);
+            margin-bottom: 25px;
         }
 
-        .form-group {
+        .input-group {
+            position: relative;
             margin-bottom: 20px;
+            text-align: left;
         }
 
-        label {
+        .input-group label {
             display: block;
+            font-style: italic;
             font-size: 13px;
             font-weight: 600;
-            color: var(--text);
+            color: var(--text-primary);
             margin-bottom: 8px;
+            margin-left: 5px;
         }
 
-        .input-wrapper {
+        .input-field {
             position: relative;
         }
 
-        .input-wrapper input {
+        .input-field i.prefix-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent-blue);
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        .input-field input {
             width: 100%;
-            padding: 14px 45px 14px 16px;
-            border: 2px solid var(--border);
-            border-radius: var(--radius-sm);
+            padding: 13px 15px 13px 45px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.8);
+            font-family: 'Poppins', sans-serif;
+            font-style: italic;
             font-size: 14px;
-            color: var(--text);
-            transition: all 0.2s;
             outline: none;
+            transition: 0.3s ease;
+            color: var(--text-primary);
         }
 
-        .input-wrapper input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(90, 87, 227, 0.1);
+        .input-field input:focus {
+            border-color: var(--accent-blue);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
         }
 
-        .input-wrapper i.icon {
+        .input-field input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .password-toggle {
             position: absolute;
-            left: 16px;
+            right: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--text-light);
-        }
-
-        .input-wrapper input.has-icon {
-            padding-left: 45px;
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-light);
+            color: var(--text-muted);
             cursor: pointer;
-            transition: color 0.2s;
+            z-index: 10;
         }
 
-        .toggle-password:hover {
-            color: var(--primary);
+        .password-toggle:hover {
+            color: var(--accent-blue);
         }
 
-        .btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 16px 32px;
-            border-radius: var(--radius-sm);
-            font-weight: 700;
-            font-size: 15px;
-            text-decoration: none;
-            transition: all 0.2s;
-            border: none;
-            cursor: pointer;
+        .btn-reset {
             width: 100%;
-            margin-top: 10px;
-        }
-
-        .btn-primary {
-            background: var(--primary);
+            padding: 15px;
+            border: none;
+            border-radius: var(--radius-lg);
+            background: var(--gradient-blue);
             color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .flash {
-            padding: 14px 18px;
-            border-radius: var(--radius-sm);
-            margin-bottom: 20px;
-            font-size: 13px;
-            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            font-style: italic;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s ease;
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
+            margin-top: 5px;
             display: flex;
+            justify-content: center;
             align-items: center;
             gap: 10px;
         }
 
-        .flash.danger {
-            background: rgba(245, 87, 108, 0.1);
-            color: var(--secondary);
-            border: 1px solid rgba(245, 87, 108, 0.2);
+        .btn-reset:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
         }
 
-        .flash.success {
-            background: rgba(0, 158, 253, 0.1);
-            color: var(--success);
-            border: 1px solid rgba(0, 158, 253, 0.2);
+        .btn-reset:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .loader {
             display: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: white;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #ffffff;
+            border-bottom-color: transparent;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: rotation 0.8s linear infinite;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .info-box {
+            background: rgba(56, 189, 248, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px dashed rgba(56, 189, 248, 0.3);
+            text-align: left;
+        }
+
+        .info-box p {
+            font-style: italic;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box i {
+            color: var(--accent-blue);
         }
 
         .back-link {
@@ -211,145 +234,115 @@
             justify-content: center;
             gap: 8px;
             margin-top: 20px;
+            font-style: italic;
             font-size: 13px;
-            color: var(--primary);
+            color: var(--accent-blue);
             text-decoration: none;
-            font-weight: 600;
         }
 
         .back-link:hover {
             text-decoration: underline;
         }
 
-        .divider {
+        .alert {
+            padding: 14px 18px;
+            border-radius: var(--radius-lg);
+            font-style: italic;
+            font-size: 13px;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
-            margin: 25px 0;
-            color: var(--text-light);
-            font-size: 12px;
+            gap: 10px;
         }
 
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
+        .alert.danger {
+            background: rgba(249, 168, 212, 0.15);
+            color: #db2777;
+            border: 1px solid rgba(249, 168, 212, 0.3);
         }
 
-        .divider span {
-            padding: 0 15px;
+        .alert.success {
+            background: rgba(134, 239, 172, 0.15);
+            color: #16a34a;
+            border: 1px solid rgba(134, 239, 172, 0.3);
         }
 
-        .info-box {
-            background: rgba(90, 87, 227, 0.05);
-            border: 1px solid rgba(90, 87, 227, 0.1);
-            border-radius: var(--radius-sm);
-            padding: 16px;
-            margin-bottom: 25px;
-        }
-
-        .info-box p {
-            font-size: 13px;
-            color: var(--text-light);
-            line-height: 1.6;
-        }
-
-        .info-box i {
-            color: var(--primary);
-            margin-right: 8px;
-        }
-
+        /* Responsive */
         @media (max-width: 480px) {
-            .card { padding: 30px 20px; }
+            .reset-card {
+                padding: 25px 20px;
+            }
+            
+            .header-box {
+                margin: -25px -20px 20px -20px;
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <div class="logo">
+
+    <div class="reset-card">
+        <div class="header-box">
+            <div class="icon-box">
                 <i class="fa fa-key"></i>
             </div>
-            
+        </div>
+
+        <div class="title-section">
             <h1>Réinitialisation</h1>
-            <p class="subtitle">Entrez vos informations pour réinitialiser votre mot de passe</p>
+            <p>Entrez vos informations pour réinitialiser votre mot de passe</p>
+        </div>
 
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="flash {{ category }}">
-                            <i class="fa {{ 'fa-exclamation-circle' if category == 'danger' else 'fa-check-circle' }}"></i>
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
 
-            <form method="POST" id="resetForm">
-                <div class="form-group">
-                    <label for="email">
-                        <i class="fa fa-envelope" style="margin-right: 6px;"></i>
-                        Adresse email
-                    </label>
-                    <div class="input-wrapper">
-                        <i class="fa fa-envelope icon"></i>
-                        <input type="email" id="email" name="email" required 
-                               class="has-icon"
-                               placeholder="votre@email.com">
-                    </div>
+        <form method="POST" id="resetForm">
+            <div class="input-group">
+                <label>Adresse email</label>
+                <div class="input-field">
+                    <i class="fa fa-envelope prefix-icon"></i>
+                    <input type="email" id="email" name="email" placeholder="votre@email.com" required>
                 </div>
-
-                <div class="form-group">
-                    <label for="pin">
-                        <i class="fa fa-hashtag" style="margin-right: 6px;"></i>
-                        Code PIN (6 chiffres)
-                    </label>
-                    <div class="input-wrapper">
-                        <i class="fa fa-lock icon"></i>
-                        <input type="password" id="pin" name="pin" required 
-                               class="has-icon"
-                               placeholder="••••••"
-                               maxlength="6"
-                               pattern="[0-9]{6}">
-                        <i class="fa fa-eye toggle-password" onclick="togglePassword('pin')"></i>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary" id="submitBtn">
-                    <span class="btn-text">Vérifier et continuer</span>
-                    <div class="loader" id="loader"></div>
-                </button>
-            </form>
-
-            <div class="info-box">
-                <p><i class="fa fa-info-circle"></i> Le code PIN est celui que vous avez défini dans votre profil. Si vous ne vous en souvenez pas, contactez le support.</p>
             </div>
 
-            <a href="{{ url_for('connexion_page') }}" class="back-link">
-                <i class="fa fa-arrow-left"></i>
-                Retour à la connexion
-            </a>
+            <div class="input-group">
+                <label>Code PIN (6 chiffres)</label>
+                <div class="input-field">
+                    <i class="fa fa-lock prefix-icon"></i>
+                    <input type="password" id="pin" name="pin" placeholder="••••••" required
+                           maxlength="6" pattern="[0-9]{6}">
+                    <i class="fa fa-eye password-toggle" onclick="togglePassword('pin')"></i>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-reset" id="submitBtn">
+                <span id="btn-text">Vérifier et continuer</span>
+                <div class="loader" id="loader"></div>
+            </button>
+        </form>
+
+        <div class="info-box">
+            <p><i class="fa fa-info-circle"></i> Le code PIN est celui que vous avez défini dans votre profil. Si vous ne vous en souvenez pas, contactez le support.</p>
         </div>
+
+        <a href="{{ url_for('connexion_page') }}" class="back-link">
+            <i class="fa fa-arrow-left"></i>
+            Retour à la connexion
+        </a>
     </div>
 
     <script>
         function togglePassword(inputId) {
             const input = document.getElementById(inputId);
-            const icon = input.nextElementSibling;
-            
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
+            input.type = input.type === 'password' ? 'text' : 'password';
         }
 
-        // Validation du formulaire
         document.getElementById('resetForm').addEventListener('submit', function(e) {
             const pin = document.getElementById('pin').value;
             
@@ -359,13 +352,11 @@
                 return false;
             }
 
-            // Afficher le loader
             document.getElementById('submitBtn').disabled = true;
-            document.querySelector('.btn-text').style.display = 'none';
-            document.getElementById('loader').style.display = 'block';
+            document.getElementById('btn-text').style.display = 'none';
+            document.getElementById('loader').style.display = 'inline-block';
         });
 
-        // Formater automatiquement le PIN (chiffres seulement)
         document.getElementById('pin').addEventListener('input', function(e) {
             this.value = this.value.replace(/\D/g, '').slice(0, 6);
         });

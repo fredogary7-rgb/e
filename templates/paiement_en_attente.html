@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement en attente - NovaTrade</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        
+        .waiting-container { background: white; border-radius: 20px; padding: 3rem; max-width: 600px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+        
+        .waiting-icon { width: 100px; height: 100px; background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; animation: pulse 2s infinite; }
+        .waiting-icon i { font-size: 3rem; color: white; }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        h1 { color: #2c3e50; font-size: 2rem; margin-bottom: 1rem; }
+        .subtitle { color: #7f8c8d; font-size: 1.1rem; margin-bottom: 2rem; }
+        
+        .order-info { background: #f8f9fa; border-radius: 15px; padding: 1.5rem; margin: 2rem 0; text-align: left; }
+        .order-info h3 { color: #2c3e50; margin-bottom: 1rem; font-size: 1.1rem; }
+        .order-row { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #ecf0f1; }
+        .order-row:last-child { border-bottom: none; }
+        .order-row .label { color: #7f8c8d; }
+        .order-row .value { font-weight: 600; color: #2c3e50; }
+        
+        .instructions { background: #fff3cd; border: 1px solid #ffc107; border-radius: 10px; padding: 1.5rem; margin: 1.5rem 0; text-align: left; }
+        .instructions h4 { color: #856404; margin-bottom: 1rem; }
+        .instructions ul { list-style: none; padding: 0; }
+        .instructions li { padding: 0.5rem 0; color: #856404; display: flex; align-items: center; gap: 0.5rem; }
+        .instructions li i { color: #ffc107; }
+        
+        .btn-group { display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap; }
+        .btn { padding: 1rem 2rem; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: transform 0.3s, box-shadow 0.3s; }
+        .btn-primary { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; }
+        .btn-secondary { background: white; color: #3498db; border: 2px solid #3498db; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        
+        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 1rem auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="waiting-container">
+        <div class="waiting-icon">
+            <i class="fas fa-clock"></i>
+        </div>
+        
+        <h1>Paiement en attente</h1>
+        <p class="subtitle">Veuillez confirmer le paiement sur votre téléphone.</p>
+        
+        <div class="spinner"></div>
+        
+        <div class="order-info">
+            <h3><i class="fas fa-receipt"></i> Détails de la commande</h3>
+            <div class="order-row">
+                <span class="label">Référence</span>
+                <span class="value">{{ commande.reference }}</span>
+            </div>
+            <div class="order-row">
+                <span class="label">Montant à payer</span>
+                <span class="value" style="color: #e67e22;">{{ commande.total }} XOF</span>
+            </div>
+            <div class="order-row">
+                <span class="label">Statut</span>
+                <span class="value" style="color: #f39c12;">⏳ En attente</span>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h4><i class="fas fa-info-circle"></i> Instructions</h4>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Ouvrez l'application de votre portefeuille mobile</li>
+                <li><i class="fas fa-check-circle"></i> Entrez le montant exact : <strong>{{ commande.total }} XOF</strong></li>
+                <li><i class="fas fa-check-circle"></i> Validez la transaction</li>
+                <li><i class="fas fa-check-circle"></i> Vous serez redirigé automatiquement après confirmation</li>
+            </ul>
+        </div>
+        
+        <p style="color: #7f8c8d; font-size: 0.9rem;">La vérification est automatique et prend quelques secondes.</p>
+        
+        <div class="btn-group">
+            <button onclick="window.location.reload()" class="btn btn-primary">
+                <i class="fas fa-sync-alt"></i> Vérifier le statut
+            </button>
+            <a href="{{ url_for('cart_page') }}" class="btn btn-secondary">
+                <i class="fas fa-shopping-cart"></i> Retour au panier
+            </a>
+        </div>
+    </div>
+</body>
+</html>

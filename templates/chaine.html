@@ -4,38 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notre Chaîne - NovaTrade</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        /* RESET & BASE */
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
         
         :root {
-            --primary: #5a57e3;
-            --primary-dark: #4745c4;
-            --secondary: #f5576c;
-            --success: #009efd;
-            --bg: #f8f9fe;
-            --card-bg: #ffffff;
-            --text: #2d3748;
-            --text-light: #718096;
-            --border: #e2e8f0;
-            --shadow: 0 4px 6px rgba(0,0,0,0.07);
-            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
-            --radius: 16px;
-            --radius-sm: 12px;
+            --bg-primary: #f8fafc;
+            --bg-secondary: rgba(255, 255, 255, 0.8);
+            --bg-card: rgba(255, 255, 255, 0.7);
+            --accent-blue: #38bdf8;
+            --accent-blue-light: #7dd3fc;
+            --accent-green: #86efac;
+            --accent-pink: #f9a8d4;
+            --accent-purple: #a78bfa;
+            --text-primary: #334155;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.2);
+            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
+            --gradient-purple: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 100%);
+            --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
+            --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-2xl: 24px;
+            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
         }
 
         body {
-            background: var(--bg);
+            background: var(--gradient-bg);
             min-height: 100vh;
             padding-bottom: 80px;
+            font-style: italic;
+            color: var(--text-primary);
         }
 
         .header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            padding: 30px 20px;
-            color: white;
-            padding-bottom: 60px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .header-content {
@@ -47,28 +62,34 @@
         }
 
         .header h1 {
+            font-style: italic;
             font-size: 24px;
             font-weight: 800;
+            color: var(--text-primary);
         }
 
-        .header .back-btn {
+        .back-btn {
             width: 40px;
             height: 40px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 12px;
+            background: rgba(56, 189, 248, 0.1);
+            border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: var(--accent-blue);
             text-decoration: none;
             font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(56, 189, 248, 0.2);
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
-            margin-top: -40px;
+            padding: 20px;
         }
 
         .stats-bar {
@@ -78,10 +99,13 @@
         }
 
         .stat-badge {
-            background: var(--card-bg);
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
             padding: 15px 25px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-lg);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-medium);
             display: flex;
             align-items: center;
             gap: 12px;
@@ -89,27 +113,31 @@
 
         .stat-badge i {
             font-size: 24px;
-            color: var(--primary);
+            color: var(--accent-blue);
         }
 
         .stat-badge .stat-number {
+            font-style: italic;
             font-size: 20px;
             font-weight: 900;
-            color: var(--text);
+            color: var(--text-primary);
         }
 
         .stat-badge .stat-label {
+            font-style: italic;
             font-size: 12px;
-            color: var(--text-light);
+            color: var(--text-muted);
         }
 
         .card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-2xl);
             padding: 24px;
             margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
+            box-shadow: var(--shadow-medium);
         }
 
         .card-header {
@@ -120,16 +148,17 @@
         }
 
         .card-title {
+            font-style: italic;
             font-size: 18px;
             font-weight: 700;
-            color: var(--text);
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
         .card-title i {
-            color: var(--primary);
+            color: var(--accent-blue);
         }
 
         .message-list {
@@ -140,15 +169,16 @@
 
         .message-item {
             padding: 20px;
-            background: var(--bg);
-            border-radius: var(--radius-sm);
-            border-left: 4px solid var(--primary);
+            background: rgba(56, 189, 248, 0.05);
+            border-radius: var(--radius-xl);
+            border-left: 4px solid var(--accent-blue);
             transition: all 0.2s;
         }
 
         .message-item:hover {
             transform: translateX(5px);
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-medium);
+            background: rgba(56, 189, 248, 0.08);
         }
 
         .message-header {
@@ -159,19 +189,21 @@
         }
 
         .message-time {
+            font-style: italic;
             font-size: 12px;
-            color: var(--text-light);
+            color: var(--text-muted);
         }
 
         .message-content {
+            font-style: italic;
             font-size: 14px;
-            color: var(--text);
+            color: var(--text-primary);
             line-height: 1.6;
         }
 
         .message-media {
             margin-top: 12px;
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius-lg);
             overflow: hidden;
         }
 
@@ -189,7 +221,7 @@
 
         .reaction-btn {
             padding: 6px 12px;
-            background: rgba(90, 87, 227, 0.1);
+            background: rgba(56, 189, 248, 0.1);
             border: none;
             border-radius: 20px;
             font-size: 13px;
@@ -198,10 +230,12 @@
             display: flex;
             align-items: center;
             gap: 5px;
+            font-style: italic;
+            color: var(--accent-blue);
         }
 
         .reaction-btn:hover {
-            background: rgba(90, 87, 227, 0.2);
+            background: rgba(56, 189, 248, 0.2);
         }
 
         .join-section {
@@ -211,20 +245,22 @@
 
         .join-section i {
             font-size: 60px;
-            color: var(--primary);
+            color: var(--accent-blue);
             margin-bottom: 20px;
         }
 
         .join-section h2 {
+            font-style: italic;
             font-size: 22px;
             font-weight: 800;
-            color: var(--text);
+            color: var(--text-primary);
             margin-bottom: 10px;
         }
 
         .join-section p {
+            font-style: italic;
             font-size: 14px;
-            color: var(--text-light);
+            color: var(--text-secondary);
             margin-bottom: 25px;
         }
 
@@ -234,7 +270,8 @@
             justify-content: center;
             gap: 8px;
             padding: 14px 28px;
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius-lg);
+            font-style: italic;
             font-weight: 700;
             font-size: 14px;
             text-decoration: none;
@@ -244,14 +281,24 @@
         }
 
         .btn-primary {
-            background: var(--primary);
+            background: var(--gradient-blue);
             color: white;
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
         }
 
         .btn-primary:hover {
-            background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
+        }
+
+        .btn-outline {
+            background: rgba(56, 189, 248, 0.05);
+            color: var(--accent-blue);
+            border: 2px solid var(--accent-blue);
+        }
+
+        .btn-outline:hover {
+            background: rgba(56, 189, 248, 0.1);
         }
 
         @media (max-width: 768px) {
@@ -293,7 +340,7 @@
                 {% for message in messages %}
                 <div class="message-item">
                     <div class="message-header">
-                        <span style="font-weight: 600; color: var(--primary);">NovaTrade Official</span>
+                        <span style="font-weight: 600; color: var(--accent-blue);">NovaTrade Official</span>
                         <span class="message-time">{{ message.timestamp.strftime('%d/%m %H:%M') }}</span>
                     </div>
                     
@@ -328,8 +375,8 @@
                     </div>
                 </div>
                 {% else %}
-                <div style="text-align: center; padding: 40px; color: var(--text-light);">
-                    <i class="fa fa-inbox" style="font-size: 40px; margin-bottom: 15px;"></i>
+                <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                    <i class="fa fa-inbox" style="font-size: 40px; margin-bottom: 15px; color: var(--accent-blue); opacity: 0.3;"></i>
                     <p>Aucun message pour le moment</p>
                 </div>
                 {% endfor %}
@@ -350,7 +397,7 @@
         </div>
         {% else %}
         <div style="text-align: center; padding: 20px;">
-            <a href="{{ url_for('leave_channel') }}" class="btn" style="background: var(--bg); color: var(--text);">
+            <a href="{{ url_for('leave_channel') }}" class="btn btn-outline">
                 <i class="fa fa-times"></i>
                 Quitter la chaîne
             </a>

@@ -4,35 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bientôt disponible - NovaTrade</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        /* RESET & BASE */
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
         
         :root {
-            --primary: #5a57e3;
-            --primary-dark: #4745c4;
-            --secondary: #f5576c;
-            --success: #009efd;
-            --bg: #f8f9fe;
-            --card-bg: #ffffff; 
-            --text: #2d3748;
-            --text-light: #718096;
-            --border: #e2e8f0;
-            --shadow: 0 4px 6px rgba(0,0,0,0.07);
-            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
-            --radius: 16px;
-            --radius-sm: 12px;
+            --bg-primary: #f8fafc;
+            --bg-secondary: rgba(255, 255, 255, 0.8);
+            --bg-card: rgba(255, 255, 255, 0.7);
+            --accent-blue: #38bdf8;
+            --accent-blue-light: #7dd3fc;
+            --accent-green: #86efac;
+            --accent-pink: #f9a8d4;
+            --accent-purple: #a78bfa;
+            --text-primary: #334155;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.2);
+            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
+            --gradient-purple: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 100%);
+            --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
+            --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-2xl: 24px;
+            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
         }
 
         body {
-            background: var(--bg);
+            background: var(--gradient-bg);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
             overflow: hidden;
+            font-style: italic;
+            color: var(--text-primary);
         }
 
         /* Background animated */
@@ -56,7 +67,7 @@
         .shape:nth-child(1) {
             width: 300px;
             height: 300px;
-            background: var(--primary);
+            background: var(--accent-blue);
             top: -100px;
             left: -100px;
             animation-delay: 0s;
@@ -65,7 +76,7 @@
         .shape:nth-child(2) {
             width: 200px;
             height: 200px;
-            background: var(--secondary);
+            background: var(--accent-pink);
             bottom: -50px;
             right: -50px;
             animation-delay: 5s;
@@ -74,7 +85,7 @@
         .shape:nth-child(3) {
             width: 150px;
             height: 150px;
-            background: var(--success);
+            background: var(--accent-green);
             top: 50%;
             left: 50%;
             animation-delay: 10s;
@@ -94,17 +105,19 @@
         }
 
         .card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-2xl);
             padding: 50px 40px;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border);
+            box-shadow: var(--shadow-medium);
         }
 
         .logo {
             width: 100px;
             height: 100px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: var(--gradient-blue);
             border-radius: 24px;
             display: flex;
             align-items: center;
@@ -116,20 +129,22 @@
         }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(90, 87, 227, 0.4); }
-            50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(90, 87, 227, 0); }
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(56, 189, 248, 0); }
         }
 
         h1 {
+            font-style: italic;
             font-size: 32px;
             font-weight: 900;
-            color: var(--text);
+            color: var(--text-primary);
             margin-bottom: 15px;
         }
 
         .subtitle {
+            font-style: italic;
             font-size: 16px;
-            color: var(--text-light);
+            color: var(--text-secondary);
             margin-bottom: 40px;
             line-height: 1.6;
         }
@@ -142,22 +157,24 @@
         }
 
         .countdown-item {
-            background: linear-gradient(135deg, rgba(90, 87, 227, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            border-radius: var(--radius-sm);
+            background: rgba(56, 189, 248, 0.05);
+            border-radius: var(--radius-lg);
             padding: 20px;
             min-width: 100px;
         }
 
         .countdown-value {
+            font-style: italic;
             font-size: 36px;
             font-weight: 900;
-            color: var(--primary);
+            color: var(--accent-blue);
             display: block;
         }
 
         .countdown-label {
+            font-style: italic;
             font-size: 12px;
-            color: var(--text-light);
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-top: 5px;
@@ -172,32 +189,35 @@
 
         .feature {
             padding: 20px;
-            background: var(--bg);
-            border-radius: var(--radius-sm);
+            background: rgba(56, 189, 248, 0.05);
+            border-radius: var(--radius-lg);
             transition: all 0.3s;
         }
 
         .feature:hover {
             transform: translateY(-5px);
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-medium);
+            background: rgba(56, 189, 248, 0.1);
         }
 
         .feature i {
             font-size: 28px;
-            color: var(--primary);
+            color: var(--accent-blue);
             margin-bottom: 10px;
         }
 
         .feature h3 {
+            font-style: italic;
             font-size: 14px;
             font-weight: 700;
-            color: var(--text);
+            color: var(--text-primary);
             margin-bottom: 5px;
         }
 
         .feature p {
+            font-style: italic;
             font-size: 12px;
-            color: var(--text-light);
+            color: var(--text-secondary);
         }
 
         .notify-form {
@@ -210,15 +230,18 @@
         .notify-form input {
             flex: 1;
             padding: 14px 18px;
-            border: 2px solid var(--border);
-            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            font-style: italic;
             font-size: 14px;
             outline: none;
             transition: all 0.2s;
+            background: rgba(255, 255, 255, 0.8);
         }
 
         .notify-form input:focus {
-            border-color: var(--primary);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
         }
 
         .btn {
@@ -227,7 +250,8 @@
             justify-content: center;
             gap: 8px;
             padding: 14px 28px;
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius-lg);
+            font-style: italic;
             font-weight: 700;
             font-size: 14px;
             text-decoration: none;
@@ -237,14 +261,14 @@
         }
 
         .btn-primary {
-            background: var(--primary);
+            background: var(--gradient-blue);
             color: white;
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
         }
 
         .btn-primary:hover {
-            background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
         }
 
         .social-links {
@@ -257,19 +281,19 @@
         .social-links a {
             width: 45px;
             height: 45px;
-            background: var(--bg);
-            border-radius: 12px;
+            background: rgba(56, 189, 248, 0.05);
+            border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--primary);
+            color: var(--accent-blue);
             font-size: 18px;
             text-decoration: none;
             transition: all 0.2s;
         }
 
         .social-links a:hover {
-            background: var(--primary);
+            background: var(--gradient-blue);
             color: white;
             transform: translateY(-3px);
         }
@@ -366,7 +390,7 @@
             const distance = launchDate - now;
 
             if (distance < 0) {
-                document.getElementById('countdown').innerHTML = '<div class="countdown-value" style="color: var(--success);">OUVERT !</div>';
+                document.getElementById('countdown').innerHTML = '<div class="countdown-value" style="color: var(--accent-green);">OUVERT !</div>';
                 return;
             }
 

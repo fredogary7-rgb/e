@@ -4,46 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configurer {{ boutique.nom }} - NovaTrade</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        /* RESET & BASE */
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
         
         :root {
-            --primary: #5a57e3;
-            --primary-dark: #4745c4;
-            --secondary: #f5576c;
-            --success: #009efd;
-            --bg: #f8f9fe;
-            --card-bg: #ffffff;
-            --text: #2d3748;
-            --text-light: #718096;
-            --border: #e2e8f0;
-            --shadow: 0 4px 6px rgba(0,0,0,0.07);
-            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
-            --radius: 16px;
-            --radius-sm: 12px;
+            --bg-primary: #f8fafc;
+            --bg-secondary: rgba(255, 255, 255, 0.8);
+            --bg-card: rgba(255, 255, 255, 0.7);
+            --accent-blue: #38bdf8;
+            --accent-blue-light: #7dd3fc;
+            --accent-green: #86efac;
+            --accent-pink: #f9a8d4;
+            --text-primary: #334155;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.2);
+            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
+            --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-2xl: 24px;
+            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
         }
 
         body {
-            background: var(--bg);
+            background: var(--gradient-bg);
             min-height: 100vh;
-            color: var(--text);
             padding: 20px;
+            font-style: italic;
+            color: var(--text-primary);
         }
 
-        .container {
+        .page-container {
             max-width: 700px;
             margin: 0 auto;
         }
 
-        .card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
+        .modern-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-2xl);
             padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
+            box-shadow: var(--shadow-medium);
         }
 
         .header {
@@ -54,43 +62,46 @@
         }
 
         .header h1 {
+            font-style: italic;
             font-size: 22px;
             font-weight: 800;
-            color: var(--text);
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
         .header h1 i {
-            color: var(--primary);
+            color: var(--accent-blue);
         }
 
         .header a {
-            color: var(--primary);
+            color: var(--accent-blue);
             text-decoration: none;
+            font-style: italic;
             font-weight: 600;
             font-size: 13px;
             display: flex;
             align-items: center;
             gap: 6px;
             padding: 8px 16px;
-            background: rgba(90, 87, 227, 0.1);
-            border-radius: var(--radius-sm);
+            background: rgba(56, 189, 248, 0.1);
+            border-radius: var(--radius-lg);
             transition: all 0.2s;
         }
 
         .header a:hover {
-            background: rgba(90, 87, 227, 0.2);
+            background: rgba(56, 189, 248, 0.2);
         }
 
         .section-title {
+            font-style: italic;
             font-size: 16px;
             font-weight: 700;
-            color: var(--text);
+            color: var(--text-primary);
             margin: 25px 0 15px;
             padding-bottom: 10px;
-            border-bottom: 2px solid var(--border);
+            border-bottom: 2px solid var(--border-color);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -101,40 +112,72 @@
         }
 
         .section-title i {
-            color: var(--primary);
+            color: var(--accent-blue);
         }
 
-        .form-group {
+        .input-group {
+            position: relative;
             margin-bottom: 18px;
+            text-align: left;
         }
 
-        .form-group label {
+        .input-group label {
             display: block;
+            font-style: italic;
             font-size: 13px;
             font-weight: 600;
-            color: var(--text);
+            color: var(--text-primary);
             margin-bottom: 8px;
+            margin-left: 5px;
         }
 
-        .form-group input,
-        .form-group textarea {
+        .input-group label i {
+            margin-right: 5px;
+            color: var(--accent-blue);
+        }
+
+        .input-field {
+            position: relative;
+        }
+
+        .input-field i.prefix-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent-blue);
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        .input-field input,
+        .input-field textarea {
             width: 100%;
-            padding: 14px 16px;
-            border: 2px solid var(--border);
-            border-radius: var(--radius-sm);
+            padding: 13px 15px 13px 45px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.8);
+            font-family: 'Poppins', sans-serif;
+            font-style: italic;
             font-size: 14px;
-            background: var(--card-bg);
-            transition: all 0.2s;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(90, 87, 227, 0.1);
+            transition: 0.3s ease;
+            color: var(--text-primary);
         }
 
-        .form-group textarea {
+        .input-field input:focus,
+        .input-field textarea:focus {
+            border-color: var(--accent-blue);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+        }
+
+        .input-field input::placeholder,
+        .input-field textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .input-field textarea {
             height: 80px;
             resize: vertical;
         }
@@ -146,16 +189,18 @@
         }
 
         .upload-section {
-            background: rgba(90, 87, 227, 0.05);
+            background: rgba(56, 189, 248, 0.05);
             padding: 15px;
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius-lg);
             margin: 12px 0;
+            border: 1px dashed rgba(56, 189, 248, 0.3);
         }
 
         .upload-section h4 {
+            font-style: italic;
             font-size: 13px;
             font-weight: 600;
-            color: var(--text);
+            color: var(--text-primary);
             margin-bottom: 10px;
             display: flex;
             align-items: center;
@@ -163,64 +208,78 @@
         }
 
         .upload-section h4 i {
-            color: var(--primary);
+            color: var(--accent-blue);
+        }
+
+        .upload-section input[type="file"] {
+            font-style: italic;
+            font-size: 13px;
+            color: var(--text-secondary);
         }
 
         .btn-submit {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
             border: none;
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius-lg);
+            background: var(--gradient-blue);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-style: italic;
+            font-weight: 600;
             font-size: 16px;
-            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: var(--shadow-lg);
+            transition: 0.3s ease;
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
+            margin-top: 20px;
         }
 
         .btn-submit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(90, 87, 227, 0.3);
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
         }
 
-        .flash {
-            padding: 16px 20px;
-            border-radius: var(--radius-sm);
-            margin-bottom: 15px;
-            font-size: 14px;
+        .alert {
+            padding: 14px 18px;
+            border-radius: var(--radius-lg);
+            font-style: italic;
+            font-size: 13px;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
-        .flash.success {
-            background: rgba(0, 158, 253, 0.1);
-            color: var(--success);
-            border: 1px solid rgba(0, 158, 253, 0.2);
+        .alert.danger {
+            background: rgba(249, 168, 212, 0.15);
+            color: #db2777;
+            border: 1px solid rgba(249, 168, 212, 0.3);
         }
 
-        .flash.error {
-            background: rgba(245, 87, 108, 0.1);
-            color: var(--secondary);
-            border: 1px solid rgba(245, 87, 108, 0.2);
+        .alert.success {
+            background: rgba(134, 239, 172, 0.15);
+            color: #16a34a;
+            border: 1px solid rgba(134, 239, 172, 0.3);
         }
 
         @media (max-width: 768px) {
             .form-row {
                 grid-template-columns: 1fr;
             }
+            
+            .modern-card {
+                padding: 25px 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
+    <div class="page-container">
+        <div class="modern-card">
             <div class="header">
                 <h1><i class="fa fa-cog"></i> Configurer la boutique</h1>
                 <a href="{{ url_for('ma_boutique', boutique_id=boutique.id) }}">
@@ -231,10 +290,7 @@
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
-                        <div class="flash {{ 'success' if category == 'success' else 'error' }}">
-                            <i class="fa {{ 'fa-check-circle' if category == 'success' else 'fa-exclamation-circle' }}"></i>
-                            {{ message }}
-                        </div>
+                        <div class="alert {{ 'success' if category == 'success' else 'danger' }}">{{ message }}</div>
                     {% endfor %}
                 {% endif %}
             {% endwith %}
@@ -245,14 +301,20 @@
                     Informations générales
                 </div>
 
-                <div class="form-group">
-                    <label for="nom"><i class="fa fa-tag"></i> Nom de la boutique *</label>
-                    <input type="text" id="nom" name="nom" value="{{ boutique.nom }}" required>
+                <div class="input-group">
+                    <label><i class="fa fa-tag"></i> Nom de la boutique *</label>
+                    <div class="input-field">
+                        <i class="fa fa-store prefix-icon"></i>
+                        <input type="text" id="nom" name="nom" value="{{ boutique.nom }}" required>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="description"><i class="fa fa-align-left"></i> Description</label>
-                    <textarea id="description" name="description">{{ boutique.description or '' }}</textarea>
+                <div class="input-group">
+                    <label><i class="fa fa-align-left"></i> Description</label>
+                    <div class="input-field">
+                        <i class="fa fa-align-left prefix-icon"></i>
+                        <textarea id="description" name="description">{{ boutique.description or '' }}</textarea>
+                    </div>
                 </div>
 
                 <div class="section-title">
@@ -261,13 +323,19 @@
                 </div>
 
                 <div class="form-row">
-                    <div class="form-group">
-                        <label for="email"><i class="fa fa-envelope"></i> Email</label>
-                        <input type="email" id="email" name="email" value="{{ boutique.email or '' }}">
+                    <div class="input-group">
+                        <label><i class="fa fa-envelope"></i> Email</label>
+                        <div class="input-field">
+                            <i class="fa fa-envelope prefix-icon"></i>
+                            <input type="email" id="email" name="email" value="{{ boutique.email or '' }}">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</label>
-                        <input type="text" id="whatsapp" name="whatsapp" value="{{ boutique.whatsapp or '' }}">
+                    <div class="input-group">
+                        <label><i class="fab fa-whatsapp"></i> WhatsApp</label>
+                        <div class="input-field">
+                            <i class="fab fa-whatsapp prefix-icon"></i>
+                            <input type="text" id="whatsapp" name="whatsapp" value="{{ boutique.whatsapp or '' }}">
+                        </div>
                     </div>
                 </div>
 
@@ -276,30 +344,45 @@
                     Adresse
                 </div>
 
-                <div class="form-group">
-                    <label for="adresse"><i class="fa fa-home"></i> Adresse complète</label>
-                    <input type="text" id="adresse" name="adresse" value="{{ boutique.adresse or '' }}">
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="ville"><i class="fa fa-city"></i> Ville</label>
-                        <input type="text" id="ville" name="ville" value="{{ boutique.ville or '' }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="pays"><i class="fa fa-flag"></i> Pays</label>
-                        <input type="text" id="pays" name="pays" value="{{ boutique.pays or '' }}">
+                <div class="input-group">
+                    <label><i class="fa fa-home"></i> Adresse complète</label>
+                    <div class="input-field">
+                        <i class="fa fa-map-marker-alt prefix-icon"></i>
+                        <input type="text" id="adresse" name="adresse" value="{{ boutique.adresse or '' }}">
                     </div>
                 </div>
 
                 <div class="form-row">
-                    <div class="form-group">
-                        <label for="latitude"><i class="fa fa-location-arrow"></i> Latitude</label>
-                        <input type="text" id="latitude" name="latitude" value="{{ boutique.latitude or '' }}">
+                    <div class="input-group">
+                        <label><i class="fa fa-city"></i> Ville</label>
+                        <div class="input-field">
+                            <i class="fa fa-city prefix-icon"></i>
+                            <input type="text" id="ville" name="ville" value="{{ boutique.ville or '' }}">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="longitude"><i class="fa fa-location-arrow"></i> Longitude</label>
-                        <input type="text" id="longitude" name="longitude" value="{{ boutique.longitude or '' }}">
+                    <div class="input-group">
+                        <label><i class="fa fa-flag"></i> Pays</label>
+                        <div class="input-field">
+                            <i class="fa fa-flag prefix-icon"></i>
+                            <input type="text" id="pays" name="pays" value="{{ boutique.pays or '' }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label><i class="fa fa-location-arrow"></i> Latitude</label>
+                        <div class="input-field">
+                            <i class="fa fa-location-arrow prefix-icon"></i>
+                            <input type="text" id="latitude" name="latitude" value="{{ boutique.latitude or '' }}">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label><i class="fa fa-location-arrow"></i> Longitude</label>
+                        <div class="input-field">
+                            <i class="fa fa-location-arrow prefix-icon"></i>
+                            <input type="text" id="longitude" name="longitude" value="{{ boutique.longitude or '' }}">
+                        </div>
                     </div>
                 </div>
 

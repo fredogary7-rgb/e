@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement - NovaTrade</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; }
+        
+        .navbar { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); box-shadow: 0 2px 20px rgba(0,0,0,0.1); padding: 1rem 2rem; position: sticky; top: 0; z-index: 1000; }
+        .navbar-container { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .navbar-logo { font-size: 1.5rem; font-weight: 700; color: #2c3e50; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        .navbar-logo i { color: #3498db; }
+        
+        .main-content { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .page-header { text-align: center; margin-bottom: 2rem; padding: 2rem; background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
+        .page-header h1 { font-size: 2rem; color: #2c3e50; }
+        .page-header h1 i { color: #3498db; margin-right: 0.5rem; }
+        
+        .checkout-container { display: grid; grid-template-columns: 1fr 400px; gap: 2rem; align-items: start; }
+        
+        .checkout-form-section { background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
+        .checkout-form-section h2 { font-size: 1.3rem; color: #2c3e50; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #ecf0f1; }
+        
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-weight: 500; color: #555; margin-bottom: 0.5rem; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.75rem 1rem; border: 1px solid #ddd; border-radius: 10px; font-size: 1rem; font-family: 'Poppins', sans-serif; transition: border-color 0.3s; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #3498db; }
+        .form-group textarea { resize: vertical; min-height: 100px; }
+        
+        .payment-methods { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+        .payment-option { position: relative; }
+        .payment-option input { display: none; }
+        .payment-option label { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; border: 2px solid #ddd; border-radius: 10px; cursor: pointer; transition: all 0.3s; }
+        .payment-option label:hover { border-color: #3498db; }
+        .payment-option input:checked + label { border-color: #3498db; background: #f0f8ff; }
+        .payment-option i { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .payment-option span { font-size: 0.85rem; font-weight: 500; }
+        
+        .order-summary-section { background: white; border-radius: 15px; padding: 1.5rem; box-shadow: 0 5px 15px rgba(0,0,0,0.08); position: sticky; top: 100px; }
+        .order-summary-section h2 { font-size: 1.3rem; color: #2c3e50; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #ecf0f1; }
+        
+        .summary-items { max-height: 300px; overflow-y: auto; margin-bottom: 1rem; }
+        .summary-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #f5f5f5; }
+        .summary-item:last-child { border-bottom: none; }
+        .summary-item-info { display: flex; align-items: center; gap: 0.5rem; }
+        .summary-item-qty { background: #f0f0f0; padding: 0.2rem 0.5rem; border-radius: 5px; font-size: 0.8rem; }
+        
+        .summary-row { display: flex; justify-content: space-between; padding: 0.5rem 0; }
+        .summary-row.total { font-size: 1.3rem; font-weight: 700; padding: 1rem 0; margin-top: 1rem; border-top: 2px solid #ecf0f1; }
+        .summary-row.total .amount { color: #e74c3c; }
+        
+        .checkout-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, #27ae60 0%, #219a52 100%); color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1.5rem; transition: transform 0.3s, box-shadow 0.3s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        .checkout-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(39, 174, 96, 0.3); }
+        .checkout-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        
+        .back-link { display: block; text-align: center; margin-top: 1rem; color: #3498db; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        
+        @media (max-width: 900px) {
+            .checkout-container { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="{{ url_for('index_page') }}" class="navbar-logo">
+                <i class="fas fa-store"></i> NovaTrade
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="page-header">
+            <h1><i class="fas fa-credit-card"></i> Paiement Sécurisé</h1>
+        </header>
+
+        <div class="checkout-container">
+            <section class="checkout-form-section">
+                <h2><i class="fas fa-user"></i> Informations de livraison</h2>
+                <form method="POST" action="{{ url_for('checkout_page') }}">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nom_complet">Nom complet *</label>
+                            <input type="text" id="nom_complet" name="nom_complet" required placeholder="Votre nom complet">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" name="email" required placeholder="votre@email.com">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="indicatif">Indicatif *</label>
+                            <select id="indicatif" name="indicatif" required>
+                                <option value="+225">🇨🇮 +225 (Côte d'Ivoire)</option>
+                                <option value="+237">🇨🇲 +237 (Cameroun)</option>
+                                <option value="+226">🇧🇫 +226 (Burkina Faso)</option>
+                                <option value="+229">🇧🇯 +229 (Bénin)</option>
+                                <option value="+228">🇹🇬 +228 (Togo)</option>
+                                <option value="+243">🇨🇩 +243 (RDC)</option>
+                                <option value="+242">🇨🇬 +242 (Congo)</option>
+                                <option value="+241">🇬🇦 +241 (Gabon)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="telephone">Téléphone *</label>
+                            <input type="tel" id="telephone" name="telephone" required placeholder="07 07 07 07 07">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adresse">Adresse de livraison *</label>
+                        <textarea id="adresse" name="adresse" required placeholder="Votre adresse complète..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ville">Ville *</label>
+                        <input type="text" id="ville" name="ville" required placeholder="Votre ville">
+                    </div>
+
+                    <h2 style="margin-top: 2rem;"><i class="fas fa-wallet"></i> Mode de paiement</h2>
+                    <div class="payment-methods">
+                        <div class="payment-option">
+                            <input type="radio" id="momo" name="payment_method" value="momo" required>
+                            <label for="momo">
+                                <i class="fas fa-mobile-alt" style="color: #ffcc00;"></i>
+                                <span>MTN MoMo</span>
+                            </label>
+                        </div>
+                        <div class="payment-option">
+                            <input type="radio" id="om" name="payment_method" value="om" required>
+                            <label for="om">
+                                <i class="fas fa-mobile-alt" style="color: #ff7900;"></i>
+                                <span>Orange Money</span>
+                            </label>
+                        </div>
+                        <div class="payment-option">
+                            <input type="radio" id="wave" name="payment_method" value="wave" required>
+                            <label for="wave">
+                                <i class="fas fa-water" style="color: #1dc4e9;"></i>
+                                <span>Wave</span>
+                            </label>
+                        </div>
+                        <div class="payment-option">
+                            <input type="radio" id="momo_ci" name="payment_method" value="momo_ci" required>
+                            <label for="momo_ci">
+                                <i class="fas fa-mobile-alt" style="color: #ffcc00;"></i>
+                                <span>MTN CI</span>
+                            </label>
+                        </div>
+                        <div class="payment-option">
+                            <input type="radio" id="om_ci" name="payment_method" value="om_ci" required>
+                            <label for="om_ci">
+                                <i class="fas fa-mobile-alt" style="color: #ff7900;"></i>
+                                <span>Orange CI</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="checkout-btn">
+                        <i class="fas fa-lock"></i> Payer {{ grand_total|round|int }} XOF
+                    </button>
+                </form>
+
+                <a href="{{ url_for('cart_page') }}" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Retour au panier
+                </a>
+            </section>
+
+            <aside class="order-summary-section">
+                <h2><i class="fas fa-receipt"></i> Résumé de commande</h2>
+                
+                <div class="summary-items">
+                    {% for article in panier.articles %}
+                    <div class="summary-item">
+                        <div class="summary-item-info">
+                            <span>{{ article.produit.nom|truncate(30) }}</span>
+                            <span class="summary-item-qty">x{{ article.quantite }}</span>
+                        </div>
+                        <span>{{ (article.produit.prix * article.quantite)|round|int }} XOF</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="summary-row">
+                    <span>Sous-total</span>
+                    <span>{{ total|round|int }} XOF</span>
+                </div>
+                <div class="summary-row">
+                    <span>Livraison</span>
+                    <span>{{ 'Gratuite' if frais_livraison == 0 else frais_livraison|round|int ~ ' XOF' }}</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span class="amount">{{ grand_total|round|int }} XOF</span>
+                </div>
+            </aside>
+        </div>
+    </main>
+</body>
+</html>
