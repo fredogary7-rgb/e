@@ -1797,13 +1797,6 @@ def reset_games():
     return f"Succ├¿s ! Les compteurs de {len(users_to_reset)} utilisateurs ont ├®t├® remis ├á z├®ro."
 
 
-import random
-from datetime import datetime
-from flask import jsonify, session
-
-from flask import render_template, session, jsonify, request, redirect, url_for
-from datetime import datetime
-import random
 
 @app.route('/game/glass-bridge')
 def glass_bridge_page():
