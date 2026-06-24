@@ -1,0 +1,915 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NovaTrade - Publicités</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="icon" href="/static/images/favicon-48.png" sizes="48x48" type="image/png">
+
+<style>
+/* RESET & BASE */
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+
+body {
+    background: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
+    min-height: 100vh;
+    color: #475569;
+    overflow-x: hidden;
+}
+
+/* NOUVELLE PALETTE - Design clair et frais */
+:root {
+    --bg-primary: #f8fafc;
+    --bg-secondary: rgba(255, 255, 255, 0.8);
+    --bg-card: rgba(255, 255, 255, 0.7);
+    --bg-card-hover: rgba(255, 255, 255, 0.9);
+    --border-color: rgba(148, 163, 184, 0.2);
+    --border-glow: rgba(56, 189, 248, 0.3);
+    --text-primary: #334155;
+    --text-secondary: #64748b;
+    --accent-blue: #38bdf8;
+    --accent-blue-light: #7dd3fc;
+    --accent-green: #86efac;
+    --accent-green-light: #bbf7d0;
+    --accent-pink: #f9a8d4;
+    --accent-pink-light: #fbcfe8;
+    --accent-white: #f1f5f9;
+    --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+    --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
+    --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
+    --gradient-white: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    --shadow-soft: 0 4px 6px rgba(56, 189, 248, 0.08);
+    --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
+    --shadow-glow: 0 0 40px rgba(56, 189, 248, 0.15);
+}
+
+/* TOPBAR */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.topbar .menu-toggle {
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--text-primary);
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(56, 189, 248, 0.1);
+    transition: all 0.3s ease;
+}
+
+.topbar .menu-toggle:hover {
+    background: rgba(56, 189, 248, 0.2);
+    color: var(--accent-blue);
+}
+
+.user-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(56, 189, 248, 0.1);
+    padding: 8px 18px;
+    border-radius: 50px;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.user-icon {
+    font-size: 18px;
+    color: var(--accent-blue);
+}
+
+.user {
+    font-style: italic;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: capitalize;
+    color: var(--text-primary);
+}
+
+/* SIDEBAR */
+.sidebar {
+    position: fixed;
+    left: -320px;
+    top: 0;
+    width: 320px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(30px);
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1100;
+    overflow-y: auto;
+    border-right: 1px solid var(--border-color);
+}
+
+.sidebar.active { left: 0; }
+
+.sidebar-header {
+    padding: 28px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(134, 239, 172, 0.1) 50%, rgba(249, 168, 212, 0.1) 100%);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-header img {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: white;
+    padding: 4px;
+    box-shadow: var(--shadow-soft);
+}
+
+.brand-name {
+    font-style: italic;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+}
+
+.nova { 
+    background: var(--gradient-blue);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.trade { 
+    background: var(--gradient-pink);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.sidebar a {
+    display: flex;
+    align-items: center;
+    padding: 13px 24px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+    gap: 12px;
+    font-style: italic;
+}
+
+.sidebar a:hover {
+    background: rgba(56, 189, 248, 0.08);
+    color: var(--accent-blue);
+    border-left-color: var(--accent-blue);
+    padding-left: 28px;
+}
+
+.sidebar a.active {
+    background: linear-gradient(90deg, rgba(56, 189, 248, 0.12) 0%, transparent 100%);
+    color: var(--accent-blue);
+    border-left-color: var(--accent-blue);
+    font-weight: 600;
+}
+
+.sidebar a i {
+    width: 20px;
+    text-align: center;
+    font-size: 15px;
+}
+
+.sub-menu {
+    display: none;
+    background: rgba(56, 189, 248, 0.03);
+}
+
+.sub-menu a {
+    padding-left: 52px;
+    font-size: 13px;
+}
+
+.rotate { transform: rotate(180deg); }
+
+/* OVERLAY */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(248, 250, 252, 0.8);
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s;
+    z-index: 1050;
+    backdrop-filter: blur(4px);
+}
+
+.overlay.active { opacity: 1; visibility: visible; }
+
+/* MAIN CONTENT */
+.main {
+    padding: 20px;
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+}
+
+/* TIKTOK STYLE VIDEO CONTAINER */
+.video-feed {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    border-radius: 0;
+    overflow: hidden;
+    background: #000;
+    height: calc(100vh - 120px);
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+}
+
+.video-item {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: calc(100vh - 120px);
+    background: #000;
+    overflow: hidden;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+}
+
+.video-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ACTION BUTTONS (RIGHT SIDE) */
+.video-actions {
+    position: absolute;
+    right: 12px;
+    bottom: 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    z-index: 10;
+}
+
+.action-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(1.1);
+}
+
+.action-btn.liked {
+    background: rgba(249, 168, 212, 0.6);
+    border-color: rgba(249, 168, 212, 0.8);
+}
+
+.action-btn.liked i {
+    color: #f9a8d4;
+}
+
+.action-btn i {
+    font-size: 22px;
+    margin-bottom: 2px;
+}
+
+.action-btn span {
+    font-size: 10px;
+    font-weight: 600;
+}
+
+/* VIDEO INFO (BOTTOM) */
+.video-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 80px;
+    padding: 20px 16px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+    color: white;
+    z-index: 10;
+}
+
+.video-info h3 {
+    font-style: italic;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.video-info p {
+    font-size: 12px;
+    opacity: 0.9;
+    margin-bottom: 8px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.video-price {
+    display: inline-block;
+    background: var(--gradient-pink);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    font-style: italic;
+    margin-top: 6px;
+}
+
+/* EMPTY STATE */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.empty-state i {
+    font-size: 64px;
+    color: var(--accent-pink-light);
+    margin-bottom: 20px;
+}
+
+.empty-state h2 {
+    font-style: italic;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    font-style: italic;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    display: inline-block;
+    padding: 12px 28px;
+    background: var(--gradient-blue);
+    color: white;
+    border-radius: 14px;
+    text-decoration: none;
+    font-weight: 600;
+    font-style: italic;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
+}
+
+/* COMMENTS MODAL */
+.comments-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    display: none;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.comments-modal.active {
+    display: flex;
+}
+
+.comments-content {
+    background: var(--bg-secondary);
+    backdrop-filter: blur(30px);
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    max-width: 480px;
+    max-height: 70vh;
+    padding: 24px;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+.comments-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.comments-header h3 {
+    font-style: italic;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.close-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(148, 163, 184, 0.2);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.comment-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.comment-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--gradient-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.comment-body {
+    flex: 1;
+}
+
+.comment-author {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-style: italic;
+}
+
+.comment-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.comment-date {
+    font-size: 10px;
+    color: var(--text-secondary);
+    opacity: 0.7;
+    margin-top: 4px;
+}
+
+/* COMMENT INPUT */
+.comment-input-wrapper {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.comment-input {
+    flex: 1;
+    padding: 10px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    outline: none;
+    font-size: 13px;
+    background: rgba(255,255,255,0.5);
+    color: var(--text-primary);
+}
+
+.comment-input:focus {
+    border-color: var(--accent-blue);
+}
+
+.comment-send-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gradient-blue);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 22px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* DOUBLE TAP HEART ANIMATION */
+.double-tap-heart {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    font-size: 80px;
+    color: #f9a8d4;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 20;
+    animation: none;
+}
+
+.double-tap-heart.animate {
+    animation: heartPop 0.8s ease-out;
+}
+
+@keyframes heartPop {
+    0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    30% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+    60% { transform: translate(-50%, -50%) scale(0.9); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+}
+
+/* BOTTOM NAV */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+    z-index: 100;
+    border-top: 1px solid var(--border-color);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 11px;
+    padding: 5px 15px;
+    font-style: italic;
+}
+
+.nav-item.active {
+    color: var(--accent-blue);
+}
+
+.nav-item i {
+    font-size: 20px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .main {
+        padding: 14px;
+        padding-bottom: 80px;
+    }
+    
+    .video-item {
+        height: 65vh;
+    }
+}
+</style>
+</head>
+<body>
+
+
+<div class="topbar">
+    <div class="menu-toggle" id="menuToggle"><i class="fa fa-bars"></i></div>
+    <div class="user-container">
+        <i class="fa fa-user user-icon"></i>
+        <div class="user">{{ user.username if user else 'Invité' }}</div>
+    </div>
+</div>
+
+<div class="main">
+    {% if publicites %}
+    <div class="video-feed" id="videoFeed">
+        {% for pub in publicites %}
+        <div class="video-item" data-pub-id="{{ pub.id }}">
+            <video loop playsinline>
+                <source src="{{ pub.video_url }}" type="video/mp4">
+            </video>
+            
+            <!-- Double tap like indicator -->
+            <div class="double-tap-heart" id="doubleTapHeart{{ pub.id }}" style="display:none;">
+                <i class="fa fa-heart"></i>
+            </div>
+            
+            <div class="video-actions">
+                <button class="action-btn like-btn" onclick="toggleLike({{ pub.id }})">
+                    <i class="fa fa-heart"></i>
+                    <span>{{ pub.likes or 0 }}</span>
+                </button>
+                <button class="action-btn" onclick="openComments({{ pub.id }})">
+                    <i class="fa fa-comment"></i>
+                    <span>{{ pub.commentaires_count or 0 }}</span>
+                </button>
+                <button class="action-btn" onclick="shareVideo({{ pub.id }})">
+                    <i class="fa fa-share"></i>
+                    <span>{{ pub.partages or 0 }}</span>
+                </button>
+            </div>
+            
+            <div class="video-info">
+                <h3>{{ pub.titre }}</h3>
+                <p>{{ pub.description or '' }}</p>
+                <span class="video-price">{{ "{:,}".format(pub.prix|int) if pub.prix else '' }} {{ pub.devise or 'XOF' }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fa fa-video"></i>
+        <h2>Aucune publicité pour le moment</h2>
+        <p>Soyez le premier à créer une publicité vidéo pour vos produits !</p>
+        <a href="/publicite/creer" class="btn-primary"><i class="fa fa-plus"></i> Créer une publicité</a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- COMMENTS MODAL -->
+<div class="comments-modal" id="commentsModal">
+    <div class="comments-content">
+        <div class="comments-header">
+            <h3>💬 Commentaires</h3>
+            <button class="close-btn" onclick="closeComments()"><i class="fa fa-times"></i></button>
+        </div>
+        <div id="commentsList">
+            <!-- Comments will be loaded here -->
+        </div>
+        <div class="comment-input-wrapper">
+            <input type="text" class="comment-input" id="commentInput" placeholder="Écrire un commentaire...">
+            <button class="comment-send-btn" onclick="sendComment()"><i class="fa fa-paper-plane"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+    <a href="/publicites" class="nav-item active">
+        <i class="fa fa-home"></i>
+        <span>Pub</span>
+    </a>
+    <a href="/publicite/creer" class="nav-item">
+        <i class="fa fa-plus-circle" style="font-size: 28px; color: var(--accent-blue);"></i>
+        <span>Créer</span>
+    </a>
+    <a href="/market" class="nav-item">
+        <i class="fa fa-store"></i>
+        <span>Market</span>
+    </a>
+    <a href="/dashboard" class="nav-item">
+        <i class="fa fa-user"></i>
+        <span>Profil</span>
+    </a>
+</nav>
+
+<script>
+// VIDEO AUTOPLAY ON SCROLL
+document.addEventListener('DOMContentLoaded', function() {
+    var videos = document.querySelectorAll('.video-item video');
+    
+    var observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.7
+    };
+    
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            var video = entry.target;
+            if (entry.isIntersecting) {
+                video.play().catch(function(e) { console.log('Autoplay prevented'); });
+            } else {
+                video.pause();
+            }
+        });
+    }, observerOptions);
+    
+    videos.forEach(function(video) { observer.observe(video); });
+    
+    // Track views
+    var pubItems = document.querySelectorAll('.video-item');
+    pubItems.forEach(function(item) {
+        var pubId = item.dataset.pubId;
+        fetch('/api/publicite/' + pubId + '/vue', { method: 'POST' });
+    });
+    
+    // DOUBLE TAP TO LIKE
+    var lastTap = {};
+    document.querySelectorAll('.video-item').forEach(function(item) {
+        item.addEventListener('click', function(e) {
+            // Ignore if clicking on buttons
+            if (e.target.closest('.video-actions') || e.target.closest('.video-info')) return;
+            
+            var pubId = item.dataset.pubId;
+            var now = Date.now();
+            
+            if (lastTap[pubId] && (now - lastTap[pubId] < 300)) {
+                // Double tap detected - auto like
+                doubleTapLike(pubId);
+            }
+            lastTap[pubId] = now;
+        });
+    });
+});
+
+function doubleTapLike(pubId) {
+    // Show heart animation
+    var heart = document.getElementById('doubleTapHeart' + pubId);
+    if (heart) {
+        heart.style.display = 'block';
+        heart.classList.remove('animate');
+        void heart.offsetWidth; // Trigger reflow
+        heart.classList.add('animate');
+        
+        setTimeout(function() {
+            heart.style.display = 'none';
+        }, 800);
+    }
+    
+    // Send like to server
+    fetch('/api/publicite/' + pubId + '/like', { method: 'POST' })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.success) {
+                // Update button state
+                var btn = document.querySelector('.video-item[data-pub-id="' + pubId + '"] .like-btn');
+                if (btn && data.liked) {
+                    btn.classList.add('liked');
+                    btn.querySelector('span').textContent = data.likes;
+                }
+            }
+        });
+}
+
+// LIKE FUNCTION
+var currentPubId = null;
+
+function toggleLike(pubId) {
+    var btn = event.currentTarget;
+    var icon = btn.querySelector('i');
+    var count = btn.querySelector('span');
+    
+    fetch('/api/publicite/' + pubId + '/like', { method: 'POST' })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.success) {
+                if (data.liked) {
+                    btn.classList.add('liked');
+                    icon.style.color = '#f9a8d4';
+                } else {
+                    btn.classList.remove('liked');
+                    icon.style.color = '';
+                }
+                count.textContent = data.likes;
+            }
+        });
+}
+
+// COMMENTS FUNCTIONS
+function openComments(pubId) {
+    currentPubId = pubId;
+    var modal = document.getElementById('commentsModal');
+    modal.classList.add('active');
+    loadComments(pubId);
+}
+
+function closeComments() {
+    var modal = document.getElementById('commentsModal');
+    modal.classList.remove('active');
+    currentPubId = null;
+}
+
+function loadComments(pubId) {
+    fetch('/api/publicite/' + pubId + '/commentaires')
+        .then(function(res) { return res.json(); })
+        .then(function(comments) {
+            var list = document.getElementById('commentsList');
+            if (comments.length === 0) {
+                list.innerHTML = '<p style="text-align:center;color:var(--text-secondary);font-style:italic;font-size:13px;">Aucun commentaire pour le moment</p>';
+            } else {
+                var html = '';
+                comments.forEach(function(c) {
+                    html += '<div class="comment-item">' +
+                        '<div class="comment-avatar">' + c.user.charAt(0).toUpperCase() + '</div>' +
+                        '<div class="comment-body">' +
+                        '<div class="comment-author">' + c.user + '</div>' +
+                        '<div class="comment-text">' + c.texte + '</div>' +
+                        '<div class="comment-date">' + c.date + '</div>' +
+                        '</div></div>';
+                });
+                list.innerHTML = html;
+            }
+        });
+}
+
+function sendComment() {
+    var input = document.getElementById('commentInput');
+    var text = input.value.trim();
+    
+    if (!text || !currentPubId) return;
+    
+    fetch('/api/publicite/' + currentPubId + '/commentaire', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ texte: text })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        if (data.success) {
+            input.value = '';
+            loadComments(currentPubId);
+        }
+    });
+}
+
+// SHARE FUNCTION
+function shareVideo(pubId) {
+    fetch('/api/publicite/' + pubId + '/share', { method: 'POST' })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'NovaTrade Publicité',
+                    text: 'Découvrez cette publicité sur NovaTrade!',
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert('Lien copié dans le presse-papier!');
+            }
+        });
+}
+
+// ENTER KEY FOR COMMENTS
+document.getElementById('commentInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        sendComment();
+    }
+});
+</script>
+
+</body>
+</html>

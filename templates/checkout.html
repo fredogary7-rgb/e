@@ -98,22 +98,25 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="indicatif">Indicatif *</label>
-                            <select id="indicatif" name="indicatif" required>
-                                <option value="+225">🇨🇮 +225 (Côte d'Ivoire)</option>
-                                <option value="+237">🇨🇲 +237 (Cameroun)</option>
-                                <option value="+226">🇧🇫 +226 (Burkina Faso)</option>
-                                <option value="+229">🇧🇯 +229 (Bénin)</option>
-                                <option value="+228">🇹🇬 +228 (Togo)</option>
-                                <option value="+243">🇨🇩 +243 (RDC)</option>
-                                <option value="+242">🇨🇬 +242 (Congo)</option>
-                                <option value="+241">🇬🇦 +241 (Gabon)</option>
+                            <label for="pays">Pays *</label>
+                            <select id="pays" name="pays" required onchange="updatePaymentMethods()">
+                                <option value="">Sélectionner un pays</option>
+                                {% for country_name, country_code in countries.items() %}
+                                <option value="{{ country_code }}">{{ country_name }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="telephone">Téléphone *</label>
-                            <input type="tel" id="telephone" name="telephone" required placeholder="07 07 07 07 07">
+                            <label for="indicatif">Indicatif *</label>
+                            <select id="indicatif" name="indicatif" required>
+                                <option value="">Sélectionner un pays d'abord</option>
+                            </select>
                         </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telephone">Téléphone *</label>
+                        <input type="tel" id="telephone" name="telephone" required placeholder="07 07 07 07 07">
                     </div>
 
                     <div class="form-group">
@@ -126,47 +129,11 @@
                         <input type="text" id="ville" name="ville" required placeholder="Votre ville">
                     </div>
 
-                    <h2 style="margin-top: 2rem;"><i class="fas fa-wallet"></i> Mode de paiement</h2>
-                    <div class="payment-methods">
-                        <div class="payment-option">
-                            <input type="radio" id="momo" name="payment_method" value="momo" required>
-                            <label for="momo">
-                                <i class="fas fa-mobile-alt" style="color: #ffcc00;"></i>
-                                <span>MTN MoMo</span>
-                            </label>
-                        </div>
-                        <div class="payment-option">
-                            <input type="radio" id="om" name="payment_method" value="om" required>
-                            <label for="om">
-                                <i class="fas fa-mobile-alt" style="color: #ff7900;"></i>
-                                <span>Orange Money</span>
-                            </label>
-                        </div>
-                        <div class="payment-option">
-                            <input type="radio" id="wave" name="payment_method" value="wave" required>
-                            <label for="wave">
-                                <i class="fas fa-water" style="color: #1dc4e9;"></i>
-                                <span>Wave</span>
-                            </label>
-                        </div>
-                        <div class="payment-option">
-                            <input type="radio" id="momo_ci" name="payment_method" value="momo_ci" required>
-                            <label for="momo_ci">
-                                <i class="fas fa-mobile-alt" style="color: #ffcc00;"></i>
-                                <span>MTN CI</span>
-                            </label>
-                        </div>
-                        <div class="payment-option">
-                            <input type="radio" id="om_ci" name="payment_method" value="om_ci" required>
-                            <label for="om_ci">
-                                <i class="fas fa-mobile-alt" style="color: #ff7900;"></i>
-                                <span>Orange CI</span>
-                            </label>
-                        </div>
-                    </div>
+                    <h2 style="margin-top: 2rem;"><i class="fab fa-whatsapp"></i> Commander via WhatsApp</h2>
+                    <p style="color: #7f8c8d; margin-bottom: 1rem;">Votre commande sera envoyée directement au vendeur sur WhatsApp. Il pourra la confirmer ou la rejeter.</p>
 
-                    <button type="submit" class="checkout-btn">
-                        <i class="fas fa-lock"></i> Payer {{ grand_total|round|int }} XOF
+                    <button type="submit" class="checkout-btn" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);">
+                        <i class="fab fa-whatsapp"></i> Contacter le vendeur sur WhatsApp
                     </button>
                 </form>
 
@@ -205,5 +172,91 @@
             </aside>
         </div>
     </main>
+
+    <script>
+        // Configuration des pays et services de paiement
+        const countryData = {{ countries_json|tojson }};
+        const servicesData = {{ services_json|tojson }};
+        
+        const countryIndicatifs = {
+            'CM': '+237',
+            'CI': '+225',
+            'BF': '+226',
+            'BJ': '+229',
+            'TG': '+228',
+            'COD': '+243',
+            'COG': '+242',
+            'GAB': '+241',
+            'UGA': '+256'
+        };
+
+        const serviceIcons = {
+            'MOMO': 'fa-mobile-alt',
+            'OM': 'fa-mobile-alt',
+            'WAVE': 'fa-water',
+            'MOOV': 'fa-mobile-alt',
+            'T-MONEY': 'fa-mobile-alt',
+            'VODACOM': 'fa-mobile-alt',
+            'AIRTEL': 'fa-mobile-alt',
+            'ORANGE': 'fa-mobile-alt'
+        };
+
+        const serviceColors = {
+            'MOMO': '#ffcc00',
+            'OM': '#ff7900',
+            'WAVE': '#1dc4e9',
+            'MOOV': '#0066cc',
+            'T-MONEY': '#00aa44',
+            'VODACOM': '#e60000',
+            'AIRTEL': '#ff0000',
+            'ORANGE': '#ff7900'
+        };
+
+        function updatePaymentMethods() {
+            const paysSelect = document.getElementById('pays');
+            const indicatifSelect = document.getElementById('indicatif');
+            const paymentMethods = document.getElementById('paymentMethods');
+            
+            const selectedCountry = paysSelect.value;
+            
+            if (!selectedCountry) {
+                indicatifSelect.innerHTML = '<option value="">Sélectionner un pays d\'abord</option>';
+                paymentMethods.innerHTML = '<p style="color: #7f8c8d; text-align: center; padding: 1rem;">Sélectionnez d\'abord un pays pour voir les options de paiement disponibles.</p>';
+                return;
+            }
+            
+            // Mettre à jour l'indicatif
+            const indicatif = countryIndicatifs[selectedCountry] || '+225';
+            indicatifSelect.innerHTML = `<option value="${indicatif}">${indicatif}</option>`;
+            
+            // Mettre à jour les méthodes de paiement
+            const services = servicesData[selectedCountry] || [];
+            
+            if (services.length === 0) {
+                paymentMethods.innerHTML = '<p style="color: #7f8c8d; text-align: center; padding: 1rem;">Aucun service de paiement disponible pour ce pays.</p>';
+                return;
+            }
+            
+            let html = '';
+            services.forEach((service, index) => {
+                const serviceName = service.name.replace(/ CM$/i, '').replace(/ CI$/i, '').replace(/ BF$/i, '').replace(/ BJ$/i, '').replace(/ TG$/i, '').replace(/ COD$/i, '').replace(/ COG$/i, '').replace(/ GAB$/i, '').replace(/ UGA$/i, '');
+                const serviceId = service.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+                const icon = serviceIcons[serviceName.split(' ')[0]] || 'fa-mobile-alt';
+                const color = serviceColors[serviceName.split(' ')[0]] || '#555';
+                
+                html += `
+                    <div class="payment-option">
+                        <input type="radio" id="payment_${index}" name="payment_method" value="${serviceId}" required>
+                        <label for="payment_${index}">
+                            <i class="fas ${icon}" style="color: ${color};"></i>
+                            <span>${serviceName}</span>
+                        </label>
+                    </div>
+                `;
+            });
+            
+            paymentMethods.innerHTML = html;
+        }
+    </script>
 </body>
 </html>

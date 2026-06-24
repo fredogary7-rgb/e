@@ -528,16 +528,11 @@
             </a>
             <div class="navbar-links">
                 <a href="{{ url_for('liste_produits') }}">Produits</a>
-                <a href="{{ url_for('liste_boutiques') }}">Boutiques</a>
-<a href="/cart" class="cart-icon">
+                <a href="{{ url_for('market_page') }}">Market</a>
+                <a href="/cart" class="cart-icon">
                     <i class="fa fa-shopping-cart"></i>
                     <span class="cart-count" id="cartCount">0</span>
                 </a>
-                {% if user %}
-                    <a href="{{ url_for('dashboard_page') }}">Mon compte</a>
-                {% else %}
-                    <a href="{{ url_for('connexion_page') }}">Connexion</a>
-                {% endif %}
             </div>
         </div>
     </nav>

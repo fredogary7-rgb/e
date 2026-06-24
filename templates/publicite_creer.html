@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Créer une publicité - NovaTrade</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="icon" href="/static/images/favicon-48.png" sizes="48x48" type="image/png">
+    <style>
+        /* RESET & BASE */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
+            min-height: 100vh;
+            color: #475569;
+            padding-bottom: 80px;
+        }
+        
+        /* NOUVELLE PALETTE - Design clair et frais */
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: rgba(255, 255, 255, 0.8);
+            --bg-card: rgba(255, 255, 255, 0.7);
+            --bg-card-hover: rgba(255, 255, 255, 0.9);
+            --border-color: rgba(148, 163, 184, 0.2);
+            --border-glow: rgba(56, 189, 248, 0.3);
+            --text-primary: #334155;
+            --text-secondary: #64748b;
+            --accent-blue: #38bdf8;
+            --accent-blue-light: #7dd3fc;
+            --accent-green: #86efac;
+            --accent-green-light: #bbf7d0;
+            --accent-pink: #f9a8d4;
+            --accent-pink-light: #fbcfe8;
+            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
+            --shadow-soft: 0 4px 6px rgba(56, 189, 248, 0.08);
+            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
+        }
+        
+        /* TOPBAR */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .topbar .menu-toggle {
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-primary);
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: rgba(56, 189, 248, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .topbar .menu-toggle:hover {
+            background: rgba(56, 189, 248, 0.2);
+            color: var(--accent-blue);
+        }
+        
+        .user-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(56, 189, 248, 0.1);
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+        
+        .user-icon {
+            font-size: 18px;
+            color: var(--accent-blue);
+        }
+        
+        .user {
+            font-style: italic;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: capitalize;
+            color: var(--text-primary);
+        }
+        
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            left: -320px;
+            top: 0;
+            width: 320px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(30px);
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1100;
+            overflow-y: auto;
+            border-right: 1px solid var(--border-color);
+        }
+        
+        .sidebar.active { left: 0; }
+        
+        .sidebar-header {
+            padding: 28px 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(134, 239, 172, 0.1) 50%, rgba(249, 168, 212, 0.1) 100%);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .sidebar-header img {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: white;
+            padding: 4px;
+            box-shadow: var(--shadow-soft);
+        }
+        
+        .brand-name {
+            font-style: italic;
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+        }
+        
+        .nova { 
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .trade { 
+            background: var(--gradient-pink);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            padding: 13px 24px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+            gap: 12px;
+            font-style: italic;
+        }
+        
+        .sidebar a:hover {
+            background: rgba(56, 189, 248, 0.08);
+            color: var(--accent-blue);
+            border-left-color: var(--accent-blue);
+            padding-left: 28px;
+        }
+        
+        .sidebar a.active {
+            background: linear-gradient(90deg, rgba(56, 189, 248, 0.12) 0%, transparent 100%);
+            color: var(--accent-blue);
+            border-left-color: var(--accent-blue);
+            font-weight: 600;
+        }
+        
+        .sidebar a i {
+            width: 20px;
+            text-align: center;
+            font-size: 15px;
+        }
+        
+        /* OVERLAY */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(248, 250, 252, 0.8);
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+            z-index: 1050;
+            backdrop-filter: blur(4px);
+        }
+        
+        .overlay.active { opacity: 1; visibility: visible; }
+        
+        /* MAIN CONTENT */
+        .main {
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        /* PAGE HEADER */
+        .page-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        
+        .page-header h1 {
+            font-style: italic;
+            font-size: 22px;
+            font-weight: 800;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 6px;
+        }
+        
+        .page-header p {
+            font-style: italic;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        /* GLASS CARD */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 18px;
+            box-shadow: var(--shadow-medium);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            border-color: var(--border-glow);
+            box-shadow: 0 0 40px rgba(56, 189, 248, 0.15);
+            background: var(--bg-card-hover);
+        }
+        
+        /* Video Upload Area */
+        .upload-area {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 9/16;
+            max-height: 400px;
+            background: rgba(56, 189, 248, 0.05);
+            border: 2px dashed var(--border-glow);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--accent-blue);
+            background: rgba(56, 189, 248, 0.1);
+        }
+        
+        .upload-area.has-video {
+            border-style: solid;
+            border-color: var(--accent-blue);
+        }
+        
+        .upload-area i {
+            font-size: 50px;
+            color: var(--accent-blue);
+            opacity: 0.5;
+        }
+        
+        .upload-area p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            text-align: center;
+            font-style: italic;
+        }
+        
+        .upload-area video {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .upload-area .upload-content {
+            z-index: 1;
+        }
+        
+        .upload-area.has-video .upload-content {
+            display: none;
+        }
+        
+        .duration-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(56, 189, 248, 0.8);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: white;
+            font-weight: 600;
+            z-index: 2;
+            display: none;
+            font-style: italic;
+        }
+        
+        .upload-area.has-video .duration-badge {
+            display: block;
+        }
+        
+        .remove-video {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(239, 68, 68, 0.8);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            cursor: pointer;
+            z-index: 2;
+            display: none;
+        }
+        
+        .upload-area.has-video .remove-video {
+            display: flex;
+        }
+        
+        /* Form Fields */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-style: italic;
+        }
+        
+        .form-group label .required {
+            color: #ef4444;
+        }
+        
+        .form-group label .hint {
+            font-weight: 400;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+        
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+            font-style: italic;
+        }
+        
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+        }
+        
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: rgba(100, 116, 139, 0.5);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+        
+        .form-select option {
+            background: #f8fafc;
+            color: #334155;
+        }
+        
+        /* Price row */
+        .price-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: var(--gradient-blue);
+            border: none;
+            border-radius: 14px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
+        }
+        
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Error messages */
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #dc2626;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: none;
+            font-style: italic;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        /* Success message */
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            color: #16a34a;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: none;
+            font-style: italic;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+        
+        .btn-submit.loading .spinner {
+            display: inline-block;
+        }
+        
+        .btn-submit.loading .btn-text {
+            display: none;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Product link */
+        .product-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: rgba(56, 189, 248, 0.05);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        
+        .product-link img {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: var(--gradient-blue);
+        }
+        
+        .product-link-info {
+            flex: 1;
+        }
+        
+        .product-link-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-style: italic;
+        }
+        
+        .product-link-price {
+            font-size: 13px;
+            color: var(--accent-blue);
+            font-weight: 700;
+            font-style: italic;
+        }
+        
+        .product-link-remove {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            padding-bottom: max(10px, env(safe-area-inset-bottom));
+            z-index: 100;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 11px;
+            padding: 5px 15px;
+            font-style: italic;
+        }
+        
+        .nav-item.active {
+            color: var(--accent-blue);
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .main {
+                padding: 14px;
+            }
+            
+            .sidebar {
+                width: 290px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <img src="/static/images/n.jpg" alt="Logo">
+        <span class="brand-name"><span class="nova">Nova</span><span class="trade">Trade</span></span>
+    </div>
+    <a href="/dashboard"><i class="fa fa-home"></i> Tableau de bord</a>
+    <a href="/revenus"><i class="fa fa-wallet"></i> Revenus</a>
+    <a href="/publicites" class="active"><i class="fa fa-video"></i> Publicités <span style="background: rgba(249, 168, 212, 0.3); padding: 2px 8px; border-radius: 10px; font-size: 9px; font-weight: 700;">🎬 Nouveau</span></a>
+    <a href="/market"><i class="fa fa-store"></i> Market</a>
+    <a href="/logout" style="color:#db2777;"><i class="fa fa-sign-out"></i> Déconnexion</a>
+</div>
+
+<div class="topbar">
+    <div class="menu-toggle" id="menuToggle"><i class="fa fa-bars"></i></div>
+    <div class="user-container">
+        <i class="fa fa-user user-icon"></i>
+        <div class="user">{{ user.username if user else 'Invité' }}</div>
+    </div>
+</div>
+
+<div class="main">
+    <div class="page-header">
+        <h1>🎬 Créer une publicité</h1>
+        <p>Partagez vos produits en vidéo avec la communauté NovaTrade</p>
+    </div>
+    
+    <div class="glass-card">
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <form id="publiciteForm" enctype="multipart/form-data">
+            <!-- Video Upload -->
+            <div class="upload-area" id="uploadArea" onclick="document.getElementById('videoInput').click()">
+                <input type="file" id="videoInput" accept="video/*" style="display: none;">
+                <div class="upload-content">
+                    <i class="fa fa-video"></i>
+                    <p>Cliquez pour uploader une vidéo<br><small>Max 1 minute • MP4, WebM, MOV</small></p>
+                </div>
+                <video id="videoPreview" muted loop></video>
+                <div class="duration-badge" id="durationBadge">0:00</div>
+                <button type="button" class="remove-video" id="removeVideo" onclick="removeVideo(event)">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Product Selection -->
+            <div class="form-group">
+                <label>Produit à promouvoir <span class="hint">(optionnel)</span></label>
+                <select class="form-select" id="produitSelect" name="produit_id">
+                    <option value="">-- Sélectionner un produit --</option>
+                    {% for produit in produits %}
+                    <option value="{{ produit.id }}" data-prix="{{ produit.prix }}">
+                        {{ produit.nom }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <div id="productLink" class="product-link" style="display: none;">
+                    <img id="productImage" src="" alt="" style="display:none;">
+                    <div class="product-link-info">
+                        <div class="product-link-name" id="productName"></div>
+                        <div class="product-link-price" id="productPrice"></div>
+                    </div>
+                    <button type="button" class="product-link-remove" onclick="removeProduct()">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Title -->
+            <div class="form-group">
+                <label>Titre de la publicité <span class="required">*</span></label>
+                <input type="text" class="form-input" name="titre" placeholder="Ex: Nouveau smartphone XYZ" required maxlength="200">
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+                <label>Description <span class="hint">(optionnel)</span></label>
+                <textarea class="form-textarea" name="description" placeholder="Décrivez votre produit..." maxlength="500"></textarea>
+            </div>
+
+            <!-- Price Row -->
+            <div class="price-row">
+                <div class="form-group">
+                    <label>Prix <span class="required">*</span></label>
+                    <input type="number" class="form-input" name="prix" placeholder="0" min="0" step="0.01" required id="prixInput">
+                </div>
+                <div class="form-group">
+                    <label>Devise</label>
+                    <select class="form-select" name="devise">
+                        <option value="XOF">XOF (FCFA)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="USD">USD ($)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn-submit" id="submitBtn" disabled>
+                <span class="btn-text">Publier la publicité</span>
+                <div class="spinner"></div>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav">
+    <a href="/publicites" class="nav-item">
+        <i class="fa fa-home"></i>
+        <span>Pub</span>
+    </a>
+    <a href="/publicite/creer" class="nav-item active">
+        <i class="fa fa-plus-circle" style="font-size: 28px; color: var(--accent-blue);"></i>
+        <span>Créer</span>
+    </a>
+    <a href="/market" class="nav-item">
+        <i class="fa fa-store"></i>
+        <span>Market</span>
+    </a>
+    <a href="/dashboard" class="nav-item">
+        <i class="fa fa-user"></i>
+        <span>Profil</span>
+    </a>
+</nav>
+
+<script>
+// SIDEBAR TOGGLE
+const menuToggle = document.getElementById('menuToggle');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+
+menuToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+});
+
+overlay.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+});
+
+// Video upload handling
+let videoFile = null;
+let videoDuration = 0;
+
+document.getElementById('videoInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Check file type
+    if (!file.type.startsWith('video/')) {
+        showError('Veuillez sélectionner un fichier vidéo valide.');
+        return;
+    }
+
+    // Check file size (max 50MB)
+    if (file.size > 50 * 1024 * 1024) {
+        showError('La vidéo ne doit pas dépasser 50 Mo.');
+        return;
+    }
+
+    videoFile = file;
+    const video = document.getElementById('videoPreview');
+    const url = URL.createObjectURL(file);
+    video.src = url;
+
+    video.onloadedmetadata = function() {
+        videoDuration = video.duration;
+        
+        // Check duration (max 60 seconds)
+        if (videoDuration > 60) {
+            showError('La vidéo ne doit pas dépasser 1 minute (60 secondes).');
+            removeVideo();
+            return;
+        }
+
+        document.getElementById('uploadArea').classList.add('has-video');
+        updateDurationBadge();
+        hideError();
+        validateForm();
+    };
+});
+
+function updateDurationBadge() {
+    const minutes = Math.floor(videoDuration / 60);
+    const seconds = Math.floor(videoDuration % 60);
+    document.getElementById('durationBadge').textContent = 
+        `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function removeVideo(event) {
+    if (event) event.stopPropagation();
+    
+    videoFile = null;
+    videoDuration = 0;
+    const video = document.getElementById('videoPreview');
+    video.src = '';
+    video.load();
+    
+    document.getElementById('uploadArea').classList.remove('has-video');
+    document.getElementById('videoInput').value = '';
+    hideError();
+    validateForm();
+}
+
+// Product selection
+document.getElementById('produitSelect').addEventListener('change', function() {
+    const selected = this.options[this.selectedIndex];
+    if (selected.value) {
+        const prix = selected.dataset.prix;
+        document.getElementById('prixInput').value = prix || '';
+        
+        // Show product link
+        document.getElementById('productLink').style.display = 'flex';
+        document.getElementById('productName').textContent = selected.text;
+        document.getElementById('productPrice').textContent = prix ? `${prix} XOF` : '';
+    } else {
+        document.getElementById('productLink').style.display = 'none';
+    }
+});
+
+function removeProduct() {
+    document.getElementById('produitSelect').value = '';
+    document.getElementById('productLink').style.display = 'none';
+}
+
+// Form validation
+function validateForm() {
+    const hasVideo = !!videoFile;
+    const titre = document.querySelector('input[name="titre"]').value.trim();
+    const prix = document.querySelector('input[name="prix"]').value;
+    
+    const isValid = hasVideo && titre && prix;
+    document.getElementById('submitBtn').disabled = !isValid;
+}
+
+// Auto-validate on input
+document.querySelectorAll('.form-input, .form-textarea').forEach(input => {
+    input.addEventListener('input', validateForm);
+});
+
+// Form submission
+document.getElementById('publiciteForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    if (!videoFile) {
+        showError('Veuillez sélectionner une vidéo.');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('video', videoFile);
+    formData.append('titre', document.querySelector('input[name="titre"]').value.trim());
+    formData.append('description', document.querySelector('textarea[name="description"]').value.trim());
+    formData.append('prix', document.querySelector('input[name="prix"]').value);
+    formData.append('devise', document.querySelector('select[name="devise"]').value);
+    formData.append('produit_id', document.getElementById('produitSelect').value || '');
+
+    const btn = document.getElementById('submitBtn');
+    btn.classList.add('loading');
+    btn.disabled = true;
+
+    try {
+        const response = await fetch('/api/publicite/creer', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            showSuccess('Publicité publiée avec succès ! 🎉');
+            setTimeout(() => {
+                window.location.href = '/publicites';
+            }, 1500);
+        } else {
+            showError(result.message || 'Une erreur est survenue.');
+            btn.classList.remove('loading');
+            btn.disabled = false;
+        }
+    } catch (error) {
+        showError('Erreur de connexion. Vérifiez votre connexion internet.');
+        btn.classList.remove('loading');
+        btn.disabled = false;
+    }
+});
+
+function showError(message) {
+    const el = document.getElementById('errorMessage');
+    el.textContent = message;
+    el.classList.add('show');
+}
+
+function hideError() {
+    document.getElementById('errorMessage').classList.remove('show');
+}
+
+function showSuccess(message) {
+    const el = document.getElementById('successMessage');
+    el.textContent = message;
+    el.classList.add('show');
+}
+</script>
+
+</body>
+</html>

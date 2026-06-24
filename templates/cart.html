@@ -52,6 +52,7 @@
 
         .navbar-logo i {
             color: #3498db;
+            font-size: 1.8rem;
         }
 
         .navbar-menu {
@@ -512,7 +513,6 @@
         <div class="navbar-container">
             <a href="{{ url_for('index_page') }}" class="navbar-logo">
                 <i class="fas fa-store"></i>
-                NovaTrade
             </a>
             <ul class="navbar-menu">
                 <li><a href="{{ url_for('liste_produits') }}"><i class="fas fa-box"></i> Produits</a></li>
@@ -523,11 +523,6 @@
                         <span class="cart-badge" id="cartCount">0</span>
                     </a>
                 </li>
-                {% if user %}
-                    <li><a href="{{ url_for('dashboard_page') }}"><i class="fas fa-user"></i> Compte</a></li>
-                {% else %}
-                    <li><a href="{{ url_for('connexion_page') }}"><i class="fas fa-sign-in-alt"></i> Connexion</a></li>
-                {% endif %}
             </ul>
         </div>
     </nav>
@@ -536,6 +531,46 @@
     <div class="notification" id="notification">
         <i class="fas fa-check-circle" id="notificationIcon"></i>
         <span id="notificationText">Action réussie</span>
+    </div>
+
+    <!-- Modal Checkout -->
+    <div id="checkoutModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 3000; justify-content: center; align-items: center;">
+        <div style="background: white; border-radius: 15px; padding: 2rem; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="color: #2c3e50; font-size: 1.3rem;"><i class="fab fa-whatsapp" style="color: #25D366;"></i> Commander via WhatsApp</h2>
+                <button onclick="closeCheckoutModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #999;">&times;</button>
+            </div>
+            
+            <p style="color: #7f8c8d; margin-bottom: 1.5rem; font-size: 0.9rem;">
+                Remplissez vos informations de livraison. Votre commande sera envoyée directement au vendeur sur WhatsApp.
+            </p>
+            
+            <form id="checkoutForm" onsubmit="event.preventDefault(); processCheckout();">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 500; color: #555; margin-bottom: 0.5rem;">Nom complet *</label>
+                    <input type="text" id="modal_nom" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;" placeholder="Votre nom complet">
+                </div>
+                
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 500; color: #555; margin-bottom: 0.5rem;">Téléphone *</label>
+                    <input type="tel" id="modal_telephone" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;" placeholder="07 07 07 07 07">
+                </div>
+                
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 500; color: #555; margin-bottom: 0.5rem;">Adresse de livraison *</label>
+                    <textarea id="modal_adresse" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; min-height: 80px;" placeholder="Votre adresse complète..."></textarea>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-weight: 500; color: #555; margin-bottom: 0.5rem;">Ville *</label>
+                    <input type="text" id="modal_ville" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;" placeholder="Votre ville">
+                </div>
+                
+                <button type="submit" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                    <i class="fab fa-whatsapp"></i> Contacter le vendeur
+                </button>
+            </form>
+        </div>
     </div>
 
     <!-- Main Content -->
@@ -753,13 +788,83 @@
             });
         }
 
-        // Passer la commande
+        // Passer la commande - Contacter le vendeur sur WhatsApp directement
         function checkout() {
             if (cartState.articles.length === 0) {
                 showNotification('Votre panier est vide', 'error');
                 return;
             }
-            alert('Fonctionnalité de paiement bientôt disponible ! 🎉');
+            
+            // Récupérer les informations du premier produit pour trouver le vendeur
+            const premierArticle = cartState.articles[0];
+            if (!premierArticle || !premierArticle.produit_id) {
+                showNotification('Erreur: panier invalide', 'error');
+                return;
+            }
+            
+            // Afficher un modal pour collecter les informations de livraison
+            showCheckoutModal();
+        }
+        
+        // Afficher le modal de checkout
+        function showCheckoutModal() {
+            const modal = document.getElementById('checkoutModal');
+            modal.style.display = 'flex';
+        }
+        
+        // Fermer le modal
+        function closeCheckoutModal() {
+            const modal = document.getElementById('checkoutModal');
+            modal.style.display = 'none';
+        }
+        
+        // Traiter la commande et rediriger vers WhatsApp
+        function processCheckout() {
+            const nom = document.getElementById('modal_nom').value.trim();
+            const telephone = document.getElementById('modal_telephone').value.trim();
+            const adresse = document.getElementById('modal_adresse').value.trim();
+            const ville = document.getElementById('modal_ville').value.trim();
+            
+            if (!nom || !telephone || !adresse || !ville) {
+                showNotification('Veuillez remplir tous les champs', 'error');
+                return;
+            }
+            
+            // Fermer le modal
+            closeCheckoutModal();
+            
+            // Afficher un message de chargement
+            showNotification('Création de la commande...', 'success');
+            
+            // Préparer les données de la commande
+            const commandeData = {
+                articles: cartState.articles,
+                total: cartState.total,
+                nom: nom,
+                telephone: telephone,
+                adresse: adresse,
+                ville: ville
+            };
+            
+            // Envoyer la commande au serveur et obtenir le lien WhatsApp
+            fetch('/api/panier/checkout-whatsapp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(commandeData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Rediriger vers WhatsApp
+                    window.location.href = data.whatsapp_url;
+                } else {
+                    showNotification(data.message || 'Erreur lors de la commande', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                showNotification('Erreur de connexion', 'error');
+            });
         }
 
         // Afficher une notification
