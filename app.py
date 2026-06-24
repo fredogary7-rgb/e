@@ -5295,101 +5295,22 @@ def creer_publicite():
         boutiques=boutiques)
 
 
-def get_s3_client():
-    """Crée un client S3 pour Tigris Bucket"""
-    print("=" * 60)
-    print("DEBUG S3 CONFIGURATION")
-    print("=" * 60)
-    print(f"S3_ENDPOINT_URL: {S3_ENDPOINT_URL}")
-    print(f"S3_BUCKET_NAME: {S3_BUCKET_NAME}")
-    print(f"S3_ACCESS_KEY_ID length: {len(S3_ACCESS_KEY_ID) if S3_ACCESS_KEY_ID else 0}")
-    print(f"S3_ACCESS_KEY_ID prefix: {S3_ACCESS_KEY_ID[:8] + '...' if S3_ACCESS_KEY_ID and len(S3_ACCESS_KEY_ID) > 8 else 'N/A'}")
-    print(f"S3_SECRET_ACCESS_KEY length: {len(S3_SECRET_ACCESS_KEY) if S3_SECRET_ACCESS_KEY else 0}")
-    print(f"Toutes variables presentes: {all([S3_ENDPOINT_URL, S3_BUCKET_NAME, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY])}")
-    print("=" * 60)
-    
-    if not all([S3_ENDPOINT_URL, S3_BUCKET_NAME, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY]):
-        print("ERREUR: Variables d'environnement S3 manquantes!")
-        return None
-    
-    try:
-        client = boto3.client(
-            's3',
-            endpoint_url=S3_ENDPOINT_URL,
-            aws_access_key_id=S3_ACCESS_KEY_ID,
-            aws_secret_access_key=S3_SECRET_ACCESS_KEY
-        )
-        print("Client S3 cree avec succes")
-        return client
-    except Exception as e:
-        print(f"ERREUR creation client S3: {e}")
-        return None
-
-def upload_to_s3(file_obj, filename, content_type='video/mp4'):
-    """Upload un fichier vers le S3 Railway Bucket"""
-    s3_client = get_s3_client()
-    if not s3_client:
-        raise Exception("Configuration S3 incomplète. Vérifiez les variables d'environnement.")
-    
-    try:
-        # Générer un nom de fichier unique
-        import uuid
-        ext = filename.rsplit('.', 1)[1].lower() if '.' in filename else 'mp4'
-        unique_key = f"publicites/pub_{uuid.uuid4().hex[:8]}.{ext}"
-        
-        # Upload vers S3
-        s3_client.upload_fileobj(
-            file_obj,
-            S3_BUCKET_NAME,
-            unique_key,
-            ExtraArgs={
-                'ContentType': content_type,
-                'ACL': 'public-read'
-            }
-        )
-        
-        # Construire l'URL publique
-        # Pour Railway S3, l'URL est généralement: https://s3.railwayinternal.com/bucket-name/key
-        # ou on peut utiliser l'URL du bucket si configuré
-        if 'railway' in S3_ENDPOINT_URL.lower():
-            # URL style Railway
-            video_url = f"{S3_ENDPOINT_URL.rstrip('/')}/{S3_BUCKET_NAME}/{unique_key}"
-        else:
-            # URL style S3 standard
-            video_url = f"https://{S3_BUCKET_NAME}.s3.amazonaws.com/{unique_key}"
-        
-        return video_url, unique_key
-        
-    except NoCredentialsError:
-        raise Exception("Identifiants S3 invalides. Vérifiez AWS_ACCESS_KEY_ID et AWS_SECRET_ACCESS_KEY.")
-    except ClientError as e:
-        raise Exception(f"Erreur S3: {e}")
-
 @app.route("/api/publicite/creer", methods=["POST"])
 @login_required
 def api_creer_publicite():
-    """API pour créer une publicité vidéo - Upload vers S3 Railway Bucket"""
-    print("=" * 60)
-    print("DEBUG UPLOAD PUBLICITE S3")
-    print("=" * 60)
-    
+    """API pour créer une publicité vidéo - Upload vers Cloudinary"""
     user = get_logged_in_user()
     
     # Vérifier les fichiers
     if 'video' not in request.files:
-        print("ERREUR: Aucune vidéo fournie")
         return jsonify({"success": False, "message": "Aucune vidéo fournie"}), 400
     
     video_file = request.files['video']
     
-    print(f"video_file.filename = {video_file.filename}")
-    
     if not video_file.filename:
-        print("ERREUR: Nom de fichier vide")
         return jsonify({"success": False, "message": "Nom de fichier vide"}), 400
     
     if not allowed_video(video_file.filename):
-        print(f"ERREUR: Format non supporté - {video_file.filename}")
         return jsonify({"success": False, "message": "Format vidéo non supporté. Utilisez MP4, WebM, MOV ou AVI."}), 400
     
     # Vérifier la taille
@@ -5397,11 +5318,8 @@ def api_creer_publicite():
     size = video_file.tell()
     video_file.seek(0)
     
-    print(f"Taille vidéo = {size} octets ({size / 1024 / 1024:.2f} MB)")
-    
     if size > MAX_VIDEO_SIZE:
-        print(f"ERREUR: Vidéo trop volumineuse - {size} > {MAX_VIDEO_SIZE}")
-        return jsonify({"success": False, "message": "Vidéo trop volumineuse (max 50MB)"}), 400
+        return jsonify({"success": False, "message": "Vidéo trop volumineuse (max 100MB)"}), 400
     
     # Récupérer les données du formulaire
     titre = request.form.get('titre', '').strip()
@@ -5411,11 +5329,9 @@ def api_creer_publicite():
     produit_id = request.form.get('produit_id', type=int)
     
     if not titre:
-        print("ERREUR: Le titre est obligatoire")
         return jsonify({"success": False, "message": "Le titre est obligatoire"}), 400
     
     if not prix or prix < 0:
-        print("ERREUR: Le prix est obligatoire")
         return jsonify({"success": False, "message": "Le prix est obligatoire"}), 400
     
     # Trouver la boutique et le produit
@@ -5426,39 +5342,41 @@ def api_creer_publicite():
         produit = Produit.query.get(produit_id)
         if produit:
             boutique = produit.boutique
-            print(f"Produit trouvé: {produit.nom}")
     
     # Si pas de produit, prendre la première boutique de l'utilisateur
     if not boutique:
         boutique = Boutique.query.filter_by(user_id=user.id, est_actif=True).first()
-        print(f"Boutique trouvée: {boutique.nom if boutique else None}")
     
     if not boutique:
-        print("ERREUR: Vous devez avoir une boutique")
         return jsonify({"success": False, "message": "Vous devez avoir une boutique pour créer une publicité"}), 400
     
-    # Upload vers S3
+    # Upload vers Cloudinary
     try:
-        # Déterminer le content type
-        ext = video_file.filename.rsplit('.', 1)[1].lower()
-        content_types = {
-            'mp4': 'video/mp4',
-            'webm': 'video/webm',
-            'mov': 'video/quicktime',
-            'avi': 'video/x-msvideo'
-        }
-        content_type = content_types.get(ext, 'video/mp4')
+        # Reset file pointer for Cloudinary upload
+        video_file.seek(0)
         
-        # Upload vers S3
-        video_url, s3_key = upload_to_s3(video_file, video_file.filename, content_type)
-        print(f"Vidéo uploadée vers S3: {video_url}")
-        print(f"S3 Key: {s3_key}")
+        # Upload vers Cloudinary
+        upload_result = cloudinary.uploader.upload(
+            video_file,
+            resource_type="video",
+            folder="publicites",
+            public_id=f"pub_{uuid.uuid4().hex[:8]}",
+            context={
+                "titre": titre,
+                "prix": str(prix),
+                "devise": devise
+            }
+        )
+        
+        video_url = upload_result.get("secure_url")
+        
+        if not video_url:
+            return jsonify({"success": False, "message": "Erreur lors de l'upload vidéo"}), 500
         
     except Exception as e:
-        print(f"ERREUR UPLOAD S3: {str(e)}")
         return jsonify({
             "success": False,
-            "message": f"Erreur upload vidéo: {str(e)}. Vérifiez la configuration S3."
+            "message": f"Erreur upload vidéo: {str(e)}"
         }), 500
     
     # Créer la publicité
@@ -5466,7 +5384,7 @@ def api_creer_publicite():
         boutique_id=boutique.id,
         user_id=user.id,
         produit_id=produit_id if produit else None,
-        video_url=video_url,  # URL S3 publique
+        video_url=video_url,  # URL Cloudinary
         titre=titre,
         description=description if description else None,
         prix=prix,
@@ -5476,9 +5394,6 @@ def api_creer_publicite():
     
     db.session.add(nouvelle_publicite)
     db.session.commit()
-    
-    print(f"Publicité créée avec ID = {nouvelle_publicite.id}")
-    print("=" * 60)
     
     return jsonify({
         "success": True,
