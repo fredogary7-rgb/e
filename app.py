@@ -5222,8 +5222,16 @@ def rejeter_commande(commande_id):
 # 📹 ROUTES POUR LES PUBLICITÉS VIDEO (Style TikTok)
 # ==============================
 
-# Configuration upload vidéos
-UPLOAD_FOLDER_PUBLICITES = os.path.join(app.root_path, 'static', 'uploads', 'publicites')
+# Configuration upload vidéos - S3 Railway Bucket
+import boto3
+from botocore.exceptions import NoCredentialsError, ClientError
+
+# Configuration S3 pour Railway Bucket
+S3_ENDPOINT_URL = os.getenv('S3_ENDPOINT_URL', '')
+S3_BUCKET_NAME = os.getenv('S3_BUCKET_NAME', '')
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', '')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', '')
+
 ALLOWED_VIDEO_EXTENSIONS = {'mp4', 'webm', 'mov', 'avi'}
 MAX_VIDEO_SIZE = 50 * 1024 * 1024  # 50MB
 
@@ -5276,19 +5284,66 @@ def creer_publicite():
         boutiques=boutiques)
 
 
+def get_s3_client():
+    """Crée un client S3 pour Railway Bucket"""
+    if not all([S3_ENDPOINT_URL, S3_BUCKET_NAME, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY]):
+        return None
+    return boto3.client(
+        's3',
+        endpoint_url=S3_ENDPOINT_URL,
+        aws_access_key_id=AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+    )
+
+def upload_to_s3(file_obj, filename, content_type='video/mp4'):
+    """Upload un fichier vers le S3 Railway Bucket"""
+    s3_client = get_s3_client()
+    if not s3_client:
+        raise Exception("Configuration S3 incomplète. Vérifiez les variables d'environnement.")
+    
+    try:
+        # Générer un nom de fichier unique
+        import uuid
+        ext = filename.rsplit('.', 1)[1].lower() if '.' in filename else 'mp4'
+        unique_key = f"publicites/pub_{uuid.uuid4().hex[:8]}.{ext}"
+        
+        # Upload vers S3
+        s3_client.upload_fileobj(
+            file_obj,
+            S3_BUCKET_NAME,
+            unique_key,
+            ExtraArgs={
+                'ContentType': content_type,
+                'ACL': 'public-read'
+            }
+        )
+        
+        # Construire l'URL publique
+        # Pour Railway S3, l'URL est généralement: https://s3.railwayinternal.com/bucket-name/key
+        # ou on peut utiliser l'URL du bucket si configuré
+        if 'railway' in S3_ENDPOINT_URL.lower():
+            # URL style Railway
+            video_url = f"{S3_ENDPOINT_URL.rstrip('/')}/{S3_BUCKET_NAME}/{unique_key}"
+        else:
+            # URL style S3 standard
+            video_url = f"https://{S3_BUCKET_NAME}.s3.amazonaws.com/{unique_key}"
+        
+        return video_url, unique_key
+        
+    except NoCredentialsError:
+        raise Exception("Identifiants S3 invalides. Vérifiez AWS_ACCESS_KEY_ID et AWS_SECRET_ACCESS_KEY.")
+    except ClientError as e:
+        raise Exception(f"Erreur S3: {e}")
+
 @app.route("/api/publicite/creer", methods=["POST"])
 @login_required
 def api_creer_publicite():
-    """API pour créer une publicité vidéo"""
+    """API pour créer une publicité vidéo - Upload vers S3 Railway Bucket"""
     print("=" * 60)
-    print("DEBUG UPLOAD PUBLICITE")
+    print("DEBUG UPLOAD PUBLICITE S3")
     print("=" * 60)
     
     user = get_logged_in_user()
-    
-    # DEBUG: Afficher les fichiers et form data
-    print(f"request.files = {request.files}")
-    print(f"request.form = {request.form}")
     
     # Vérifier les fichiers
     if 'video' not in request.files:
@@ -5297,7 +5352,6 @@ def api_creer_publicite():
     
     video_file = request.files['video']
     
-    print(f"video_file = {video_file}")
     print(f"video_file.filename = {video_file.filename}")
     
     if not video_file.filename:
@@ -5306,7 +5360,7 @@ def api_creer_publicite():
     
     if not allowed_video(video_file.filename):
         print(f"ERREUR: Format non supporté - {video_file.filename}")
-        return jsonify({"success": False, "message": "Format vidéo non supporté"}), 400
+        return jsonify({"success": False, "message": "Format vidéo non supporté. Utilisez MP4, WebM, MOV ou AVI."}), 400
     
     # Vérifier la taille
     video_file.seek(0, os.SEEK_END)
@@ -5325,11 +5379,6 @@ def api_creer_publicite():
     prix = request.form.get('prix', type=float)
     devise = request.form.get('devise', 'XOF')
     produit_id = request.form.get('produit_id', type=int)
-    
-    print(f"titre = {titre}")
-    print(f"prix = {prix}")
-    print(f"devise = {devise}")
-    print(f"produit_id = {produit_id}")
     
     if not titre:
         print("ERREUR: Le titre est obligatoire")
@@ -5358,72 +5407,36 @@ def api_creer_publicite():
         print("ERREUR: Vous devez avoir une boutique")
         return jsonify({"success": False, "message": "Vous devez avoir une boutique pour créer une publicité"}), 400
     
-    # Sauvegarder la vidéo
-    import uuid
-    ext = video_file.filename.rsplit('.', 1)[1].lower()
-    unique_filename = f"pub_{uuid.uuid4().hex[:8]}.{ext}"
-    video_path = os.path.join(UPLOAD_FOLDER_PUBLICITES, unique_filename)
-    
-    print(f"UPLOAD_FOLDER_PUBLICITES = {UPLOAD_FOLDER_PUBLICITES}")
-    print(f"video_path = {video_path}")
-    print(f"video_path existe deja = {os.path.exists(video_path)}")
-    
+    # Upload vers S3
     try:
-        # S'assurer que le dossier existe
-        os.makedirs(UPLOAD_FOLDER_PUBLICITES, exist_ok=True)
-        print(f"Dossier créé/vérifié: {UPLOAD_FOLDER_PUBLICITES}")
+        # Déterminer le content type
+        ext = video_file.filename.rsplit('.', 1)[1].lower()
+        content_types = {
+            'mp4': 'video/mp4',
+            'webm': 'video/webm',
+            'mov': 'video/quicktime',
+            'avi': 'video/x-msvideo'
+        }
+        content_type = content_types.get(ext, 'video/mp4')
         
-        # DEBUG: Logs détaillés avant écriture
-        print(f"video_path = {video_path}")
-        print(f"dirname = {os.path.dirname(video_path)}")
-        print(f"dirname exists = {os.path.exists(os.path.dirname(video_path))}")
-        print(f"dirname isdir = {os.path.isdir(os.path.dirname(video_path))}")
-        print(f"filename = {os.path.basename(video_path)}")
-        print(f"repr(video_path) = {repr(video_path)}")
-        print(f"len(video_path) = {len(video_path)}")
-        print(f"cwd = {os.getcwd()}")
-        print(f"dirname contents = {os.listdir(os.path.dirname(video_path))}")
-        
-        # TEST: Vérifier si on peut écrire un fichier test
-        test_file = os.path.join(UPLOAD_FOLDER_PUBLICITES, "test_write.txt")
-        try:
-            with open(test_file, "w") as f:
-                f.write("test")
-            print(f"test_file créé : {os.path.exists(test_file)}")
-        except Exception as e_test:
-            print(f"ERREUR test write: {e_test}")
-        
-        # Sauvegarder la vidéo
-        video_data = video_file.read()
-        with open(video_path, 'wb') as f:
-            f.write(video_data)
-        
-        print(f"Fichier sauvegardé: {video_path}")
-        print(f"Fichier existe apres sauvegarde = {os.path.exists(video_path)}")
-        print(f"Taille fichier sur disque = {os.path.getsize(video_path)} octets")
-        
-        # Vérifier que le fichier existe vraiment avant de continuer
-        if not os.path.exists(video_path):
-            print("ERREUR CRITIQUE: Le fichier n'a pas été sauvegardé!")
-            return jsonify({"success": False, "message": "Erreur lors de la sauvegarde de la vidéo"}), 500
+        # Upload vers S3
+        video_url, s3_key = upload_to_s3(video_file, video_file.filename, content_type)
+        print(f"Vidéo uploadée vers S3: {video_url}")
+        print(f"S3 Key: {s3_key}")
         
     except Exception as e:
-        import traceback
-        print(f"ERREUR lors de la sauvegarde: {str(e)}")
-        print(f"Traceback complet:")
-        traceback.print_exc()
-        return jsonify({"success": False, "message": f"Erreur sauvegarde: {str(e)}"}), 500
-    
-    # IMPORTANT: URL générée correspond au dossier réel utilisé (static/uploads)
-    video_url = f"/static/uploads/publicites/{unique_filename}"
-    print(f"video_url = {video_url}")
+        print(f"ERREUR UPLOAD S3: {str(e)}")
+        return jsonify({
+            "success": False,
+            "message": f"Erreur upload vidéo: {str(e)}. Vérifiez la configuration S3."
+        }), 500
     
     # Créer la publicité
     nouvelle_publicite = Publicite(
         boutique_id=boutique.id,
         user_id=user.id,
         produit_id=produit_id if produit else None,
-        video_url=video_url,
+        video_url=video_url,  # URL S3 publique
         titre=titre,
         description=description if description else None,
         prix=prix,
@@ -5440,7 +5453,8 @@ def api_creer_publicite():
     return jsonify({
         "success": True,
         "message": "Publicité publiée avec succès",
-        "publicite_id": nouvelle_publicite.id
+        "publicite_id": nouvelle_publicite.id,
+        "video_url": video_url
     })
 
 
