@@ -5291,19 +5291,19 @@ def creer_publicite():
 
 
 def get_s3_client():
-    """Crée un client S3 pour Railway Bucket"""
+    """Crée un client S3 pour Tigris Bucket"""
     print("=" * 60)
     print("DEBUG S3 CONFIGURATION")
     print("=" * 60)
     print(f"S3_ENDPOINT_URL: {S3_ENDPOINT_URL}")
     print(f"S3_BUCKET_NAME: {S3_BUCKET_NAME}")
-    print(f"AWS_ACCESS_KEY_ID length: {len(AWS_ACCESS_KEY_ID) if AWS_ACCESS_KEY_ID else 0}")
-    print(f"AWS_ACCESS_KEY_ID prefix: {AWS_ACCESS_KEY_ID[:8] + '...' if AWS_ACCESS_KEY_ID and len(AWS_ACCESS_KEY_ID) > 8 else 'N/A'}")
-    print(f"AWS_SECRET_ACCESS_KEY length: {len(AWS_SECRET_ACCESS_KEY) if AWS_SECRET_ACCESS_KEY else 0}")
-    print(f"Toutes variables presentes: {all([S3_ENDPOINT_URL, S3_BUCKET_NAME, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY])}")
+    print(f"S3_ACCESS_KEY_ID length: {len(S3_ACCESS_KEY_ID) if S3_ACCESS_KEY_ID else 0}")
+    print(f"S3_ACCESS_KEY_ID prefix: {S3_ACCESS_KEY_ID[:8] + '...' if S3_ACCESS_KEY_ID and len(S3_ACCESS_KEY_ID) > 8 else 'N/A'}")
+    print(f"S3_SECRET_ACCESS_KEY length: {len(S3_SECRET_ACCESS_KEY) if S3_SECRET_ACCESS_KEY else 0}")
+    print(f"Toutes variables presentes: {all([S3_ENDPOINT_URL, S3_BUCKET_NAME, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY])}")
     print("=" * 60)
     
-    if not all([S3_ENDPOINT_URL, S3_BUCKET_NAME, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY]):
+    if not all([S3_ENDPOINT_URL, S3_BUCKET_NAME, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY]):
         print("ERREUR: Variables d'environnement S3 manquantes!")
         return None
     
@@ -5311,8 +5311,8 @@ def get_s3_client():
         client = boto3.client(
             's3',
             endpoint_url=S3_ENDPOINT_URL,
-            aws_access_key_id=AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+            aws_access_key_id=S3_ACCESS_KEY_ID,
+            aws_secret_access_key=S3_SECRET_ACCESS_KEY
         )
         print("Client S3 cree avec succes")
         return client
