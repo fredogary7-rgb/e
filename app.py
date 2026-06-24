@@ -5226,20 +5226,25 @@ def rejeter_commande(commande_id):
 # 📹 ROUTES POUR LES PUBLICITÉS VIDEO (Style TikTok)
 # ==============================
 
-# Configuration upload vidéos - S3 Railway Bucket
-import boto3
-from botocore.exceptions import NoCredentialsError, ClientError
+# Configuration Cloudinary pour stockage vidéos
+import cloudinary
+import cloudinary.uploader
+from cloudinary.exceptions import Error as CloudinaryError
 
-# Configuration S3 pour Tigris (S3-compatible)
-# Variables d'environnement pour Tigris Storage
-S3_ENDPOINT_URL = os.getenv('S3_ENDPOINT_URL', 'https://t3.storageapi.dev')
-S3_BUCKET_NAME = os.getenv('S3_BUCKET_NAME', '')
-S3_ACCESS_KEY_ID = os.getenv('S3_ACCESS_KEY_ID', os.getenv('AWS_ACCESS_KEY_ID', ''))
-S3_SECRET_ACCESS_KEY = os.getenv('S3_SECRET_ACCESS_KEY', os.getenv('AWS_SECRET_ACCESS_KEY', ''))
-S3_REGION = os.getenv('S3_REGION', os.getenv('AWS_DEFAULT_REGION', 'us-east-1'))
+# Configuration Cloudinary via variables d'environnement
+CLOUDINARY_CLOUD_NAME = os.getenv('CLOUDINARY_CLOUD_NAME', 'dzxlwxjzx')
+CLOUDINARY_API_KEY = os.getenv('CLOUDINARY_API_KEY', '277798215838877')
+CLOUDINARY_API_SECRET = os.getenv('CLOUDINARY_API_SECRET', 'm0SAaqzlpih4hLX50x14z7AV4Oc')
+
+# Initialiser Cloudinary
+cloudinary.config(
+    cloud_name=CLOUDINARY_CLOUD_NAME,
+    api_key=CLOUDINARY_API_KEY,
+    api_secret=CLOUDINARY_API_SECRET
+)
 
 ALLOWED_VIDEO_EXTENSIONS = {'mp4', 'webm', 'mov', 'avi'}
-MAX_VIDEO_SIZE = 50 * 1024 * 1024  # 50MB
+MAX_VIDEO_SIZE = 100 * 1024 * 1024  # 100MB pour Cloudinary
 
 def allowed_video(filename):
     """Vérifie si l'extension du fichier vidéo est autorisée"""
