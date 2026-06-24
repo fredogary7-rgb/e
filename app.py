@@ -5540,7 +5540,7 @@ def api_creer_publicite():
         return jsonify({"success": False, "message": f"Erreur sauvegarde: {str(e)}"}), 500
     
     # IMPORTANT: URL générée correspond au dossier réel utilisé (static/uploads)
-    video_url = f"/static/uploads/{unique_filename}"
+    video_url = f"/static/uploads/publicites/{unique_filename}"
     print(f"video_url = {video_url}")
     
     # Créer la publicité
