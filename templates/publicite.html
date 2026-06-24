@@ -781,9 +781,7 @@ footer {
                 <option value="prix_asc" {% if tri == 'prix_asc' %}selected{% endif %}>Prix ↑</option>
                 <option value="prix_desc" {% if tri == 'prix_desc' %}selected{% endif %}>Prix ↓</option>
             </select>
-            <input type="number" name="prix_min" placeholder="Min" value="{{ prix_min or '' }}" step="100">
-            <input type="number" name="prix_max" placeholder="Max" value="{{ prix_max or '' }}" step="100">
-            {% if recherche or prix_min or prix_max %}
+            {% if recherche %}
             <a href="/publicites" class="clear-filters"><i class="fa fa-times"></i></a>
             {% endif %}
         </div>
