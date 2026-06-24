@@ -5,9 +5,13 @@ import re
 import sys
 import uuid
 import unicodedata
+import socket
 from datetime import datetime, timedelta, timezone, date, UTC
 from functools import wraps
 from urllib.parse import urlencode
+
+# Timeout global pour les opérations S3
+socket.setdefaulttimeout(60)  # 60 secondes
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, flash, session, g, jsonify, send_from_directory, abort
