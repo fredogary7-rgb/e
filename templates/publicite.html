@@ -251,6 +251,15 @@ body {
     color: #f9a8d4;
 }
 
+.action-btn.saved {
+    background: rgba(56, 189, 248, 0.6);
+    border-color: rgba(56, 189, 248, 0.8);
+}
+
+.action-btn.saved i {
+    color: var(--accent-blue);
+}
+
 .action-btn i {
     font-size: 22px;
     margin-bottom: 2px;
@@ -606,6 +615,71 @@ footer {
     font-style: italic;
 }
 
+/* SEARCH BAR */
+.search-bar {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.search-form {
+    flex: 1;
+    display: flex;
+    gap: 8px;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    outline: none;
+    font-size: 13px;
+    background: rgba(255,255,255,0.5);
+}
+
+.search-form button {
+    padding: 10px 16px;
+    background: var(--gradient-blue);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    cursor: pointer;
+}
+
+.search-filters {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.search-filters select,
+.search-filters input {
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 11px;
+    background: rgba(255,255,255,0.5);
+    width: 80px;
+}
+
+.clear-filters {
+    padding: 8px 10px;
+    color: var(--text-secondary);
+    font-size: 11px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.clear-filters:hover {
+    color: var(--accent-blue);
+}
+
 /* DOUBLE TAP HEART ANIMATION */
 .double-tap-heart {
     position: absolute;
@@ -693,6 +767,28 @@ footer {
 
 <div class="main">
     {% if publicites %}
+    <!-- SEARCH BAR -->
+    <div class="search-bar">
+        <form action="/publicites" method="GET" class="search-form">
+            <input type="text" name="q" placeholder="Rechercher..." value="{{ recherche or '' }}">
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+        <div class="search-filters">
+            <select name="tri" onchange="this.form.submit()">
+                <option value="recent" {% if tri == 'recent' %}selected{% endif %}>Récent</option>
+                <option value="vues" {% if tri == 'vues' %}selected{% endif %}>Vues</option>
+                <option value="likes" {% if tri == 'likes' %}selected{% endif %}>Likes</option>
+                <option value="prix_asc" {% if tri == 'prix_asc' %}selected{% endif %}>Prix ↑</option>
+                <option value="prix_desc" {% if tri == 'prix_desc' %}selected{% endif %}>Prix ↓</option>
+            </select>
+            <input type="number" name="prix_min" placeholder="Min" value="{{ prix_min or '' }}" step="100">
+            <input type="number" name="prix_max" placeholder="Max" value="{{ prix_max or '' }}" step="100">
+            {% if recherche or prix_min or prix_max %}
+            <a href="/publicites" class="clear-filters"><i class="fa fa-times"></i></a>
+            {% endif %}
+        </div>
+    </div>
+    
     <div class="video-feed" id="videoFeed">
         {% for pub in publicites %}
         <div class="video-item" data-pub-id="{{ pub.id }}">
@@ -728,6 +824,12 @@ footer {
                 <button class="action-btn" onclick="shareVideo({{ pub.id }})">
                     <i class="fa fa-share"></i>
                     <span>{{ pub.partages or 0 }}</span>
+                </button>
+                <button class="action-btn save-btn" onclick="toggleSave({{ pub.id }})">
+                    <i class="fa fa-bookmark"></i>
+                </button>
+                <button class="action-btn" onclick="signalerPublicite({{ pub.id }})">
+                    <i class="fa fa-flag"></i>
                 </button>
             </div>
             
@@ -1018,19 +1120,16 @@ function followSeller(element, vendeurId, currentUserId) {
         return;
     }
     
-    // Vérifier si l'utilisateur essaie de se suivre lui-même
     if (currentUserId && vendeurId === currentUserId) {
         alert('Vous ne pouvez pas vous suivre vous-même');
         return;
     }
     
-    // Vérifier si l'utilisateur est connecté
     if (!currentUserId || currentUserId === 0) {
         alert('Veuillez vous connecter pour suivre des vendeurs');
         return;
     }
     
-    // Utilise l'API existante /api/user/<user_id>/follow
     fetch('/api/user/' + vendeurId + '/follow', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
@@ -1045,10 +1144,8 @@ function followSeller(element, vendeurId, currentUserId) {
         })
         .then(function(data) {
             if (data.success) {
-                // Mettre à jour l'UI en utilisant l'element passé en paramètre
                 if (data.followed) {
                     element.classList.add('following');
-                    // Changer le + en check
                     var plusBadge = element.querySelector('.follow-plus');
                     if (plusBadge) {
                         plusBadge.innerHTML = '✓';
@@ -1070,6 +1167,49 @@ function followSeller(element, vendeurId, currentUserId) {
             console.error('Erreur follow:', err);
             alert('Erreur: ' + err.message);
         });
+}
+
+// SAVE/UNSAVE PUBLICITE
+function toggleSave(pubId) {
+    fetch('/api/publicite/' + pubId + '/sauvegarder', { method: 'POST' })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.success) {
+                var btn = event.currentTarget;
+                if (data.saved) {
+                    btn.classList.add('saved');
+                    alert('Publicité sauvegardée!');
+                } else {
+                    btn.classList.remove('saved');
+                    alert('Retiré des sauvegardes');
+                }
+            }
+        });
+}
+
+// SIGNALER PUBLICITE
+function signalerPublicite(pubId) {
+    var raison = prompt('Raison du signalement (spam, inappropriate, scam, other):');
+    if (raison) {
+        fetch('/api/publicite/' + pubId + '/signaler', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ raison: raison })
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.success) {
+                alert('Publicité signalée. Merci!');
+            } else {
+                alert(data.message || 'Erreur lors du signalement');
+            }
+        });
+    }
+}
+
+// COMMANDER PRODUIT
+function commanderProduit(pubId) {
+    window.location.href = '/produit/' + pubId;
 }
 </script>
 
