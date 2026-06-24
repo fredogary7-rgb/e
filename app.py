@@ -670,6 +670,25 @@ class SauvegardePublicite(db.Model):
         return f"<SauvegardePublicite user_id={self.user_id} publicite_id={self.publicite_id}>"
 
 
+class SignalementPublicite(db.Model):
+    """Signalements de publicités inappropriées"""
+    __tablename__ = 'signalements_publicites'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    publicite_id = db.Column(db.Integer, db.ForeignKey('publicites.id', ondelete='CASCADE'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    raison = db.Column(db.String(50))  # spam, inappropriate, scam, other
+    description = db.Column(db.Text, nullable=True)
+    date_creation = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relations
+    publicite = db.relationship('Publicite', backref=db.backref('signalements', lazy='dynamic'))
+    user = db.relationship('User', backref=db.backref('signalements_publicites', lazy='dynamic'))
+    
+    def __repr__(self):
+        return f"<SignalementPublicite user_id={self.user_id} publicite_id={self.publicite_id}>"
+
+
 class Follow(db.Model):
     """Système d'abonnement/followers"""
     __tablename__ = 'follows'
@@ -5900,6 +5919,100 @@ def api_supprimer_publicite(pub_id):
     db.session.commit()
     
     return jsonify({"success": True, "message": "Publicité supprimée"})
+
+
+# ─── ROUTES API POUR PUBLICITÉS (SAUVEGARDER, SIGNALER, etc.) ──────────────
+
+@app.route("/api/publicite/<int:pub_id>/sauvegarder", methods=["POST"])
+@login_required
+def api_sauvegarder_publicite(pub_id):
+    """API pour sauvegarder/retirer une publicité"""
+    user = get_logged_in_user()
+    
+    # Vérifier si déjà sauvegardé
+    existing = SauvegardePublicite.query.filter_by(
+        publicite_id=pub_id, user_id=user.id
+    ).first()
+    
+    if existing:
+        # Retirer la sauvegarde
+        db.session.delete(existing)
+        db.session.commit()
+        return jsonify({"success": True, "saved": False, "message": "Retiré des sauvegardes"})
+    else:
+        # Ajouter la sauvegarde
+        sauvegarde = SauvegardePublicite(publicite_id=pub_id, user_id=user.id)
+        db.session.add(sauvegarde)
+        db.session.commit()
+        return jsonify({"success": True, "saved": True, "message": "Publicité sauvegardée"})
+
+
+@app.route("/api/publicite/<int:pub_id>/signaler", methods=["POST"])
+@login_required
+def api_signaler_publicite(pub_id):
+    """API pour signaler une publicité inappropriée"""
+    user = get_logged_in_user()
+    data = request.get_json()
+    
+    if not data:
+        return jsonify({"success": False, "message": "Données invalides"}), 400
+    
+    raison = data.get('raison', 'other')
+    description = data.get('description', '')
+    
+    # Vérifier si déjà signalé
+    existing = SignalementPublicite.query.filter_by(
+        publicite_id=pub_id, user_id=user.id
+    ).first()
+    
+    if existing:
+        return jsonify({"success": False, "message": "Déjà signalé"}), 400
+    
+    # Créer le signalement
+    signalement = SignalementPublicite(
+        publicite_id=pub_id,
+        user_id=user.id,
+        raison=raison,
+        description=description
+    )
+    db.session.add(signalement)
+    db.session.commit()
+    
+    return jsonify({"success": True, "message": "Publicité signalée. Merci!"})
+
+
+@app.route("/api/publicite/<int:pub_id>/vue", methods=["POST"])
+@login_required
+def api_publicite_vue(pub_id):
+    """API pour compter une vue unique par utilisateur"""
+    user = get_logged_in_user()
+    publicite = Publicite.query.get_or_404(pub_id)
+    
+    # Vérifier si déjà vu (via table de suivi ou session)
+    # Pour simplifier, on utilise une clé de session
+    if 'vues_publicites' not in session:
+        session['vues_publicites'] = []
+    
+    vues = session['vues_publicites']
+    
+    if pub_id not in vues:
+        vues.append(pub_id)
+        session.modified = True
+        publicite.vues = (publicite.vues or 0) + 1
+        db.session.commit()
+        return jsonify({"success": True, "vues": publicite.vues})
+    
+    return jsonify({"success": True, "vues": publicite.vues, "already_counted": True})
+
+
+@app.route("/api/publicite/<int:pub_id>/share", methods=["POST"])
+@login_required
+def api_publicite_share(pub_id):
+    """API pour compter un partage"""
+    publicite = Publicite.query.get_or_404(pub_id)
+    publicite.partages = (publicite.partages or 0) + 1
+    db.session.commit()
+    return jsonify({"success": True, "partages": publicite.partages})
 
 
 # Initialiser les catégories au démarrage
