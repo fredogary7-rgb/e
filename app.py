@@ -5230,11 +5230,13 @@ def rejeter_commande(commande_id):
 import boto3
 from botocore.exceptions import NoCredentialsError, ClientError
 
-# Configuration S3 pour Railway Bucket
-S3_ENDPOINT_URL = os.getenv('S3_ENDPOINT_URL', '')
+# Configuration S3 pour Tigris (S3-compatible)
+# Variables d'environnement pour Tigris Storage
+S3_ENDPOINT_URL = os.getenv('S3_ENDPOINT_URL', 'https://t3.storageapi.dev')
 S3_BUCKET_NAME = os.getenv('S3_BUCKET_NAME', '')
-AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', '')
-AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', '')
+S3_ACCESS_KEY_ID = os.getenv('S3_ACCESS_KEY_ID', os.getenv('AWS_ACCESS_KEY_ID', ''))
+S3_SECRET_ACCESS_KEY = os.getenv('S3_SECRET_ACCESS_KEY', os.getenv('AWS_SECRET_ACCESS_KEY', ''))
+S3_REGION = os.getenv('S3_REGION', os.getenv('AWS_DEFAULT_REGION', 'us-east-1'))
 
 ALLOWED_VIDEO_EXTENSIONS = {'mp4', 'webm', 'mov', 'avi'}
 MAX_VIDEO_SIZE = 50 * 1024 * 1024  # 50MB
