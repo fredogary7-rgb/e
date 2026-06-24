@@ -46,62 +46,10 @@ body {
     --shadow-glow: 0 0 40px rgba(56, 189, 248, 0.15);
 }
 
-/* TOPBAR */
-.topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 24px;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border-color);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-.topbar .menu-toggle {
-    font-size: 20px;
-    cursor: pointer;
-    color: var(--text-primary);
-    width: 42px;
-    height: 42px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-    background: rgba(56, 189, 248, 0.1);
-    transition: all 0.3s ease;
-}
-
-.topbar .menu-toggle:hover {
-    background: rgba(56, 189, 248, 0.2);
-    color: var(--accent-blue);
-}
-
-.user-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(56, 189, 248, 0.1);
-    padding: 8px 18px;
-    border-radius: 50px;
-    border: 1px solid rgba(56, 189, 248, 0.2);
-}
-
-.user-icon {
-    font-size: 18px;
-    color: var(--accent-blue);
-}
-
-.user {
-    font-style: italic;
-    font-weight: 600;
-    font-size: 14px;
-    text-transform: capitalize;
-    color: var(--text-primary);
-}
+/* TOPBAR - Supprimée pour plein écran */
+.topbar { display: none; }
+.sidebar { display: none; }
+.overlay { display: none; }
 
 /* SIDEBAR */
 .sidebar {
@@ -232,12 +180,12 @@ body {
 .video-feed {
     position: relative;
     width: 100%;
-    max-width: 100%;
+    max-width: 480px;
     margin: 0 auto;
-    border-radius: 0;
+    border-radius: 16px;
     overflow: hidden;
     background: #000;
-    height: calc(100vh - 120px);
+    height: calc(100vh - 140px);
     overflow-y: scroll;
     scroll-snap-type: y mandatory;
     scroll-behavior: smooth;
@@ -247,10 +195,11 @@ body {
     position: relative;
     width: 100%;
     height: 100%;
-    min-height: calc(100vh - 120px);
+    min-height: calc(100vh - 140px);
     background: #000;
     overflow: hidden;
     scroll-snap-align: start;
+    scroll-snap-stop: always;
     flex-shrink: 0;
 }
 
@@ -342,6 +291,14 @@ body {
     overflow: hidden;
 }
 
+.video-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 8px;
+}
+
 .video-price {
     display: inline-block;
     background: var(--gradient-pink);
@@ -350,7 +307,100 @@ body {
     font-size: 13px;
     font-weight: 700;
     font-style: italic;
-    margin-top: 6px;
+}
+
+.btn-commander {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--gradient-blue);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-style: italic;
+    transition: all 0.3s ease;
+}
+
+.btn-commander:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+}
+
+.seller-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.seller-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--gradient-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.seller-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+    font-style: italic;
+}
+
+/* Avatar vendeur dans video-actions (en haut) */
+.seller-avatar-action {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+}
+
+.seller-avatar-small {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--gradient-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 20px;
+    border: 2px solid white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.follow-plus {
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 20px;
+    background: var(--gradient-pink);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    border: 2px solid white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.seller-avatar-action.following .follow-plus {
+    display: none;
 }
 
 /* EMPTY STATE */
@@ -646,7 +696,7 @@ footer {
     <div class="video-feed" id="videoFeed">
         {% for pub in publicites %}
         <div class="video-item" data-pub-id="{{ pub.id }}">
-            <video loop playsinline>
+            <video loop playsinline preload="metadata" muted>
                 <source src="{{ pub.video_url }}" type="video/mp4">
             </video>
             
@@ -656,6 +706,17 @@ footer {
             </div>
             
             <div class="video-actions">
+                <!-- Avatar vendeur avec bouton follow -->
+                {% set vendeur_id = pub.boutique.proprietaire.id if pub.boutique and pub.boutique.proprietaire else 0 %}
+                {% set est_abonne = user and vendeur_id in following_ids %}
+                <div class="seller-avatar-action {% if est_abonne %}following{% endif %}" onclick="followSeller(this, {{ vendeur_id }}, {{ user.id if user else 0 }})">
+                    <div class="seller-avatar-small">
+                        {{ pub.boutique.proprietaire.username[0].upper() if pub.boutique and pub.boutique.proprietaire else '?' }}
+                    </div>
+                    {% if not est_abonne %}
+                    <div class="follow-plus">+</div>
+                    {% endif %}
+                </div>
                 <button class="action-btn like-btn" onclick="toggleLike({{ pub.id }})">
                     <i class="fa fa-heart"></i>
                     <span>{{ pub.likes or 0 }}</span>
@@ -671,9 +732,22 @@ footer {
             </div>
             
             <div class="video-info">
+                <div class="seller-info">
+                    <div class="seller-avatar">
+                        {{ pub.boutique.proprietaire.username[0].upper() if pub.boutique and pub.boutique.proprietaire else '?' }}
+                    </div>
+                    <div class="seller-name">
+                        {{ pub.boutique.proprietaire.username if pub.boutique and pub.boutique.proprietaire else 'Vendeur' }}
+                    </div>
+                </div>
                 <h3>{{ pub.titre }}</h3>
                 <p>{{ pub.description or '' }}</p>
-                <span class="video-price">{{ "{:,}".format(pub.prix|int) if pub.prix else '' }} {{ pub.devise or 'XOF' }}</span>
+                <div class="video-footer">
+                    <span class="video-price">{{ "{:,}".format(pub.prix|int) if pub.prix else '' }} {{ pub.devise or 'XOF' }}</span>
+                    <button class="btn-commander" onclick="commanderProduit({{ pub.id }})">
+                        <i class="fa fa-shopping-cart"></i> Commander
+                    </button>
+                </div>
             </div>
         </div>
         {% endfor %}
@@ -708,18 +782,18 @@ footer {
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
     <a href="/publicites" class="nav-item active">
-        <i class="fa fa-home"></i>
-        <span>Pub</span>
+        <i class="fa fa-video"></i>
+        <span>Publicité</span>
     </a>
     <a href="/publicite/creer" class="nav-item">
         <i class="fa fa-plus-circle" style="font-size: 28px; color: var(--accent-blue);"></i>
         <span>Créer</span>
     </a>
-    <a href="/market" class="nav-item">
-        <i class="fa fa-store"></i>
-        <span>Market</span>
+    <a href="/publicite/activite" class="nav-item">
+        <i class="fa fa-heart"></i>
+        <span>Activités</span>
     </a>
-    <a href="/dashboard" class="nav-item">
+    <a href="/publicite/profil" class="nav-item">
         <i class="fa fa-user"></i>
         <span>Profil</span>
     </a>
@@ -740,20 +814,47 @@ document.addEventListener('DOMContentLoaded', function() {
         entries.forEach(function(entry) {
             var video = entry.target;
             if (entry.isIntersecting) {
-                video.play().catch(function(e) { console.log('Autoplay prevented'); });
+                // Démarrer la lecture automatique
+                video.play().catch(function(e) { 
+                    console.log('Autoplay prevented:', e); 
+                });
             } else {
+                // Pause quand la vidéo n'est pas visible
                 video.pause();
             }
         });
     }, observerOptions);
     
+    // Gérer le clic sur la vidéo pour pause/play
+    document.querySelectorAll('.video-item').forEach(function(item) {
+        item.addEventListener('click', function(e) {
+            // Ignorer si on clique sur les boutons
+            if (e.target.closest('.video-actions') || e.target.closest('.video-info')) return;
+            
+            var video = item.querySelector('video');
+            if (video.paused) {
+                video.play();
+            } else {
+                video.pause();
+            }
+        });
+    });
+    
     videos.forEach(function(video) { observer.observe(video); });
     
-    // Track views
+    // Track views - une seule vue par utilisateur
     var pubItems = document.querySelectorAll('.video-item');
     pubItems.forEach(function(item) {
         var pubId = item.dataset.pubId;
-        fetch('/api/publicite/' + pubId + '/vue', { method: 'POST' });
+        var viewedKey = 'pub_viewed_' + pubId;
+        
+        // Vérifier si déjà vu (localStorage)
+        if (!localStorage.getItem(viewedKey)) {
+            // Marquer comme vu
+            localStorage.setItem(viewedKey, '1');
+            // Envoyer la vue au serveur
+            fetch('/api/publicite/' + pubId + '/vue', { method: 'POST' });
+        }
     });
     
     // DOUBLE TAP TO LIKE
@@ -909,6 +1010,67 @@ document.getElementById('commentInput').addEventListener('keypress', function(e)
         sendComment();
     }
 });
+
+// FOLLOW SELLER FUNCTION
+function followSeller(element, vendeurId, currentUserId) {
+    if (!vendeurId || vendeurId === 0) {
+        alert('Vendeur inconnu');
+        return;
+    }
+    
+    // Vérifier si l'utilisateur essaie de se suivre lui-même
+    if (currentUserId && vendeurId === currentUserId) {
+        alert('Vous ne pouvez pas vous suivre vous-même');
+        return;
+    }
+    
+    // Vérifier si l'utilisateur est connecté
+    if (!currentUserId || currentUserId === 0) {
+        alert('Veuillez vous connecter pour suivre des vendeurs');
+        return;
+    }
+    
+    // Utilise l'API existante /api/user/<user_id>/follow
+    fetch('/api/user/' + vendeurId + '/follow', { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    })
+        .then(function(res) {
+            if (!res.ok) {
+                return res.json().then(function(errData) {
+                    throw new Error(errData.message || 'Erreur ' + res.status);
+                });
+            }
+            return res.json();
+        })
+        .then(function(data) {
+            if (data.success) {
+                // Mettre à jour l'UI en utilisant l'element passé en paramètre
+                if (data.followed) {
+                    element.classList.add('following');
+                    // Changer le + en check
+                    var plusBadge = element.querySelector('.follow-plus');
+                    if (plusBadge) {
+                        plusBadge.innerHTML = '✓';
+                        plusBadge.style.background = 'linear-gradient(135deg, #bbf7d0 0%, #86efac 100%)';
+                    }
+                } else {
+                    element.classList.remove('following');
+                    var plusBadge = element.querySelector('.follow-plus');
+                    if (plusBadge) {
+                        plusBadge.innerHTML = '+';
+                        plusBadge.style.background = 'linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%)';
+                    }
+                }
+            } else {
+                alert(data.message || 'Action impossible');
+            }
+        })
+        .catch(function(err) {
+            console.error('Erreur follow:', err);
+            alert('Erreur: ' + err.message);
+        });
+}
 </script>
 
 </body>

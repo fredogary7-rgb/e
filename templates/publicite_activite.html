@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activités - NovaTrade</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+
+:root {
+    --bg-primary: #f8fafc;
+    --bg-secondary: rgba(255, 255, 255, 0.8);
+    --bg-card: rgba(255, 255, 255, 0.7);
+    --border-color: rgba(148, 163, 184, 0.2);
+    --text-primary: #334155;
+    --text-secondary: #64748b;
+    --accent-blue: #38bdf8;
+    --accent-pink: #f9a8d4;
+    --accent-green: #86efac;
+    --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+    --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
+    --shadow-soft: 0 4px 6px rgba(56, 189, 248, 0.08);
+}
+
+body {
+    background: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
+    min-height: 100vh;
+    color: var(--text-primary);
+    padding-bottom: 80px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.topbar .menu-toggle {
+    font-size: 20px;
+    cursor: pointer;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(56, 189, 248, 0.1);
+}
+
+.user-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(56, 189, 248, 0.1);
+    padding: 8px 18px;
+    border-radius: 50px;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.user-icon { font-size: 18px; color: var(--accent-blue); }
+.user { font-style: italic; font-weight: 600; font-size: 14px; text-transform: capitalize; }
+
+.main { padding: 20px; max-width: 480px; margin: 0 auto; }
+
+.page-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.page-header h1 {
+    font-style: italic;
+    font-size: 22px;
+    font-weight: 800;
+    background: var(--gradient-pink);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+}
+
+.page-header p {
+    font-style: italic;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+}
+
+.stat-card .stat-value {
+    font-size: 28px;
+    font-weight: 800;
+    font-style: italic;
+    background: var(--gradient-blue);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat-card .stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-top: 4px;
+}
+
+.section-title {
+    font-style: italic;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.activity-list {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 24px;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.activity-item:last-child { border-bottom: none; }
+
+.activity-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.activity-icon.like { background: rgba(249, 168, 212, 0.2); color: var(--accent-pink); }
+.activity-icon.comment { background: rgba(56, 189, 248, 0.2); color: var(--accent-blue); }
+
+.activity-content { flex: 1; }
+
+.activity-content .activity-text {
+    font-size: 13px;
+    color: var(--text-primary);
+    font-style: italic;
+    line-height: 1.4;
+}
+
+.activity-content .activity-text strong {
+    color: var(--accent-blue);
+    font-weight: 700;
+}
+
+.activity-content .activity-date {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.empty-state i {
+    font-size: 64px;
+    color: var(--accent-pink);
+    opacity: 0.5;
+    margin-bottom: 20px;
+}
+
+.empty-state h2 {
+    font-style: italic;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.empty-state p {
+    font-style: italic;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+    z-index: 100;
+    border-top: 1px solid var(--border-color);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 11px;
+    padding: 5px 15px;
+    font-style: italic;
+}
+
+.nav-item.active { color: var(--accent-blue); }
+.nav-item i { font-size: 20px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="menu-toggle"><i class="fa fa-bars"></i></div>
+    <div class="user-container">
+        <i class="fa fa-user user-icon"></i>
+        <div class="user">{{ user.username if user else 'Invité' }}</div>
+    </div>
+</div>
+
+<div class="main">
+    <div class="page-header">
+        <h1>❤️ Activités</h1>
+        <p>Vos interactions et engagement</p>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-value">{{ total_likes }}</div>
+            <div class="stat-label">Total Likes</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ total_commentaires }}</div>
+            <div class="stat-label">Commentaires</div>
+        </div>
+    </div>
+
+    {% if likes_recus or commentaires_recus %}
+        {% if likes_recus %}
+        <div class="section-title">
+            <i class="fa fa-heart" style="color: var(--accent-pink);"></i>
+            Nouveaux Likes
+        </div>
+        <div class="activity-list">
+            {% for like in likes_recus %}
+            <div class="activity-item">
+                <div class="activity-icon like">
+                    <i class="fa fa-heart"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-text">
+                        <strong>{{ like.user }}</strong> a aimé votre vidéo "<strong>{{ like.publicite }}</strong>"
+                    </div>
+                    <div class="activity-date">{{ like.date }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if commentaires_recus %}
+        <div class="section-title">
+            <i class="fa fa-comment" style="color: var(--accent-blue);"></i>
+            Nouveaux Commentaires
+        </div>
+        <div class="activity-list">
+            {% for com in commentaires_recus %}
+            <div class="activity-item">
+                <div class="activity-icon comment">
+                    <i class="fa fa-comment"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-text">
+                        <strong>{{ com.user }}</strong> a commenté sur "<strong>{{ com.publicite }}</strong>"
+                        <br><em style="color: var(--text-secondary); font-size: 12px;">"{{ com.texte[:50] }}{% if com.texte|length > 50 %}...{% endif %}"</em>
+                    </div>
+                    <div class="activity-date">{{ com.date }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% else %}
+    <div class="empty-state">
+        <i class="fa fa-heart"></i>
+        <h2>Aucune activité pour le moment</h2>
+        <p>Vos vidéos recevront des likes et commentaires<br>quand vous en publierez !</p>
+    </div>
+    {% endif %}
+</div>
+
+<nav class="bottom-nav">
+    <a href="/publicites" class="nav-item">
+        <i class="fa fa-video"></i>
+        <span>Publicité</span>
+    </a>
+    <a href="/publicite/creer" class="nav-item">
+        <i class="fa fa-plus-circle" style="font-size: 28px; color: var(--accent-blue);"></i>
+        <span>Créer</span>
+    </a>
+    <a href="/publicite/activite" class="nav-item active">
+        <i class="fa fa-heart"></i>
+        <span>Activités</span>
+    </a>
+    <a href="/publicite/profil" class="nav-item">
+        <i class="fa fa-user"></i>
+        <span>Profil</span>
+    </a>
+</nav>
+
+</body>
+</html>

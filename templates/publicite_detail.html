@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ publicite.titre }} - NovaTrade</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+
+:root {
+    --bg-primary: #f8fafc;
+    --bg-secondary: rgba(255, 255, 255, 0.9);
+    --bg-card: rgba(255, 255, 255, 0.7);
+    --border-color: rgba(148, 163, 184, 0.2);
+    --text-primary: #334155;
+    --text-secondary: #64748b;
+    --accent-blue: #38bdf8;
+    --accent-pink: #f9a8d4;
+    --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+    --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
+    --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
+    --shadow-soft: 0 4px 6px rgba(56, 189, 248, 0.08);
+}
+
+body {
+    background: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
+    min-height: 100vh;
+    color: var(--text-primary);
+    padding-bottom: 80px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.back-btn {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(56, 189, 248, 0.1);
+    color: var(--accent-blue);
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.user-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(56, 189, 248, 0.1);
+    padding: 8px 18px;
+    border-radius: 50px;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.user-icon { font-size: 18px; color: var(--accent-blue); }
+.user { font-style: italic; font-weight: 600; font-size: 14px; text-transform: capitalize; }
+
+.main { padding: 20px; max-width: 480px; margin: 0 auto; }
+
+.video-container {
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #000;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+.video-container video {
+    width: 100%;
+    display: block;
+}
+
+.video-stats {
+    display: flex;
+    gap: 20px;
+    padding: 12px 16px;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border-radius: 12px;
+    margin-bottom: 16px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.stat-item i { color: var(--accent-blue); }
+
+.video-info-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.video-title {
+    font-style: italic;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.video-description {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.video-price {
+    display: inline-block;
+    background: var(--gradient-pink);
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 700;
+    font-style: italic;
+    color: white;
+    margin-bottom: 16px;
+}
+
+.action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.btn-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 20px;
+    border-radius: 14px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-style: italic;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: var(--gradient-blue);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
+}
+
+.btn-secondary {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #fecaca 0%, #f87171 100%);
+    color: white;
+}
+
+.seller-section {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.seller-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--gradient-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.seller-info { flex: 1; }
+
+.seller-name {
+    font-size: 14px;
+    font-weight: 600;
+    font-style: italic;
+    color: var(--text-primary);
+}
+
+.seller-boutique {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.comments-section {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.comments-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.comments-title {
+    font-style: italic;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.comment-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.comment-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+.comment-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--gradient-pink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.comment-body { flex: 1; }
+
+.comment-author {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-style: italic;
+}
+
+.comment-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.comment-date {
+    font-size: 10px;
+    color: var(--text-secondary);
+    opacity: 0.7;
+    margin-top: 4px;
+}
+
+.comment-input-wrapper {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.comment-input {
+    flex: 1;
+    padding: 10px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    outline: none;
+    font-size: 13px;
+    background: rgba(255,255,255,0.5);
+    color: var(--text-primary);
+}
+
+.comment-send-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gradient-blue);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+}
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+    z-index: 100;
+    border-top: 1px solid var(--border-color);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 11px;
+    padding: 5px 15px;
+    font-style: italic;
+}
+
+.nav-item.active { color: var(--accent-blue); }
+.nav-item i { font-size: 20px; }
+
+.empty-comments {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-style: italic;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <a href="/publicite/profil" class="back-btn"><i class="fa fa-arrow-left"></i></a>
+    <div class="user-container">
+        <i class="fa fa-user user-icon"></i>
+        <div class="user">{{ user.username if user else 'Invité' }}</div>
+    </div>
+</div>
+
+<div class="main">
+    <!-- Vidéo -->
+    <div class="video-container">
+        <video controls autoplay muted loop>
+            <source src="{{ publicite.video_url }}" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="video-stats">
+        <div class="stat-item">
+            <i class="fa fa-eye"></i>
+            <span>{{ publicite.vues or 0 }} vues</span>
+        </div>
+        <div class="stat-item">
+            <i class="fa fa-heart" style="color: {% if has_liked %}#f9a8d4{% else %}var(--accent-blue){% endif %};"></i>
+            <span>{{ publicite.likes or 0 }} likes</span>
+        </div>
+        <div class="stat-item">
+            <i class="fa fa-comment"></i>
+            <span>{{ publicite.commentaires_count or 0 }}</span>
+        </div>
+    </div>
+
+    <!-- Informations -->
+    <div class="video-info-card">
+        <h1 class="video-title">{{ publicite.titre }}</h1>
+        <p class="video-description">{{ publicite.description or 'Aucune description' }}</p>
+        <div class="video-price">{{ "{:,}".format(publicite.prix|int) if publicite.prix else '' }} {{ publicite.devise or 'XOF' }}</div>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="action-buttons">
+        <button class="btn-action btn-primary" onclick="commanderProduit({{ publicite.id }})">
+            <i class="fa fa-shopping-cart"></i> Commander
+        </button>
+        <button class="btn-action btn-secondary" onclick="toggleLike({{ publicite.id }})">
+            <i class="fa fa-heart"></i> {% if has_liked %}Aimé{% else %}Liker{% endif %}
+        </button>
+    </div>
+
+    <!-- Section vendeur -->
+    <div class="seller-section">
+        <div class="seller-avatar">
+            {{ publicite.boutique.proprietaire.username[0].upper() if publicite.boutique and publicite.boutique.proprietaire else '?' }}
+        </div>
+        <div class="seller-info">
+            <div class="seller-name">{{ publicite.boutique.proprietaire.username if publicite.boutique and publicite.boutique.proprietaire else 'Vendeur' }}</div>
+            <div class="seller-boutique">{{ publicite.boutique.nom if publicite.boutique else '' }}</div>
+        </div>
+    </div>
+
+    <!-- Bouton supprimer (propriétaire uniquement) -->
+    {% if is_owner %}
+    <div class="action-buttons">
+        <button class="btn-action btn-danger" onclick="supprimerPublicite({{ publicite.id }})" style="grid-column: span 2;">
+            <i class="fa fa-trash"></i> Supprimer la publicité
+        </button>
+    </div>
+    {% endif %}
+
+    <!-- Commentaires -->
+    <div class="comments-section">
+        <div class="comments-header">
+            <h2 class="comments-title">💬 Commentaires ({{ publicite.commentaires_count or 0 }})</h2>
+        </div>
+
+        <div id="commentsList">
+            {% if commentaires %}
+                {% for com in commentaires %}
+                <div class="comment-item">
+                    <div class="comment-avatar">{{ com.user.username[0].upper() }}</div>
+                    <div class="comment-body">
+                        <div class="comment-author">{{ com.user.username }}</div>
+                        <div class="comment-text">{{ com.texte }}</div>
+                        <div class="comment-date">{{ com.date_creation.strftime('%d/%m/%Y %H:%M') if com.date_creation else '' }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-comments">Aucun commentaire pour le moment. Soyez le premier !</div>
+            {% endif %}
+        </div>
+
+        {% if user %}
+        <div class="comment-input-wrapper">
+            <input type="text" class="comment-input" id="commentInput" placeholder="Écrire un commentaire...">
+            <button class="comment-send-btn" onclick="sendComment()"><i class="fa fa-paper-plane"></i></button>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<nav class="bottom-nav">
+    <a href="/publicites" class="nav-item">
+        <i class="fa fa-video"></i>
+        <span>Publicité</span>
+    </a>
+    <a href="/publicite/creer" class="nav-item">
+        <i class="fa fa-plus-circle" style="font-size: 28px; color: var(--accent-blue);"></i>
+        <span>Créer</span>
+    </a>
+    <a href="/publicite/activite" class="nav-item">
+        <i class="fa fa-heart"></i>
+        <span>Activités</span>
+    </a>
+    <a href="/publicite/profil" class="nav-item active">
+        <i class="fa fa-user"></i>
+        <span>Profil</span>
+    </a>
+</nav>
+
+<script>
+const publiciteId = {{ publicite.id }};
+
+// Commander produit
+function commanderProduit(pubId) {
+    // Rediriger vers la page du produit ou le panier
+    window.location.href = '/produit/{{ publicite.produit_id if publicite.produit_id else publicite.id }}';
+}
+
+// Toggle like
+function toggleLike(pubId) {
+    fetch('/api/publicite/' + pubId + '/like', { method: 'POST' })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.success) {
+                location.reload();
+            }
+        });
+}
+
+// Supprimer publicité
+function supprimerPublicite(pubId) {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette publicité ?')) return;
+    
+    fetch('/api/publicite/' + pubId + '/supprimer', { method: 'POST' })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.success) {
+                window.location.href = '/publicite/profil';
+            } else {
+                alert(data.message || 'Erreur lors de la suppression');
+            }
+        });
+}
+
+// Envoyer commentaire
+function sendComment() {
+    var input = document.getElementById('commentInput');
+    var text = input.value.trim();
+    
+    if (!text) return;
+    
+    fetch('/api/publicite/' + publiciteId + '/commentaire', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ texte: text })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        if (data.success) {
+            location.reload();
+        }
+    });
+}
+
+// Enter key for comments
+document.getElementById('commentInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        sendComment();
+    }
+});
+</script>
+
+</body>
+</html>
