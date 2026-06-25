@@ -427,6 +427,25 @@ body {
             <p><i class="fa fa-info-circle"></i> Votre code PIN sécurise vos retraits et la réinitialisation de votre mot de passe. 6 chiffres requis.</p>
         </div>
     </div>
+
+    <div class="section" id="biometric-section">
+        <h2 class="section-title"><i class="fa fa-fingerprint"></i> Authentification biométrique</h2>
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; font-style: italic;">
+            Activez Face ID, Touch ID ou Windows Hello pour valider vos retraits et changements de mot de passe sans saisir votre PIN.
+        </p>
+        
+        <div id="biometric-status">
+            <!-- Status will be loaded dynamically -->
+        </div>
+        
+        <div id="biometric-devices" style="margin-top: 16px;">
+            <!-- Registered devices will be listed here -->
+        </div>
+        
+        <button id="btn-register-biometric" class="btn btn-secondary" style="margin-top: 16px;" onclick="registerBiometric()">
+            <i class="fa fa-fingerprint"></i> <span id="btn-biometric-text">Activer l'authentification biométrique</span>
+        </button>
+    </div>
 </div>
 
 <script>
@@ -437,6 +456,196 @@ document.getElementById('pin').addEventListener('input', function(e) {
 document.getElementById('confirm_pin').addEventListener('input', function(e) {
     this.value = this.value.replace(/\D/g, '').slice(0, 6);
 });
+
+// ==============================
+// WEBAUTHN / BIOMETRIC FUNCTIONS
+// ==============================
+
+// Check if WebAuthn is supported
+function isWebAuthnSupported() {
+    return window.PublicKeyCredential !== undefined && typeof window.PublicKeyCredential === 'function';
+}
+
+// Load biometric status on page load
+document.addEventListener('DOMContentLoaded', function() {
+    if (!isWebAuthnSupported()) {
+        document.getElementById('biometric-status').innerHTML = `
+            <div class="alert danger">
+                <i class="fa fa-exclamation-triangle"></i>
+                L'authentification biométrique n'est pas supportée par votre navigateur.
+            </div>
+        `;
+        document.getElementById('btn-register-biometric').style.display = 'none';
+        return;
+    }
+    
+    loadBiometricDevices();
+});
+
+// Load registered biometric devices
+function loadBiometricDevices() {
+    fetch('/api/webauthn/credentials')
+        .then(response => response.json())
+        .then(devices => {
+            const statusDiv = document.getElementById('biometric-status');
+            const devicesDiv = document.getElementById('biometric-devices');
+            const btnText = document.getElementById('btn-biometric-text');
+            
+            if (devices.length === 0) {
+                statusDiv.innerHTML = `
+                    <div class="alert" style="background: rgba(56, 189, 248, 0.1); color: var(--accent-blue); border: 1px solid rgba(56, 189, 248, 0.2);">
+                        <i class="fa fa-info-circle"></i>
+                        Aucune authentification biométrique enregistrée.
+                    </div>
+                `;
+                btnText.textContent = 'Activer l\'authentification biométrique';
+            } else {
+                statusDiv.innerHTML = `
+                    <div class="alert success">
+                        <i class="fa fa-check-circle"></i>
+                        Authentification biométrique activée (${devices.length} appareil(s))
+                    </div>
+                `;
+                btnText.textContent = 'Ajouter un autre appareil';
+                
+                // List devices
+                let devicesHTML = '<div style="margin-top: 12px;">';
+                devices.forEach(device => {
+                    devicesHTML += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(56, 189, 248, 0.05); border-radius: 10px; margin-bottom: 8px; border: 1px solid rgba(56, 189, 248, 0.1);">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <i class="fa ${device.device_type === 'platform' ? 'fa-mobile-alt' : 'fa-key'}" style="color: var(--accent-blue); font-size: 20px;"></i>
+                                <div>
+                                    <div style="font-weight: 600; font-size: 14px;">${device.name}</div>
+                                    <div style="font-size: 11px; color: var(--text-secondary);">Ajouté le ${device.created_at} • Dernière utilisation: ${device.last_used_at}</div>
+                                </div>
+                            </div>
+                            <button onclick="deleteBiometricDevice(${device.id})" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 18px;">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+                devicesHTML += '</div>';
+                devicesDiv.innerHTML = devicesHTML;
+            }
+        })
+        .catch(error => {
+            console.error('Error loading biometric devices:', error);
+        });
+}
+
+// Register a new biometric device
+function registerBiometric() {
+    if (!isWebAuthnSupported()) {
+        alert('Votre navigateur ne supporte pas WebAuthn');
+        return;
+    }
+    
+    const deviceName = prompt('Donnez un nom à cet appareil (ex: iPhone de Jean, MacBook Pro):', 'Mon appareil');
+    if (!deviceName) return;
+    
+    // Step 1: Start registration
+    fetch('/api/webauthn/register/start', { method: 'POST' })
+        .then(response => response.json())
+        .then(options => {
+            if (!options.success && options.message) {
+                alert(options.message);
+                return;
+            }
+            
+            // Step 2: Create credential with browser's WebAuthn API
+            return navigator.credentials.create({
+                publicKey: {
+                    challenge: base64urlToBuffer(options.challenge),
+                    rp: options.rp,
+                    user: {
+                        id: base64urlToBuffer(options.user.id),
+                        name: options.user.name,
+                        displayName: options.user.displayName
+                    },
+                    pubKeyCredParams: options.pubKeyCredParams,
+                    timeout: options.timeout,
+                    attestation: options.attestation,
+                    authenticatorSelection: options.authenticatorSelection
+                }
+            });
+        })
+        .then(credential => {
+            if (!credential) return;
+            
+            // Step 3: Complete registration
+            const registrationData = {
+                id: credential.id,
+                response: {
+                    attestationObject: bufferToBase64url(new Uint8Array(credential.response.attestationObject)),
+                    clientDataJSON: bufferToBase64url(new Uint8Array(credential.response.clientDataJSON))
+                },
+                deviceName: deviceName
+            };
+            
+            return fetch('/api/webauthn/register/complete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(registrationData)
+            });
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                alert('✅ ' + result.message);
+                loadBiometricDevices();
+            } else {
+                alert('❌ ' + result.message);
+            }
+        })
+        .catch(error => {
+            console.error('Registration error:', error);
+            alert('Erreur lors de l\'enregistrement biométrique: ' + error.message);
+        });
+}
+
+// Delete a biometric device
+function deleteBiometricDevice(deviceId) {
+    if (!confirm('Voulez-vous vraiment supprimer cet appareil biométrique ?')) return;
+    
+    fetch(`/api/webauthn/credential/${deviceId}/delete`, { method: 'POST' })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                alert('Appareil supprimé avec succès');
+                loadBiometricDevices();
+            } else {
+                alert('Erreur: ' + result.message);
+            }
+        })
+        .catch(error => {
+            console.error('Delete error:', error);
+            alert('Erreur lors de la suppression');
+        });
+}
+
+// Utility functions for base64url encoding/decoding
+function base64urlToBuffer(base64url) {
+    const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
+    const padding = base64.length % 4;
+    const padded = base64 + '='.repeat(padding);
+    const binaryStr = atob(padded);
+    const bytes = new Uint8Array(binaryStr.length);
+    for (let i = 0; i < binaryStr.length; i++) {
+        bytes[i] = binaryStr.charCodeAt(i);
+    }
+    return bytes.buffer;
+}
+
+function bufferToBase64url(buffer) {
+    const bytes = new Uint8Array(buffer);
+    let binary = '';
+    for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
 </script>
 
 </body>
