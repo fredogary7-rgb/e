@@ -3818,18 +3818,24 @@ def health():
 def webauthn_register_start():
     """Démarrer le processus d'enregistrement d'une passkey"""
     import os
+    import base64
+    
+    def to_b64(data: bytes) -> str:
+        """Convert bytes to base64 URL-safe string"""
+        return base64.urlsafe_b64encode(data).decode("utf-8").rstrip("=")
     
     user = get_logged_in_user()
     
-    # Générer un handle utilisateur unique (16 octets aléatoires)
-    user_handle = os.urandom(16)
+    # ✅ CORRECTION : user_handle stable basé sur l'ID utilisateur (base64 URL-safe)
+    user_handle = to_b64(str(user.id).encode('utf-8'))
     
-    # Générer un challenge (32 octets aléatoires)
+    # Générer un challenge (32 octets aléatoires) - DOIT être stocké pour vérification
     challenge = os.urandom(32)
+    challenge_b64 = to_b64(challenge)
     
-    # Options pour l'enregistrement
+    # Options pour l'enregistrement (tout en strings JSON-serializable)
     registration_options = {
-        "challenge": challenge,
+        "challenge": challenge_b64,
         "rp": {
             "name": "NovaTrade",
             "id": request.host.split(":")[0]  # Domaine sans port
@@ -3852,9 +3858,9 @@ def webauthn_register_start():
         }
     }
     
-    # Stocker le challenge et user_handle en session pour vérification ultérieure
-    session['webauthn_challenge'] = challenge.hex()
-    session['webauthn_user_handle'] = user_handle.hex()
+    # ✅ CORRECTION : Stockage du challenge pour vérification ultérieure
+    session['webauthn_challenge'] = challenge_b64
+    session['webauthn_user_id'] = user.id  # Pour vérifier que c'est le même utilisateur
     
     return jsonify(registration_options)
 
