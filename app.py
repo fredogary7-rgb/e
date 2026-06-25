@@ -206,27 +206,6 @@ class User(db.Model, UserMixin):
     pin_failed_attempts = db.Column(db.Integer, default=0)  # Nombre de tentatives PIN échouées
     pin_locked_until = db.Column(db.DateTime, nullable=True)  # Verrouillage temporaire après trop d'échecs
     has_frog_attempt = db.Column(db.Boolean, default=True)
-
-class WebAuthnCredential(db.Model):
-    """Identifiants WebAuthn/Passkeys pour authentification biométrique"""
-    __tablename__ = 'webauthn_credentials'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    credential_id = db.Column(db.String(500), unique=True, nullable=False)
-    credential_public_key = db.Column(db.LargeBinary, nullable=False)
-    sign_count = db.Column(db.Integer, default=0)
-    device_type = db.Column(db.String(50))  # 'platform' (Face ID/Touch ID) ou 'cross-platform' (clé USB)
-    aaguid = db.Column(db.String(100))  # Identifiant du type d'appareil
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    last_used_at = db.Column(db.DateTime, nullable=True)
-    name = db.Column(db.String(100), nullable=True)  # Nom donné par l'utilisateur (ex: "iPhone de Jean")
-    is_active = db.Column(db.Boolean, default=True)
-    
-    user = db.relationship('User', backref=db.backref('webauthn_credentials', lazy='dynamic'))
-    
-    def __repr__(self):
-        return f"<WebAuthnCredential {self.name or self.credential_id[:20]}>"
     frog_game_done = db.Column(db.Boolean, default=False)
     country = db.Column(db.String(50), default='')
     has_played_this_round = db.Column(db.Boolean, default=False)
@@ -255,6 +234,28 @@ class WebAuthnCredential(db.Model):
 
     def __repr__(self):
         return f"<User {self.username} | {self.phone}>"
+
+
+class WebAuthnCredential(db.Model):
+    """Identifiants WebAuthn/Passkeys pour authentification biométrique"""
+    __tablename__ = 'webauthn_credentials'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    credential_id = db.Column(db.String(500), unique=True, nullable=False)
+    credential_public_key = db.Column(db.LargeBinary, nullable=False)
+    sign_count = db.Column(db.Integer, default=0)
+    device_type = db.Column(db.String(50))  # 'platform' (Face ID/Touch ID) ou 'cross-platform' (clé USB)
+    aaguid = db.Column(db.String(100))  # Identifiant du type d'appareil
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    last_used_at = db.Column(db.DateTime, nullable=True)
+    name = db.Column(db.String(100), nullable=True)  # Nom donné par l'utilisateur (ex: "iPhone de Jean")
+    is_active = db.Column(db.Boolean, default=True)
+    
+    user = db.relationship('User', backref=db.backref('webauthn_credentials', lazy='dynamic'))
+    
+    def __repr__(self):
+        return f"<WebAuthnCredential {self.name or self.credential_id[:20]}>"
 
 # ==============================
 # 📦 MODELS
