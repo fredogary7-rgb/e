@@ -3936,7 +3936,7 @@ def webauthn_register_complete():
 @app.route("/api/webauthn/authenticate/start", methods=["POST"])
 def webauthn_authenticate_start():
     """Démarrer le processus d'authentification biométrique"""
-    from webauthn import generate_user_handle
+    # Pas d'import webauthn nécessaire - on utilise uuid pour le challenge
     
     user = get_logged_in_user()
     
