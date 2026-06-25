@@ -2088,6 +2088,32 @@ def reset_password(username):
 SOLEAS_API_KEY = "SP_y7QKkaamPsVTlw8GDDGyzlJ7bmPUvdLorOQqWUXfRLI_AP"
 SOLEAS_WEBHOOK_SECRET = "b42ed39b9e0db71db4556a2dfe1b1ad00dcce656fd4dba033f1947f913f1908bc817588c2edb32d92533a1d162e57ad4b1f7299f39695c5671c3ef07baa6f22a"
 
+# Mapping des noms de pays vers les codes utilisés dans SERVICES
+COUNTRY_CODE = {
+    "Cameroun": "CM",
+    "Cameroon": "CM",
+    "cm": "CM",
+    "Côte d'Ivoire": "CI",
+    "Cote d'Ivoire": "CI",
+    "ci": "CI",
+    "Burkina Faso": "BF",
+    "bf": "BF",
+    "Bénin": "BJ",
+    "Benin": "BJ",
+    "bj": "BJ",
+    "Togo": "TG",
+    "tg": "TG",
+    "Congo DRC": "COD",
+    "Congo": "COD",
+    "cod": "COD",
+    "Congo Brazzaville": "COG",
+    "cog": "COG",
+    "Gabon": "GAB",
+    "gab": "GAB",
+    "Uganda": "UGA",
+    "uga": "UGA",
+}
+
 SERVICES = {
 
     # 🇨🇲 CAMEROUN
