@@ -4082,6 +4082,30 @@ def webauthn_delete_credential(cred_id):
     })
 
 
+@app.route("/api/verify-pin", methods=["POST"])
+@login_required
+def api_verify_pin():
+    """Vérifier le code PIN d'un utilisateur (pour confirmation de retrait)"""
+    user = get_logged_in_user()
+    data = request.get_json()
+    
+    if not data:
+        return jsonify({"success": False, "message": "Données invalides"}), 400
+    
+    pin = data.get('pin', '')
+    
+    if not pin or len(pin) != 6:
+        return jsonify({"success": False, "message": "Le PIN doit contenir 6 chiffres"}), 400
+    
+    # Utiliser la fonction verify_pin existante
+    success, message = verify_pin(user, pin)
+    
+    return jsonify({
+        "success": success,
+        "message": message
+    })
+
+
 # ──────────────────────────────────────────────────────
 # 🏪 ROUTES POUR LES BOUTIQUES ET VENDEURS
 # ──────────────────────────────────────────────────────
