@@ -296,22 +296,132 @@
             color: var(--text-secondary);
         }
 
-        .pin-input {
-            width: 100%;
-            padding: 15px;
+        .pin-dots {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .pin-dot {
+            width: 45px;
+            height: 55px;
             border: 2px solid var(--border-color);
-            border-radius: var(--radius-lg);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .pin-dot.filled {
+            border-color: var(--accent-blue);
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent-blue);
+        }
+
+        .pin-dot.error {
+            border-color: #e53e3e;
+            background: rgba(229, 62, 62, 0.1);
+            color: #e53e3e;
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .hidden-input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .attempts-info {
             text-align: center;
-            letter-spacing: 10px;
-            outline: none;
-            transition: all 0.3s ease;
+            font-size: 13px;
+            color: var(--text-secondary);
             margin-bottom: 15px;
         }
 
-        .pin-input:focus {
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+        .attempts-info .current {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .attempts-info .max {
+            color: #e53e3e;
+        }
+
+        .biometric-option {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            display: none;
+        }
+
+        .biometric-option p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .btn-biometric {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-biometric:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-biometric:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-biometric.loading .loading-spinner {
+            display: inline-block;
+        }
+
+        .btn-biometric.loading .btn-text {
+            display: none;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         .modal-actions {
@@ -345,6 +455,21 @@
         }
 
         .lockout-timer.active {
+            display: block;
+        }
+
+        .error-message {
+            background: rgba(229, 62, 62, 0.1);
+            color: #e53e3e;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: none;
+            text-align: center;
+        }
+
+        .error-message.show {
             display: block;
         }
 
@@ -445,7 +570,7 @@
             </form>
         </div>
 
-        <!-- Modal PIN -->
+        <!-- Modal PIN/Biométrie -->
         <div class="modal-overlay" id="pinModal">
             <div class="modal">
                 <div class="modal-header">
@@ -453,31 +578,47 @@
                     <p>Entrez votre code PIN à 6 chiffres pour confirmer le retrait</p>
                 </div>
 
+                <div class="error-message" id="errorMessage"></div>
+
                 <form method="POST" id="pinForm">
                     <input type="hidden" name="montant" id="hidden-montant">
                     <input type="hidden" name="payment_method" id="hidden-payment">
                     <input type="hidden" name="phone" id="hidden-phone">
                     
-                    <input type="password" 
-                           class="pin-input" 
-                           id="pin" 
-                           name="pin" 
-                           placeholder="••••••" 
-                           maxlength="6" 
-                           pattern="[0-9]{6}"
-                           required
-                           autocomplete="off">
+                    <div class="pin-dots" id="pinDots">
+                        <div class="pin-dot" data-index="0"></div>
+                        <div class="pin-dot" data-index="1"></div>
+                        <div class="pin-dot" data-index="2"></div>
+                        <div class="pin-dot" data-index="3"></div>
+                        <div class="pin-dot" data-index="4"></div>
+                        <div class="pin-dot" data-index="5"></div>
+                    </div>
+                    <input type="password" class="hidden-input" id="pin" maxlength="6" inputmode="numeric" pattern="[0-9]*">
+
+                    <div class="attempts-info" id="attemptsInfo">
+                        Tentative <span class="current" id="currentAttempt">1</span> sur <span class="max">3</span>
+                    </div>
 
                     <div class="lockout-timer" id="lockoutTimer">
                         <i class="fa fa-lock"></i>
                         Trop de tentatives. Réessayez dans <span id="timer-countdown">300</span> secondes.
                     </div>
 
+                    <!-- Option biométrique -->
+                    <div class="biometric-option" id="biometricOption">
+                        <p>Ou utilisez votre empreinte biométrique pour valider instantanément</p>
+                        <button type="button" class="btn-biometric" id="btnBiometric" onclick="authenticateBiometric()">
+                            <i class="fa fa-fingerprint"></i>
+                            <span class="btn-text">Utiliser Face ID / Touch ID</span>
+                            <span class="loading-spinner"></span>
+                        </button>
+                    </div>
+
                     <div class="modal-actions">
                         <button type="button" class="btn btn-cancel" onclick="closePinModal()">
                             Annuler
                         </button>
-                        <button type="submit" class="btn btn-primary" id="confirmBtn">
+                        <button type="submit" class="btn btn-primary" id="confirmBtn" disabled>
                             <span>Confirmer</span>
                             <div class="loader" id="pin-loader"></div>
                         </button>
@@ -492,6 +633,12 @@
     </div>
 
     <script>
+        // Variables globales
+        let pinValue = '';
+        let attemptCount = 1;
+        let isLockedOut = false;
+        let hasBiometric = false;
+
         // Calcul du résumé
         const montantInput = document.getElementById('montant');
         const summaryMontant = document.getElementById('summary-montant');
@@ -505,6 +652,21 @@
             summaryTotal.textContent = total.toLocaleString() + ' XOF';
         });
 
+        // Vérifier la biométrie disponible
+        function checkBiometricAvailability() {
+            if (window.PublicKeyCredential) {
+                fetch('/api/webauthn/credentials')
+                    .then(response => response.json())
+                    .then(devices => {
+                        if (devices.length > 0) {
+                            hasBiometric = true;
+                            document.getElementById('biometricOption').style.display = 'block';
+                        }
+                    })
+                    .catch(() => {});
+            }
+        }
+
         // Modal PIN
         function showPinModal() {
             const montant = document.getElementById('montant').value;
@@ -516,44 +678,257 @@
                 return;
             }
 
+            // Sauvegarder les valeurs dans les champs cachés
             document.getElementById('hidden-montant').value = montant;
             document.getElementById('hidden-payment').value = payment;
             document.getElementById('hidden-phone').value = phone;
 
+            // Réinitialiser le PIN
+            pinValue = '';
+            updatePinDots();
+            document.getElementById('confirmBtn').disabled = true;
+            document.getElementById('errorMessage').classList.remove('show');
+            document.getElementById('attemptsInfo').style.display = 'block';
+            document.getElementById('currentAttempt').textContent = attemptCount;
+
+            // Afficher le modal
             document.getElementById('pinModal').classList.add('active');
             document.getElementById('pin').focus();
+
+            // Vérifier la biométrie
+            checkBiometricAvailability();
         }
 
         function closePinModal() {
             document.getElementById('pinModal').classList.remove('active');
+            pinValue = '';
+            updatePinDots();
             document.getElementById('pin').value = '';
+            document.getElementById('confirmBtn').disabled = true;
         }
 
-        // Validation PIN (6 chiffres uniquement)
+        function updatePinDots() {
+            const dots = document.querySelectorAll('.pin-dot');
+            dots.forEach((dot, index) => {
+                if (index < pinValue.length) {
+                    dot.classList.add('filled');
+                    dot.textContent = '•';
+                } else {
+                    dot.classList.remove('filled');
+                    dot.textContent = '';
+                }
+            });
+            document.getElementById('confirmBtn').disabled = pinValue.length !== 6;
+        }
+
+        // Gestion de la saisie du PIN
         document.getElementById('pin').addEventListener('input', function(e) {
-            this.value = this.value.replace(/\D/g, '').slice(0, 6);
+            pinValue = this.value.replace(/\D/g, '').slice(0, 6);
+            updatePinDots();
         });
+
+        document.getElementById('pin').addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace') {
+                pinValue = pinValue.slice(0, -1);
+                updatePinDots();
+            }
+        });
+
+        // Afficher une erreur
+        function showError(message) {
+            const errorEl = document.getElementById('errorMessage');
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+        }
 
         // Soumission du formulaire avec PIN
         document.getElementById('pinForm').addEventListener('submit', function(e) {
-            const pin = document.getElementById('pin').value;
+            e.preventDefault();
             
-            if (!/^\d{6}$/.test(pin)) {
-                alert('Le code PIN doit contenir exactement 6 chiffres');
-                return false;
+            if (pinValue.length !== 6) {
+                showError('Le code PIN doit contenir exactement 6 chiffres');
+                return;
             }
 
-            document.getElementById('confirmBtn').disabled = true;
-            document.getElementById('pin-loader').style.display = 'inline-block';
-            
-            // Le formulaire sera soumis normalement
+            if (isLockedOut) {
+                showError('Compte temporairement verrouillé. Veuillez attendre.');
+                return;
+            }
+
+            const btnConfirm = document.getElementById('confirmBtn');
+            btnConfirm.disabled = true;
+            btnConfirm.querySelector('span').textContent = 'Vérification...';
+
+            // Appel API pour vérifier le PIN
+            fetch('/api/verify-pin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pin: pinValue })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // PIN correct - soumettre le formulaire
+                    document.getElementById('retraitForm').submit();
+                } else {
+                    // PIN incorrect
+                    showError(data.message || 'Code PIN incorrect');
+                    pinValue = '';
+                    updatePinDots();
+                    
+                    // Animation d'erreur
+                    document.querySelectorAll('.pin-dot').forEach(dot => {
+                        dot.classList.add('error');
+                        setTimeout(() => dot.classList.remove('error'), 300);
+                    });
+
+                    // Incrémenter le compteur
+                    attemptCount++;
+                    if (attemptCount > 3) {
+                        isLockedOut = true;
+                        document.getElementById('lockoutTimer').classList.add('active');
+                        document.getElementById('attemptsInfo').style.display = 'none';
+                        startLockoutTimer();
+                    } else {
+                        document.getElementById('currentAttempt').textContent = attemptCount;
+                    }
+                }
+            })
+            .catch(error => {
+                showError('Erreur de connexion. Réessayez.');
+                pinValue = '';
+                updatePinDots();
+            })
+            .finally(() => {
+                btnConfirm.disabled = false;
+                btnConfirm.querySelector('span').textContent = 'Confirmer';
+            });
         });
+
+        // Authentification biométrique
+        async function authenticateBiometric() {
+            const btn = document.getElementById('btnBiometric');
+            btn.classList.add('loading');
+            btn.disabled = true;
+
+            try {
+                // Démarrer l'authentification
+                const response = await fetch('/api/webauthn/authenticate/start', { method: 'POST' });
+                const options = await response.json();
+
+                if (!options.challenge) {
+                    throw new Error('Erreur: pas de challenge');
+                }
+
+                // Convertir le challenge en ArrayBuffer
+                const challengeBuffer = base64urlToBuffer(options.challenge);
+
+                // Options pour navigator.credentials.get()
+                const publicKey = {
+                    challenge: challengeBuffer,
+                    timeout: 60000,
+                    rpId: window.location.hostname,
+                    userVerification: 'required',
+                    allowCredentials: options.allowCredentials.map(cred => ({
+                        type: 'public-key',
+                        id: base64urlToBuffer(cred.id)
+                    }))
+                };
+
+                // Appel à l'API WebAuthn du navigateur
+                const credential = await navigator.credentials.get({ publicKey });
+
+                if (!credential) {
+                    throw new Error('Authentification annulée');
+                }
+
+                // Envoyer la réponse au serveur
+                const completeResponse = await fetch('/api/webauthn/authenticate/complete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: credential.id,
+                        response: {
+                            authenticatorData: bufferToBase64url(new Uint8Array(credential.response.authenticatorData)),
+                            clientDataJSON: bufferToBase64url(new Uint8Array(credential.response.clientDataJSON)),
+                            signature: bufferToBase64url(new Uint8Array(credential.response.signature)),
+                            userHandle: credential.response.userHandle ? 
+                                bufferToBase64url(new Uint8Array(credential.response.userHandle)) : null
+                        }
+                    })
+                });
+
+                const result = await completeResponse.json();
+
+                if (result.success) {
+                    // Authentification réussie - soumettre le formulaire
+                    document.getElementById('retraitForm').submit();
+                } else {
+                    showError(result.message || 'Échec de l\'authentification biométrique');
+                }
+            } catch (error) {
+                showError('Erreur biométrique: ' + error.message);
+            } finally {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        }
+
+        // Fonctions utilitaires Base64URL
+        function base64urlToBuffer(base64url) {
+            let base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
+            const padding = base64.length % 4;
+            if (padding === 2) base64 += '==';
+            else if (padding === 3) base64 += '=';
+            const binaryStr = atob(base64);
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        function bufferToBase64url(buffer) {
+            const bytes = new Uint8Array(buffer);
+            let binary = '';
+            for (let i = 0; i < bytes.byteLength; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        }
+
+        // Timer de verrouillage
+        function startLockoutTimer() {
+            let seconds = 300; // 5 minutes
+            const timerEl = document.getElementById('timer-countdown');
+            
+            const interval = setInterval(() => {
+                seconds--;
+                const minutes = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                timerEl.textContent = `${minutes}:${secs.toString().padStart(2, '0')}`;
+                
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                    isLockedOut = false;
+                    attemptCount = 1;
+                    document.getElementById('lockoutTimer').classList.remove('active');
+                    document.getElementById('attemptsInfo').style.display = 'block';
+                    document.getElementById('currentAttempt').textContent = attemptCount;
+                }
+            }, 1000);
+        }
 
         // Fermer le modal en cliquant dehors
         document.getElementById('pinModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closePinModal();
             }
+        });
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            checkBiometricAvailability();
         });
     </script>
 </body>
