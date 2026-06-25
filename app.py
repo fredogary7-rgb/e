@@ -4023,10 +4023,17 @@ def webauthn_list_credentials():
     """Lister les appareils biométriques enregistrés"""
     user = get_logged_in_user()
     
-    credentials = WebAuthnCredential.query.filter_by(
-        user_id=user.id,
-        is_active=True
-    ).order_by(WebAuthnCredential.created_at.desc()).all()
+    # Vérification défensive : retourner liste vide si la table n'existe pas
+    try:
+        credentials = WebAuthnCredential.query.filter_by(
+            user_id=user.id,
+            is_active=True
+        ).order_by(WebAuthnCredential.created_at.desc()).all()
+    except Exception as e:
+        # Si la table n'existe pas, retourner liste vide
+        if "webauthn_credentials" in str(e) or "does not exist" in str(e):
+            return jsonify([])
+        raise
     
     result = []
     for cred in credentials:
