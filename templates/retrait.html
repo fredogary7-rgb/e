@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retrait - NovaTrade</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+        
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: rgba(255, 255, 255, 0.8);
+            --accent-blue: #38bdf8;
+            --accent-blue-light: #7dd3fc;
+            --text-primary: #334155;
+            --text-secondary: #64748b;
+            --border-color: rgba(148, 163, 184, 0.2);
+            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            padding: 30px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .card-title {
+            font-size: 18px;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--accent-blue);
+        }
+
+        .balance-card {
+            background: var(--gradient-blue);
+            color: white;
+            padding: 25px;
+            border-radius: var(--radius-xl);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .balance-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .balance-value {
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: var(--gradient-blue);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 14px 18px;
+            border-radius: var(--radius-lg);
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert.success {
+            background: rgba(134, 239, 172, 0.15);
+            color: #16a34a;
+            border: 1px solid rgba(134, 239, 172, 0.3);
+        }
+
+        .alert.danger {
+            background: rgba(249, 168, 212, 0.15);
+            color: #db2777;
+            border: 1px solid rgba(249, 168, 212, 0.3);
+        }
+
+        .alert.warning {
+            background: rgba(251, 191, 36, 0.15);
+            color: #d97706;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .info-box {
+            background: rgba(56, 189, 248, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px dashed rgba(56, 189, 248, 0.3);
+        }
+
+        .info-box p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box i {
+            color: var(--accent-blue);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .summary {
+            background: rgba(56, 189, 248, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .summary-row:last-child {
+            margin-bottom: 0;
+            padding-top: 10px;
+            border-top: 1px solid rgba(56, 189, 248, 0.2);
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .loader {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #ffffff;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            animation: rotation 0.8s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Modal PIN */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .modal-header p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .pin-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            font-size: 24px;
+            text-align: center;
+            letter-spacing: 10px;
+            outline: none;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .pin-input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-actions .btn {
+            flex: 1;
+        }
+
+        .btn-cancel {
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--text-secondary);
+        }
+
+        .btn-cancel:hover {
+            background: rgba(148, 163, 184, 0.2);
+        }
+
+        .lockout-timer {
+            display: none;
+            text-align: center;
+            padding: 15px;
+            background: rgba(249, 168, 212, 0.1);
+            border-radius: var(--radius-lg);
+            margin-top: 15px;
+            color: #db2777;
+            font-weight: 600;
+        }
+
+        .lockout-timer.active {
+            display: block;
+        }
+
+        @media (max-width: 480px) {
+            .card { padding: 20px; }
+            .balance-value { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('mes_retraits') }}" class="back-link">
+            <i class="fa fa-arrow-left"></i>
+            Mes retraits
+        </a>
+
+        <div class="header">
+            <h1>💸 Retrait de fonds</h1>
+            <p>Transférez vos gains vers votre portefeuille mobile</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert {{ category }}">
+                <i class="fa {% if category == 'success' %}fa-check-circle{% elif category == 'danger' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <!-- Solde disponible -->
+        <div class="balance-card">
+            <div class="balance-label">Solde disponible</div>
+            <div class="balance-value">{{ "{:,.0f}".format(stats.commissions_total) }} XOF</div>
+        </div>
+
+        <!-- Formulaire de retrait -->
+        <div class="card">
+            <h2 class="card-title"><i class="fa fa-wallet"></i> Effectuer un retrait</h2>
+            
+            <form method="POST" id="retraitForm">
+                <div class="input-group">
+                    <label for="montant">Montant du retrait (XOF)</label>
+                    <input type="number" 
+                           id="montant" 
+                           name="montant" 
+                           placeholder="5000" 
+                           min="5000" 
+                           max="{{ stats.commissions_total | int }}" 
+                           required>
+                </div>
+
+                <div class="input-group">
+                    <label for="payment_method">Méthode de paiement</label>
+                    <select id="payment_method" name="payment_method" required>
+                        <option value="">Sélectionnez une option</option>
+                        {% for service in services %}
+                        <option value="{{ service.id }}">{{ service.name }} - {{ service.description }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="phone">Numéro de téléphone (réception)</label>
+                    <input type="tel" 
+                           id="phone" 
+                           name="phone" 
+                           placeholder="+225 07 07 07 07 07" 
+                           required>
+                </div>
+
+                <div class="summary">
+                    <div class="summary-row">
+                        <span>Montant du retrait</span>
+                        <span id="summary-montant">0 XOF</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Frais de traitement</span>
+                        <span>500 XOF</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Total à débiter</span>
+                        <span id="summary-total">0 XOF</span>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <p><i class="fa fa-info-circle"></i> Minimum: 5,000 XOF | Maximum: 50,000 XOF | Frais: 500 XOF</p>
+                </div>
+
+                <button type="button" class="btn btn-primary" onclick="showPinModal()" style="margin-top: 20px;">
+                    <i class="fa fa-paper-plane"></i>
+                    <span>Effectuer le retrait</span>
+                    <div class="loader" id="loader"></div>
+                </button>
+            </form>
+        </div>
+
+        <!-- Modal PIN -->
+        <div class="modal-overlay" id="pinModal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h2>🔐 Confirmation requise</h2>
+                    <p>Entrez votre code PIN à 6 chiffres pour confirmer le retrait</p>
+                </div>
+
+                <form method="POST" id="pinForm">
+                    <input type="hidden" name="montant" id="hidden-montant">
+                    <input type="hidden" name="payment_method" id="hidden-payment">
+                    <input type="hidden" name="phone" id="hidden-phone">
+                    
+                    <input type="password" 
+                           class="pin-input" 
+                           id="pin" 
+                           name="pin" 
+                           placeholder="••••••" 
+                           maxlength="6" 
+                           pattern="[0-9]{6}"
+                           required
+                           autocomplete="off">
+
+                    <div class="lockout-timer" id="lockoutTimer">
+                        <i class="fa fa-lock"></i>
+                        Trop de tentatives. Réessayez dans <span id="timer-countdown">300</span> secondes.
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-cancel" onclick="closePinModal()">
+                            Annuler
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="confirmBtn">
+                            <span>Confirmer</span>
+                            <div class="loader" id="pin-loader"></div>
+                        </button>
+                    </div>
+                </form>
+
+                <div class="info-box" style="margin-top: 15px;">
+                    <p><i class="fa fa-shield-alt"></i> Votre PIN est requis pour sécuriser cette opération. Après 3 échecs, vous serez bloqué pendant 5 minutes.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Calcul du résumé
+        const montantInput = document.getElementById('montant');
+        const summaryMontant = document.getElementById('summary-montant');
+        const summaryTotal = document.getElementById('summary-total');
+        const frais = 500;
+
+        montantInput.addEventListener('input', function() {
+            const montant = parseInt(this.value) || 0;
+            const total = montant + frais;
+            summaryMontant.textContent = montant.toLocaleString() + ' XOF';
+            summaryTotal.textContent = total.toLocaleString() + ' XOF';
+        });
+
+        // Modal PIN
+        function showPinModal() {
+            const montant = document.getElementById('montant').value;
+            const payment = document.getElementById('payment_method').value;
+            const phone = document.getElementById('phone').value;
+
+            if (!montant || !payment || !phone) {
+                alert('Veuillez remplir tous les champs');
+                return;
+            }
+
+            document.getElementById('hidden-montant').value = montant;
+            document.getElementById('hidden-payment').value = payment;
+            document.getElementById('hidden-phone').value = phone;
+
+            document.getElementById('pinModal').classList.add('active');
+            document.getElementById('pin').focus();
+        }
+
+        function closePinModal() {
+            document.getElementById('pinModal').classList.remove('active');
+            document.getElementById('pin').value = '';
+        }
+
+        // Validation PIN (6 chiffres uniquement)
+        document.getElementById('pin').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '').slice(0, 6);
+        });
+
+        // Soumission du formulaire avec PIN
+        document.getElementById('pinForm').addEventListener('submit', function(e) {
+            const pin = document.getElementById('pin').value;
+            
+            if (!/^\d{6}$/.test(pin)) {
+                alert('Le code PIN doit contenir exactement 6 chiffres');
+                return false;
+            }
+
+            document.getElementById('confirmBtn').disabled = true;
+            document.getElementById('pin-loader').style.display = 'inline-block';
+            
+            // Le formulaire sera soumis normalement
+        });
+
+        // Fermer le modal en cliquant dehors
+        document.getElementById('pinModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePinModal();
+            }
+        });
+    </script>
+</body>
+</html>
