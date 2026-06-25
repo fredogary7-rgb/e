@@ -12,6 +12,10 @@ from urllib.parse import urlencode
 
 # Timeout global pour les opérations S3
 socket.setdefaulttimeout(60)  # 60 secondes
+
+# Configuration sécurité PIN
+MAX_PIN_ATTEMPTS = 3
+PIN_LOCKOUT_MINUTES = 5
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, flash, session, g, jsonify, send_from_directory, abort
