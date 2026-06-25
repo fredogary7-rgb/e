@@ -319,6 +319,7 @@ class Retrait(db.Model):
 
     pays = db.Column(db.String(50), nullable=True)
     frais = db.Column(db.Float, default=0.0)
+    motif_refus = db.Column(db.String(255), nullable=True)  # Motif du refus si applicable
 
 class Staking(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -2888,15 +2889,16 @@ def retrait_page():
             return redirect(url_for("retrait_page"))
 
         # ==========================
-        # 🔐 PIN CHECK
+        # 🔐 PIN CHECK (avec sécurité anti-bruteforce)
         # ==========================
         if not user.pin_code:
             flash("Veuillez définir votre code PIN dans votre profil.", "danger")
             return redirect(url_for("profile_page"))
 
-        # On utilise check_password_hash pour comparer le PIN haché
-        if not check_password_hash(user.pin_code, pin):
-            flash("Code PIN incorrect.", "danger")
+        # Utiliser verify_pin() pour la vérification avec sécurité anti-bruteforce
+        success, message = verify_pin(user, pin)
+        if not success:
+            flash(message, "danger")
             return redirect(url_for("retrait_page"))
 
         # ==========================
@@ -2919,10 +2921,10 @@ def retrait_page():
                 montant=montant,
                 frais=FRAIS,
                 payment_method=service["name"],
-                statut="successful",
+                statut="en_attente",  # Statut initial : en attente de validation
                 phone=wallet,
                 pays=user.country,
-                date=datetime.utcnow() # Utilisation de datetime.utcnow()
+                date=datetime.utcnow()
             )
 
             db.session.add(nouveau_retrait)
@@ -2932,13 +2934,13 @@ def retrait_page():
             user.total_retrait = (float(user.total_retrait or 0)) + montant
 
             db.session.commit()
-            flash("Retrait effectué avec succès ✅", "success")
+            flash("Votre demande de retrait a été enregistrée avec succès ✅", "success")
             return redirect(url_for("mes_retraits"))
 
         except Exception as e:
             db.session.rollback()
             print(f"❌ ERREUR STOCKAGE : {str(e)}")
-            flash("Erreur lors de l'enregistrement du retrait.", "danger")
+            flash("Erreur lors de l'enregistrement du retrait. Veuillez réessayer.", "danger")
             return redirect(url_for("retrait_page"))
 
     return render_template("retrait.html", user=user, stats=stats, services=services)
