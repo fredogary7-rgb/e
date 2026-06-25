@@ -430,10 +430,10 @@
                             </div>
                         </div>
 
-                        {% if retrait.statut == 'refuse' or retrait.statut == 'refusé' %}
+                        {% if (retrait.statut == 'refuse' or retrait.statut == 'refusé') and retrait.motif_refus %}
                         <div class="rejection-reason">
                             <i class="fa fa-exclamation-triangle"></i>
-                            <span>Motif: {{ retrait.motif_refus or 'Aucun motif fourni' }}</span>
+                            <span>Motif: {{ retrait.motif_refus }}</span>
                         </div>
                         {% endif %}
 
