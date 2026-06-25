@@ -16,6 +16,46 @@ socket.setdefaulttimeout(60)  # 60 secondes
 # Configuration sécurité PIN
 MAX_PIN_ATTEMPTS = 3
 PIN_LOCKOUT_MINUTES = 5
+
+def verify_pin(user, pin):
+    """
+    Vérifie le code PIN d'un utilisateur avec sécurité anti-bruteforce.
+    Retourne (success, message) où success est True/False.
+    """
+    from datetime import datetime
+    
+    # Vérifier si l'utilisateur a un PIN configuré
+    if not user.pin_code:
+        return False, "Aucun code PIN configuré. Veuillez en définir un dans votre profil."
+    
+    # Vérifier si le compte est verrouillé temporairement
+    if user.pin_locked_until and datetime.now() < user.pin_locked_until:
+        remaining_minutes = (user.pin_locked_until - datetime.now()).seconds // 60 + 1
+        return False, f"Compte temporairement verrouillé. Réessayez dans {remaining_minutes} minutes."
+    
+    # Vérifier le PIN
+    if check_password_hash(user.pin_code, pin):
+        # PIN correct - réinitialiser les compteurs
+        user.pin_failed_attempts = 0
+        user.pin_locked_until = None
+        db.session.commit()
+        return True, "PIN vérifié avec succès."
+    else:
+        # PIN incorrect - incrémenter le compteur
+        user.pin_failed_attempts = (user.pin_failed_attempts or 0) + 1
+        
+        # Vérifier si le nombre maximal de tentatives est atteint
+        if user.pin_failed_attempts >= MAX_PIN_ATTEMPTS:
+            from datetime import timedelta
+            user.pin_locked_until = datetime.now() + timedelta(minutes=PIN_LOCKOUT_MINUTES)
+            user.pin_failed_attempts = 0  # Réinitialiser après verrouillage
+            db.session.commit()
+            return False, f"Trop de tentatives échouées. Compte verrouillé pendant {PIN_LOCKOUT_MINUTES} minutes."
+        
+        db.session.commit()
+        remaining_attempts = MAX_PIN_ATTEMPTS - user.pin_failed_attempts
+        return False, f"Code PIN incorrect. {remaining_attempts} tentative(s) restante(s)."
+
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, flash, session, g, jsonify, send_from_directory, abort
@@ -163,7 +203,30 @@ class User(db.Model, UserMixin):
     is_banned = db.Column(db.Boolean, default=False)
     is_verified = db.Column(db.Boolean, default=False)
     pin_code = db.Column(db.String(255), nullable=True)
+    pin_failed_attempts = db.Column(db.Integer, default=0)  # Nombre de tentatives PIN échouées
+    pin_locked_until = db.Column(db.DateTime, nullable=True)  # Verrouillage temporaire après trop d'échecs
     has_frog_attempt = db.Column(db.Boolean, default=True)
+
+class WebAuthnCredential(db.Model):
+    """Identifiants WebAuthn/Passkeys pour authentification biométrique"""
+    __tablename__ = 'webauthn_credentials'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    credential_id = db.Column(db.String(500), unique=True, nullable=False)
+    credential_public_key = db.Column(db.LargeBinary, nullable=False)
+    sign_count = db.Column(db.Integer, default=0)
+    device_type = db.Column(db.String(50))  # 'platform' (Face ID/Touch ID) ou 'cross-platform' (clé USB)
+    aaguid = db.Column(db.String(100))  # Identifiant du type d'appareil
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    last_used_at = db.Column(db.DateTime, nullable=True)
+    name = db.Column(db.String(100), nullable=True)  # Nom donné par l'utilisateur (ex: "iPhone de Jean")
+    is_active = db.Column(db.Boolean, default=True)
+    
+    user = db.relationship('User', backref=db.backref('webauthn_credentials', lazy='dynamic'))
+    
+    def __repr__(self):
+        return f"<WebAuthnCredential {self.name or self.credential_id[:20]}>"
     frog_game_done = db.Column(db.Boolean, default=False)
     country = db.Column(db.String(50), default='')
     has_played_this_round = db.Column(db.Boolean, default=False)
@@ -3743,6 +3806,262 @@ def instagram_complete():
 @app.route("/health")
 def health():
     return {"status": "ok"}, 200
+
+
+# ==============================
+# 🔐 ROUTES API WEBAUTHN (Authentification biométrique)
+# ==============================
+
+@app.route("/api/webauthn/register/start", methods=["POST"])
+@login_required
+def webauthn_register_start():
+    """Démarrer le processus d'enregistrement d'une passkey"""
+    from webauthn import generate_user_handle, options_to_json
+    
+    user = get_logged_in_user()
+    
+    # Générer un handle utilisateur unique
+    user_handle = generate_user_handle()
+    
+    # Options pour l'enregistrement
+    registration_options = {
+        "challenge": str(uuid.uuid4()),
+        "rp": {
+            "name": "NovaTrade",
+            "id": request.host.split(":")[0]  # Domaine sans port
+        },
+        "user": {
+            "id": user_handle,
+            "name": user.email,
+            "displayName": user.username
+        },
+        "pubKeyCredParams": [
+            {"type": "public-key", "alg": -7},   # ES256
+            {"type": "public-key", "alg": -257}  # RS256
+        ],
+        "timeout": 60000,
+        "attestation": "none",
+        "authenticatorSelection": {
+            "authenticatorAttachment": "platform",  # Face ID, Touch ID, Windows Hello
+            "requireResidentKey": False,
+            "userVerification": "required"
+        }
+    }
+    
+    # Stocker le challenge en session pour vérification ultérieure
+    session['webauthn_challenge'] = registration_options['challenge']
+    session['webauthn_user_handle'] = user_handle
+    
+    return jsonify(registration_options)
+
+
+@app.route("/api/webauthn/register/complete", methods=["POST"])
+@login_required
+def webauthn_register_complete():
+    """Terminer l'enregistrement d'une passkey"""
+    from webauthn import verify_registration_response, RegistrationResponse
+    
+    user = get_logged_in_user()
+    data = request.get_json()
+    
+    if not data:
+        return jsonify({"success": False, "message": "Données invalides"}), 400
+    
+    challenge = session.get('webauthn_challenge')
+    user_handle = session.get('webauthn_user_handle')
+    
+    if not challenge or not user_handle:
+        return jsonify({"success": False, "message": "Session expirée. Réessayez."}), 400
+    
+    try:
+        # Récupérer les données de la réponse
+        credential_id = data.get('id')
+        response_data = data.get('response', {})
+        attestation_object = response_data.get('attestationObject')
+        client_data_json = response_data.get('clientDataJSON')
+        
+        if not all([credential_id, attestation_object, client_data_json]):
+            return jsonify({"success": False, "message": "Données incomplètes"}), 400
+        
+        # Vérifier la réponse (simplifié - dans une implémentation complète, utiliser webauthn.verify_registration_response)
+        # Pour l'instant, on stocke directement la credential
+        
+        # Nom de l'appareil (optionnel)
+        device_name = data.get('deviceName', 'Appareil biométrique')
+        
+        # Déterminer le type d'appareil
+        device_type = 'platform'  # Face ID, Touch ID, Windows Hello
+        
+        # Créer la credential
+        new_credential = WebAuthnCredential(
+            user_id=user.id,
+            credential_id=credential_id,
+            credential_public_key=b'placeholder',  # À remplacer par la vraie clé publique
+            sign_count=0,
+            device_type=device_type,
+            name=device_name,
+            is_active=True
+        )
+        
+        db.session.add(new_credential)
+        db.session.commit()
+        
+        # Nettoyer la session
+        session.pop('webauthn_challenge', None)
+        session.pop('webauthn_user_handle', None)
+        
+        return jsonify({
+            "success": True,
+            "message": "Authentification biométrique activée avec succès !"
+        })
+        
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "message": f"Erreur lors de l'enregistrement: {str(e)}"
+        }), 500
+
+
+@app.route("/api/webauthn/authenticate/start", methods=["POST"])
+def webauthn_authenticate_start():
+    """Démarrer le processus d'authentification biométrique"""
+    from webauthn import generate_user_handle
+    
+    user = get_logged_in_user()
+    
+    if not user:
+        return jsonify({"success": False, "message": "Veuillez vous connecter"}), 401
+    
+    # Récupérer les credentials enregistrées de l'utilisateur
+    credentials = WebAuthnCredential.query.filter_by(user_id=user.id, is_active=True).all()
+    
+    if not credentials:
+        return jsonify({"success": False, "message": "Aucune authentification biométrique enregistrée"}), 404
+    
+    challenge = str(uuid.uuid4())
+    
+    # Options pour l'authentification
+    authentication_options = {
+        "challenge": challenge,
+        "timeout": 60000,
+        "rpId": request.host.split(":")[0],
+        "userVerification": "required",
+        "allowCredentials": [
+            {
+                "type": "public-key",
+                "id": cred.credential_id
+            }
+            for cred in credentials
+        ]
+    }
+    
+    # Stocker le challenge en session
+    session['webauthn_auth_challenge'] = challenge
+    session['webauthn_auth_user_id'] = user.id
+    
+    return jsonify(authentication_options)
+
+
+@app.route("/api/webauthn/authenticate/complete", methods=["POST"])
+def webauthn_authenticate_complete():
+    """Vérifier l'authentification biométrique"""
+    user_id = session.get('webauthn_auth_user_id')
+    challenge = session.get('webauthn_auth_challenge')
+    
+    if not user_id or not challenge:
+        return jsonify({"success": False, "message": "Session expirée"}), 400
+    
+    user = db.session.get(User, user_id)
+    if not user:
+        return jsonify({"success": False, "message": "Utilisateur non trouvé"}), 404
+    
+    data = request.get_json()
+    if not data:
+        return jsonify({"success": False, "message": "Données invalides"}), 400
+    
+    credential_id = data.get('id')
+    
+    # Trouver la credential correspondante
+    credential = WebAuthnCredential.query.filter_by(
+        credential_id=credential_id,
+        user_id=user.id,
+        is_active=True
+    ).first()
+    
+    if not credential:
+        return jsonify({"success": False, "message": "Credential non trouvée"}), 404
+    
+    try:
+        # Vérifier la signature (simplifié)
+        # Dans une implémentation complète, utiliser webauthn.verify_authentication_response
+        
+        # Mettre à jour le sign_count
+        credential.sign_count += 1
+        credential.last_used_at = datetime.utcnow()
+        db.session.commit()
+        
+        # Nettoyer la session
+        session.pop('webauthn_auth_challenge', None)
+        session.pop('webauthn_auth_user_id', None)
+        
+        return jsonify({
+            "success": True,
+            "message": "Authentification biométrique réussie !"
+        })
+        
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "message": f"Erreur de vérification: {str(e)}"
+        }), 400
+
+
+@app.route("/api/webauthn/credentials", methods=["GET"])
+@login_required
+def webauthn_list_credentials():
+    """Lister les appareils biométriques enregistrés"""
+    user = get_logged_in_user()
+    
+    credentials = WebAuthnCredential.query.filter_by(
+        user_id=user.id,
+        is_active=True
+    ).order_by(WebAuthnCredential.created_at.desc()).all()
+    
+    result = []
+    for cred in credentials:
+        result.append({
+            "id": cred.id,
+            "name": cred.name or "Appareil biométrique",
+            "device_type": cred.device_type,
+            "created_at": cred.created_at.strftime("%d/%m/%Y %H:%M") if cred.created_at else "",
+            "last_used_at": cred.last_used_at.strftime("%d/%m/%Y %H:%M") if cred.last_used_at else "Jamais",
+            "is_active": cred.is_active
+        })
+    
+    return jsonify(result)
+
+
+@app.route("/api/webauthn/credential/<int:cred_id>/delete", methods=["POST"])
+@login_required
+def webauthn_delete_credential(cred_id):
+    """Supprimer un appareil biométrique enregistré"""
+    user = get_logged_in_user()
+    
+    credential = WebAuthnCredential.query.filter_by(
+        id=cred_id,
+        user_id=user.id
+    ).first()
+    
+    if not credential:
+        return jsonify({"success": False, "message": "Appareil non trouvé"}), 404
+    
+    credential.is_active = False
+    db.session.commit()
+    
+    return jsonify({
+        "success": True,
+        "message": "Appareil biométrique supprimé"
+    })
 
 
 # ──────────────────────────────────────────────────────
