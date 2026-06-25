@@ -627,14 +627,31 @@ function deleteBiometricDevice(deviceId) {
 
 // Utility functions for base64url encoding/decoding
 function base64urlToBuffer(base64url) {
-    const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
+    // S'assurer que c'est une chaîne valide Base64URL
+    if (!base64url || typeof base64url !== 'string') {
+        throw new Error('Invalid base64url string');
+    }
+    
+    // Convertir Base64URL en Base64 standard
+    let base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
+    
+    // Ajouter le padding si nécessaire
     const padding = base64.length % 4;
-    const padded = base64 + '='.repeat(padding);
-    const binaryStr = atob(padded);
+    if (padding === 2) {
+        base64 += '==';
+    } else if (padding === 3) {
+        base64 += '=';
+    }
+    
+    // Décoder en binaire
+    const binaryStr = atob(base64);
+    
+    // Convertir en Uint8Array
     const bytes = new Uint8Array(binaryStr.length);
     for (let i = 0; i < binaryStr.length; i++) {
         bytes[i] = binaryStr.charCodeAt(i);
     }
+    
     return bytes.buffer;
 }
 
@@ -644,6 +661,7 @@ function bufferToBase64url(buffer) {
     for (let i = 0; i < bytes.byteLength; i++) {
         binary += String.fromCharCode(bytes[i]);
     }
+    // Encoder en Base64URL (sans padding)
     return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 </script>
