@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formation Design Graphique - NovaTrade</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+
+:root {
+    --bg-primary: #f8fafc;
+    --bg-secondary: rgba(255, 255, 255, 0.8);
+    --bg-card: rgba(255, 255, 255, 0.7);
+    --border-color: rgba(148, 163, 184, 0.2);
+    --text-primary: #334155;
+    --text-secondary: #64748b;
+    --accent-blue: #38bdf8;
+    --accent-pink: #f9a8d4;
+    --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+    --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
+    --gradient-purple: linear-gradient(135deg, #c084fc 0%, #a855f7 100%);
+    --shadow-soft: 0 4px 6px rgba(56, 189, 248, 0.08);
+}
+
+body {
+    background: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
+    min-height: 100vh;
+    color: var(--text-primary);
+    padding-bottom: 80px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.topbar .menu-toggle {
+    font-size: 20px;
+    cursor: pointer;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(56, 189, 248, 0.1);
+}
+
+.user-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(56, 189, 248, 0.1);
+    padding: 8px 18px;
+    border-radius: 50px;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.user-icon { font-size: 18px; color: var(--accent-blue); }
+.user { font-style: italic; font-weight: 600; font-size: 14px; text-transform: capitalize; }
+
+.main { padding: 20px; max-width: 480px; margin: 0 auto; }
+
+.page-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.page-title {
+    font-style: italic;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.page-subtitle {
+    font-style: italic;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.hero-card {
+    background: var(--gradient-purple);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 24px;
+    color: white;
+    text-align: center;
+}
+
+.hero-card .hero-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    margin: 0 auto 16px;
+}
+
+.hero-card h2 {
+    font-style: italic;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.hero-card p {
+    font-style: italic;
+    font-size: 13px;
+    opacity: 0.9;
+    margin-bottom: 20px;
+}
+
+.hero-card .btn-start {
+    background: white;
+    color: #a855f7;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 32px;
+    font-weight: 600;
+    font-style: italic;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hero-card .btn-start:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+}
+
+.modules-section {
+    margin-bottom: 24px;
+}
+
+.section-title {
+    font-style: italic;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-title i { color: var(--accent-blue); font-size: 18px; }
+
+.module-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.module-card:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-soft);
+}
+
+.module-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.module-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.module-icon.blue { background: var(--gradient-blue); color: white; }
+.module-icon.pink { background: var(--gradient-pink); color: white; }
+.module-icon.purple { background: var(--gradient-purple); color: white; }
+.module-icon.green { background: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%); color: white; }
+
+.module-info { flex: 1; }
+
+.module-info h3 {
+    font-style: italic;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.module-info p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.module-status {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.module-status.completed { background: rgba(134, 239, 172, 0.2); color: #16a34a; }
+.module-status.locked { background: rgba(148, 163, 184, 0.2); color: var(--text-secondary); }
+
+.progress-bar {
+    background: var(--gradient-blue);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.progress-bar h3 {
+    font-style: italic;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 12px;
+}
+
+.progress-track {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    height: 8px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: white;
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+.progress-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+}
+
+.progress-stats span {
+    font-size: 12px;
+    color: white;
+    font-style: italic;
+    opacity: 0.9;
+}
+
+.resources-section {
+    margin-bottom: 24px;
+}
+
+.resource-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.resource-card:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateX(4px);
+}
+
+.resource-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--gradient-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: white;
+    flex-shrink: 0;
+}
+
+.resource-info { flex: 1; }
+
+.resource-info h4 {
+    font-style: italic;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.resource-info p {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.resource-download {
+    color: var(--accent-blue);
+    font-size: 18px;
+}
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+    z-index: 100;
+    border-top: 1px solid var(--border-color);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 11px;
+    padding: 5px 15px;
+    font-style: italic;
+}
+
+.nav-item.active { color: var(--accent-blue); }
+.nav-item i { font-size: 20px; }
+
+@media (max-width: 480px) {
+    .main { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="menu-toggle"><i class="fa fa-bars"></i></div>
+    <div class="user-container">
+        <i class="fa fa-user user-icon"></i>
+        <div class="user">{{ user.username if user else 'Invité' }}</div>
+    </div>
+</div>
+
+<div class="main">
+    <div class="page-header">
+        <h1 class="page-title">🎨 Formation Design Graphique</h1>
+        <p class="page-subtitle">Apprenez à créer des visuels professionnels</p>
+    </div>
+
+    <div class="hero-card">
+        <div class="hero-icon">
+            <i class="fa fa-palette"></i>
+        </div>
+        <h2>Maîtrisez le Design</h2>
+        <p>Découvrez les techniques de design graphique pour créer des contenus professionnels et attractifs</p>
+        <button class="btn-start">
+            <i class="fa fa-play"></i> Commencer
+        </button>
+    </div>
+
+    <div class="progress-bar">
+        <h3>📊 Votre progression</h3>
+        <div class="progress-track">
+            <div class="progress-fill" style="width: 25%;"></div>
+        </div>
+        <div class="progress-stats">
+            <span>2/8 modules complétés</span>
+            <span>25%</span>
+        </div>
+    </div>
+
+    <div class="modules-section">
+        <h2 class="section-title">
+            <i class="fa fa-book-open"></i>
+            Modules de formation
+        </h2>
+
+        <div class="module-card">
+            <div class="module-header">
+                <div class="module-icon blue">
+                    <i class="fa fa-star"></i>
+                </div>
+                <div class="module-info">
+                    <h3>Introduction au design</h3>
+                    <p>Les bases du design graphique</p>
+                </div>
+                <div class="module-status completed">
+                    <i class="fa fa-check"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-header">
+                <div class="module-icon pink">
+                    <i class="fa fa-circle"></i>
+                </div>
+                <div class="module-info">
+                    <h3>Formes et compositions</h3>
+                    <p>Créer des compositions équilibrées</p>
+                </div>
+                <div class="module-status completed">
+                    <i class="fa fa-check"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-header">
+                <div class="module-icon purple">
+                    <i class="fa fa-swatchbook"></i>
+                </div>
+                <div class="module-info">
+                    <h3>Théorie des couleurs</h3>
+                    <p>Choisir les bonnes palettes</p>
+                </div>
+                <div class="module-status locked">
+                    <i class="fa fa-lock"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-header">
+                <div class="module-icon green">
+                    <i class="fa fa-font"></i>
+                </div>
+                <div class="module-info">
+                    <h3>Typographie</h3>
+                    <p>Maîtriser les polices et textes</p>
+                </div>
+                <div class="module-status locked">
+                    <i class="fa fa-lock"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-header">
+                <div class="module-icon blue">
+                    <i class="fa fa-image"></i>
+                </div>
+                <div class="module-info">
+                    <h3>Retouche photo</h3>
+                    <p>Techniques de retouche avancées</p>
+                </div>
+                <div class="module-status locked">
+                    <i class="fa fa-lock"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-header">
+                <div class="module-icon pink">
+                    <i class="fa fa-layer-group"></i>
+                </div>
+                <div class="module-info">
+                    <h3>Création de logos</h3>
+                    <p>Design d'identité visuelle</p>
+                </div>
+                <div class="module-status locked">
+                    <i class="fa fa-lock"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-header">
+                <div class="module-icon purple">
+                    <i class="fa fa-mobile-screen"></i>
+                </div>
+                <div class="module-info">
+                    <h3>Design social media</h3>
+                    <p>Contenus pour réseaux sociaux</p>
+                </div>
+                <div class="module-status locked">
+                    <i class="fa fa-lock"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-header">
+                <div class="module-icon green">
+                    <i class="fa fa-graduation-cap"></i>
+                </div>
+                <div class="module-info">
+                    <h3>Projet final</h3>
+                    <p>Créez votre portfolio</p>
+                </div>
+                <div class="module-status locked">
+                    <i class="fa fa-lock"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="resources-section">
+        <h2 class="section-title">
+            <i class="fa fa-download"></i>
+            Ressources
+        </h2>
+
+        <a href="#" class="resource-card">
+            <div class="resource-icon">
+                <i class="fa fa-file-pdf"></i>
+            </div>
+            <div class="resource-info">
+                <h4>Guide du designer</h4>
+                <p>PDF • 2.4 MB</p>
+            </div>
+            <div class="resource-download">
+                <i class="fa fa-download"></i>
+            </div>
+        </a>
+
+        <a href="#" class="resource-card">
+            <div class="resource-icon" style="background: var(--gradient-pink);">
+                <i class="fa fa-palette"></i>
+            </div>
+            <div class="resource-info">
+                <h4>Palettes de couleurs</h4>
+                <p>PDF • 1.2 MB</p>
+            </div>
+            <div class="resource-download">
+                <i class="fa fa-download"></i>
+            </div>
+        </a>
+
+        <a href="#" class="resource-card">
+            <div class="resource-icon" style="background: var(--gradient-purple);">
+                <i class="fa fa-file-image"></i>
+            </div>
+            <div class="resource-info">
+                <h4>Templates PSD</h4>
+                <p>ZIP • 15.8 MB</p>
+            </div>
+            <div class="resource-download">
+                <i class="fa fa-download"></i>
+            </div>
+        </a>
+    </div>
+</div>
+
+<nav class="bottom-nav">
+    <a href="{{ url_for('dashboard_page') }}" class="nav-item">
+        <i class="fa fa-home"></i>
+        <span>Accueil</span>
+    </a>
+    <a href="{{ url_for('academy_affiliation') }}" class="nav-item">
+        <i class="fa fa-graduation-cap"></i>
+        <span>Academy</span>
+    </a>
+    <a href="{{ url_for('academy_design_page') }}" class="nav-item active">
+        <i class="fa fa-palette"></i>
+        <span>Design</span>
+    </a>
+    <a href="{{ url_for('profile_page') }}" class="nav-item">
+        <i class="fa fa-user"></i>
+        <span>Profil</span>
+    </a>
+</nav>
+
+</body>
+</html>
