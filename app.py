@@ -3869,7 +3869,8 @@ def webauthn_register_start():
 @login_required
 def webauthn_register_complete():
     """Terminer l'enregistrement d'une passkey"""
-    from webauthn import verify_registration_response, RegistrationResponse
+    # NOTE: Pas d'import webauthn ici - on stocke directement la credential
+    # La vérification complète sera implémentée avec la bibliothèque webauthn appropriée
     
     user = get_logged_in_user()
     data = request.get_json()
@@ -3878,9 +3879,8 @@ def webauthn_register_complete():
         return jsonify({"success": False, "message": "Données invalides"}), 400
     
     challenge = session.get('webauthn_challenge')
-    user_handle = session.get('webauthn_user_handle')
     
-    if not challenge or not user_handle:
+    if not challenge:
         return jsonify({"success": False, "message": "Session expirée. Réessayez."}), 400
     
     try:
@@ -3893,20 +3893,21 @@ def webauthn_register_complete():
         if not all([credential_id, attestation_object, client_data_json]):
             return jsonify({"success": False, "message": "Données incomplètes"}), 400
         
-        # Vérifier la réponse (simplifié - dans une implémentation complète, utiliser webauthn.verify_registration_response)
-        # Pour l'instant, on stocke directement la credential
-        
         # Nom de l'appareil (optionnel)
         device_name = data.get('deviceName', 'Appareil biométrique')
         
         # Déterminer le type d'appareil
         device_type = 'platform'  # Face ID, Touch ID, Windows Hello
         
+        # Convertir la clé publique en binaire (pour stockage)
+        # Dans une implémentation complète, on extrairait la clé publique de attestation_object
+        credential_public_key = b'placeholder'  # À remplacer par la vraie clé publique
+        
         # Créer la credential
         new_credential = WebAuthnCredential(
             user_id=user.id,
             credential_id=credential_id,
-            credential_public_key=b'placeholder',  # À remplacer par la vraie clé publique
+            credential_public_key=credential_public_key,
             sign_count=0,
             device_type=device_type,
             name=device_name,
