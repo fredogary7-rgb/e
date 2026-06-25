@@ -3817,16 +3817,19 @@ def health():
 @login_required
 def webauthn_register_start():
     """Démarrer le processus d'enregistrement d'une passkey"""
-    from webauthn import generate_user_handle, options_to_json
+    import os
     
     user = get_logged_in_user()
     
-    # Générer un handle utilisateur unique
-    user_handle = generate_user_handle()
+    # Générer un handle utilisateur unique (16 octets aléatoires)
+    user_handle = os.urandom(16)
+    
+    # Générer un challenge (32 octets aléatoires)
+    challenge = os.urandom(32)
     
     # Options pour l'enregistrement
     registration_options = {
-        "challenge": str(uuid.uuid4()),
+        "challenge": challenge,
         "rp": {
             "name": "NovaTrade",
             "id": request.host.split(":")[0]  # Domaine sans port
@@ -3849,9 +3852,9 @@ def webauthn_register_start():
         }
     }
     
-    # Stocker le challenge en session pour vérification ultérieure
-    session['webauthn_challenge'] = registration_options['challenge']
-    session['webauthn_user_handle'] = user_handle
+    # Stocker le challenge et user_handle en session pour vérification ultérieure
+    session['webauthn_challenge'] = challenge.hex()
+    session['webauthn_user_handle'] = user_handle.hex()
     
     return jsonify(registration_options)
 
