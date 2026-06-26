@@ -3112,9 +3112,9 @@ def retrait_page():
 
     logging.info(f"[RETRAIT] User {user.id} ({user.username}) - Début traitement retrait")
 
-    MIN_RETRAIT = 100
+    MIN_RETRAIT = 500
     MAX_RETRAIT = 50000
-    FRAIS = 5
+    FRAIS = 0
 
     # On s'assure que c'est bien un float
     solde_actuel = float(user.solde_parrainage or 0)
@@ -3187,41 +3187,7 @@ def retrait_page():
             return redirect(url_for("retrait_page"))
 
         # ==========================
-        # API RETRAIT
-        # ==========================
-        logging.info(f"[RETRAIT] User {user.id} - Appel API SoleasPay: service_id={service_id}, wallet={wallet}, montant={montant}")
-        response = envoyer_retrait_soleaspay(service_id, wallet, montant)
-        logging.info(f"[RETRAIT] User {user.id} - Réponse API SoleasPay: {response}")
-
-        if not response or response.get("success") != True:
-            # On affiche le message d'erreur de l'API s'il existe
-            error_msg = response.get('message', 'Erreur API paiement.') if response else 'Erreur de connexion API.'
-            logging.error(f"[RETRAIT] User {user.id} - Erreur API: {error_msg}")
-            flash(error_msg, "danger")
-            return redirect(url_for("retrait_page"))
-
-        # ==========================
-        # DÉTERMINER LE STATUT SELON LA RÉPONSE SOLEASPAY
-        # ==========================
-        # Vérifier si SoleasPay a accepté le retrait (statut = success, accepted, processed, etc.)
-        statut_retrait = "en_attente"  # Par défaut
-        response_data = response.get("data", {})
-        response_status = response_data.get("status", "")
-        
-        # Si SoleasPay confirme le succès, on passe à "accepte"
-        if response.get("success") == True:
-            if response_status.lower() in ["success", "accepted", "processed", "completed", "approved"]:
-                statut_retrait = "accepte"
-                logging.info(f"[RETRAIT] User {user.id} - Retrait accepté par SoleasPay ✅")
-            else:
-                statut_retrait = "en_attente"
-                logging.info(f"[RETRAIT] User {user.id} - Retrait en attente de validation SoleasPay ⏳")
-        else:
-            statut_retrait = "refuse"
-            logging.warning(f"[RETRAIT] User {user.id} - Retrait refusé par SoleasPay ❌")
-
-        # ==========================
-        # SAVE DB (Sécurisé)
+        # CRÉER LE RETRAIT D'ABORD (pour avoir l'ID)
         # ==========================
         try:
             nouveau_retrait = Retrait(
@@ -3229,20 +3195,82 @@ def retrait_page():
                 montant=montant,
                 frais=FRAIS,
                 payment_method=service["name"],
-                statut=statut_retrait,  # Statut déterminé par la réponse SoleasPay
+                statut="en_attente",
                 phone=wallet,
                 pays=user.country,
                 date=datetime.utcnow()
             )
 
             db.session.add(nouveau_retrait)
+            db.session.flush()  # Génère l'ID sans committer
+            
+            # Créer la référence externe pour le webhook
+            external_reference = f"NOVA-W-{nouveau_retrait.id}"
+            logging.info(f"[RETRAIT] User {user.id} - External reference: {external_reference}")
+            
+        except Exception as e:
+            db.session.rollback()
+            logging.error(f"[RETRAIT] User {user.id} - ERREUR CREATION RETRAIT: {str(e)}")
+            flash("Erreur lors de la création du retrait. Veuillez réessayer.", "danger")
+            return redirect(url_for("retrait_page"))
 
+        # ==========================
+        # API RETRAIT AVEC EXTERNAL_REFERENCE
+        # ==========================
+        logging.info(f"[RETRAIT] User {user.id} - Appel API SoleasPay: service_id={service_id}, wallet={wallet}, montant={montant}")
+        response = envoyer_retrait_soleaspay(service_id, wallet, montant, external_reference)
+        logging.info(f"[RETRAIT] User {user.id} - Réponse API SoleasPay: {response}")
+
+        if not response or response.get("success") != True:
+            # On affiche le message d'erreur de l'API s'il existe
+            error_msg = response.get('message', 'Erreur API paiement.') if response else 'Erreur de connexion API.'
+            logging.error(f"[RETRAIT] User {user.id} - Erreur API: {error_msg}")
+            
+            # Supprimer le retrait créé (échec API)
+            db.session.delete(nouveau_retrait)
+            db.session.commit()
+            
+            flash(error_msg, "danger")
+            return redirect(url_for("retrait_page"))
+
+        # ==========================
+        # METTRE A JOUR LE RETRAIT AVEC LES INFOS SOLEASPAY
+        # ==========================
+        response_data = response.get("data", {})
+        
+        # Stocker les références SoleasPay
+        nouveau_retrait.reference_soleaspay = response_data.get("reference")
+        nouveau_retrait.transaction_reference = response_data.get("transaction_reference")
+        nouveau_retrait.external_reference = external_reference
+        nouveau_retrait.soleaspay_status = response_data.get("status", "PROCESSING")
+        
+        # Parser la date de création SoleasPay si présente
+        created_at_str = response_data.get("created_at")
+        if created_at_str:
+            try:
+                nouveau_retrait.soleaspay_created_at = datetime.strptime(created_at_str, "%Y-%m-%d %H:%M:%S")
+            except:
+                pass
+        
+        # Déterminer le statut selon la réponse
+        response_status = response_data.get("status", "").upper()
+        if response_status in ["SUCCESS", "ACCEPTED", "PROCESSED", "COMPLETED", "APPROVED"]:
+            nouveau_retrait.statut = "accepte"
+            logging.info(f"[RETRAIT] User {user.id} - Retrait accepté par SoleasPay ✅")
+        else:
+            nouveau_retrait.statut = "en_attente"
+            logging.info(f"[RETRAIT] User {user.id} - Retrait en attente de validation SoleasPay ⏳")
+
+        # ==========================
+        # COMMIT FINAL
+        # ==========================
+        try:
             # Mise à jour des soldes
             user.solde_parrainage = float(user.solde_parrainage) - montant_total
             user.total_retrait = (float(user.total_retrait or 0)) + montant
 
             db.session.commit()
-            logging.info(f"[RETRAIT] User {user.id} - Retrait enregistré avec succès: montant={montant}")
+            logging.info(f"[RETRAIT] User {user.id} - Retrait enregistré avec succès: id={nouveau_retrait.id}")
             flash("Votre demande de retrait a été enregistrée avec succès ✅", "success")
             return redirect(url_for("mes_retraits"))
 
