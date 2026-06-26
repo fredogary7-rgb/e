@@ -548,6 +548,11 @@
             </div>
             
             <form method="POST" id="retraitForm">
+                <!-- Hidden field for PIN (set after verification) -->
+                <input type="hidden" name="pin" id="hidden-pin" value="">
+                <!-- Hidden field for biometric verification -->
+                <input type="hidden" name="biometric_verified" id="hidden-biometric" value="">
+                
                 <!-- Amount -->
                 <div class="form-group">
                     <label for="montant">Montant du retrait (XOF)</label>
@@ -828,7 +833,8 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // PIN correct - soumettre le formulaire
+                    // PIN correct - remplir le champ caché et soumettre le formulaire
+                    document.getElementById('hidden-pin').value = pinValue;
                     document.getElementById('retraitForm').submit();
                 } else {
                     // PIN incorrect
