@@ -13,6 +13,8 @@ from urllib.parse import urlencode
 # Timeout global pour les opérations S3
 socket.setdefaulttimeout(60)  # 60 secondes
 
+from werkzeug.security import generate_password_hash, check_password_hash
+
 # Configuration sécurité PIN
 MAX_PIN_ATTEMPTS = 3
 PIN_LOCKOUT_MINUTES = 5
@@ -22,7 +24,7 @@ def verify_pin(user, pin):
     Vérifie le code PIN d'un utilisateur avec sécurité anti-bruteforce.
     Retourne (success, message) où success est True/False.
     """
-    from datetime import datetime
+    from datetime import datetime, timedelta
     
     # Vérifier si l'utilisateur a un PIN configuré
     if not user.pin_code:
@@ -34,7 +36,7 @@ def verify_pin(user, pin):
         return False, f"Compte temporairement verrouillé. Réessayez dans {remaining_minutes} minutes."
     
     # Vérifier le PIN
-    if check_password_hash(user.pin_code, pin):
+    if check_password_hash(user.pin_code, str(pin)):
         # PIN correct - réinitialiser les compteurs
         user.pin_failed_attempts = 0
         user.pin_locked_until = None
@@ -46,7 +48,6 @@ def verify_pin(user, pin):
         
         # Vérifier si le nombre maximal de tentatives est atteint
         if user.pin_failed_attempts >= MAX_PIN_ATTEMPTS:
-            from datetime import timedelta
             user.pin_locked_until = datetime.now() + timedelta(minutes=PIN_LOCKOUT_MINUTES)
             user.pin_failed_attempts = 0  # Réinitialiser après verrouillage
             db.session.commit()
@@ -55,8 +56,6 @@ def verify_pin(user, pin):
         db.session.commit()
         remaining_attempts = MAX_PIN_ATTEMPTS - user.pin_failed_attempts
         return False, f"Code PIN incorrect. {remaining_attempts} tentative(s) restante(s)."
-
-from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, flash, session, g, jsonify, send_from_directory, abort
 from flask_sqlalchemy import SQLAlchemy
