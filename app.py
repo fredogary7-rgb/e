@@ -2960,6 +2960,26 @@ def retrait_page():
             return redirect(url_for("retrait_page"))
 
         # ==========================
+        # DÉTERMINER LE STATUT SELON LA RÉPONSE SOLEASPAY
+        # ==========================
+        # Vérifier si SoleasPay a accepté le retrait (statut = success, accepted, processed, etc.)
+        statut_retrait = "en_attente"  # Par défaut
+        response_data = response.get("data", {})
+        response_status = response_data.get("status", "")
+        
+        # Si SoleasPay confirme le succès, on passe à "accepte"
+        if response.get("success") == True:
+            if response_status.lower() in ["success", "accepted", "processed", "completed", "approved"]:
+                statut_retrait = "accepte"
+                logging.info(f"[RETRAIT] User {user.id} - Retrait accepté par SoleasPay ✅")
+            else:
+                statut_retrait = "en_attente"
+                logging.info(f"[RETRAIT] User {user.id} - Retrait en attente de validation SoleasPay ⏳")
+        else:
+            statut_retrait = "refuse"
+            logging.warning(f"[RETRAIT] User {user.id} - Retrait refusé par SoleasPay ❌")
+
+        # ==========================
         # SAVE DB (Sécurisé)
         # ==========================
         try:
@@ -2968,7 +2988,7 @@ def retrait_page():
                 montant=montant,
                 frais=FRAIS,
                 payment_method=service["name"],
-                statut="en_attente",  # Statut initial : en attente de validation
+                statut=statut_retrait,  # Statut déterminé par la réponse SoleasPay
                 phone=wallet,
                 pays=user.country,
                 date=datetime.utcnow()
