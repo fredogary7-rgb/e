@@ -15,6 +15,62 @@ BEGIN
     END IF;
 END $$;
 
+-- Ajouter la colonne transaction_reference si elle n'existe pas
+DO $$ 
+BEGIN 
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'retrait' AND column_name = 'transaction_reference'
+    ) THEN
+        ALTER TABLE retrait ADD COLUMN transaction_reference VARCHAR(100);
+        RAISE NOTICE 'Colonne transaction_reference ajoutée à la table retrait';
+    ELSE
+        RAISE NOTICE 'Colonne transaction_reference existe déjà';
+    END IF;
+END $$;
+
+-- Ajouter la colonne external_reference si elle n'existe pas
+DO $$ 
+BEGIN 
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'retrait' AND column_name = 'external_reference'
+    ) THEN
+        ALTER TABLE retrait ADD COLUMN external_reference VARCHAR(100);
+        RAISE NOTICE 'Colonne external_reference ajoutée à la table retrait';
+    ELSE
+        RAISE NOTICE 'Colonne external_reference existe déjà';
+    END IF;
+END $$;
+
+-- Ajouter la colonne soleaspay_status si elle n'existe pas
+DO $$ 
+BEGIN 
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'retrait' AND column_name = 'soleaspay_status'
+    ) THEN
+        ALTER TABLE retrait ADD COLUMN soleaspay_status VARCHAR(50);
+        RAISE NOTICE 'Colonne soleaspay_status ajoutée à la table retrait';
+    ELSE
+        RAISE NOTICE 'Colonne soleaspay_status existe déjà';
+    END IF;
+END $$;
+
+-- Ajouter la colonne soleaspay_created_at si elle n'existe pas
+DO $$ 
+BEGIN 
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'retrait' AND column_name = 'soleaspay_created_at'
+    ) THEN
+        ALTER TABLE retrait ADD COLUMN soleaspay_created_at TIMESTAMP;
+        RAISE NOTICE 'Colonne soleaspay_created_at ajoutée à la table retrait';
+    ELSE
+        RAISE NOTICE 'Colonne soleaspay_created_at existe déjà';
+    END IF;
+END $$;
+
 -- Ajouter la colonne last_sync si elle n'existe pas
 DO $$ 
 BEGIN 
@@ -29,15 +85,15 @@ BEGIN
     END IF;
 END $$;
 
--- Créer un index sur reference_soleaspay pour les recherches rapides
+-- Créer un index sur external_reference pour les recherches rapides (utilisé par le webhook)
 DO $$ 
 BEGIN 
     IF NOT EXISTS (
         SELECT 1 FROM information_schema.columns 
-        WHERE table_name = 'retrait' AND column_name = 'reference_soleaspay'
+        WHERE table_name = 'retrait' AND column_name = 'external_reference'
     ) THEN
-        CREATE INDEX idx_retrait_reference_soleaspay ON retrait(reference_soleaspay);
-        RAISE NOTICE 'Index idx_retrait_reference_soleaspay créé';
+        CREATE INDEX idx_retrait_external_reference ON retrait(external_reference);
+        RAISE NOTICE 'Index idx_retrait_external_reference créé';
     END IF;
 END $$;
 

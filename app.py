@@ -340,6 +340,14 @@ class Retrait(db.Model):
     pays = db.Column(db.String(50), nullable=True)
     frais = db.Column(db.Float, default=0.0)
     motif_refus = db.Column(db.String(255), nullable=True)  # Motif du refus si applicable
+    
+    # Champs de synchronisation SoleasPay
+    reference_soleaspay = db.Column(db.String(100), nullable=True)  # Référence du retrait chez SoleasPay (ex: MLS109P)
+    transaction_reference = db.Column(db.String(100), nullable=True)  # Transaction reference de SoleasPay
+    external_reference = db.Column(db.String(100), nullable=True)  # External reference (NOVA-W-<id>)
+    soleaspay_status = db.Column(db.String(50), nullable=True)  # Statut retourné par SoleasPay (PROCESSING, SUCCESS, etc.)
+    soleaspay_created_at = db.Column(db.DateTime, nullable=True)  # Date de création chez SoleasPay
+    last_sync = db.Column(db.DateTime, nullable=True)  # Dernière synchronisation du statut
 
 class Staking(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -1188,11 +1196,27 @@ mail = Mail(app)
 
 
 
-def envoyer_retrait_soleaspay(service_id, wallet, montant):
+def envoyer_retrait_soleaspay(service_id, wallet, montant, external_reference=None):
+    """
+    Envoie un retrait via SoleasPay.
+    
+    Args:
+        service_id: ID du service de paiement
+        wallet: Numéro de téléphone du bénéficiaire
+        montant: Montant du retrait
+        external_reference: Référence externe (ex: NOVA-W-123) pour le suivi
+    
+    Returns:
+        dict: Réponse de l'API SoleasPay
+    """
+    import logging
+    
+    logging.info(f"[SOLEASPAY] Envoi retrait: service_id={service_id}, wallet={wallet}, montant={montant}")
 
     token, err = obtenir_token()
 
     if err:
+        logging.error(f"[SOLEASPAY] Erreur token: {err}")
         return {"success": False, "message": "Erreur token SoleasPay"}
 
     url = "https://soleaspay.com/api/action/account/withdraw"
@@ -1209,21 +1233,189 @@ def envoyer_retrait_soleaspay(service_id, wallet, montant):
         "amount": montant,
         "currency": "XOF"
     }
+    
+    # Ajouter la référence externe si fournie
+    if external_reference:
+        payload["external_reference"] = external_reference
+        logging.info(f"[SOLEASPAY] Reference externe: {external_reference}")
 
     try:
-        response = requests.post(url, headers=headers, json=payload)
+        response = requests.post(url, headers=headers, json=payload, timeout=30)
+        logging.info(f"[SOLEASPAY] Status HTTP: {response.status_code}")
 
         if response.status_code != 200:
+            logging.error(f"[SOLEASPAY] Erreur HTTP {response.status_code}: {response.text}")
             return {
                 "success": False,
                 "message": f"Erreur HTTP {response.status_code}",
                 "content": response.text
             }
 
-        return response.json()
+        result = response.json()
+        logging.info(f"[SOLEASPAY] Réponse: {result}")
+        
+        return result
 
     except Exception as e:
+        logging.error(f"[SOLEASPAY] Exception: {str(e)}")
         return {"success": False, "message": str(e)}
+
+
+def consulter_statut_retrait_soleaspay(reference_soleaspay):
+    """
+    Consulte le statut d'un retrait chez SoleasPay via l'API.
+    
+    NOTE: SoleasPay ne semble pas avoir d'endpoint de consultation documenté.
+    Cette fonction utilise une approche générique qui peut être adaptée selon
+    l'API réelle de SoleasPay.
+    
+    Args:
+        reference_soleaspay: La référence du retrait (ex: MLS109P)
+    
+    Returns:
+        dict: {'success': bool, 'status': str, 'data': dict} ou None
+    """
+    import logging
+    
+    if not reference_soleaspay:
+        return None
+    
+    logging.info(f"[SOLEASPAY] Consultation statut: reference={reference_soleaspay}")
+    
+    token, err = obtenir_token()
+    if err:
+        logging.error(f"[SOLEASPAY] Erreur token: {err}")
+        return None
+    
+    # NOTE: L'endpoint exact dépend de l'API SoleasPay.
+    # À adapter selon la documentation officielle de SoleasPay.
+    # Exemple d'endpoint possible (à vérifier avec SoleasPay) :
+    url = f"https://soleaspay.com/api/action/account/withdraw/status"
+    
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "operation": "4",
+        "Content-Type": "application/json"
+    }
+    
+    payload = {
+        "reference": reference_soleaspay
+    }
+    
+    try:
+        response = requests.post(url, headers=headers, json=payload, timeout=30)
+        
+        if response.status_code != 200:
+            logging.error(f"[SOLEASPAY] Erreur consultation: {response.status_code}")
+            return None
+        
+        result = response.json()
+        logging.info(f"[SOLEASPAY] Statut consulté: {result}")
+        
+        return result
+        
+    except Exception as e:
+        logging.error(f"[SOLEASPAY] Exception consultation: {str(e)}")
+        return None
+
+
+def resynchroniser_retraits_en_attente():
+    """
+    Resynchronise les retraits qui sont restés en attente trop longtemps.
+    
+    Cette fonction :
+    1. Récupère tous les retraits avec statut 'en_attente' ou 'accepte' datant de plus de 5 minutes
+    2. Consulte le statut réel chez SoleasPay (si API disponible)
+    3. Met à jour le statut dans la base de données
+    
+    À exécuter périodiquement (cron ou tâche de fond).
+    """
+    import logging
+    from datetime import datetime, timedelta
+    
+    logging.info("[RESYNCHRO] Début resynchronisation retraits en attente")
+    
+    # Délai avant de considérer qu'un retrait est bloqué (5 minutes)
+    DELAI_ATTENTE_MINUTES = 5
+    
+    # Retraits en attente depuis plus de DELAI_ATTENTE_MINUTES
+    cutoff_time = datetime.utcnow() - timedelta(minutes=DELAI_ATTENTE_MINUTES)
+    
+    retraits_a_sync = Retrait.query.filter(
+        Retrait.statut.in_(['en_attente', 'accepte']),
+        Retrait.date < cutoff_time,
+        Retrait.reference_soleaspay != None  # Seulement si on a une référence SoleasPay
+    ).limit(50).all()
+    
+    if not retraits_a_sync:
+        logging.info("[RESYNCHRO] Aucun retrait à resynchroniser")
+        return 0
+    
+    logging.info(f"[RESYNCHRO] {len(retraits_a_sync)} retraits à resynchroniser")
+    
+    mis_a_jour = 0
+    erreurs = 0
+    
+    for retrait in retraits_a_sync:
+        try:
+            # Consulter le statut chez SoleasPay
+            # NOTE: Cette API n'est pas documentée par SoleasPay, à adapter
+            statut_soleaspay = consulter_statut_retrait_soleaspay(retrait.reference_soleaspay)
+            
+            if statut_soleaspay and statut_soleaspay.get('success'):
+                data = statut_soleaspay.get('data', {})
+                status = data.get('status', '').upper()
+                
+                # Mapping des statuts
+                statut_mapping = {
+                    'SUCCESS': 'successful',
+                    'COMPLETED': 'successful',
+                    'APPROVED': 'successful',
+                    'FAILED': 'failed',
+                    'REJECTED': 'refused',
+                    'CANCELLED': 'cancelled'
+                }
+                
+                nouveau_statut = statut_mapping.get(status)
+                
+                if nouveau_statut and nouveau_statut != retrait.statut:
+                    retrait.statut = nouveau_statut
+                    retrait.soleaspay_status = status
+                    retrait.last_sync = datetime.utcnow()
+                    
+                    # Mettre à jour total_retrait si succès
+                    if nouveau_statut == 'successful':
+                        user = User.query.get(retrait.user_id)
+                        if user:
+                            user.total_retrait = (user.total_retrait or 0) + retrait.montant
+                    
+                    mis_a_jour += 1
+                    logging.info(f"[RESYNCHRO] Retrait {retrait.id} mis à jour: {retrait.statut}")
+                else:
+                    retrait.last_sync = datetime.utcnow()
+                    logging.info(f"[RESYNCHRO] Retrait {retrait.id} toujours en attente")
+            else:
+                # API non disponible ou erreur - on marque juste la dernière sync
+                retrait.last_sync = datetime.utcnow()
+                logging.warning(f"[RESYNCHRO] Impossible de consulter statut pour retrait {retrait.id}")
+                
+        except Exception as e:
+            erreurs += 1
+            logging.error(f"[RESYNCHRO] Erreur pour retrait {retrait.id}: {str(e)}")
+        
+        db.session.commit()
+    
+    logging.info(f"[RESYNCHRO] Terminé: {mis_a_jour} mis à jour, {erreurs} erreurs")
+    return mis_a_jour
+
+
+@app.cli.command("resync-retraits")
+def cli_resync_retraits():
+    """Commande CLI pour resynchroniser manuellement les retraits."""
+    print("🔄 Resynchronisation des retraits en attente...")
+    resultat = resynchroniser_retraits_en_attente()
+    print(f"✅ {resultat} retraits mis à jour")
+
 
 @app.cli.command("init-db")
 def init_db():
@@ -2281,7 +2473,9 @@ from urllib.parse import urlencode
 
 @app.route("/api/webhook/soleaspay", methods=["POST"])
 def webhook_soleaspay():
-
+    """Webhook pour gérer les notifications de paiement SoleasPay (dépôts et retraits)"""
+    import logging
+    
     print("=" * 50)
     print("WEBHOOK RECU")
     print("HEADERS:", dict(request.headers))
@@ -2294,52 +2488,108 @@ def webhook_soleaspay():
         return jsonify({"error": "Unauthorized"}), 403
 
     data = request.get_json()
-
     details = data.get("data", {})
     external_reference = details.get("external_reference")
 
-    if not external_reference.startswith("NOVA-"):
+    if not external_reference or not external_reference.startswith("NOVA-"):
         return jsonify({"ignored": True})
 
-    depot_id = int(external_reference.replace("NOVA-", ""))
-
-    depot = db.session.get(Depot, depot_id)
-
-    if not depot:
-        return jsonify({"error": "Depot not found"}), 404
-
-    if depot.statut == "valide":
-        return jsonify({"received": True})
-
-    success = data.get("success")
-    status = data.get("status")
-
-    if success and status == "SUCCESS":
-
-        amount = int(float(details.get("amount", 0)))
-
-        if int(depot.montant) != amount:
-            return jsonify({"error": "Wrong amount"}), 400
-
-        user = User.query.filter_by(username=depot.user_name).first()
-
-        depot.statut = "valide"
-        depot.reference = details.get("reference")
-
-        user.solde_depot += depot.montant
-        user.solde_total += depot.montant
-
-        if not user.premier_depot:
-            user.premier_depot = True
-            if user.parrain:
-                donner_commission(user.parrain, depot.montant)
-
+    reference_id = external_reference.replace("NOVA-", "")
+    
+    # Déterminer le type (dépôt ou retrait) selon le préfixe
+    is_withdrawal = reference_id.startswith("W-")
+    
+    if is_withdrawal:
+        # C'est un retrait
+        retrait_id = int(reference_id.replace("W-", ""))
+        retrait = db.session.get(Retrait, retrait_id)
+        
+        if not retrait:
+            return jsonify({"error": "Retrait not found"}), 404
+        
+        logging.info(f"[WEBHOOK RETRAIT] Retrait ID {retrait_id} - Statut reçu: {data.get('status')}")
+        
+        # Si déjà traité, on retourne
+        if retrait.statut in ["successful", "failed", "refused"]:
+            return jsonify({"received": True})
+        
+        success = data.get("success")
+        status = data.get("status", "").upper()
+        
+        # Mapping des statuts SoleasPay vers nos statuts
+        statut_mapping = {
+            "SUCCESS": "successful",
+            "COMPLETED": "successful",
+            "APPROVED": "successful",
+            "PENDING": "en_attente",
+            "PROCESSING": "en_attente",
+            "FAILED": "failed",
+            "REJECTED": "refused",
+            "CANCELLED": "cancelled"
+        }
+        
+        nouveau_statut = statut_mapping.get(status, "en_attente")
+        
+        if success is True and status in ["SUCCESS", "COMPLETED", "APPROVED"]:
+            nouveau_statut = "successful"
+            logging.info(f"[WEBHOOK RETRAIT] Retrait {retrait_id} marqué comme SUCCESSFUL ✅")
+        elif success is False or status in ["FAILED", "REJECTED", "CANCELLED"]:
+            nouveau_statut = "failed" if status in ["FAILED"] else "refused"
+            logging.warning(f"[WEBHOOK RETRAIT] Retrait {retrait_id} marqué comme {nouveau_statut} ❌")
+        
+        # Mettre à jour le retrait
+        retrait.statut = nouveau_statut
+        retrait.reference_soleaspay = details.get("reference")
+        retrait.last_sync = datetime.utcnow()
+        
+        # Si le retrait est réussi, on met à jour total_retrait
+        if nouveau_statut == "successful":
+            user = User.query.get(retrait.user_id)
+            if user:
+                user.total_retrait = (user.total_retrait or 0) + retrait.montant
+        
         db.session.commit()
+        
+    else:
+        # C'est un dépôt
+        depot_id = int(reference_id)
+        depot = db.session.get(Depot, depot_id)
 
-    elif success is False:
+        if not depot:
+            return jsonify({"error": "Depot not found"}), 404
 
-        depot.statut = "echoue"
-        db.session.commit()
+        if depot.statut == "valide":
+            return jsonify({"received": True})
+
+        success = data.get("success")
+        status = data.get("status")
+
+        if success and status == "SUCCESS":
+
+            amount = int(float(details.get("amount", 0)))
+
+            if int(depot.montant) != amount:
+                return jsonify({"error": "Wrong amount"}), 400
+
+            user = User.query.filter_by(username=depot.user_name).first()
+
+            depot.statut = "valide"
+            depot.reference = details.get("reference")
+
+            user.solde_depot += depot.montant
+            user.solde_total += depot.montant
+
+            if not user.premier_depot:
+                user.premier_depot = True
+                if user.parrain:
+                    donner_commission(user.parrain, depot.montant)
+
+            db.session.commit()
+
+        elif success is False:
+
+            depot.statut = "echoue"
+            db.session.commit()
 
     return jsonify({"received": True})
 
@@ -2871,9 +3121,9 @@ def retrait_page():
 
     logging.info(f"[RETRAIT] User {user.id} ({user.username}) - Début traitement retrait")
 
-    MIN_RETRAIT = 5000
+    MIN_RETRAIT = 100
     MAX_RETRAIT = 50000
-    FRAIS = 500
+    FRAIS = 5
 
     # On s'assure que c'est bien un float
     solde_actuel = float(user.solde_parrainage or 0)
