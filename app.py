@@ -1263,11 +1263,9 @@ def envoyer_retrait_soleaspay(service_id, wallet, montant, external_reference=No
 
 def consulter_statut_retrait_soleaspay(reference_soleaspay):
     """
-    Consulte le statut d'un retrait chez SoleasPay via l'API.
+    Consulte le statut d'un retrait chez SoleasPay via l'API officielle.
     
-    NOTE: SoleasPay ne semble pas avoir d'endpoint de consultation documenté.
-    Cette fonction utilise une approche générique qui peut être adaptée selon
-    l'API réelle de SoleasPay.
+    Endpoint officiel : GET https://soleaspay.com/api/user/history/{reference}
     
     Args:
         reference_soleaspay: La référence du retrait (ex: MLS109P)
@@ -1287,26 +1285,19 @@ def consulter_statut_retrait_soleaspay(reference_soleaspay):
         logging.error(f"[SOLEASPAY] Erreur token: {err}")
         return None
     
-    # NOTE: L'endpoint exact dépend de l'API SoleasPay.
-    # À adapter selon la documentation officielle de SoleasPay.
-    # Exemple d'endpoint possible (à vérifier avec SoleasPay) :
-    url = f"https://soleaspay.com/api/action/account/withdraw/status"
+    # Endpoint officiel SoleasPay pour consulter l'historique/statut
+    url = f"https://soleaspay.com/api/user/history/{reference_soleaspay}"
     
     headers = {
         "Authorization": f"Bearer {token}",
-        "operation": "4",
         "Content-Type": "application/json"
     }
     
-    payload = {
-        "reference": reference_soleaspay
-    }
-    
     try:
-        response = requests.post(url, headers=headers, json=payload, timeout=30)
+        response = requests.get(url, headers=headers, timeout=30)
         
         if response.status_code != 200:
-            logging.error(f"[SOLEASPAY] Erreur consultation: {response.status_code}")
+            logging.error(f"[SOLEASPAY] Erreur consultation HTTP {response.status_code}: {response.text}")
             return None
         
         result = response.json()
