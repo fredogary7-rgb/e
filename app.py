@@ -4062,6 +4062,10 @@ def webauthn_authenticate_complete():
         credential.last_used_at = datetime.utcnow()
         db.session.commit()
         
+        # ✅ DÉFINIR LE TOKEN D'AUTHENTIFICATION BIOMÉTRIQUE POUR LE RETRAIT
+        session['biometric_verified'] = True
+        session['biometric_user_id'] = user.id
+        
         # Nettoyer la session
         session.pop('webauthn_auth_challenge', None)
         session.pop('webauthn_auth_user_id', None)
