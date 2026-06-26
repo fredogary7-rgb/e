@@ -9,25 +9,15 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         :root {
-            --bg-primary: #f8fafc;
-            --bg-secondary: rgba(255, 255, 255, 0.8);
-            --bg-card: rgba(255, 255, 255, 0.7);
-            --accent-blue: #38bdf8;
-            --accent-blue-light: #7dd3fc;
-            --accent-green: #86efac;
-            --accent-pink: #f9a8d4;
-            --text-primary: #334155;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
+            --bg-primary: #f8fafc; --bg-secondary: rgba(255, 255, 255, 0.8); --bg-card: rgba(255, 255, 255, 0.7);
+            --accent-blue: #38bdf8; --accent-blue-light: #7dd3fc; --accent-green: #86efac; --accent-pink: #f9a8d4;
+            --text-primary: #334155; --text-secondary: #64748b; --text-muted: #94a3b8;
             --border-color: rgba(148, 163, 184, 0.2);
             --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
             --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
             --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
             --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
-            --radius-sm: 10px;
-            --radius-lg: 16px;
-            --radius-xl: 20px;
-            --radius-2xl: 24px;
+            --radius-sm: 10px; --radius-lg: 16px; --radius-xl: 20px; --radius-2xl: 24px;
             --shadow-sm: 0 4px 12px rgba(56, 189, 248, 0.08);
             --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
             --shadow-large: 0 12px 32px rgba(56, 189, 248, 0.15);
@@ -44,10 +34,6 @@
         .hero h1 { font-size: 56px; font-weight: 900; font-style: italic; margin-bottom: 16px; background: linear-gradient(135deg, #38bdf8 0%, #8b5cf6 50%, #f9a8d4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         .hero .subtitle { font-size: 20px; color: var(--text-secondary); max-width: 700px; margin: 0 auto 40px; font-weight: 500; }
         .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); padding: 12px 24px; border-radius: 50px; font-size: 14px; font-weight: 600; color: var(--accent-blue); margin-bottom: 24px; border: 1px solid rgba(56, 189, 248, 0.2); }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; max-width: 900px; margin: 0 auto 60px; }
-        .stat-card { background: var(--bg-secondary); backdrop-filter: blur(20px); border-radius: var(--radius-xl); padding: 24px; text-align: center; border: 1px solid var(--border-color); box-shadow: var(--shadow-medium); }
-        .stat-number { font-size: 36px; font-weight: 900; font-style: italic; background: var(--gradient-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .stat-label { font-size: 14px; color: var(--text-secondary); margin-top: 8px; font-weight: 500; }
         .section { max-width: 1200px; margin: 0 auto 80px; padding: 0 24px; }
         .section-title { font-size: 36px; font-weight: 800; font-style: italic; margin-bottom: 40px; text-align: center; background: var(--gradient-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         .section-title span { background: var(--gradient-pink); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
@@ -79,7 +65,7 @@
         .btn-cta { display: inline-flex; align-items: center; gap: 12px; padding: 18px 48px; background: var(--gradient-blue); color: white; border: none; border-radius: 50px; font-size: 18px; font-weight: 700; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 8px 24px rgba(56, 189, 248, 0.4); text-decoration: none; }
         .btn-cta:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(56, 189, 248, 0.5); }
         .footer { text-align: center; padding: 40px 24px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 14px; }
-        @media (max-width: 768px) { .hero h1 { font-size: 36px; } .section-title { font-size: 28px; } .navbar-nav { display: none; } .cards-grid { grid-template-columns: 1fr; } .stat-number { font-size: 28px; } .video-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { .hero h1 { font-size: 36px; } .section-title { font-size: 28px; } .navbar-nav { display: none; } .cards-grid { grid-template-columns: 1fr; } .video-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -100,12 +86,6 @@
         <div class="hero-badge"><i class="fa-solid fa-chart-line"></i><span>Formation Premium</span></div>
         <h1>📈 Formation Trading</h1>
         <p class="subtitle">Maîtrisez les marchés financiers et générez des revenus passifs grâce au trading. Des bases aux stratégies avancées.</p>
-        <div class="stats-grid">
-            <div class="stat-card"><div class="stat-number">500+</div><div class="stat-label">Traders formés</div></div>
-            <div class="stat-card"><div class="stat-number">85%</div><div class="stat-label">Taux de réussite</div></div>
-            <div class="stat-card"><div class="stat-number">50K€</div><div class="stat-label">Gain moyen/mois</div></div>
-            <div class="stat-card"><div class="stat-number">20</div><div class="stat-label">Heures de formation</div></div>
-        </div>
     </section>
 
     <section class="section">
@@ -136,7 +116,7 @@
             <div class="video-grid">
                 <div>
                     <div class="video-wrapper">
-                        <iframe src="https://www.youtube.com/embed/Sz5of1W1WqU" title="Trading pour Débutants" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe src="https://www.youtube.com/embed/YmI0T79XB8k" title="Trading pour Débutants" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     <div class="video-info">
                         <h3>Trading pour Débutants - Les Bases Complètes</h3>
@@ -145,7 +125,7 @@
                 </div>
                 <div>
                     <div class="video-wrapper">
-                        <iframe src="https://www.youtube.com/embed/7Vd0RqrKdKE" title="Analyse Technique Avancée" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe src="https://www.youtube.com/embed/f348y785u7E" title="Analyse Technique Avancée" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     <div class="video-info">
                         <h3>Analyse Technique - Stratégies Gagnantes</h3>
@@ -159,22 +139,10 @@
     <section class="section">
         <h2 class="section-title">🚀 <span>Étapes Clés</span></h2>
         <div class="steps-container">
-            <div class="step-item">
-                <div class="step-number">1</div>
-                <div class="step-content"><h3>Choisir son Broker</h3><p>Sélectionnez un broker régulé avec des frais compétitifs, une bonne plateforme et un service client réactif.</p></div>
-            </div>
-            <div class="step-item">
-                <div class="step-number">2</div>
-                <div class="step-content"><h3>Se Former en Continu</h3><p>Le trading s'apprend sur le long terme. Suivez des formations, lisez des livres, analysez vos trades.</p></div>
-            </div>
-            <div class="step-item">
-                <div class="step-number">3</div>
-                <div class="step-content"><h3>Pratiquer en Démo</h3><p>Commencez par un compte démo pour tester vos stratégies sans risque avant de trader en réel.</p></div>
-            </div>
-            <div class="step-item">
-                <div class="step-number">4</div>
-                <div class="step-content"><h3>Gérer son Risque</h3><p>Ne risquez jamais plus de 1-2% de votre capital par trade. Utilisez toujours des stop-loss.</p></div>
-            </div>
+            <div class="step-item"><div class="step-number">1</div><div class="step-content"><h3>Choisir son Broker</h3><p>Sélectionnez un broker régulé avec des frais compétitifs, une bonne plateforme et un service client réactif.</p></div></div>
+            <div class="step-item"><div class="step-number">2</div><div class="step-content"><h3>Se Former en Continu</h3><p>Le trading s'apprend sur le long terme. Suivez des formations, lisez des livres, analysez vos trades.</p></div></div>
+            <div class="step-item"><div class="step-number">3</div><div class="step-content"><h3>Pratiquer en Démo</h3><p>Commencez par un compte démo pour tester vos stratégies sans risque avant de trader en réel.</p></div></div>
+            <div class="step-item"><div class="step-number">4</div><div class="step-content"><h3>Gérer son Risque</h3><p>Ne risquez jamais plus de 1-2% de votre capital par trade. Utilisez toujours des stop-loss.</p></div></div>
         </div>
     </section>
 

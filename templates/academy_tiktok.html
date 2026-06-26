@@ -7,446 +7,73 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         :root {
-            --bg-primary: #f8fafc;
-            --bg-secondary: rgba(255, 255, 255, 0.8);
-            --bg-card: rgba(255, 255, 255, 0.7);
-            --accent-blue: #38bdf8;
-            --accent-blue-light: #7dd3fc;
-            --accent-green: #86efac;
-            --accent-pink: #f9a8d4;
-            --text-primary: #334155;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
+            --bg-primary: #f8fafc; --bg-secondary: rgba(255, 255, 255, 0.8); --bg-card: rgba(255, 255, 255, 0.7);
+            --accent-blue: #38bdf8; --accent-blue-light: #7dd3fc; --accent-green: #86efac; --accent-pink: #f9a8d4;
+            --text-primary: #334155; --text-secondary: #64748b; --text-muted: #94a3b8;
             --border-color: rgba(148, 163, 184, 0.2);
             --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
             --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
             --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
             --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
-            --radius-sm: 10px;
-            --radius-lg: 16px;
-            --radius-xl: 20px;
-            --radius-2xl: 24px;
+            --radius-sm: 10px; --radius-lg: 16px; --radius-xl: 20px; --radius-2xl: 24px;
             --shadow-sm: 0 4px 12px rgba(56, 189, 248, 0.08);
             --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
             --shadow-large: 0 12px 32px rgba(56, 189, 248, 0.15);
         }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            color: var(--text-primary);
-            background: var(--gradient-bg);
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        /* Navbar */
-        .navbar {
-            background: var(--bg-secondary);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 16px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid var(--border-color);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .navbar-brand {
-            font-size: 24px;
-            font-weight: 900;
-            font-style: italic;
-            background: var(--gradient-blue);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-decoration: none;
-        }
-
-        .navbar-nav {
-            display: flex;
-            gap: 24px;
-            list-style: none;
-        }
-
-        .navbar-nav a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-            font-size: 15px;
-        }
-
-        .navbar-nav a:hover {
-            color: var(--accent-blue);
-        }
-
-        .navbar-user {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--gradient-blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 16px;
-        }
-
-        /* Hero Section */
-        .hero {
-            text-align: center;
-            padding: 80px 24px 60px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .hero h1 {
-            font-size: 56px;
-            font-weight: 900;
-            font-style: italic;
-            margin-bottom: 16px;
-            background: linear-gradient(135deg, #38bdf8 0%, #8b5cf6 50%, #f9a8d4 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero .subtitle {
-            font-size: 20px;
-            color: var(--text-secondary);
-            max-width: 700px;
-            margin: 0 auto 40px;
-            font-weight: 500;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--accent-blue);
-            margin-bottom: 24px;
-            border: 1px solid rgba(56, 189, 248, 0.2);
-        }
-
-        /* Stats Section */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 24px;
-            max-width: 900px;
-            margin: 0 auto 60px;
-        }
-
-        .stat-card {
-            background: var(--bg-secondary);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: var(--radius-xl);
-            padding: 24px;
-            text-align: center;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-medium);
-        }
-
-        .stat-number {
-            font-size: 36px;
-            font-weight: 900;
-            font-style: italic;
-            background: var(--gradient-blue);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-top: 8px;
-            font-weight: 500;
-        }
-
-        /* Content Sections */
-        .section {
-            max-width: 1200px;
-            margin: 0 auto 80px;
-            padding: 0 24px;
-        }
-
-        .section-title {
-            font-size: 36px;
-            font-weight: 800;
-            font-style: italic;
-            margin-bottom: 40px;
-            text-align: center;
-            background: var(--gradient-blue);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .section-title span {
-            background: var(--gradient-pink);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* Cards Grid */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 24px;
-        }
-
-        .info-card {
-            background: var(--bg-secondary);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: var(--radius-xl);
-            padding: 32px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-medium);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .info-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-large);
-        }
-
-        .card-icon {
-            width: 64px;
-            height: 64px;
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
-
-        .card-icon.blue {
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.2) 0%, rgba(56, 189, 248, 0.1) 100%);
-        }
-
-        .card-icon.pink {
-            background: linear-gradient(135deg, rgba(249, 168, 212, 0.2) 0%, rgba(249, 168, 212, 0.1) 100%);
-        }
-
-        .card-icon.green {
-            background: linear-gradient(135deg, rgba(134, 239, 172, 0.2) 0%, rgba(134, 239, 172, 0.1) 100%);
-        }
-
-        .card-icon.purple {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0.1) 100%);
-        }
-
-        .card-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: var(--text-primary);
-        }
-
-        .card-text {
-            font-size: 15px;
-            color: var(--text-secondary);
-            line-height: 1.7;
-        }
-
-        /* Step Process */
-        .steps-container {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .step-item {
-            display: flex;
-            gap: 24px;
-            align-items: flex-start;
-            padding: 24px;
-            background: var(--bg-secondary);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: var(--radius-xl);
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .step-number {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: var(--gradient-blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 900;
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-
-        .step-content h3 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-        }
-
-        .step-content p {
-            font-size: 15px;
-            color: var(--text-secondary);
-            line-height: 1.7;
-        }
-
-        /* Tips Section */
-        .tips-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .tip-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-            padding: 20px;
-            background: var(--bg-secondary);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color);
-        }
-
-        .tip-icon {
-            font-size: 24px;
-            flex-shrink: 0;
-        }
-
-        .tip-text {
-            font-size: 15px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            text-align: center;
-            padding: 80px 24px;
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
-            border-radius: var(--radius-2xl);
-            margin: 0 24px 80px;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .cta-section h2 {
-            font-size: 40px;
-            font-weight: 900;
-            font-style: italic;
-            margin-bottom: 16px;
-            background: var(--gradient-blue);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .cta-section p {
-            font-size: 18px;
-            color: var(--text-secondary);
-            margin-bottom: 32px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .btn-cta {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            padding: 18px 48px;
-            background: var(--gradient-blue);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 8px 24px rgba(56, 189, 248, 0.4);
-            text-decoration: none;
-        }
-
-        .btn-cta:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 32px rgba(56, 189, 248, 0.5);
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 40px 24px;
-            border-top: 1px solid var(--border-color);
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 36px;
-            }
-
-            .section-title {
-                font-size: 28px;
-            }
-
-            .navbar-nav {
-                display: none;
-            }
-
-            .cards-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stat-number {
-                font-size: 28px;
-            }
-        }
+        body { font-family: 'Poppins', sans-serif; color: var(--text-primary); background: var(--gradient-bg); line-height: 1.6; overflow-x: hidden; min-height: 100vh; }
+        .navbar { background: var(--bg-secondary); backdrop-filter: blur(20px); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border-color); box-shadow: var(--shadow-sm); }
+        .navbar-brand { font-size: 24px; font-weight: 900; font-style: italic; background: var(--gradient-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-decoration: none; }
+        .navbar-nav { display: flex; gap: 24px; list-style: none; }
+        .navbar-nav a { color: var(--text-secondary); text-decoration: none; font-weight: 500; transition: color 0.3s; font-size: 15px; }
+        .navbar-nav a:hover { color: var(--accent-blue); }
+        .navbar-user { display: flex; align-items: center; gap: 12px; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--gradient-blue); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 16px; }
+        .hero { text-align: center; padding: 80px 24px 60px; max-width: 1200px; margin: 0 auto; }
+        .hero h1 { font-size: 56px; font-weight: 900; font-style: italic; margin-bottom: 16px; background: linear-gradient(135deg, #38bdf8 0%, #8b5cf6 50%, #f9a8d4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero .subtitle { font-size: 20px; color: var(--text-secondary); max-width: 700px; margin: 0 auto 40px; font-weight: 500; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); padding: 12px 24px; border-radius: 50px; font-size: 14px; font-weight: 600; color: var(--accent-blue); margin-bottom: 24px; border: 1px solid rgba(56, 189, 248, 0.2); }
+        .section { max-width: 1200px; margin: 0 auto 80px; padding: 0 24px; }
+        .section-title { font-size: 36px; font-weight: 800; font-style: italic; margin-bottom: 40px; text-align: center; background: var(--gradient-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .section-title span { background: var(--gradient-pink); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+        .info-card { background: var(--bg-secondary); backdrop-filter: blur(20px); border-radius: var(--radius-xl); padding: 32px; border: 1px solid var(--border-color); box-shadow: var(--shadow-medium); transition: transform 0.3s, box-shadow 0.3s; }
+        .info-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-large); }
+        .card-icon { width: 64px; height: 64px; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 20px; }
+        .card-icon.blue { background: linear-gradient(135deg, rgba(56, 189, 248, 0.2) 0%, rgba(56, 189, 248, 0.1) 100%); }
+        .card-icon.pink { background: linear-gradient(135deg, rgba(249, 168, 212, 0.2) 0%, rgba(249, 168, 212, 0.1) 100%); }
+        .card-icon.green { background: linear-gradient(135deg, rgba(134, 239, 172, 0.2) 0%, rgba(134, 239, 172, 0.1) 100%); }
+        .card-icon.purple { background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0.1) 100%); }
+        .card-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; color: var(--text-primary); }
+        .card-text { font-size: 15px; color: var(--text-secondary); line-height: 1.7; }
+        .video-section { background: var(--bg-secondary); backdrop-filter: blur(20px); border-radius: var(--radius-2xl); padding: 40px; margin: 0 24px 80px; max-width: 1200px; margin-left: auto; margin-right: auto; border: 1px solid var(--border-color); box-shadow: var(--shadow-medium); }
+        .video-section h2 { font-size: 32px; font-weight: 800; font-style: italic; margin-bottom: 32px; text-align: center; background: var(--gradient-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 32px; }
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: var(--radius-xl); box-shadow: var(--shadow-large); }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: var(--radius-xl); }
+        .video-info { margin-top: 16px; }
+        .video-info h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
+        .video-info p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+        .steps-container { display: flex; flex-direction: column; gap: 24px; max-width: 800px; margin: 0 auto; }
+        .step-item { display: flex; gap: 24px; align-items: flex-start; padding: 24px; background: var(--bg-secondary); backdrop-filter: blur(20px); border-radius: var(--radius-xl); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); }
+        .step-number { width: 48px; height: 48px; border-radius: 50%; background: var(--gradient-blue); display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 20px; flex-shrink: 0; }
+        .step-content h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
+        .step-content p { font-size: 15px; color: var(--text-secondary); line-height: 1.7; }
+        .tips-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .tip-item { display: flex; align-items: flex-start; gap: 16px; padding: 20px; background: var(--bg-secondary); backdrop-filter: blur(20px); border-radius: var(--radius-lg); border: 1px solid var(--border-color); }
+        .tip-icon { font-size: 24px; flex-shrink: 0; }
+        .tip-text { font-size: 15px; color: var(--text-secondary); line-height: 1.6; }
+        .cta-section { text-align: center; padding: 80px 24px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); border-radius: var(--radius-2xl); margin: 0 24px 80px; max-width: 1200px; margin-left: auto; margin-right: auto; }
+        .cta-section h2 { font-size: 40px; font-weight: 900; font-style: italic; margin-bottom: 16px; background: var(--gradient-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .cta-section p { font-size: 18px; color: var(--text-secondary); margin-bottom: 32px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .btn-cta { display: inline-flex; align-items: center; gap: 12px; padding: 18px 48px; background: var(--gradient-blue); color: white; border: none; border-radius: 50px; font-size: 18px; font-weight: 700; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 8px 24px rgba(56, 189, 248, 0.4); text-decoration: none; }
+        .btn-cta:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(56, 189, 248, 0.5); }
+        .footer { text-align: center; padding: 40px 24px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 14px; }
+        @media (max-width: 768px) { .hero h1 { font-size: 36px; } .section-title { font-size: 28px; } .navbar-nav { display: none; } .cards-grid { grid-template-columns: 1fr; } .video-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
     <nav class="navbar">
         <a href="{{ url_for('dashboard_page') }}" class="navbar-brand">NovaTrade</a>
         <ul class="navbar-nav">
@@ -456,255 +83,117 @@
             <li><a href="{{ url_for('academy_tiktok') }}" style="color: var(--accent-blue);">Academy</a></li>
         </ul>
         <div class="navbar-user">
-            {% if user %}
-            <div class="user-avatar">{{ user.username[0]|upper }}</div>
-            {% endif %}
+            {% if user %}<div class="user-avatar">{{ user.username[0]|upper }}</div>{% endif %}
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <section class="hero">
-        <div class="hero-badge">
-            <i class="fa-brands fa-tiktok"></i>
-            <span>Formation Exclusive</span>
-        </div>
+        <div class="hero-badge"><i class="fa-brands fa-tiktok"></i><span>Formation Exclusive</span></div>
         <h1>🎯 Academy TikTok</h1>
-        <p class="subtitle">
-            Maîtrisez l'art de créer du contenu viral et transformez votre présence sur TikTok. 
-            Découvrez les stratégies secrètes des créateurs qui ont percé.
-        </p>
-        
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number">1M+</div>
-                <div class="stat-label">Vues générées</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">50K+</div>
-                <div class="stat-label">Abonnés formés</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">500+</div>
-                <div class="stat-label">Vidéos virales</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">10</div>
-                <div class="stat-label">Leçons détaillées</div>
-            </div>
-        </div>
+        <p class="subtitle">Maîtrisez l'art de créer du contenu viral et transformez votre présence sur TikTok. Découvrez les stratégies secrètes des créateurs qui ont percé.</p>
     </section>
 
-    <!-- Section 1: Les Bases -->
     <section class="section">
         <h2 class="section-title">📚 <span>Les Fondamentaux</span> du Succès</h2>
         <div class="cards-grid">
             <div class="info-card">
-                <div class="card-icon blue">
-                    <i class="fa-solid fa-bullseye"></i>
-                </div>
+                <div class="card-icon blue"><i class="fa-solid fa-bullseye"></i></div>
                 <h3 class="card-title">Comprendre l'Algorithme</h3>
-                <p class="card-text">
-                    TikTok utilise un algorithme unique basé sur l'intérêt, pas sur les followers. 
-                    Apprenez comment fonctionne le "For You Page" (FYP) et comment l'algorithme 
-                    décide quelles vidéos mettre en avant. Découvrez les 3 facteurs clés : 
-                    taux de rétention, engagement et pertinence.
-                </p>
+                <p class="card-text">TikTok utilise un algorithme unique basé sur l'intérêt, pas sur les followers. Apprenez comment fonctionne le "For You Page" (FYP) et les 3 facteurs clés : taux de rétention, engagement et pertinence.</p>
             </div>
             <div class="info-card">
-                <div class="card-icon pink">
-                    <i class="fa-solid fa-users"></i>
-                </div>
+                <div class="card-icon pink"><i class="fa-solid fa-users"></i></div>
                 <h3 class="card-title">Définir Votre Niche</h3>
-                <p class="card-text">
-                    La clé du succès ? Se spécialiser ! Une niche bien définie vous permet 
-                    de cibler un public précis et de devenir une référence. Découvrez comment 
-                    trouver votre niche parfaite en combinant passion, expertise et demande du marché.
-                </p>
+                <p class="card-text">La clé du succès ? Se spécialiser ! Une niche bien définie vous permet de cibler un public précis et de devenir une référence. Trouvez votre niche parfaite en combinant passion, expertise et demande.</p>
             </div>
             <div class="info-card">
-                <div class="card-icon green">
-                    <i class="fa-solid fa-lightbulb"></i>
-                </div>
+                <div class="card-icon green"><i class="fa-solid fa-lightbulb"></i></div>
                 <h3 class="card-title">Stratégie de Contenu</h3>
-                <p class="card-text">
-                    Ne publiez pas au hasard ! Une stratégie de contenu solide comprend : 
-                    planning éditorial, analyse des tendances, format récurrents, et storytelling. 
-                    Apprenez à créer un mix parfait entre contenu éducatif, divertissant et engageant.
-                </p>
+                <p class="card-text">Ne publiez pas au hasard ! Une stratégie solide comprend : planning éditorial, analyse des tendances, formats récurrents et storytelling. Créez un mix parfait entre éducatif, divertissant et engageant.</p>
             </div>
         </div>
     </section>
 
-    <!-- Section 2: Les 5 Piliers -->
     <section class="section">
         <h2 class="section-title">🏆 <span>Les 5 Piliers</span> d'une Vidéo Virale</h2>
         <div class="steps-container">
-            <div class="step-item">
-                <div class="step-number">1</div>
-                <div class="step-content">
-                    <h3>🎬 L'Accroche (0-3 secondes)</h3>
-                    <p>
-                        Les 3 premières secondes sont CRUCIALES. Utilisez un hook visuel ou verbal 
-                        percutant : une question choquante, un texte accrocheur, un mouvement soudain. 
-                        70% des viewers décident en moins de 2 secondes s'ils restent ou scrollent.
-                    </p>
+            <div class="step-item"><div class="step-number">1</div><div class="step-content"><h3>🎬 L'Accroche (0-3 secondes)</h3><p>Les 3 premières secondes sont CRUCIALES. Utilisez un hook visuel ou verbal percutant. 70% des viewers décident en moins de 2 secondes s'ils restent ou scrollent.</p></div></div>
+            <div class="step-item"><div class="step-number">2</div><div class="step-content"><h3>📖 Le Storytelling (3-15 secondes)</h3><p>Racontez une histoire avec un début (problème), un milieu (développement) et une fin (solution). Utilisez le "pattern interrupt" toutes les 3-5 secondes.</p></div></div>
+            <div class="step-item"><div class="step-number">3</div><div class="step-content"><h3>🎵 La Musique & Sons Tendances</h3><p>Les sons tendance boostent la visibilité de 300%. Utilisez TikTok Creative Center pour identifier les musiques virales du moment.</p></div></div>
+            <div class="step-item"><div class="step-number">4</div><div class="step-content"><h3>💬 L'Appel à l'Action (CTA)</h3><p>Demandez explicitement : "Likez si vous êtes d'accord", "Commentez votre expérience". Les vidéos avec CTA ont 3x plus d'engagement.</p></div></div>
+            <div class="step-item"><div class="step-number">5</div><div class="step-content"><h3>🏷️ Hashtags & Description</h3><p>Utilisez la règle 3-3-3 : 3 hashtags larges (#pourtoi), 3 hashtags de niche (#marketingdigital), 3 hashtags spécifiques (#astucetiktok).</p></div></div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">📚 <span>Vidéos de Formation</span></h2>
+        <div class="video-section">
+            <h2>🎬 Cours Vidéo</h2>
+            <div class="video-grid">
+                <div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/dB2fM8cT6xY" title="Devenir Viral sur TikTok" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h3>Comment Devenir Viral sur TikTok - Guide Complet</h3>
+                        <p>Découvrez les secrets pour créer du contenu viral : algorithmes, hooks, storytelling, musiques tendances et stratégies d'engagement.</p>
+                    </div>
                 </div>
-            </div>
-            <div class="step-item">
-                <div class="step-number">2</div>
-                <div class="step-content">
-                    <h3>📖 Le Storytelling (3-15 secondes)</h3>
-                    <p>
-                        Racontez une histoire ! Structurez votre vidéo avec un début (problème), 
-                        un milieu (développement) et une fin (solution/résolution). Utilisez le 
-                        "pattern interrupt" toutes les 3-5 secondes pour maintenir l'attention.
-                    </p>
-                </div>
-            </div>
-            <div class="step-item">
-                <div class="step-number">3</div>
-                <div class="step-content">
-                    <h3>🎵 La Musique & Sons Tendances</h3>
-                    <p>
-                        Les sons tendance boostent la visibilité de 300%. Utilisez TikTok Creative 
-                        Center pour identifier les musiques virales du moment. Adaptez-les à votre 
-                        contenu de façon authentique, pas forcée.
-                    </p>
-                </div>
-            </div>
-            <div class="step-item">
-                <div class="step-number">4</div>
-                <div class="step-content">
-                    <h3>💬 L'Appel à l'Action (CTA)</h3>
-                    <p>
-                        Demandez explicitement : "Likez si vous êtes d'accord", "Commentez votre 
-                        expérience", "Partagez à un ami". Les vidéos avec CTA ont 3x plus 
-                        d'engagement. Placez le CTA à la fin, après avoir apporté de la valeur.
-                    </p>
-                </div>
-            </div>
-            <div class="step-item">
-                <div class="step-number">5</div>
-                <div class="step-content">
-                    <h3>🏷️ Hashtags & Description</h3>
-                    <p>
-                        Utilisez la règle 3-3-3 : 3 hashtags larges (#pourtoi), 3 hashtags de niche 
-                        (#marketingdigital), 3 hashtags spécifiques (#astucetiktok). La description 
-                        doit compléter la vidéo avec des mots-clés SEO pour le référencement.
-                    </p>
+                <div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/O2hJTbL8qgU" title="Stratégies TikTok 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h3>Stratégies TikTok Avancées - Percer en 2024</h3>
+                        <p>Techniques avancées pour exploser votre compte : timing de publication, collaborations, trends, et analyse des analytics.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Section 3: Techniques Avancées -->
     <section class="section">
-        <h2 class="section-title">⚡ <span>Techniques Avancées</span> de Créateurs Pros</h2>
+        <h2 class="section-title">⚡ <span>Techniques Avancées</span></h2>
         <div class="cards-grid">
             <div class="info-card">
-                <div class="card-icon purple">
-                    <i class="fa-solid fa-clock"></i>
-                </div>
+                <div class="card-icon purple"><i class="fa-solid fa-clock"></i></div>
                 <h3 class="card-title">Timing de Publication</h3>
-                <p class="card-text">
-                    Publiez quand votre audience est active ! En général : 6-9h, 12-14h, 18-22h. 
-                    Testez différents créneaux et analysez vos analytics. La cohérence est clé : 
-                    1-3 vidéos/jour pour les débutants, 3-5 pour les confirmés.
-                </p>
+                <p class="card-text">Publiez quand votre audience est active ! En général : 6-9h, 12-14h, 18-22h. Testez différents créneaux. 1-3 vidéos/jour pour les débutants, 3-5 pour les confirmés.</p>
             </div>
             <div class="info-card">
-                <div class="card-icon blue">
-                    <i class="fa-solid fa-chart-line"></i>
-                </div>
+                <div class="card-icon blue"><i class="fa-solid fa-chart-line"></i></div>
                 <h3 class="card-title">Analyser les Analytics</h3>
-                <p class="card-text">
-                    Surveillez : taux de rétention (visez 70%+), sources de trafic (FYP vs followers), 
-                    démographie, heures de pointe. Doublez sur ce qui marche, abandonnez ce qui 
-                    ne fonctionne pas. L'analyse data-driven est le secret des tops créateurs.
-                </p>
+                <p class="card-text">Surveillez : taux de rétention (visez 70%+), sources de trafic (FYP vs followers), démographie. Doublez sur ce qui marche, abandonnez ce qui ne fonctionne pas.</p>
             </div>
             <div class="info-card">
-                <div class="card-icon pink">
-                    <i class="fa-solid fa-handshake"></i>
-                </div>
+                <div class="card-icon pink"><i class="fa-solid fa-handshake"></i></div>
                 <h3 class="card-title">Collaborations & Duets</h3>
-                <p class="card-text">
-                    Les duets et stitches avec des créateurs de votre niche vous exposent à leur 
-                    audience. Réagissez aux vidéos virales avec votre perspective unique. Participez 
-                    aux challenges et trends pour maximiser la visibilité.
-                </p>
+                <p class="card-text">Les duets et stitches avec des créateurs de votre niche yous exposent à leur audience. Réagissez aux vidéos virales avec votre perspective unique.</p>
             </div>
         </div>
     </section>
 
-    <!-- Section 4: Conseils Pratiques -->
     <section class="section">
-        <h2 class="section-title">💡 <span>Conseils Pratiques</span> & Astuces</h2>
+        <h2 class="section-title">💡 <span>Conseils Pratiques</span></h2>
         <div class="tips-grid">
-            <div class="tip-item">
-                <span class="tip-icon">🎥</span>
-                <span class="tip-text">
-                    <strong>Qualité vidéo :</strong> Filmez en 1080p minimum, bon éclairage (ring light), 
-                    son clair (micro externe si besoin). La qualité technique impacte directement la rétention.
-                </span>
-            </div>
-            <div class="tip-item">
-                <span class="tip-icon">📱</span>
-                <span class="tip-text">
-                    <strong>Format vertical :</strong> 9:16 obligatoire ! Remplissez tout l'écran. 
-                    Évitez les bandes noires. Utilisez les zones sûres pour le texte (pas trop haut/bas).
-                </span>
-            </div>
-            <div class="tip-item">
-                <span class="tip-icon">🔄</span>
-                <span class="tip-text">
-                    <strong>Repost intelligent :</strong> Repostez vos meilleures vidéos après 30-60 jours 
-                    avec de nouvelles captions/hashtags. TikTok récompense la constance, pas le recyclage pur.
-                </span>
-            </div>
-            <div class="tip-item">
-                <span class="tip-icon">💬</span>
-                <span class="tip-text">
-                    <strong>Répondre aux commentaires :</strong> Répondez à TOUS les commentaires dans les 
-                    2 premières heures. Ça booste l'engagement et montre que vous êtes actif.
-                </span>
-            </div>
-            <div class="tip-item">
-                <span class="tip-icon">🔥</span>
-                <span class="tip-text">
-                    <strong>Sauter sur les trends :</strong> Soyez rapide ! Une trend dure 3-7 jours max. 
-                    Adaptez-la à votre niche dans les 24-48h pour maximiser l'impact.
-                </span>
-            </div>
-            <div class="tip-item">
-                <span class="tip-icon">📊</span>
-                <span class="tip-text">
-                    <strong>Batch creation :</strong> Tournez 5-10 vidéos en une session. Ça vous permet 
-                    de rester constant même les jours sans inspiration.
-                </span>
-            </div>
+            <div class="tip-item"><span class="tip-icon">🎥</span><span class="tip-text"><strong>Qualité vidéo :</strong> Filmez en 1080p minimum, bon éclairage (ring light), son clair. La qualité technique impacte directement la rétention.</span></div>
+            <div class="tip-item"><span class="tip-icon">📱</span><span class="tip-text"><strong>Format vertical :</strong> 9:16 obligatoire ! Remplissez tout l'écran. Évitez les bandes noires. Utilisez les zones sûres pour le texte.</span></div>
+            <div class="tip-item"><span class="tip-icon">🔄</span><span class="tip-text"><strong>Repost intelligent :</strong> Repostez vos meilleures vidéos après 30-60 jours avec de nouvelles captions/hashtags. TikTok récompense la constance.</span></div>
+            <div class="tip-item"><span class="tip-icon">💬</span><span class="tip-text"><strong>Répondre aux commentaires :</strong> Répondez à TOUS les commentaires dans les 2 premières heures. Ça booste l'engagement.</span></div>
+            <div class="tip-item"><span class="tip-icon">🔥</span><span class="tip-text"><strong>Sauter sur les trends :</strong> Soyez rapide ! Une trend dure 3-7 jours max. Adaptez-la à votre niche dans les 24-48h.</span></div>
+            <div class="tip-item"><span class="tip-icon">📊</span><span class="tip-text"><strong>Batch creation :</strong> Tournez 5-10 vidéos en une session. Ça vous permet de rester constant même les jours sans inspiration.</span></div>
         </div>
     </section>
 
-    <!-- CTA Section -->
     <section class="cta-section">
         <h2>🚀 Passez à l'Action !</h2>
-        <p>
-            La théorie c'est bien, la pratique c'est mieux ! Commencez à appliquer ces stratégies 
-            dès aujourd'hui et regardez votre compte exploser.
-        </p>
-        <a href="{{ url_for('dashboard_page') }}" class="btn-cta">
-            <i class="fa-solid fa-rocket"></i>
-            Retour au Dashboard
-        </a>
+        <p>La théorie c'est bien, la pratique c'est mieux ! Commencez à appliquer ces stratégies dès aujourd'hui et regardez votre compte exploser.</p>
+        <a href="{{ url_for('dashboard_page') }}" class="btn-cta"><i class="fa-solid fa-rocket"></i> Retour au Dashboard</a>
     </section>
 
-    <!-- Footer -->
     <footer class="footer">
         <p>© 2026 NovaTrade Academy. Tous droits réservés.</p>
-        <p style="margin-top: 8px; font-size: 12px;">
-            Formation créée avec ❤️ par l'équipe NovaTrade
-        </p>
+        <p style="margin-top: 8px; font-size: 12px;">Formation créée avec ❤️ par l'équipe NovaTrade</p>
     </footer>
 </body>
 </html>
