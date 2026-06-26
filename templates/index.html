@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaTrade - Gagnez de l'argent en apprenant, en vendant et en recommandant</title>
+    <meta name="description" content="Plateforme tout-en-un : formation, affiliation, vente et missions rémunérées.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <style>
+        /* ============================================
+           DESIGN SYSTEM - IDENTIQUE AU SITE EXISTANT
+           ============================================ */
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: rgba(255, 255, 255, 0.8);
+            --bg-card: rgba(255, 255, 255, 0.7);
+            --accent-blue: #38bdf8;
+            --accent-blue-light: #7dd3fc;
+            --accent-green: #86efac;
+            --accent-pink: #f9a8d4;
+            --text-primary: #334155;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.2);
+            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
+            --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
+            --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
+            --radius-sm: 10px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-2xl: 24px;
+            --shadow-sm: 0 4px 12px rgba(56, 189, 248, 0.08);
+            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
+            --shadow-large: 0 12px 32px rgba(56, 189, 248, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            font-style: italic;
+            color: var(--text-primary);
+            background: var(--gradient-bg);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* NAVIGATION */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled { box-shadow: var(--shadow-medium); }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .navbar-brand .logo-icon {
+            width: 45px; height: 45px;
+            background: var(--gradient-blue);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .navbar-brand span {
+            font-style: italic;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .navbar-menu a {
+            font-style: italic;
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+            font-weight: 500;
+        }
+
+        .navbar-menu a:hover { color: var(--accent-blue); }
+
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-nav {
+            padding: 10px 24px;
+            border-radius: var(--radius-lg);
+            font-style: italic;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--accent-blue);
+            border: 2px solid var(--accent-blue);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .btn-filled {
+            background: var(--gradient-blue);
+            color: white;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+        }
+
+        .btn-filled:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 30px 80px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-text h1 {
+            font-style: italic;
+            font-size: 48px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-text .subtitle {
+            font-style: italic;
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 35px;
+            line-height: 1.8;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-hero {
+            padding: 16px 40px;
+            border-radius: var(--radius-xl);
+            font-style: italic;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-hero-primary {
+            background: var(--gradient-blue);
+            color: white;
+            box-shadow: 0 6px 25px rgba(56, 189, 248, 0.4);
+        }
+
+        .btn-hero-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.5);
+        }
+
+        .btn-hero-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-hero-secondary:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+            transform: translateY(-3px);
+        }
+
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-illustration {
+            width: 100%;
+            max-width: 450px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero-shapes {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.15;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .shape-1 {
+            width: 80px; height: 80px;
+            background: var(--accent-blue);
+            top: 10%; right: 10%;
+        }
+
+        .shape-2 {
+            width: 60px; height: 60px;
+            background: var(--accent-pink);
+            bottom: 20%; left: 5%;
+            animation-delay: 1s;
+        }
+
+        .shape-3 {
+            width: 40px; height: 40px;
+            background: var(--accent-green);
+            top: 50%; left: 20%;
+            animation-delay: 2s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.15; }
+            50% { transform: scale(1.1); opacity: 0.25; }
+        }
+
+        /* SECTIONS */
+        .section {
+            padding: 100px 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 8px 24px;
+            background: rgba(56, 189, 248, 0.1);
+            border-radius: 30px;
+            font-style: italic;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-blue);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section-header h2 {
+            font-style: italic;
+            font-size: 40px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .section-header p {
+            font-style: italic;
+            font-size: 16px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* SERVICES GRID */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .service-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-2xl);
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-large);
+            border-color: var(--accent-blue);
+        }
+
+        .service-icon {
+            width: 80px; height: 80px;
+            margin: 0 auto 25px;
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            transition: all 0.3s ease;
+        }
+
+        .service-card:nth-child(1) .service-icon { background: rgba(56, 189, 248, 0.15); color: var(--accent-blue); }
+        .service-card:nth-child(2) .service-icon { background: rgba(134, 239, 172, 0.15); color: var(--accent-green); }
+        .service-card:nth-child(3) .service-icon { background: rgba(249, 168, 212, 0.15); color: var(--accent-pink); }
+        .service-card:nth-child(4) .service-icon { background: rgba(251, 191, 36, 0.15); color: #f59e0b; }
+
+        .service-card:hover .service-icon { transform: scale(1.1) rotate(5deg); }
+
+        .service-card h3 {
+            font-style: italic;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .service-card p {
+            font-style: italic;
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* STEPS */
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            position: relative;
+        }
+
+        .steps-container::before {
+            content: '';
+            position: absolute;
+            top: 50px; left: 10%; right: 10%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green), var(--accent-pink), #f59e0b);
+            border-radius: 3px;
+            z-index: 0;
+        }
+
+        .step-card {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .step-number {
+            width: 70px; height: 70px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .step-card:nth-child(1) .step-number { background: var(--gradient-blue); box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4); }
+        .step-card:nth-child(2) .step-number { background: var(--gradient-green); box-shadow: 0 6px 20px rgba(134, 239, 172, 0.4); }
+        .step-card:nth-child(3) .step-number { background: var(--gradient-pink); box-shadow: 0 6px 20px rgba(249, 168, 212, 0.4); }
+        .step-card:nth-child(4) .step-number { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4); }
+
+        .step-card:hover .step-number { transform: scale(1.15); }
+
+        .step-card h3 {
+            font-style: italic;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .step-card p {
+            font-style: italic;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* FEATURES */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateX(5px);
+            border-color: var(--accent-blue);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .feature-icon {
+            width: 50px; height: 50px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .feature-item:nth-child(odd) .feature-icon { background: rgba(56, 189, 248, 0.15); color: var(--accent-blue); }
+        .feature-item:nth-child(even) .feature-icon { background: rgba(134, 239, 172, 0.15); color: var(--accent-green); }
+
+        .feature-text h4 {
+            font-style: italic;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .feature-text p {
+            font-style: italic;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* STATS */
+        .stats-section {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(134, 239, 172, 0.05) 100%);
+            border-radius: var(--radius-2xl);
+            padding: 60px;
+            margin: 40px 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 30px;
+        }
+
+        .stat-item { text-align: center; }
+
+        .stat-item .stat-number {
+            font-style: italic;
+            font-size: 36px;
+            font-weight: 800;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .stat-item .stat-label {
+            font-style: italic;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* TESTIMONIALS */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .testimonial-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-2xl);
+            padding: 35px;
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .testimonial-avatar {
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .testimonial-info h4 {
+            font-style: italic;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+        }
+
+        .testimonial-info .country {
+            font-style: italic;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .testimonial-rating { margin-bottom: 15px; }
+        .testimonial-rating i { color: #fbbf24; font-size: 14px; }
+
+        .testimonial-text {
+            font-style: italic;
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* FAQ */
+        .faq-container { max-width: 800px; margin: 0 auto; }
+
+        .faq-item {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover { border-color: var(--accent-blue); }
+
+        .faq-question {
+            padding: 25px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover { background: rgba(56, 189, 248, 0.05); }
+
+        .faq-question h3 {
+            font-style: italic;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            flex: 1;
+            padding-right: 20px;
+        }
+
+        .faq-icon {
+            width: 35px; height: 35px;
+            border-radius: 50%;
+            background: rgba(56, 189, 248, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-blue);
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .faq-item.active .faq-icon {
+            background: var(--accent-blue);
+            color: white;
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer { max-height: 300px; }
+
+        .faq-answer p {
+            padding: 0 30px 25px;
+            font-style: italic;
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* CTA */
+        .cta-section {
+            background: var(--gradient-blue);
+            border-radius: var(--radius-2xl);
+            padding: 80px 60px;
+            text-align: center;
+            margin: 60px 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .cta-content { position: relative; z-index: 1; }
+
+        .cta-section h2 {
+            font-style: italic;
+            font-size: 42px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .cta-section p {
+            font-style: italic;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 35px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-cta {
+            padding: 18px 45px;
+            border-radius: var(--radius-xl);
+            font-style: italic;
+            font-size: 16px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cta-white {
+            background: white;
+            color: var(--accent-blue);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-cta-white:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-cta-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-cta-outline:hover {
+            border-color: white;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        /* FOOTER */
+        .footer {
+            background: var(--text-primary);
+            color: white;
+            padding: 80px 30px 40px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .footer-brand .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .footer-brand .logo-icon {
+            width: 50px; height: 50px;
+            background: var(--gradient-blue);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .footer-brand .logo span {
+            font-style: italic;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .footer-brand p {
+            font-style: italic;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 15px;
+        }
+
+        .footer-social a {
+            width: 40px; height: 40px;
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-social a:hover {
+            background: var(--accent-blue);
+            transform: translateY(-3px);
+        }
+
+        .footer-links h4 {
+            font-style: italic;
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 25px;
+        }
+
+        .footer-links ul { list-style: none; }
+
+        .footer-links li { margin-bottom: 12px; }
+
+        .footer-links a {
+            font-style: italic;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-blue);
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-bottom p {
+            font-style: italic;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .footer-bottom-links a {
+            font-style: italic;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-bottom-links a:hover { color: var(--accent-blue); }
+
+        /* ANIMATIONS */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-text h1 { font-size: 42px; }
+            .hero-buttons { justify-content: center; }
+            .hero-visual { display: none; }
+
+            .services-grid { grid-template-columns: repeat(2, 1fr); }
+            .steps-container { grid-template-columns: repeat(2, 1fr); }
+            .steps-container::before { display: none; }
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+            .stats-grid { grid-template-columns: repeat(3, 1fr); }
+            .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-content { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-menu {
+                display: none;
+                position: absolute;
+                top: 100%; left: 0; right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 20px;
+                gap: 15px;
+                box-shadow: var(--shadow-medium);
+            }
+
+            .navbar-menu.active { display: flex; }
+            .mobile-toggle { display: block; }
+            .navbar-actions { display: none; }
+
+            .hero { padding: 100px 20px 60px; }
+            .hero-text h1 { font-size: 32px; }
+
+            .section { padding: 60px 20px; }
+            .section-header h2 { font-size: 30px; }
+
+            .services-grid, .steps-container, .features-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .testimonials-grid { grid-template-columns: 1fr; }
+
+            .cta-section { padding: 50px 30px; }
+            .cta-section h2 { font-size: 30px; }
+
+            .footer-content { grid-template-columns: 1fr; gap: 40px; }
+            .footer-bottom { flex-direction: column; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-text h1 { font-size: 28px; }
+            .hero-buttons { flex-direction: column; }
+            .btn-hero { width: 100%; justify-content: center; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .cta-buttons { flex-direction: column; }
+            .btn-cta { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <a href="/" class="navbar-brand">
+            <div class="logo-icon">NT</div>
+            <span>NovaTrade</span>
+        </a>
+        <ul class="navbar-menu" id="navbarMenu">
+            <li><a href="#services">Services</a></li>
+            <li><a href="#comment-ca-marche">Comment ça marche</a></li>
+            <li><a href="#temoignages">Témoignages</a></li>
+            <li><a href="#faq">FAQ</a></li>
+        </ul>
+        <div class="navbar-actions">
+            <a href="{{ url_for('connexion_page') }}" class="btn-nav btn-outline">Se connecter</a>
+            <a href="{{ url_for('inscription_page') }}" class="btn-nav btn-filled">Commencer</a>
+        </div>
+        <button class="mobile-toggle" id="mobileToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Gagnez de l'argent en apprenant, en vendant et en recommandant</h1>
+                <p class="subtitle">Une plateforme tout-en-un qui réunit la formation, le marketing d'affiliation, la vente de produits numériques et physiques, ainsi que des missions rémunérées.</p>
+                <div class="hero-buttons">
+                    <a href="{{ url_for('inscription_page') }}" class="btn-hero btn-hero-primary">
+                        <i class="fas fa-rocket"></i>
+                        Commencer gratuitement
+                    </a>
+                    <a href="{{ url_for('connexion_page') }}" class="btn-hero btn-hero-secondary">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Se connecter
+                    </a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-shapes">
+                    <div class="shape shape-1"></div>
+                    <div class="shape shape-2"></div>
+                    <div class="shape shape-3"></div>
+                </div>
+                <svg class="hero-illustration" viewBox="0 0 400 350" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="200" cy="175" r="150" fill="url(#grad1)" opacity="0.1"/>
+                    <rect x="60" y="80" width="120" height="160" rx="15" fill="url(#grad1)" opacity="0.9"/>
+                    <rect x="220" y="60" width="140" height="180" rx="15" fill="url(#grad2)" opacity="0.9"/>
+                    <rect x="75" y="100" width="90" height="70" rx="8" fill="white" opacity="0.9"/>
+                    <rect x="235" y="80" width="110" height="90" rx="8" fill="white" opacity="0.9"/>
+                    <circle cx="50" cy="80" r="20" fill="url(#grad3)" opacity="0.8"/>
+                    <circle cx="370" cy="120" r="16" fill="url(#grad2)" opacity="0.8"/>
+                    <circle cx="350" cy="280" r="24" fill="url(#grad1)" opacity="0.8"/>
+                    <circle cx="70" cy="310" r="14" fill="url(#grad3)" opacity="0.8"/>
+                    <text x="110" y="145" font-size="24" fill="white" text-anchor="middle">📚</text>
+                    <text x="290" y="135" font-size="24" fill="white" text-anchor="middle">🛒</text>
+                    <text x="50" y="85" font-size="14" fill="white" text-anchor="middle">💰</text>
+                    <text x="370" y="125" font-size="12" fill="white" text-anchor="middle">📈</text>
+                    <defs>
+                        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#7dd3fc"/>
+                            <stop offset="100%" style="stop-color:#38bdf8"/>
+                        </linearGradient>
+                        <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#fbcfe8"/>
+                            <stop offset="100%" style="stop-color:#f9a8d4"/>
+                        </linearGradient>
+                        <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#bbf7d0"/>
+                            <stop offset="100%" style="stop-color:#86efac"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="section" id="services">
+        <div class="section-header fade-in">
+            <span class="section-tag">Nos Services</span>
+            <h2>Tout ce dont vous avez besoin pour réussir</h2>
+            <p>Une plateforme complète qui vous accompagne à chaque étape de votre parcours entrepreneurial.</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-card fade-in">
+                <div class="service-icon"><i class="fas fa-graduation-cap"></i></div>
+                <h3>Formation</h3>
+                <p>Accédez à des formations de qualité pour développer vos compétences et augmenter vos revenus dans le digital.</p>
+            </div>
+            <div class="service-card fade-in">
+                <div class="service-icon"><i class="fas fa-handshake"></i></div>
+                <h3>Affiliation</h3>
+                <p>Recommandez des produits et gagnez une commission attractive sur chaque vente réalisée grâce à votre lien.</p>
+            </div>
+            <div class="service-card fade-in">
+                <div class="service-icon"><i class="fas fa-store"></i></div>
+                <h3>Vente</h3>
+                <p>Achetez et vendez des produits numériques ou physiques directement depuis notre marketplace sécurisée.</p>
+            </div>
+            <div class="service-card fade-in">
+                <div class="service-icon"><i class="fas fa-tasks"></i></div>
+                <h3>Missions rémunérées</h3>
+                <p>Effectuez des tâches simples proposées par nos partenaires et recevez une rémunération après validation.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section" id="comment-ca-marche">
+        <div class="section-header fade-in">
+            <span class="section-tag">Comment ça marche</span>
+            <h2>Commencez en 4 étapes simples</h2>
+            <p>Notre processus est conçu pour être simple, rapide et accessible à tous.</p>
+        </div>
+        <div class="steps-container">
+            <div class="step-card fade-in">
+                <div class="step-number">1</div>
+                <h3>Créer un compte</h3>
+                <p>Inscription gratuite en moins de 2 minutes</p>
+            </div>
+            <div class="step-card fade-in">
+                <div class="step-number">2</div>
+                <h3>Compléter son profil</h3>
+                <p>Ajoutez vos informations et préférences</p>
+            </div>
+            <div class="step-card fade-in">
+                <div class="step-number">3</div>
+                <h3>Choisir une activité</h3>
+                <p>Formation, vente, affiliation ou missions</p>
+            </div>
+            <div class="step-card fade-in">
+                <div class="step-number">4</div>
+                <h3>Recevoir ses revenus</h3>
+                <p>Retraits rapides et sécurisés</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section">
+        <div class="section-header fade-in">
+            <span class="section-tag">Pourquoi nous choisir</span>
+            <h2>Les avantages NovaTrade</h2>
+            <p>Une plateforme conçue pour votre succès et votre tranquillité d'esprit.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-item fade-in">
+                <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                <div class="feature-text"><h4>Paiements rapides</h4><p>Retraits instantanés</p></div>
+            </div>
+            <div class="feature-item fade-in">
+                <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="feature-text"><h4>Sécurité avancée</h4><p>Protection maximale</p></div>
+            </div>
+            <div class="feature-item fade-in">
+                <div class="feature-icon"><i class="fas fa-fingerprint"></i></div>
+                <div class="feature-text"><h4>Authentification biométrique</h4><p>Face ID / Empreinte</p></div>
+            </div>
+            <div class="feature-item fade-in">
+                <div class="feature-icon"><i class="fas fa-lock"></i></div>
+                <div class="feature-text"><h4>Transactions protégées</h4><p>Cryptage SSL</p></div>
+            </div>
+            <div class="feature-item fade-in">
+                <div class="feature-icon"><i class="fas fa-headset"></i></div>
+                <div class="feature-text"><h4>Assistance disponible</h4><p>Support 24/7</p></div>
+            </div>
+            <div class="feature-item fade-in">
+                <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+                <div class="feature-text"><h4>Interface simple</h4><p>100% responsive</p></div>
+            </div>
+            <div class="feature-item fade-in">
+                <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="feature-text"><h4>Tableau de bord intuitif</h4><p>Suivi en temps réel</p></div>
+            </div>
+            <div class="feature-item fade-in">
+                <div class="feature-icon"><i class="fas fa-globe"></i></div>
+                <div class="feature-text"><h4>Compatible mobile</h4><p>Disponible partout</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="section">
+        <div class="stats-section fade-in">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" data-target="15000">0</div>
+                    <div class="stat-label">Utilisateurs inscrits</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="2500">0</div>
+                    <div class="stat-label">Produits disponibles</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="150">0</div>
+                    <div class="stat-label">Formations</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="50">0</div>
+                    <div class="stat-label">Partenaires</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="8500">0</div>
+                    <div class="stat-label">Retraits effectués</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="45000000">0</div>
+                    <div class="stat-label">Commissions versées (XOF)</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="section" id="temoignages">
+        <div class="section-header fade-in">
+            <span class="section-tag">Témoignages</span>
+            <h2>Ils nous font confiance</h2>
+            <p>Découvrez les expériences de notre communauté.</p>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card fade-in">
+                <div class="testimonial-header">
+                    <div class="testimonial-avatar" style="background: var(--gradient-blue);">AK</div>
+                    <div class="testimonial-info">
+                        <h4>Aminata Koné</h4>
+                        <span class="country"><i class="fas fa-map-marker-alt"></i> Côte d'Ivoire</span>
+                    </div>
+                </div>
+                <div class="testimonial-rating">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-text">"NovaTrade a transformé ma vie. J'ai commencé par les formations et maintenant je vends mes propres produits. Les retraits sont rapides et le support est excellent."</p>
+            </div>
+            <div class="testimonial-card fade-in">
+                <div class="testimonial-header">
+                    <div class="testimonial-avatar" style="background: var(--gradient-green);">MT</div>
+                    <div class="testimonial-info">
+                        <h4>Moussa Traoré</h4>
+                        <span class="country"><i class="fas fa-map-marker-alt"></i> Mali</span>
+                    </div>
+                </div>
+                <div class="testimonial-rating">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-text">"L'affiliation m'a permis de générer un revenu passif incroyable. Je recommande vivement cette plateforme à tous ceux qui veulent se lancer dans le digital."</p>
+            </div>
+            <div class="testimonial-card fade-in">
+                <div class="testimonial-header">
+                    <div class="testimonial-avatar" style="background: var(--gradient-pink);">SD</div>
+                    <div class="testimonial-info">
+                        <h4>Sophie Diallo</h4>
+                        <span class="country"><i class="fas fa-map-marker-alt"></i> Sénégal</span>
+                    </div>
+                </div>
+                <div class="testimonial-rating">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                </div>
+                <p class="testimonial-text">"Les missions rémunérées sont parfaites pour compléter mes revenus. L'interface is simple et les paiements arrivent toujours à temps."</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="section" id="faq">
+        <div class="section-header fade-in">
+            <span class="section-tag">FAQ</span>
+            <h2>Questions fréquentes</h2>
+            <p>Tout ce que vous devez savoir sur NovaTrade.</p>
+        </div>
+        <div class="faq-container">
+            <div class="faq-item fade-in">
+                <div class="faq-question">
+                    <h3>Comment gagner de l'argent sur NovaTrade ?</h3>
+                    <div class="faq-icon"><i class="fas fa-plus"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <p>Vous pouvez gagner de l'argent de plusieurs façons : en suivant des formations pour développer vos compétences, en recommandant des produits via l'affiliation, en vendant vos propres produits, ou en réalisant des missions rémunérées proposées par nos partenaires.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in">
+                <div class="faq-question">
+                    <h3>Comment fonctionne l'affiliation ?</h3>
+                    <div class="faq-icon"><i class="fas fa-plus"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <p>L'affiliation vous permet de recommander des produits et de gagner une commission sur chaque vente réalisée grâce à votre lien unique. Vous pouvez partager vos liens sur les réseaux sociaux, par email, ou sur votre site web.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in">
+                <div class="faq-question">
+                    <h3>Comment retirer mes revenus ?</h3>
+                    <div class="faq-icon"><i class="fas fa-plus"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <p>Les retraits sont disponibles via mobile money (MTN, Orange, Wave, etc.) selon votre pays. Il suffit de demander un retrait depuis votre tableau de bord, de confirmer avec votre code PIN ou votre empreinte biométrique, et les fonds sont transférés instantanément.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in">
+                <div class="faq-question">
+                    <h3>Comment sécuriser mon compte ?</h3>
+                    <div class="faq-icon"><i class="fas fa-plus"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <p>Nous offrons plusieurs options de sécurité : code PIN à 6 chiffres, authentification biométrique (Face ID, Touch ID), et notifications en temps réel pour chaque transaction. Vous pouvez activer ces options dans les paramètres de votre profil.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in">
+                <div class="faq-question">
+                    <h3>Comment devenir vendeur ?</h3>
+                    <div class="faq-icon"><i class="fas fa-plus"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <p>Pour devenir vendeur, créez d'abord une boutique depuis votre tableau de bord. Vous pourrez ensuite ajouter des produits, gérer vos commandes et suivre vos ventes. La création de boutique is gratuite et ne prend que quelques minutes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>Commencez votre aventure dès aujourd'hui</h2>
+            <p>Rejoignez des milliers de personnes qui ont déjà transformé leur vie grâce à NovaTrade.</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('inscription_page') }}" class="btn-cta btn-cta-white">
+                    <i class="fas fa-user-plus"></i>
+                    Créer un compte
+                </a>
+                <a href="{{ url_for('market_page') if market_page else '#services' }}" class="btn-cta btn-cta-outline">
+                    <i class="fas fa-graduation-cap"></i>
+                    Découvrir les formations
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="logo">
+                    <div class="logo-icon">NT</div>
+                    <span>NovaTrade</span>
+                </div>
+                <p>La plateforme tout-en-un pour apprendre, vendre, recommander et gagner de l'argent en ligne. Rejoignez notre communauté dès aujourd'hui.</p>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="#services">Formations</a></li>
+                    <li><a href="#services">Affiliation</a></li>
+                    <li><a href="#services">Marketplace</a></li>
+                    <li><a href="#services">Missions</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Entreprise</h4>
+                <ul>
+                    <li><a href="#">À propos</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Équipe</a></li>
+                    <li><a href="#">Presse</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Légal</h4>
+                <ul>
+                    <li><a href="#">Conditions d'utilisation</a></li>
+                    <li><a href="#">Politique de confidentialité</a></li>
+                    <li><a href="#">Cookies</a></li>
+                    <li><a href="#">Mentions légales</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 NovaTrade. Tous droits réservés.</p>
+            <div class="footer-bottom-links">
+                <a href="#">Conditions</a>
+                <a href="#">Confidentialité</a>
+                <a href="#">Cookies</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        document.getElementById('mobileToggle').addEventListener('click', function() {
+            document.getElementById('navbarMenu').classList.toggle('active');
+        });
+
+        // FAQ accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', function() {
+                const item = this.parentElement;
+                const isActive = item.classList.contains('active');
+                
+                // Close all items
+                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+                
+                // Open clicked item if it wasn't active
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Fade-in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Counter animation for stats
+        function animateCounter(element) {
+            const target = parseInt(element.getAttribute('data-target'));
+            const duration = 2000;
+            const step = target / (duration / 16);
+            let current = 0;
+
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                
+                // Format number based on size
+                if (target >= 1000000) {
+                    element.textContent = (current / 1000000).toFixed(1) + 'M';
+                } else if (target >= 1000) {
+                    element.textContent = Math.round(current / 1000) + 'K';
+                } else {
+                    element.textContent = Math.round(current);
+                }
+            }, 16);
+        }
+
+        // Observe stat numbers
+        const statObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    entry.target.classList.add('visible');
+                    statObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.stat-number').forEach(el => statObserver.observe(el));
+    </script>
+</body>
+</html>
