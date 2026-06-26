@@ -19,38 +19,59 @@ from werkzeug.security import generate_password_hash, check_password_hash
 MAX_PIN_ATTEMPTS = 3
 PIN_LOCKOUT_MINUTES = 5
 
-def verify_pin(user, pin):
+def verify_pin(user, pin, log_context=""):
     """
     Vérifie le code PIN d'un utilisateur avec sécurité anti-bruteforce.
-    Retourne (success, message) où success est True/False.
+    Retourne (success, message) où success is True/False.
+    
+    Args:
+        user: L'objet User à vérifier
+        pin: Le code PIN à vérifier (string ou int)
+        log_context: Contexte pour les logs (ex: "retrait", "reset_password")
     """
     from datetime import datetime, timedelta
+    import logging
+    
+    logging.info(f"[VERIFY_PIN] {log_context} - User: {user.id} ({user.username}) - Début vérification")
     
     # Vérifier si l'utilisateur a un PIN configuré
     if not user.pin_code:
+        logging.warning(f"[VERIFY_PIN] {log_context} - User: {user.id} - Aucun PIN configuré")
         return False, "Aucun code PIN configuré. Veuillez en définir un dans votre profil."
     
     # Vérifier si le compte est verrouillé temporairement
     if user.pin_locked_until and datetime.now() < user.pin_locked_until:
         remaining_minutes = (user.pin_locked_until - datetime.now()).seconds // 60 + 1
+        logging.warning(f"[VERIFY_PIN] {log_context} - User: {user.id} - Compte verrouillé. Reste {remaining_minutes} min")
         return False, f"Compte temporairement verrouillé. Réessayez dans {remaining_minutes} minutes."
     
+    # Convertir le PIN en string pour la vérification
+    pin_str = str(pin).strip()
+    logging.info(f"[VERIFY_PIN] {log_context} - User: {user.id} - PIN fourni: {len(pin_str)} chiffres")
+    
     # Vérifier le PIN
-    if check_password_hash(user.pin_code, str(pin)):
+    pin_hash = user.pin_code
+    check_result = check_password_hash(pin_hash, pin_str)
+    logging.info(f"[VERIFY_PIN] {log_context} - User: {user.id} - check_password_hash result: {check_result}")
+    
+    if check_result:
         # PIN correct - réinitialiser les compteurs
         user.pin_failed_attempts = 0
         user.pin_locked_until = None
         db.session.commit()
+        logging.info(f"[VERIFY_PIN] {log_context} - User: {user.id} - PIN CORRECT ✅")
         return True, "PIN vérifié avec succès."
     else:
         # PIN incorrect - incrémenter le compteur
         user.pin_failed_attempts = (user.pin_failed_attempts or 0) + 1
+        logging.warning(f"[VERIFY_PIN] {log_context} - User: {user.id} - PIN INCORRECT ❌ (tentatives: {user.pin_failed_attempts})")
         
         # Vérifier si le nombre maximal de tentatives est atteint
         if user.pin_failed_attempts >= MAX_PIN_ATTEMPTS:
             user.pin_locked_until = datetime.now() + timedelta(minutes=PIN_LOCKOUT_MINUTES)
             user.pin_failed_attempts = 0  # Réinitialiser après verrouillage
             db.session.commit()
+            logging.warning(f"[VERIFY_PIN] {log_context} - User: {user.id} - COMPTE VERROUILLÉ 🔒")
             return False, f"Trop de tentatives échouées. Compte verrouillé pendant {PIN_LOCKOUT_MINUTES} minutes."
         
         db.session.commit()
@@ -2841,11 +2862,14 @@ from datetime import datetime
 
 @app.route("/retrait", methods=["GET", "POST"])
 def retrait_page():
+    import logging
     user = get_logged_in_user()
 
     if not user:
         flash("Veuillez vous connecter.", "danger")
         return redirect(url_for("login"))
+
+    logging.info(f"[RETRAIT] User {user.id} ({user.username}) - Début traitement retrait")
 
     MIN_RETRAIT = 5000
     MAX_RETRAIT = 50000
@@ -2869,6 +2893,8 @@ def retrait_page():
         wallet = request.form.get("phone", "").strip()
         pin = request.form.get("pin", "").strip()
 
+        logging.info(f"[RETRAIT] User {user.id} - Montant: {montant}, Service: {service_id}, Wallet: {wallet}")
+
         # ==========================
         # VALIDATIONS
         # ==========================
@@ -2888,26 +2914,48 @@ def retrait_page():
             return redirect(url_for("retrait_page"))
 
         # ==========================
-        # 🔐 PIN CHECK (avec sécurité anti-bruteforce)
+        # 🔐 AUTHENTIFICATION (PIN ou Biométrie)
         # ==========================
-        if not user.pin_code:
-            flash("Veuillez définir votre code PIN dans votre profil.", "danger")
-            return redirect(url_for("profile_page"))
+        authenticated = False
+        
+        # Vérifier si authentifié via biométrie (token en session)
+        if session.get('biometric_verified') and session.get('biometric_user_id') == user.id:
+            authenticated = True
+            logging.info(f"[RETRAIT] User {user.id} - Authentification biométrique valide ✅")
+            # Nettoyer le token après utilisation
+            session.pop('biometric_verified', None)
+            session.pop('biometric_user_id', None)
+        
+        # Sinon, vérifier le PIN
+        if not authenticated:
+            if not user.pin_code:
+                flash("Veuillez définir votre code PIN dans votre profil.", "danger")
+                return redirect(url_for("profile_page"))
 
-        # Utiliser verify_pin() pour la vérification avec sécurité anti-bruteforce
-        success, message = verify_pin(user, pin)
-        if not success:
-            flash(message, "danger")
+            # Utiliser verify_pin() pour la vérification avec sécurité anti-bruteforce
+            success, message = verify_pin(user, pin, log_context="retrait")
+            logging.info(f"[RETRAIT] User {user.id} - Vérification PIN: success={success}")
+            if not success:
+                flash(message, "danger")
+                return redirect(url_for("retrait_page"))
+            authenticated = True
+            logging.info(f"[RETRAIT] User {user.id} - Authentification PIN réussie ✅")
+
+        if not authenticated:
+            flash("Authentification requise.", "danger")
             return redirect(url_for("retrait_page"))
 
         # ==========================
         # API RETRAIT
         # ==========================
+        logging.info(f"[RETRAIT] User {user.id} - Appel API SoleasPay: service_id={service_id}, wallet={wallet}, montant={montant}")
         response = envoyer_retrait_soleaspay(service_id, wallet, montant)
+        logging.info(f"[RETRAIT] User {user.id} - Réponse API SoleasPay: {response}")
 
         if not response or response.get("success") != True:
             # On affiche le message d'erreur de l'API s'il existe
             error_msg = response.get('message', 'Erreur API paiement.') if response else 'Erreur de connexion API.'
+            logging.error(f"[RETRAIT] User {user.id} - Erreur API: {error_msg}")
             flash(error_msg, "danger")
             return redirect(url_for("retrait_page"))
 
@@ -2933,11 +2981,13 @@ def retrait_page():
             user.total_retrait = (float(user.total_retrait or 0)) + montant
 
             db.session.commit()
+            logging.info(f"[RETRAIT] User {user.id} - Retrait enregistré avec succès: montant={montant}")
             flash("Votre demande de retrait a été enregistrée avec succès ✅", "success")
             return redirect(url_for("mes_retraits"))
 
         except Exception as e:
             db.session.rollback()
+            logging.error(f"[RETRAIT] User {user.id} - ERREUR STOCKAGE: {str(e)}")
             print(f"❌ ERREUR STOCKAGE : {str(e)}")
             flash("Erreur lors de l'enregistrement du retrait. Veuillez réessayer.", "danger")
             return redirect(url_for("retrait_page"))
