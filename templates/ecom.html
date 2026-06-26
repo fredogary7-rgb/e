@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formation E-commerce - NovaTrade Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        :root {
+            --bg-primary: #f8fafc; --bg-secondary: rgba(255, 255, 255, 0.8); --bg-card: rgba(255, 255, 255, 0.7);
+            --accent-blue: #38bdf8; --accent-blue-light: #7dd3fc; --accent-green: #86efac; --accent-pink: #f9a8d4;
+            --text-primary: #334155; --text-secondary: #64748b; --text-muted: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.2);
+            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
+            --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
+            --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
+            --radius-sm: 10px; --radius-lg: 16px; --radius-xl: 20px; --radius-2xl: 24px;
+            --shadow-sm: 0 4px 12px rgba(56, 189, 248, 0.08);
+            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
+            --shadow-large: 0 12px 32px rgba(56, 189, 248, 0.15);
+        }
+        body { font-family: 'Poppins', sans-serif; color: var(--text-primary); background: var(--gradient-bg); line-height: 1.6; overflow-x: hidden; min-height: 100vh; }
+        .navbar { background: var(--bg-secondary); backdrop-filter: blur(20px); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border-color); box-shadow: var(--shadow-sm); }
+        .navbar-brand { font-size: 24px; font-weight: 900; font-style: italic; background: var(--gradient-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-decoration: none; }
+        .navbar-nav { display: flex; gap: 24px; list-style: none; }
+        .navbar-nav a { color: var(--text-secondary); text-decoration: none; font-weight: 500; transition: color 0.3s; font-size: 15px; }
+        .navbar-nav a:hover { color: var(--accent-blue); }
+        .navbar-user { display: flex; align-items: center; gap: 12px; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--gradient-blue); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 16px; }
+        .hero { text-align: center; padding: 80px 24px 60px; max-width: 1200px; margin: 0 auto; }
+        .hero h1 { font-size: 56px; font-weight: 900; font-style: italic; margin-bottom: 16px; background: linear-gradient(135deg, #38bdf8 0%, #8b5cf6 50%, #f9a8d4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero .subtitle { font-size: 20px; color: var(--text-secondary); max-width: 700px; margin: 0 auto 40px; font-weight: 500; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); padding: 12px 24px; border-radius: 50px; font-size: 14px; font-weight: 600; color: var(--accent-blue); margin-bottom: 24px; border: 1px solid rgba(56, 189, 248, 0.2); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; max-width: 900px; margin: 0 auto 60px; }
+        .stat-card { background: var(--bg-secondary); backdrop-filter: blur(20px); border-radius: var(--radius-xl); padding: 24px; text-align: center; border: 1px solid var(--border-color); box-shadow: var(--shadow-medium); }
+        .stat-number { font-size: 36px; font-weight: 900; font-style: italic; background: var(--gradient-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .stat-label { font-size: 14px; color: var(--text-secondary); margin-top: 8px; font-weight: 500; }
+        .section { max-width: 1200px; margin: 0 auto 80px; padding: 0 24px; }
+        .section-title { font-size: 36px; font-weight: 800; font-style: italic; margin-bottom: 40px; text-align: center; background: var(--gradient-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .section-title span { background: var(--gradient-pink); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+        .info-card { background: var(--bg-secondary); backdrop-filter: blur(20px); border-radius: var(--radius-xl); padding: 32px; border: 1px solid var(--border-color); box-shadow: var(--shadow-medium); transition: transform 0.3s, box-shadow 0.3s; }
+        .info-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-large); }
+        .card-icon { width: 64px; height: 64px; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 20px; }
+        .card-icon.blue { background: linear-gradient(135deg, rgba(56, 189, 248, 0.2) 0%, rgba(56, 189, 248, 0.1) 100%); }
+        .card-icon.green { background: linear-gradient(135deg, rgba(134, 239, 172, 0.2) 0%, rgba(134, 239, 172, 0.1) 100%); }
+        .card-icon.pink { background: linear-gradient(135deg, rgba(249, 168, 212, 0.2) 0%, rgba(249, 168, 212, 0.1) 100%); }
+        .card-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; color: var(--text-primary); }
+        .card-text { font-size: 15px; color: var(--text-secondary); line-height: 1.7; }
+        .video-section { background: var(--bg-secondary); backdrop-filter: blur(20px); border-radius: var(--radius-2xl); padding: 40px; margin: 0 24px 80px; max-width: 1200px; margin-left: auto; margin-right: auto; border: 1px solid var(--border-color); box-shadow: var(--shadow-medium); }
+        .video-section h2 { font-size: 32px; font-weight: 800; font-style: italic; margin-bottom: 32px; text-align: center; background: var(--gradient-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 32px; }
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: var(--radius-xl); box-shadow: var(--shadow-large); }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: var(--radius-xl); }
+        .video-info { margin-top: 16px; }
+        .video-info h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
+        .video-info p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+        .steps-container { display: flex; flex-direction: column; gap: 24px; max-width: 800px; margin: 0 auto; }
+        .step-item { display: flex; gap: 24px; align-items: flex-start; padding: 24px; background: var(--bg-secondary); backdrop-filter: blur(20px); border-radius: var(--radius-xl); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); }
+        .step-number { width: 48px; height: 48px; border-radius: 50%; background: var(--gradient-blue); display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 20px; flex-shrink: 0; }
+        .step-content h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
+        .step-content p { font-size: 15px; color: var(--text-secondary); line-height: 1.7; }
+        .cta-section { text-align: center; padding: 80px 24px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); border-radius: var(--radius-2xl); margin: 0 24px 80px; max-width: 1200px; margin-left: auto; margin-right: auto; }
+        .cta-section h2 { font-size: 40px; font-weight: 900; font-style: italic; margin-bottom: 16px; background: var(--gradient-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .cta-section p { font-size: 18px; color: var(--text-secondary); margin-bottom: 32px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .btn-cta { display: inline-flex; align-items: center; gap: 12px; padding: 18px 48px; background: var(--gradient-blue); color: white; border: none; border-radius: 50px; font-size: 18px; font-weight: 700; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 8px 24px rgba(56, 189, 248, 0.4); text-decoration: none; }
+        .btn-cta:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(56, 189, 248, 0.5); }
+        .footer { text-align: center; padding: 40px 24px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 14px; }
+        @media (max-width: 768px) { .hero h1 { font-size: 36px; } .section-title { font-size: 28px; } .navbar-nav { display: none; } .cards-grid { grid-template-columns: 1fr; } .stat-number { font-size: 28px; } .video-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('dashboard_page') }}" class="navbar-brand">NovaTrade</a>
+        <ul class="navbar-nav">
+            <li><a href="{{ url_for('dashboard_page') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('mes_retraits') }}">Retraits</a></li>
+            <li><a href="{{ url_for('team_page') }}">Équipe</a></li>
+            <li><a href="{{ url_for('academy_tiktok') }}">Academy</a></li>
+        </ul>
+        <div class="navbar-user">
+            {% if user %}<div class="user-avatar">{{ user.username[0]|upper }}</div>{% endif %}
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-badge"><i class="fa-solid fa-store"></i><span>Formation E-commerce</span></div>
+        <h1>🛒 Formation E-commerce</h1>
+        <p class="subtitle">Lancez et développez votre boutique en ligne. De la création de produit à la stratégie marketing, devenez un entrepreneur digital.</p>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-number">200+</div><div class="stat-label">Boutiques créées</div></div>
+            <div class="stat-card"><div class="stat-number">100K€</div><div class="stat-label">CA moyen généré</div></div>
+            <div class="stat-card"><div class="stat-number">90%</div><div class="stat-label">Taux de succès</div></div>
+            <div class="stat-card"><div class="stat-number">25</div><div class="stat-label">Heures de formation</div></div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">🎯 <span>Programme Complet</span></h2>
+        <div class="cards-grid">
+            <div class="info-card">
+                <div class="card-icon blue"><i class="fa-solid fa-store"></i></div>
+                <h3 class="card-title">Création de Boutique</h3>
+                <p class="card-text">Choisir sa niche, créer sa boutique Shopify/WooCommerce, configurer les paiements, gérer les stocks et optimiser l'expérience utilisateur.</p>
+            </div>
+            <div class="info-card">
+                <div class="card-icon green"><i class="fa-solid fa-bullhorn"></i></div>
+                <h3 class="card-title">Marketing Digital</h3>
+                <p class="card-text">Facebook Ads, Google Ads, email marketing, SEO, influenceurs. Apprenez à attirer du trafic qualifié et à convertir les visiteurs en clients.</p>
+            </div>
+            <div class="info-card">
+                <div class="card-icon pink"><i class="fa-solid fa-box"></i></div>
+                <h3 class="card-title">Dropshipping & Produits</h3>
+                <p class="card-text">Trouver des produits gagnants, travailler avec des fournisseurs, gérer la logistique, créer des fiches produits qui convertissent.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">📚 <span>Vidéos de Formation</span></h2>
+        <div class="video-section">
+            <h2>🎬 Cours Vidéo</h2>
+            <div class="video-grid">
+                <div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/4f3W8ysD4cE" title="E-commerce Débutant" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h3>Lancer sa Boutique E-commerce - Guide Complet</h3>
+                        <p>De l'idée à la première vente : comment choisir sa niche, créer sa boutique, trouver des produits et lancer ses premières campagnes publicitaires.</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/7Vd0RqrKdKE" title="Marketing E-commerce" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h3>Stratégies Marketing - Booster vos Ventes</h3>
+                        <p>Maîtrisez Facebook Ads, Google Shopping, email marketing et SEO pour générer un flux constant de clients et augmenter votre chiffre d'affaires.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">🚀 <span>Étapes Clés</span></h2>
+        <div class="steps-container">
+            <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content"><h3>Étude de Marché</h3><p>Analysez la demande, la concurrence et identifiez une niche porteuse avec un potentiel de marge intéressant.</p></div>
+            </div>
+            <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content"><h3>Création de la Boutique</h3><p>Choisissez Shopify ou WooCommerce, design professionnel, fiches produits optimisées, tunnel de vente fluide.</p></div>
+            </div>
+            <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content"><h3>Sourcing Produits</h3><p>Trouvez des fournisseurs fiables (AliExpress, fournisseurs locaux), négociez les prix et assurez la qualité.</p></div>
+            </div>
+            <div class="step-item">
+                <div class="step-number">4</div>
+                <div class="step-content"><h3>Lancement Marketing</h3><p>Créez des campagnes Facebook/Google Ads, travaillez votre email marketing et développez votre présence sur les réseaux sociaux.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <h2>🛍️ Lancez votre Boutique !</h2>
+        <p>Rejoignez des centaines d'entrepreneurs qui ont réussi dans l'e-commerce grâce à nos formations complètes et accompagnement personnalisé.</p>
+        <a href="{{ url_for('dashboard_page') }}" class="btn-cta"><i class="fa-solid fa-rocket"></i> Retour au Dashboard</a>
+    </section>
+
+    <footer class="footer">
+        <p>© 2026 NovaTrade Academy. Tous droits réservés.</p>
+        <p style="margin-top: 8px; font-size: 12px;">Formation E-commerce créée avec ❤️ par l'équipe NovaTrade</p>
+    </footer>
+</body>
+</html>

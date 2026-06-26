@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formation Trading - NovaTrade Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: rgba(255, 255, 255, 0.8);
+            --bg-card: rgba(255, 255, 255, 0.7);
+            --accent-blue: #38bdf8;
+            --accent-blue-light: #7dd3fc;
+            --accent-green: #86efac;
+            --accent-pink: #f9a8d4;
+            --text-primary: #334155;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.2);
+            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
+            --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
+            --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
+            --radius-sm: 10px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-2xl: 24px;
+            --shadow-sm: 0 4px 12px rgba(56, 189, 248, 0.08);
+            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
+            --shadow-large: 0 12px 32px rgba(56, 189, 248, 0.15);
+        }
+        body { font-family: 'Poppins', sans-serif; color: var(--text-primary); background: var(--gradient-bg); line-height: 1.6; overflow-x: hidden; min-height: 100vh; }
+        .navbar { background: var(--bg-secondary); backdrop-filter: blur(20px); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border-color); box-shadow: var(--shadow-sm); }
+        .navbar-brand { font-size: 24px; font-weight: 900; font-style: italic; background: var(--gradient-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-decoration: none; }
+        .navbar-nav { display: flex; gap: 24px; list-style: none; }
+        .navbar-nav a { color: var(--text-secondary); text-decoration: none; font-weight: 500; transition: color 0.3s; font-size: 15px; }
+        .navbar-nav a:hover { color: var(--accent-blue); }
+        .navbar-user { display: flex; align-items: center; gap: 12px; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--gradient-blue); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 16px; }
+        .hero { text-align: center; padding: 80px 24px 60px; max-width: 1200px; margin: 0 auto; }
+        .hero h1 { font-size: 56px; font-weight: 900; font-style: italic; margin-bottom: 16px; background: linear-gradient(135deg, #38bdf8 0%, #8b5cf6 50%, #f9a8d4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero .subtitle { font-size: 20px; color: var(--text-secondary); max-width: 700px; margin: 0 auto 40px; font-weight: 500; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); padding: 12px 24px; border-radius: 50px; font-size: 14px; font-weight: 600; color: var(--accent-blue); margin-bottom: 24px; border: 1px solid rgba(56, 189, 248, 0.2); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; max-width: 900px; margin: 0 auto 60px; }
+        .stat-card { background: var(--bg-secondary); backdrop-filter: blur(20px); border-radius: var(--radius-xl); padding: 24px; text-align: center; border: 1px solid var(--border-color); box-shadow: var(--shadow-medium); }
+        .stat-number { font-size: 36px; font-weight: 900; font-style: italic; background: var(--gradient-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .stat-label { font-size: 14px; color: var(--text-secondary); margin-top: 8px; font-weight: 500; }
+        .section { max-width: 1200px; margin: 0 auto 80px; padding: 0 24px; }
+        .section-title { font-size: 36px; font-weight: 800; font-style: italic; margin-bottom: 40px; text-align: center; background: var(--gradient-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .section-title span { background: var(--gradient-pink); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+        .info-card { background: var(--bg-secondary); backdrop-filter: blur(20px); border-radius: var(--radius-xl); padding: 32px; border: 1px solid var(--border-color); box-shadow: var(--shadow-medium); transition: transform 0.3s, box-shadow 0.3s; }
+        .info-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-large); }
+        .card-icon { width: 64px; height: 64px; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 20px; }
+        .card-icon.blue { background: linear-gradient(135deg, rgba(56, 189, 248, 0.2) 0%, rgba(56, 189, 248, 0.1) 100%); }
+        .card-icon.green { background: linear-gradient(135deg, rgba(134, 239, 172, 0.2) 0%, rgba(134, 239, 172, 0.1) 100%); }
+        .card-icon.purple { background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0.1) 100%); }
+        .card-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; color: var(--text-primary); }
+        .card-text { font-size: 15px; color: var(--text-secondary); line-height: 1.7; }
+        .video-section { background: var(--bg-secondary); backdrop-filter: blur(20px); border-radius: var(--radius-2xl); padding: 40px; margin: 0 24px 80px; max-width: 1200px; margin-left: auto; margin-right: auto; border: 1px solid var(--border-color); box-shadow: var(--shadow-medium); }
+        .video-section h2 { font-size: 32px; font-weight: 800; font-style: italic; margin-bottom: 32px; text-align: center; background: var(--gradient-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 32px; }
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: var(--radius-xl); box-shadow: var(--shadow-large); }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: var(--radius-xl); }
+        .video-info { margin-top: 16px; }
+        .video-info h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
+        .video-info p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+        .steps-container { display: flex; flex-direction: column; gap: 24px; max-width: 800px; margin: 0 auto; }
+        .step-item { display: flex; gap: 24px; align-items: flex-start; padding: 24px; background: var(--bg-secondary); backdrop-filter: blur(20px); border-radius: var(--radius-xl); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); }
+        .step-number { width: 48px; height: 48px; border-radius: 50%; background: var(--gradient-blue); display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 20px; flex-shrink: 0; }
+        .step-content h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
+        .step-content p { font-size: 15px; color: var(--text-secondary); line-height: 1.7; }
+        .cta-section { text-align: center; padding: 80px 24px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); border-radius: var(--radius-2xl); margin: 0 24px 80px; max-width: 1200px; margin-left: auto; margin-right: auto; }
+        .cta-section h2 { font-size: 40px; font-weight: 900; font-style: italic; margin-bottom: 16px; background: var(--gradient-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .cta-section p { font-size: 18px; color: var(--text-secondary); margin-bottom: 32px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .btn-cta { display: inline-flex; align-items: center; gap: 12px; padding: 18px 48px; background: var(--gradient-blue); color: white; border: none; border-radius: 50px; font-size: 18px; font-weight: 700; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 8px 24px rgba(56, 189, 248, 0.4); text-decoration: none; }
+        .btn-cta:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(56, 189, 248, 0.5); }
+        .footer { text-align: center; padding: 40px 24px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 14px; }
+        @media (max-width: 768px) { .hero h1 { font-size: 36px; } .section-title { font-size: 28px; } .navbar-nav { display: none; } .cards-grid { grid-template-columns: 1fr; } .stat-number { font-size: 28px; } .video-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('dashboard_page') }}" class="navbar-brand">NovaTrade</a>
+        <ul class="navbar-nav">
+            <li><a href="{{ url_for('dashboard_page') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('mes_retraits') }}">Retraits</a></li>
+            <li><a href="{{ url_for('team_page') }}">Équipe</a></li>
+            <li><a href="{{ url_for('academy_tiktok') }}">Academy</a></li>
+        </ul>
+        <div class="navbar-user">
+            {% if user %}<div class="user-avatar">{{ user.username[0]|upper }}</div>{% endif %}
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-badge"><i class="fa-solid fa-chart-line"></i><span>Formation Premium</span></div>
+        <h1>📈 Formation Trading</h1>
+        <p class="subtitle">Maîtrisez les marchés financiers et générez des revenus passifs grâce au trading. Des bases aux stratégies avancées.</p>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-number">500+</div><div class="stat-label">Traders formés</div></div>
+            <div class="stat-card"><div class="stat-number">85%</div><div class="stat-label">Taux de réussite</div></div>
+            <div class="stat-card"><div class="stat-number">50K€</div><div class="stat-label">Gain moyen/mois</div></div>
+            <div class="stat-card"><div class="stat-number">20</div><div class="stat-label">Heures de formation</div></div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">🎯 <span>Programme Complet</span></h2>
+        <div class="cards-grid">
+            <div class="info-card">
+                <div class="card-icon blue"><i class="fa-solid fa-book"></i></div>
+                <h3 class="card-title">Les Bases du Trading</h3>
+                <p class="card-text">Comprendre les marchés financiers, les types d'actifs (actions, forex, crypto), les heures de trading, et le vocabulaire essentiel.</p>
+            </div>
+            <div class="info-card">
+                <div class="card-icon green"><i class="fa-solid fa-chart-bar"></i></div>
+                <h3 class="card-title">Analyse Technique</h3>
+                <p class="card-text">Maîtriser les graphiques, les bougies japonaises, les supports/résistances, les indicateurs (RSI, MACD, Moving Averages) et les patterns.</p>
+            </div>
+            <div class="info-card">
+                <div class="card-icon purple"><i class="fa-solid fa-brain"></i></div>
+                <h3 class="card-title">Psychologie du Trader</h3>
+                <p class="card-text">Gérer ses émotions, développer une discipline de fer, accepter les pertes, et maintenir une mentalité gagnante sur le long terme.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">📚 <span>Vidéos de Formation</span></h2>
+        <div class="video-section">
+            <h2>🎬 Cours Vidéo</h2>
+            <div class="video-grid">
+                <div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/Sz5of1W1WqU" title="Trading pour Débutants" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h3>Trading pour Débutants - Les Bases Complètes</h3>
+                        <p>Apprenez les fondamentaux du trading : comment ouvrir un compte, choisir une plateforme, comprendre les graphiques et passer vos premiers trades.</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/7Vd0RqrKdKE" title="Analyse Technique Avancée" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h3>Analyse Technique - Stratégies Gagnantes</h3>
+                        <p>Maîtrisez l'analyse technique : supports/résistances, tendances, indicateurs avancés et patterns de chandeliers pour identifier les meilleures opportunités.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">🚀 <span>Étapes Clés</span></h2>
+        <div class="steps-container">
+            <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content"><h3>Choisir son Broker</h3><p>Sélectionnez un broker régulé avec des frais compétitifs, une bonne plateforme et un service client réactif.</p></div>
+            </div>
+            <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content"><h3>Se Former en Continu</h3><p>Le trading s'apprend sur le long terme. Suivez des formations, lisez des livres, analysez vos trades.</p></div>
+            </div>
+            <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content"><h3>Pratiquer en Démo</h3><p>Commencez par un compte démo pour tester vos stratégies sans risque avant de trader en réel.</p></div>
+            </div>
+            <div class="step-item">
+                <div class="step-number">4</div>
+                <div class="step-content"><h3>Gérer son Risque</h3><p>Ne risquez jamais plus de 1-2% de votre capital par trade. Utilisez toujours des stop-loss.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <h2>💰 Commencez à Trader !</h2>
+        <p>Rejoignez des milliers de traders qui ont transformé leur vie grâce au trading. La formation complète vous attend.</p>
+        <a href="{{ url_for('dashboard_page') }}" class="btn-cta"><i class="fa-solid fa-rocket"></i> Retour au Dashboard</a>
+    </section>
+
+    <footer class="footer">
+        <p>© 2026 NovaTrade Academy. Tous droits réservés.</p>
+        <p style="margin-top: 8px; font-size: 12px;">Formation Trading créée avec ❤️ par l'équipe NovaTrade</p>
+    </footer>
+</body>
+</html>
