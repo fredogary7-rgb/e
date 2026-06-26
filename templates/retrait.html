@@ -10,25 +10,39 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         
         :root {
-            --primary: #3b82f6;
-            --primary-dark: #2563eb;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --bg: #f1f5f9;
-            --card-bg: #ffffff;
-            --text: #1e293b;
-            --text-light: #64748b;
-            --border: #e2e8f0;
-            --radius: 12px;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --bg-primary: #f8fafc;
+            --bg-secondary: rgba(255, 255, 255, 0.8);
+            --bg-card: rgba(255, 255, 255, 0.7);
+            --accent-blue: #38bdf8;
+            --accent-blue-light: #7dd3fc;
+            --accent-green: #86efac;
+            --accent-pink: #f9a8d4;
+            --text-primary: #334155;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.2);
+            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
+            --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
+            --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
+            --radius-sm: 10px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-2xl: 24px;
+            --shadow-sm: 0 4px 12px rgba(56, 189, 248, 0.08);
+            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
+            --shadow-large: 0 12px 32px rgba(56, 189, 248, 0.15);
         }
 
         body {
-            background: var(--bg);
+            font-family: 'Poppins', sans-serif;
+            font-style: italic;
+            color: var(--text-primary);
+            background: var(--gradient-bg);
+            line-height: 1.6;
+            overflow-x: hidden;
             min-height: 100vh;
             padding: 20px;
-            color: var(--text);
         }
 
         .container {
@@ -44,24 +58,32 @@
         }
 
         .page-header h1 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 5px;
+            font-style: italic;
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .page-header p {
-            color: var(--text-light);
-            font-size: 14px;
+            font-style: italic;
+            font-size: 15px;
+            color: var(--text-secondary);
         }
 
         /* Cards */
         .card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
+            background: var(--bg-secondary);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--radius-xl);
             padding: 24px;
             margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-color);
         }
 
         .card-header {
@@ -74,7 +96,10 @@
         }
 
         .card-header i {
-            color: var(--primary);
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             font-size: 20px;
         }
 
@@ -85,10 +110,25 @@
 
         /* Balance Card */
         .balance-card {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: var(--gradient-blue);
             color: white;
             text-align: center;
             padding: 30px 24px;
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-large);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            pointer-events: none;
         }
 
         .balance-label {
