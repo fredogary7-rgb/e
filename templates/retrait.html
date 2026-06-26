@@ -696,7 +696,18 @@
                         Trop de tentatives. Réessayez dans <span id="timer-countdown">5:00</span>
                     </div>
 
-                    <!-- Biometric Option -->
+                    <!-- Modal Actions -->
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-cancel" onclick="closePinModal()">
+                            Annuler
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="confirmBtn" disabled>
+                            <span>Confirmer</span>
+                            <div class="loader" id="pin-loader"></div>
+                        </button>
+                    </div>
+
+                    <!-- Biometric Option (après les boutons Annuler/Confirmer) -->
                     <div class="biometric-divider" id="biometricDivider" style="display:none;">
                         <span>ou</span>
                     </div>
@@ -706,17 +717,6 @@
                             <i class="fa fa-fingerprint"></i>
                             <span class="btn-text">Utiliser Face ID / Touch ID</span>
                             <span class="spinner"></span>
-                        </button>
-                    </div>
-
-                    <!-- Modal Actions -->
-                    <div class="modal-actions">
-                        <button type="button" class="btn btn-cancel" onclick="closePinModal()">
-                            Annuler
-                        </button>
-                        <button type="submit" class="btn btn-primary" id="confirmBtn" disabled>
-                            <span>Confirmer</span>
-                            <div class="loader" id="pin-loader"></div>
                         </button>
                     </div>
                 </form>
