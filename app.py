@@ -1245,26 +1245,16 @@ mail = Mail(app)
 
 
 def envoyer_retrait_soleaspay(service_id, wallet, montant, external_reference=None):
-    """
-    Envoie un retrait via SoleasPay.
-    
-    Args:
-        service_id: ID du service de paiement
-        wallet: Numéro de téléphone du bénéficiaire
-        montant: Montant du retrait
-        external_reference: Référence externe (ex: NOVA-W-123) pour le suivi
-    
-    Returns:
-        dict: Réponse de l'API SoleasPay
-    """
     import logging
-    
-    logging.info(f"[SOLEASPAY] Envoi retrait: service_id={service_id}, wallet={wallet}, montant={montant}")
+
+    logging.info(
+        f"[SOLEASPAY] Envoi retrait : service={service_id}, wallet={wallet}, montant={montant}"
+    )
 
     token, err = obtenir_token()
 
     if err:
-        logging.error(f"[SOLEASPAY] Erreur token: {err}")
+        logging.error(f"[SOLEASPAY] Erreur token : {err}")
         return {"success": False, "message": "Erreur token SoleasPay"}
 
     url = "https://soleaspay.com/api/action/account/withdraw"
@@ -1281,33 +1271,61 @@ def envoyer_retrait_soleaspay(service_id, wallet, montant, external_reference=No
         "amount": montant,
         "currency": "XOF"
     }
-    
-    # Ajouter la référence externe si fournie
+
     if external_reference:
         payload["external_reference"] = external_reference
-        logging.info(f"[SOLEASPAY] Reference externe: {external_reference}")
+
+    logging.info(f"[SOLEASPAY] Payload : {payload}")
 
     try:
-        response = requests.post(url, headers=headers, json=payload, timeout=30)
-        logging.info(f"[SOLEASPAY] Status HTTP: {response.status_code}")
+        response = requests.post(
+            url,
+            headers=headers,
+            json=payload,
+            timeout=30
+        )
+
+        logging.info(f"[SOLEASPAY] HTTP {response.status_code}")
 
         if response.status_code != 200:
-            logging.error(f"[SOLEASPAY] Erreur HTTP {response.status_code}: {response.text}")
+            logging.error(
+                f"[SOLEASPAY] HTTP {response.status_code} : {response.text}"
+            )
             return {
                 "success": False,
                 "message": f"Erreur HTTP {response.status_code}",
                 "content": response.text
             }
 
-        result = response.json()
-        logging.info(f"[SOLEASPAY] Réponse: {result}")
-        
+        try:
+            result = response.json()
+        except ValueError:
+            logging.error(
+                f"[SOLEASPAY] Réponse non JSON : {response.text}"
+            )
+            return {
+                "success": False,
+                "message": "Réponse invalide de SoleasPay",
+                "content": response.text
+            }
+
+        logging.info(f"[SOLEASPAY] Réponse : {result}")
+
         return result
 
-    except Exception as e:
-        logging.error(f"[SOLEASPAY] Exception: {str(e)}")
-        return {"success": False, "message": str(e)}
+    except requests.Timeout:
+        logging.exception("[SOLEASPAY] Timeout")
+        return {
+            "success": False,
+            "message": "Timeout SoleasPay"
+        }
 
+    except requests.RequestException as e:
+        logging.exception(f"[SOLEASPAY] Erreur réseau : {e}")
+        return {
+            "success": False,
+            "message": str(e)
+        }
 
 def consulter_statut_retrait_soleaspay(reference_soleaspay):
     """
@@ -2512,53 +2530,60 @@ from urllib.parse import urlencode
 
 @app.route("/api/webhook/soleaspay", methods=["POST"])
 def webhook_soleaspay():
-    """Webhook pour gérer les notifications de paiement SoleasPay (dépôts et retraits)"""
+    """Webhook SoleasPay - Gestion des retraits"""
     import logging
-    
+
     print("=" * 50)
-    print("WEBHOOK RECU - VERSION 2.0")  # ✅ Marqueur de version
+    print("WEBHOOK RECU")
     print("HEADERS:", dict(request.headers))
     print("JSON:", request.get_json())
     print("=" * 50)
 
+    # Vérification du secret
     received_key = request.headers.get("x-private-key")
-
     if received_key != SOLEAS_WEBHOOK_SECRET:
         return jsonify({"error": "Unauthorized"}), 403
 
     data = request.get_json()
-    details = data.get("data", {})
-    
-    # ✅ CORRECTION : Utiliser la référence SoleasPay retournée dans le webhook
-    # SoleasPay ne renvoie pas external_reference que nous avons envoyé,
-    # mais sa propre référence (ex: "ck4a0XgLQhi33gFurpbS")
+
+    if not data:
+        return jsonify({"error": "Invalid JSON"}), 400
+
+    details = data.get("data") or {}
+
+    # Référence SoleasPay
     reference_soleaspay = details.get("reference")
-    
-    # ✅ LOG EXPLICITE POUR DEBUG
-    print(f"[WEBHOOK] reference_soleaspay={reference_soleaspay}")
-    logging.info(f"[WEBHOOK] Recherche retrait par reference_soleaspay={reference_soleaspay}")
-    
+
+    logging.info(f"[WEBHOOK] reference_soleaspay={reference_soleaspay}")
+
     if not reference_soleaspay:
-        logging.warning(f"[WEBHOOK] Pas de référence SoleasPay dans le webhook")
-        return jsonify({"ignored": True})
-    
-    # Retrouver le retrait par sa référence SoleasPay stockée lors de la création
-    retrait = Retrait.query.filter_by(reference_soleaspay=reference_soleaspay).first()
-    
-    if not retrait:
-        logging.error(f"[WEBHOOK] Retrait non trouvé pour reference_soleaspay={reference_soleaspay}")
+        logging.warning("[WEBHOOK] Référence SoleasPay absente")
+        return jsonify({"error": "No reference"}), 400
+
+    # Recherche du retrait
+    retrait = Retrait.query.filter_by(
+        reference_soleaspay=reference_soleaspay
+    ).first()
+
+    if retrait is None:
+        logging.error(
+            f"[WEBHOOK] Aucun retrait trouvé pour {reference_soleaspay}"
+        )
         return jsonify({"error": "Retrait not found"}), 404
-    
-    logging.info(f"[WEBHOOK RETRAIT] Retrait ID {retrait.id} - Statut reçu: {data.get('status')}")
-    
-    # Si déjà traité, on retourne
+
+    # Déjà traité
     if retrait.statut in ["successful", "failed", "refused"]:
+        logging.info(f"[WEBHOOK] Retrait {retrait.id} déjà traité")
         return jsonify({"received": True})
-    
-    success = data.get("success")
-    status = data.get("status", "").upper()
-    
-    # Mapping des statuts SoleasPay vers nos statuts
+
+    success = bool(data.get("success"))
+    status = str(data.get("status", "")).upper()
+
+    logging.info(
+        f"[WEBHOOK] Retrait {retrait.id} - success={success} status={status}"
+    )
+
+    # Mapping des statuts
     statut_mapping = {
         "SUCCESS": "successful",
         "COMPLETED": "successful",
@@ -2567,31 +2592,38 @@ def webhook_soleaspay():
         "PROCESSING": "en_attente",
         "FAILED": "failed",
         "REJECTED": "refused",
-        "CANCELLED": "cancelled"
+        "CANCELLED": "cancelled",
     }
-    
+
     nouveau_statut = statut_mapping.get(status, "en_attente")
-    
-    if success is True and status in ["SUCCESS", "COMPLETED", "APPROVED"]:
-        nouveau_statut = "successful"
-        logging.info(f"[WEBHOOK RETRAIT] Retrait {retrait.id} marqué comme SUCCESSFUL ✅")
-    elif success is False or status in ["FAILED", "REJECTED", "CANCELLED"]:
-        nouveau_statut = "failed" if status in ["FAILED"] else "refused"
-        logging.warning(f"[WEBHOOK RETRAIT] Retrait {retrait.id} marqué comme {nouveau_statut} ❌")
-    
-    # Mettre à jour le retrait
+
+    ancien_statut = retrait.statut
+
     retrait.statut = nouveau_statut
+    retrait.soleaspay_status = status
     retrait.last_sync = datetime.utcnow()
-    
-    # Si le retrait est réussi, on met à jour total_retrait
-    if nouveau_statut == "successful":
-        user = User.query.get(retrait.user_id)
+
+    # Créditer total_retrait une seule fois
+    if ancien_statut != "successful" and nouveau_statut == "successful":
+        user = db.session.get(User, retrait.user_id)
+
         if user:
             user.total_retrait = (user.total_retrait or 0) + retrait.montant
-    
-    db.session.commit()
-    return jsonify({"received": True})
+            logging.info(
+                f"[WEBHOOK] total_retrait mis à jour pour user {user.id}"
+            )
 
+    try:
+        db.session.commit()
+        logging.info(
+            f"[WEBHOOK] Retrait {retrait.id} mis à jour -> {nouveau_statut}"
+        )
+    except Exception as e:
+        db.session.rollback()
+        logging.exception(f"[WEBHOOK] Erreur DB : {e}")
+        return jsonify({"error": "Database error"}), 500
+
+    return jsonify({"received": True}), 200
 
 @app.route("/paiement/soleaspay/retour")
 def bkapay_retour():
@@ -3213,7 +3245,7 @@ def retrait_page():
             db.session.flush()  # Génère l'ID sans committer
             
             # Créer la référence externe pour le webhook
-            external_reference = f"NOVA-W-{nouveau_retrait.id}"
+            external_reference = f"W-{nouveau_retrait.id}"
             logging.info(f"[RETRAIT] User {user.id} - External reference: {external_reference}")
             
         except Exception as e:
@@ -3275,7 +3307,6 @@ def retrait_page():
         try:
             # Mise à jour des soldes
             user.solde_parrainage = float(user.solde_parrainage) - montant_total
-            user.total_retrait = (float(user.total_retrait or 0)) + montant
 
             db.session.commit()
             logging.info(f"[RETRAIT] User {user.id} - Retrait enregistré avec succès: id={nouveau_retrait.id}")
@@ -3775,32 +3806,60 @@ def admin_deposits():
     page = request.args.get("page", 1, type=int)
     PER_PAGE = 50
 
-    # 1. UTILISATEURS PAGINÉS
-    users_paginated = User.query.order_by(User.date_creation.desc()).paginate(page=page, per_page=PER_PAGE, error_out=False)
-    
-    # Séparation Actifs/Inactifs de la page courante
+    # ==========================
+    # UTILISATEURS PAGINÉS
+    # ==========================
+    users_paginated = User.query.order_by(
+        User.date_creation.desc()
+    ).paginate(page=page, per_page=PER_PAGE, error_out=False)
+
+    # Séparation Actifs / Inactifs
     actifs = [u for u in users_paginated.items if u.premier_depot]
     inactifs = [u for u in users_paginated.items if not u.premier_depot]
 
-    # Stats Globales (Rapide)
     total_actifs = User.query.filter_by(premier_depot=True).count()
     total_inactifs = User.query.filter_by(premier_depot=False).count()
 
-    # 2. DÉPOTS EN ATTENTE (Filtrage sur les nouveaux utilisateurs)
+    # ==========================
+    # STATISTIQUES GLOBALES
+    # ==========================
+    total_amount = db.session.query(
+        func.coalesce(func.sum(Depot.montant), 0)
+    ).scalar()
+
+    total_depots = Depot.query.count()
+
+    total_retraits = db.session.query(
+        func.coalesce(func.sum(Retrait.montant), 0)
+    ).scalar()
+
+    nombre_retraits = Retrait.query.count()
+
+    # ==========================
+    # DÉPÔTS EN ATTENTE
+    # ==========================
     subquery = (
         db.session.query(func.max(Depot.id).label("last_id"))
         .join(User, Depot.user_name == User.username)
-        .filter(Depot.statut == "en_attente", User.premier_depot == False)
-        .group_by(Depot.phone).subquery()
+        .filter(
+            Depot.statut == "en_attente",
+            User.premier_depot == False
+        )
+        .group_by(Depot.phone)
+        .subquery()
     )
 
     depots = (
-        Depot.query.filter(Depot.id.in_(db.session.query(subquery.c.last_id)))
+        Depot.query
+        .filter(Depot.id.in_(db.session.query(subquery.c.last_id)))
         .join(User, Depot.user_name == User.username)
-        .order_by(Depot.date.desc()).all()
+        .order_by(Depot.date.desc())
+        .all()
     )
 
-    # 3. RETRAITS (Version corrigée avec jointure)
+    # ==========================
+    # RETRAITS
+    # ==========================
     retraits_paginated = (
         db.session.query(Retrait, User.username)
         .join(User, Retrait.user_id == User.id)
@@ -3809,24 +3868,37 @@ def admin_deposits():
     )
 
     retraits_list = []
-    for r, uname in retraits_paginated.items:
-        r.username_display = uname
-        retraits_list.append(r)
 
+    for retrait, username in retraits_paginated.items:
+        retrait.username_display = username
+        retraits_list.append(retrait)
+
+    # ==========================
+    # TEMPLATE
+    # ==========================
     return render_template(
         "admin_deposits.html",
         user=user,
+
         users=users_paginated.items,
+        users_paginated=users_paginated,
+
         depots=depots,
+
         retraits=retraits_list,
+        retraits_paginated=retraits_paginated,
+
         actifs=actifs,
         inactifs=inactifs,
+
         total_actifs=total_actifs,
         total_inactifs=total_inactifs,
-        users_paginated=users_paginated,
-        retraits_paginated=retraits_paginated
-    )
 
+        total_amount=total_amount,
+        total_depots=total_depots,
+        total_retraits=total_retraits,
+        nombre_retraits=nombre_retraits
+    )
 
 @app.route("/admin/deposits/valider/<int:depot_id>")
 def valider_depot(depot_id):
