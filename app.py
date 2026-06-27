@@ -2643,103 +2643,129 @@ def dashboard_bloque():
 
 
 from urllib.parse import urlencode
-
 @app.route("/api/webhook/soleaspay", methods=["POST"])
 def webhook_soleaspay():
-    """Webhook SoleasPay - Gestion des retraits"""
+
     import logging
+
+    data = request.get_json(silent=True)
 
     print("=" * 50)
     print("WEBHOOK RECU")
-    print("HEADERS:", dict(request.headers))
-    print("JSON:", request.get_json())
+    print("JSON:", data)
     print("=" * 50)
-
-    # Vérification du secret
-    received_key = request.headers.get("x-private-key")
-    if received_key != SOLEAS_WEBHOOK_SECRET:
-        return jsonify({"error": "Unauthorized"}), 403
-
-    data = request.get_json()
 
     if not data:
         return jsonify({"error": "Invalid JSON"}), 400
 
-    details = data.get("data") or {}
+    # 🔒 sécurité
+    received_key = request.headers.get("x-private-key")
+    if received_key != SOLEAS_WEBHOOK_SECRET:
+        return jsonify({"error": "Unauthorized"}), 403
 
-    # Référence SoleasPay
-    reference_soleaspay = details.get("reference")
+    operation = data.get("operation")
 
-    logging.info(f"[WEBHOOK] reference_soleaspay={reference_soleaspay}")
+    # ==================================================
+    # 🔵 CAS DEPOT (ACTIVATION)
+    # ==================================================
+    if operation == "PURCHASE":
 
-    if not reference_soleaspay:
-        logging.warning("[WEBHOOK] Référence SoleasPay absente")
-        return jsonify({"error": "No reference"}), 400
-
-    # Recherche du retrait
-    retrait = Retrait.query.filter_by(
-        reference_soleaspay=reference_soleaspay
-    ).first()
-
-    if retrait is None:
-        logging.error(
-            f"[WEBHOOK] Aucun retrait trouvé pour {reference_soleaspay}"
+        internal_ref = (
+            data.get("internalRef")
+            or data.get("reference")
+            or (data.get("data") or {}).get("reference")
         )
-        return jsonify({"error": "Retrait not found"}), 404
 
-    # Déjà traité
-    if retrait.statut in ["successful", "failed", "refused"]:
-        logging.info(f"[WEBHOOK] Retrait {retrait.id} déjà traité")
-        return jsonify({"received": True})
+        external_ref = (
+            data.get("externalRef")
+            or (data.get("data") or {}).get("external_reference")
+        )
 
-    success = bool(data.get("success"))
-    status = str(data.get("status", "")).upper()
+        logging.info(f"DEPOT webhook: internal={internal_ref} external={external_ref}")
 
-    logging.info(
-        f"[WEBHOOK] Retrait {retrait.id} - success={success} status={status}"
-    )
+        depot_id = None
 
-    # Mapping des statuts
-    statut_mapping = {
-        "SUCCESS": "successful",
-        "COMPLETED": "successful",
-        "APPROVED": "successful",
-        "PENDING": "en_attente",
-        "PROCESSING": "en_attente",
-        "FAILED": "failed",
-        "REJECTED": "refused",
-        "CANCELLED": "cancelled",
-    }
+        if external_ref and external_ref.startswith("E-"):
+            try:
+                depot_id = int(external_ref.split("-")[1])
+            except:
+                pass
 
-    nouveau_statut = statut_mapping.get(status, "en_attente")
+        depot = Depot.query.get(depot_id) if depot_id else None
 
-    ancien_statut = retrait.statut
+        if not depot:
+            logging.error("DEPOT NOT FOUND")
+            return jsonify({"error": "Depot not found"}), 404
 
-    retrait.statut = nouveau_statut
-    retrait.soleaspay_status = status
-    retrait.last_sync = datetime.utcnow()
+        status = str(data.get("status", "")).upper()
 
-    # Créditer total_retrait une seule fois
-    if ancien_statut != "successful" and nouveau_statut == "successful":
-        user = db.session.get(User, retrait.user_id)
+        if depot.statut == "success":
+            return jsonify({"received": True}), 200
 
-        if user:
-            user.total_retrait = (user.total_retrait or 0) + retrait.montant
-            logging.info(
-                f"[WEBHOOK] total_retrait mis à jour pour user {user.id}"
-            )
+        if status in ["SUCCESS", "COMPLETED", "APPROVED"]:
+            depot.statut = "success"
 
-    try:
+            user = db.session.get(User, depot.user_id)
+            if user:
+                user.is_active = True
+
+        elif status in ["FAILED", "REJECTED"]:
+            depot.statut = "failed"
+
         db.session.commit()
-        logging.info(
-            f"[WEBHOOK] Retrait {retrait.id} mis à jour -> {nouveau_statut}"
-        )
-    except Exception as e:
-        db.session.rollback()
-        logging.exception(f"[WEBHOOK] Erreur DB : {e}")
-        return jsonify({"error": "Database error"}), 500
 
-    return jsonify({"received": True}), 200
+        return jsonify({"received": True}), 200
+
+    # ==================================================
+    # 🟢 CAS RETRAIT
+    # ==================================================
+    elif operation == "WITHDRAWAL":
+
+        details = data.get("data") or {}
+
+        reference_soleaspay = details.get("reference")
+
+        logging.info(f"RETRAIT webhook: {reference_soleaspay}")
+
+        retrait = Retrait.query.filter_by(
+            reference_soleaspay=reference_soleaspay
+        ).first()
+
+        if retrait is None:
+            return jsonify({"error": "Retrait not found"}), 404
+
+        if retrait.statut in ["successful", "failed", "refused"]:
+            return jsonify({"received": True}), 200
+
+        status = str(data.get("status", "")).upper()
+
+        mapping = {
+            "SUCCESS": "successful",
+            "COMPLETED": "successful",
+            "APPROVED": "successful",
+            "PENDING": "en_attente",
+            "FAILED": "failed",
+            "REJECTED": "refused",
+            "CANCELLED": "cancelled",
+        }
+
+        new_status = mapping.get(status, "en_attente")
+
+        old_status = retrait.statut
+        retrait.statut = new_status
+        retrait.last_sync = datetime.utcnow()
+
+        if old_status != "successful" and new_status == "successful":
+            user = db.session.get(User, retrait.user_id)
+            if user:
+                user.total_retrait = (user.total_retrait or 0) + retrait.montant
+
+        db.session.commit()
+
+        return jsonify({"received": True}), 200
+
+    # ==================================================
+    return jsonify({"ignored": True}), 200
 
 @app.route("/paiement/soleaspay/retour")
 def bkapay_retour():
