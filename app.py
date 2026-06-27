@@ -2580,6 +2580,7 @@ def dashboard_bloque():
 
         # 🔹 Création du dépôt AVANT paiement avec toutes les infos obligatoires
         new_depot = Depot(
+            user_id=user.id,
             user_name=user.username,
             phone=phone,
             operator=operator_name,  # ✅ maintenant obligatoire
