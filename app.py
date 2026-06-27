@@ -2528,31 +2528,28 @@ def get_global_stats():
 # --------------------------------------
 @app.route("/dashboard_bloque", methods=["GET", "POST"])
 def dashboard_bloque():
+    import logging
+
     user = get_logged_in_user()
 
     if user_is_activated(user):
         return redirect(url_for("dashboard_page"))
 
-    # Simule un dépôt pending
     pending_depot = None
     user_has_pending_depot = bool(pending_depot)
 
-    # Récupération du code pays
     country_code = COUNTRY_CODE.get(user.country.strip())
     if not country_code:
         flash("Pays non supporté.", "danger")
         return redirect(url_for("connexion_page"))
 
-    # =========================
-    # POST : paiement
-    # =========================
     if request.method == "POST":
+
         operator_name = request.form.get("operator")
         amount = request.form.get("montant", type=int)
         fullname = request.form.get("fullname")
-        phone = request.form.get("phone")  # ✅ numéro modifiable
+        phone = request.form.get("phone", "").strip()
 
-        # 🔒 Vérifications
         if not operator_name or not amount or not fullname or not phone:
             flash("Tous les champs sont requis.", "danger")
             return redirect(url_for("dashboard_bloque"))
@@ -2561,48 +2558,48 @@ def dashboard_bloque():
             flash("Le montant d'activation est exactement 4500 FCFA.", "danger")
             return redirect(url_for("dashboard_bloque"))
 
-        # 🔒 Nettoyage numéro
         phone = phone.replace(" ", "").replace("-", "")
 
         if not phone.isdigit() or len(phone) < 8:
             flash("Numéro de paiement invalide.", "danger")
             return redirect(url_for("dashboard_bloque"))
 
-        # 🔹 Recherche du service SoleasPay
         service = next(
             (s for s in SERVICES[country_code] if s["name"] == operator_name),
             None
         )
 
         if not service:
-            flash("Opérateur non supporté pour votre pays.", "danger")
+            flash("Opérateur non supporté.", "danger")
             return redirect(url_for("dashboard_bloque"))
 
-        # 🔹 Création du dépôt AVANT paiement avec toutes les infos obligatoires
+        # Création du dépôt
         new_depot = Depot(
             user_id=user.id,
             user_name=user.username,
             phone=phone,
-            operator=operator_name,  # ✅ maintenant obligatoire
-            country=country_code,    # ✅ maintenant obligatoire
+            operator=operator_name,
+            country=country_code,
             montant=amount,
-            statut="en_attente",
+            statut="pending",
             email=user.email
         )
+
         db.session.add(new_depot)
         db.session.commit()
 
-        # 🔹 Payload SoleasPay avec DEPOT_ID
+        logging.info(f"DEPOT CREE : id={new_depot.id} user_id={new_depot.user_id}")
+
         payload = {
-            "wallet": phone,  # ✅ NUMÉRO SAISI PAR L’UTILISATEUR
+            "wallet": phone,
             "amount": amount,
             "currency": "XOF",
             "order_id": f"E-{new_depot.id}",
-            "description": f"Activation E {user.username} DEPOT_ID={new_depot.id}",
+            "description": f"Activation {user.username}",
             "payer": fullname,
             "payerEmail": user.email,
             "successUrl": "https://nova-trade.cc/dashboard/pay/ok",
-            "failureUrl": "https://nova-trade.cc/dashboard_bloque",
+            "failureUrl": "https://nova-trade.cc/dashboard_bloque"
         }
 
         headers = {
@@ -2619,21 +2616,31 @@ def dashboard_bloque():
                 json=payload,
                 timeout=30
             )
+
             result = response.json()
+
+            logging.info(f"SOLEASPAY RESPONSE : {result}")
+
         except Exception as e:
-            flash(f"Erreur de connexion au serveur de paiement : {e}", "danger")
+            logging.exception(e)
+            flash("Impossible de contacter SoleasPay.", "danger")
             return redirect(url_for("dashboard_bloque"))
 
-        if not result.get("succès"):
-            flash(result.get("message", "Erreur paiement"), "danger")
+        # Vérification de la réponse
+        if not result.get("success", False):
+            flash(result.get("message", "Erreur de paiement"), "danger")
             return redirect(url_for("dashboard_bloque"))
+
+        # Sauvegarde de la référence SoleasPay si disponible
+        data = result.get("data", {})
+
+        if data.get("reference"):
+            new_depot.reference = data.get("reference")
+            db.session.commit()
 
         flash("Veuillez confirmer le paiement sur votre téléphone.", "info")
         return redirect(url_for("dashboard_bloque"))
 
-    # =========================
-    # GET : affichage page
-    # =========================
     return render_template(
         "dashboard_bloque.html",
         user=user,
@@ -2642,8 +2649,8 @@ def dashboard_bloque():
         country_code=country_code
     )
 
-
 from urllib.parse import urlencode
+
 @app.route("/api/webhook/soleaspay", methods=["POST"])
 def webhook_soleaspay():
 
@@ -2661,57 +2668,73 @@ def webhook_soleaspay():
     if not data:
         return jsonify({"error": "Invalid JSON"}), 400
 
-    # 🔒 sécurité
+    # 🔒 Sécurité
     received_key = request.headers.get("x-private-key")
     if not received_key or received_key != SOLEAS_WEBHOOK_SECRET:
         return jsonify({"error": "Unauthorized"}), 403
 
-    operation = data.get("operation")
+    # ✅ Récupération correcte des données
+    details = data.get("data") or {}
+
+    operation = (
+        details.get("operation")
+        or data.get("operation")
+        or ""
+    ).upper()
+
     status = str(data.get("status", "")).upper()
 
+    print("OPERATION :", operation)
+    print("STATUS :", status)
+
     # ======================================================
-    # 🔵 CAS DEPOT (PURCHASE = activation)
+    # 🔵 CAS DEPOT (PURCHASE)
     # ======================================================
     if operation == "PURCHASE":
 
-        # 📌 récupération fiable
         external_ref = (
-            (data.get("data") or {}).get("external_reference")
+            details.get("external_reference")
             or data.get("externalRef")
         )
 
         internal_ref = (
-            (data.get("data") or {}).get("reference")
+            details.get("reference")
+            or data.get("internalRef")
             or data.get("reference")
         )
 
-        print("DEPOT external_ref:", external_ref)
-        print("DEPOT internal_ref:", internal_ref)
+        print("DEPOT external_ref :", external_ref)
+        print("DEPOT internal_ref :", internal_ref)
 
-        # ❗ validation
         if not external_ref or not external_ref.startswith("E-"):
             return jsonify({"error": "Invalid depot reference"}), 400
 
         try:
             depot_id = int(external_ref.split("-")[1])
-        except:
+        except Exception:
             return jsonify({"error": "Bad depot ID"}), 400
 
         depot = Depot.query.get(depot_id)
 
         if not depot:
-            logging.error(f"DEPOT NOT FOUND: {external_ref}")
+            logging.error(f"DEPOT NOT FOUND : {external_ref}")
             return jsonify({"error": "Depot not found"}), 404
 
-        # 🔒 anti double traitement
+        print("DEPOT trouvé :", depot.id)
+        print("USER ID :", depot.user_id)
+
+        # Déjà traité
         if depot.statut == "success":
             return jsonify({"received": True}), 200
 
-        # ✔ statut mapping simple
         if status in ["SUCCESS", "COMPLETED", "APPROVED"]:
             depot.statut = "success"
 
+            if internal_ref:
+                depot.reference = internal_ref
+
             user = db.session.get(User, depot.user_id)
+
             if user:
                 user.is_active = True
 
@@ -2725,7 +2748,7 @@ def webhook_soleaspay():
 
         db.session.commit()
 
-        logging.info(f"DEPOT UPDATED: {depot.id} -> {depot.statut}")
+        logging.info(f"DEPOT UPDATED : {depot.id} -> {depot.statut}")
 
         return jsonify({"received": True}), 200
 
@@ -2734,11 +2757,13 @@ def webhook_soleaspay():
     # ======================================================
     elif operation in ["WITHDRAW", "WITHDRAWAL"]:
 
-        details = data.get("data") or {}
+        reference = (
+            details.get("reference")
+            or data.get("internalRef")
+            or data.get("reference")
+        )
 
-        reference = details.get("reference") or data.get("reference")
-
-        print("RETRAIT reference:", reference)
+        print("RETRAIT reference :", reference)
 
         if not reference:
             return jsonify({"error": "No reference"}), 400
@@ -2748,31 +2773,33 @@ def webhook_soleaspay():
         ).first()
 
         if not retrait:
-            logging.error(f"RETRAIT NOT FOUND: {reference}")
+            logging.error(f"RETRAIT NOT FOUND : {reference}")
             return jsonify({"error": "Retrait not found"}), 404
 
-        # 🔒 anti double traitement
         if retrait.statut in ["successful", "failed", "refused", "cancelled"]:
             return jsonify({"received": True}), 200
 
-        # ✔ mapping statuts
         if status in ["SUCCESS", "COMPLETED", "APPROVED"]:
             new_status = "successful"
-        elif status in ["FAILED"]:
+        elif status == "FAILED":
             new_status = "failed"
-        elif status in ["REJECTED"]:
+        elif status == "REJECTED":
             new_status = "refused"
-        elif status in ["CANCELLED"]:
+        elif status == "CANCELLED":
             new_status = "cancelled"
         else:
             new_status = "en_attente"
 
         old_status = retrait.statut
+
+        print("RETRAIT trouvé :", retrait.id)
+        print("Ancien statut :", old_status)
+        print("Nouveau statut :", new_status)
+
         retrait.statut = new_status
         retrait.soleaspay_status = status
         retrait.last_sync = datetime.utcnow()
 
-        # 💰 crédit UNE seule fois
         if old_status != "successful" and new_status == "successful":
             user = db.session.get(User, retrait.user_id)
 
@@ -2781,14 +2808,16 @@ def webhook_soleaspay():
 
         db.session.commit()
 
-        logging.info(f"RETRAIT UPDATED: {retrait.id} -> {new_status}")
+        logging.info(f"RETRAIT UPDATED : {retrait.id} -> {new_status}")
 
         return jsonify({"received": True}), 200
 
     # ======================================================
     # ❌ CAS INCONNU
     # ======================================================
+    print("Webhook ignoré - operation =", operation)
     return jsonify({"ignored": True}), 200
+
 @app.route("/paiement/soleaspay/retour")
 def bkapay_retour():
     status = request.args.get("status")
