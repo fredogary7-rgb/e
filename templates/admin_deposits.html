@@ -265,7 +265,7 @@
         <ul class="navbar-nav">
             <li><a href="{{ url_for('admin_users') }}">Utilisateurs</a></li>
             <li><a href="{{ url_for('admin_deposits') }}" class="active">Dépôts</a></li>
-            <li><a href="{{ url_for('admin_stats_deposits') }}">Stats</a></li>
+            <li><a href="{{ url_for('stats_depots') }}">Stats</a></li>
         </ul>
         <div class="navbar-user">
             {% if user %}<div class="user-avatar">{{ user.username[0]|upper }}</div>{% endif %}
