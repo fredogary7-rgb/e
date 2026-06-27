@@ -2526,6 +2526,122 @@ def get_global_stats():
 # --------------------------------------
 # 1️⃣ Page dashboard_bloque (initiation paiement)
 # --------------------------------------
+@app.route("/dashboard_bloque", methods=["GET", "POST"])
+def dashboard_bloque():
+    user = get_logged_in_user()
+
+    if user_is_activated(user):
+        return redirect(url_for("dashboard_page"))
+
+    # Simule un dépôt pending
+    pending_depot = None
+    user_has_pending_depot = bool(pending_depot)
+
+    # Récupération du code pays
+    country_code = COUNTRY_CODE.get(user.country.strip())
+    if not country_code:
+        flash("Pays non supporté.", "danger")
+        return redirect(url_for("connexion_page"))
+
+    # =========================
+    # POST : paiement
+    # =========================
+    if request.method == "POST":
+        operator_name = request.form.get("operator")
+        amount = request.form.get("montant", type=int)
+        fullname = request.form.get("fullname")
+        phone = request.form.get("phone")  # ✅ numéro modifiable
+
+        # 🔒 Vérifications
+        if not operator_name or not amount or not fullname or not phone:
+            flash("Tous les champs sont requis.", "danger")
+            return redirect(url_for("dashboard_bloque"))
+
+        if amount != 4500:
+            flash("Le montant d'activation est exactement 4500 FCFA.", "danger")
+            return redirect(url_for("dashboard_bloque"))
+
+        # 🔒 Nettoyage numéro
+        phone = phone.replace(" ", "").replace("-", "")
+
+        if not phone.isdigit() or len(phone) < 8:
+            flash("Numéro de paiement invalide.", "danger")
+            return redirect(url_for("dashboard_bloque"))
+
+        # 🔹 Recherche du service SoleasPay
+        service = next(
+            (s for s in SERVICES[country_code] if s["name"] == operator_name),
+            None
+        )
+
+        if not service:
+            flash("Opérateur non supporté pour votre pays.", "danger")
+            return redirect(url_for("dashboard_bloque"))
+
+        # 🔹 Création du dépôt AVANT paiement avec toutes les infos obligatoires
+        new_depot = Depot(
+            user_name=user.username,
+            phone=phone,
+            operator=operator_name,  # ✅ maintenant obligatoire
+            country=country_code,    # ✅ maintenant obligatoire
+            montant=amount,
+            statut="en_attente",
+            email=user.email
+        )
+        db.session.add(new_depot)
+        db.session.commit()
+
+        # 🔹 Payload SoleasPay avec DEPOT_ID
+        payload = {
+            "wallet": phone,  # ✅ NUMÉRO SAISI PAR L’UTILISATEUR
+            "amount": amount,
+            "currency": "XOF",
+            "order_id": f"E-{new_depot.id}",
+            "description": f"Activation E {user.username} DEPOT_ID={new_depot.id}",
+            "payer": fullname,
+            "payerEmail": user.email,
+            "successUrl": "https://nova-trade.cc/dashboard/pay/ok",
+            "failureUrl": "https://nova-trade.cc/dashboard_bloque",
+        }
+
+        headers = {
+            "x-api-key": SOLEAS_API_KEY,
+            "operation": "2",
+            "service": str(service["id"]),
+            "Content-Type": "application/json"
+        }
+
+        try:
+            response = requests.post(
+                "https://soleaspay.com/api/agent/bills/v3",
+                headers=headers,
+                json=payload,
+                timeout=30
+            )
+            result = response.json()
+        except Exception as e:
+            flash(f"Erreur de connexion au serveur de paiement : {e}", "danger")
+            return redirect(url_for("dashboard_bloque"))
+
+        if not result.get("succès"):
+            flash(result.get("message", "Erreur paiement"), "danger")
+            return redirect(url_for("dashboard_bloque"))
+
+        flash("Veuillez confirmer le paiement sur votre téléphone.", "info")
+        return redirect(url_for("dashboard_bloque"))
+
+    # =========================
+    # GET : affichage page
+    # =========================
+    return render_template(
+        "dashboard_bloque.html",
+        user=user,
+        user_has_pending_depot=user_has_pending_depot,
+        services_by_country=SERVICES,
+        country_code=country_code
+    )
+
+
 from urllib.parse import urlencode
 
 @app.route("/api/webhook/soleaspay", methods=["POST"])
