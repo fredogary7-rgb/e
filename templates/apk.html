@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Télécharger APK - NovaTrade</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: rgba(255, 255, 255, 0.8);
+            --bg-card: rgba(255, 255, 255, 0.7);
+            --accent-blue: #38bdf8;
+            --accent-blue-light: #7dd3fc;
+            --accent-green: #86efac;
+            --accent-pink: #f9a8d4;
+            --accent-purple: #c084fc;
+            --text-primary: #334155;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.2);
+            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
+            --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
+            --gradient-purple: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%);
+            --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
+            --radius-sm: 10px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-2xl: 24px;
+            --shadow-sm: 0 4px 12px rgba(56, 189, 248, 0.08);
+            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
+            --shadow-large: 0 12px 32px rgba(56, 189, 248, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            background: var(--gradient-bg);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(20px);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 900;
+            font-style: italic;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .navbar-nav {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+
+        .navbar-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 15px;
+        }
+
+        .navbar-nav a:hover {
+            color: var(--accent-blue);
+        }
+
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        /* HERO */
+        .hero {
+            text-align: center;
+            padding: 100px 24px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 900;
+            font-style: italic;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #38bdf8 0%, #8b5cf6 50%, #f9a8d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 500;
+        }
+
+        /* APK GRID */
+        .section {
+            max-width: 1200px;
+            margin: 0 auto 80px;
+            padding: 0 24px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 800;
+            font-style: italic;
+            margin-bottom: 40px;
+            text-align: center;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .apk-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+        }
+
+        .apk-card {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-medium);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+
+        .apk-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-large);
+        }
+
+        .apk-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+        }
+
+        .apk-icon.netflix { background: linear-gradient(135deg, #e50914 0%, #831318 100%); }
+        .apk-icon.chat { background: linear-gradient(135deg, #0088cc 0%, #005f8f 100%); }
+        .apk-icon.capcut { background: linear-gradient(135deg, #000000 0%, #333333 100%); }
+        .apk-icon.canal { background: linear-gradient(135deg, #0066cc 0%, #004499 100%); }
+
+        .apk-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .apk-version {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .apk-size {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 16px;
+            background: var(--bg-card);
+            border-radius: 50px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .btn-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 32px;
+            background: var(--gradient-blue);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+            text-decoration: none;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 28px rgba(56, 189, 248, 0.5);
+        }
+
+        .btn-download.purple {
+            background: var(--gradient-purple);
+            box-shadow: 0 6px 20px rgba(192, 132, 252, 0.4);
+        }
+
+        .btn-download.purple:hover {
+            box-shadow: 0 10px 28px rgba(192, 132, 252, 0.5);
+        }
+
+        /* INFO CARDS */
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .info-card {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .info-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .info-icon.blue { background: linear-gradient(135deg, rgba(56, 189, 248, 0.2) 0%, rgba(56, 189, 248, 0.1) 100%); }
+        .info-icon.green { background: linear-gradient(135deg, rgba(134, 239, 172, 0.2) 0%, rgba(134, 239, 172, 0.1) 100%); }
+        .info-icon.pink { background: linear-gradient(135deg, rgba(249, 168, 212, 0.2) 0%, rgba(249, 168, 212, 0.1) 100%); }
+
+        .info-content h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .info-content p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            padding: 40px 24px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 32px; }
+            .section-title { font-size: 24px; }
+            .navbar-nav { display: none; }
+            .apk-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('dashboard_page') }}" class="navbar-brand">NovaTrade</a>
+        <ul class="navbar-nav">
+            <li><a href="{{ url_for('dashboard_page') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('mes_retraits') }}">Retraits</a></li>
+            <li><a href="{{ url_for('team_page') }}">Équipe</a></li>
+            <li><a href="{{ url_for('academy_tiktok') }}">Academy</a></li>
+        </ul>
+        <div class="navbar-user">
+            {% if user %}<div class="user-avatar">{{ user.username[0]|upper }}</div>{% endif %}
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>📱 Télécharger nos APK</h1>
+        <p class="subtitle">Accédez à toutes nos applications premium gratuitement. Profitez de contenus exclusifs directement sur votre mobile.</p>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">🎬 <span>Applications Disponibles</span></h2>
+        <div class="apk-grid">
+            <div class="apk-card">
+                <div class="apk-icon netflix"><i class="fa-solid fa-film"></i></div>
+                <h3 class="apk-name">Netflix Premium</h3>
+                <p class="apk-version">Version 8.94.0</p>
+                <div class="apk-size">
+                    <i class="fa-solid fa-download"></i>
+                    <span>45 MB</span>
+                </div>
+                <a href="https://drive.google.com/file/d/1afSa24_oVoTWRCgpO07Lbu4qjKMUhwLC/view?usp=drivesdk" class="btn-download" target="_blank">
+                    <i class="fa-solid fa-download"></i>
+                    Télécharger
+                </a>
+            </div>
+
+            <div class="apk-card">
+                <div class="apk-icon chat"><i class="fa-solid fa-comments"></i></div>
+                <h3 class="apk-name">Chat Premium</h3>
+                <p class="apk-version">Version 10.15.2</p>
+                <div class="apk-size">
+                    <i class="fa-solid fa-download"></i>
+                    <span>68 MB</span>
+                </div>
+                <a href="https://drive.google.com/file/d/1-4idwrgNxjNilpLzR8zHkdMroVo41g9b/view?usp=drivesdk" class="btn-download" target="_blank">
+                    <i class="fa-solid fa-download"></i>
+                    Télécharger
+                </a>
+            </div>
+
+            <div class="apk-card">
+                <div class="apk-icon capcut"><i class="fa-solid fa-scissors"></i></div>
+                <h3 class="apk-name">CapCut Pro</h3>
+                <p class="apk-version">Version 11.2.0</p>
+                <div class="apk-size">
+                    <i class="fa-solid fa-download"></i>
+                    <span>156 MB</span>
+                </div>
+                <a href="https://drive.google.com/file/d/1hwEzqwQWV2FKnTg1u0QAWrPjjOEyZCyj/view?usp=drivesdk" class="btn-download purple" target="_blank">
+                    <i class="fa-solid fa-download"></i>
+                    Télécharger
+                </a>
+            </div>
+
+            <div class="apk-card">
+                <div class="apk-icon canal"><i class="fa-solid fa-tv"></i></div>
+                <h3 class="apk-name">Canal+ Premium</h3>
+                <p class="apk-version">Version 5.12.1</p>
+                <div class="apk-size">
+                    <i class="fa-solid fa-download"></i>
+                    <span>89 MB</span>
+                </div>
+                <a href="https://drive.google.com/uc?id=15G5lmyNMw2xYTm_XvvhIX77uBqT99lLq" class="btn-download purple" target="_blank">
+                    <i class="fa-solid fa-download"></i>
+                    Télécharger
+                </a>
+            </div>
+        </div>
+
+        <div class="info-cards">
+            <div class="info-card">
+                <div class="info-icon blue"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="info-content">
+                    <h4>100% Sécurisé</h4>
+                    <p>Toutes nos APK sont vérifiées et sans virus.</p>
+                </div>
+            </div>
+            <div class="info-card">
+                <div class="info-icon green"><i class="fa-solid fa-rocket"></i></div>
+                <div class="info-content">
+                    <h4>Mises à jour</h4>
+                    <p>Applications régulièrement mises à jour.</p>
+                </div>
+            </div>
+            <div class="info-card">
+                <div class="info-icon pink"><i class="fa-solid fa-gift"></i></div>
+                <div class="info-content">
+                    <h4>Gratuit</h4>
+                    <p>Toutes les applications sont 100% gratuites.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>© 2026 NovaTrade. Tous droits réservés.</p>
+        <p style="margin-top: 8px; font-size: 12px;">Applications fournies à des fins éducatives uniquement.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>À propos - NovaTrade</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: rgba(255, 255, 255, 0.8);
+            --bg-card: rgba(255, 255, 255, 0.7);
+            --accent-blue: #38bdf8;
+            --accent-blue-light: #7dd3fc;
+            --accent-green: #86efac;
+            --accent-pink: #f9a8d4;
+            --accent-purple: #c084fc;
+            --text-primary: #334155;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.2);
+            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
+            --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
+            --gradient-purple: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%);
+            --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
+            --radius-sm: 10px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-2xl: 24px;
+            --shadow-sm: 0 4px 12px rgba(56, 189, 248, 0.08);
+            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
+            --shadow-large: 0 12px 32px rgba(56, 189, 248, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            background: var(--gradient-bg);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(20px);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 900;
+            font-style: italic;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .navbar-nav {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+
+        .navbar-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 15px;
+        }
+
+        .navbar-nav a:hover {
+            color: var(--accent-blue);
+        }
+
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            text-align: center;
+            padding: 100px 24px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 900;
+            font-style: italic;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #38bdf8 0%, #8b5cf6 50%, #f9a8d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 40px;
+            font-weight: 500;
+        }
+
+        /* SECTIONS */
+        .section {
+            max-width: 1200px;
+            margin: 0 auto 80px;
+            padding: 0 24px;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 800;
+            font-style: italic;
+            margin-bottom: 40px;
+            text-align: center;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-title span {
+            background: var(--gradient-pink);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* CARDS GRID */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .info-card {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-medium);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .info-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-large);
+        }
+
+        .card-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .card-icon.blue { background: linear-gradient(135deg, rgba(56, 189, 248, 0.2) 0%, rgba(56, 189, 248, 0.1) 100%); }
+        .card-icon.green { background: linear-gradient(135deg, rgba(134, 239, 172, 0.2) 0%, rgba(134, 239, 172, 0.1) 100%); }
+        .card-icon.pink { background: linear-gradient(135deg, rgba(249, 168, 212, 0.2) 0%, rgba(249, 168, 212, 0.1) 100%); }
+        .card-icon.purple { background: linear-gradient(135deg, rgba(192, 132, 252, 0.2) 0%, rgba(192, 132, 252, 0.1) 100%); }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .card-text {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* TIMELINE */
+        .timeline {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 100%;
+            background: var(--gradient-blue);
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-content {
+            flex: 1;
+            background: var(--bg-secondary);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .timeline-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--gradient-blue);
+            border: 4px solid white;
+            box-shadow: var(--shadow-medium);
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline-year {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 8px;
+        }
+
+        .timeline-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .timeline-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* STATS */
+        .stats-section {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-2xl);
+            padding: 60px 40px;
+            margin: 0 24px 80px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-large);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 32px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 900;
+            font-style: italic;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        /* TEAM */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+        }
+
+        .team-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s;
+        }
+
+        .team-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .team-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--gradient-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .team-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .team-role {
+            font-size: 14px;
+            color: var(--accent-blue);
+            font-weight: 500;
+        }
+
+        /* CTA */
+        .cta-section {
+            text-align: center;
+            padding: 80px 24px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border-radius: var(--radius-2xl);
+            margin: 0 24px 80px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-section h2 {
+            font-size: 40px;
+            font-weight: 900;
+            font-style: italic;
+            margin-bottom: 16px;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cta-section p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 48px;
+            background: var(--gradient-blue);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 8px 24px rgba(56, 189, 248, 0.4);
+            text-decoration: none;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(56, 189, 248, 0.5);
+        }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            padding: 40px 24px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 36px; }
+            .section-title { font-size: 28px; }
+            .navbar-nav { display: none; }
+            .timeline::before { left: 20px; }
+            .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; gap: 20px; }
+            .timeline-content { flex: 1; }
+            .stat-number { font-size: 36px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('dashboard_page') }}" class="navbar-brand">NovaTrade</a>
+        <ul class="navbar-nav">
+            <li><a href="{{ url_for('dashboard_page') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('mes_retraits') }}">Retraits</a></li>
+            <li><a href="{{ url_for('team_page') }}">Équipe</a></li>
+            <li><a href="{{ url_for('academy_tiktok') }}">Academy</a></li>
+        </ul>
+        <div class="navbar-user">
+            {% if user %}<div class="user-avatar">{{ user.username[0]|upper }}</div>{% endif %}
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>🚀 À propos de NovaTrade</h1>
+        <p class="subtitle">Une plateforme tout-en-un pour apprendre, vendre, recommander et gagner de l'argent.</p>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">🎯 <span>Notre Mission</span></h2>
+        <div class="cards-grid">
+            <div class="info-card">
+                <div class="card-icon blue"><i class="fa-solid fa-graduation-cap"></i></div>
+                <h3 class="card-title">Former</h3>
+                <p class="card-text">Des formations gratuites et de qualité dans tous les domaines : trading, e-commerce, marketing digital, design graphique et plus encore.</p>
+            </div>
+            <div class="info-card">
+                <div class="card-icon green"><i class="fa-solid fa-store"></i></div>
+                <h3 class="card-title">Permettre de Vendre</h3>
+                <p class="card-text">Une marketplace intégrée pour créer votre boutique, gérer vos produits et vendre facilement à des milliers d'utilisateurs.</p>
+            </div>
+            <div class="info-card">
+                <div class="card-icon pink"><i class="fa-solid fa-users"></i></div>
+                <h3 class="card-title">Récompenser</h3>
+                <p class="card-text">Un système d'affiliation généreux avec des commissions sur plusieurs niveaux et des bonus réguliers.</p>
+            </div>
+            <div class="info-card">
+                <div class="card-icon purple"><i class="fa-solid fa-gamepad"></i></div>
+                <h3 class="card-title">Divertir</h3>
+                <p class="card-text">Des jeux et missions rémunérés pour gagner de l'argent tout en s'amusant : wheel, apple game, glass bridge et plus.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">📊 <span>Nos Chiffres</span></h2>
+        <div class="stats-section">
+            <div class="stats-grid">
+                <div>
+                    <div class="stat-number">{{ total_users or '10K+' }}</div>
+                    <div class="stat-label">Utilisateurs</div>
+                </div>
+                <div>
+                    <div class="stat-number">{{ total_deposits or '500K+' }}</div>
+                    <div class="stat-label">XOF Déposés</div>
+                </div>
+                <div>
+                    <div class="stat-number">{{ total_withdrawn or '300K+' }}</div>
+                    <div class="stat-label">XOF Retirés</div>
+                </div>
+                <div>
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">Pays</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">🌟 <span>Nos Valeurs</span></h2>
+        <div class="cards-grid">
+            <div class="info-card">
+                <div class="card-icon blue"><i class="fa-solid fa-shield-halved"></i></div>
+                <h3 class="card-title">Transparence</h3>
+                <p class="card-text">Nous croyons en une communication claire et honnête avec notre communauté. Tous les paiements sont traçables.</p>
+            </div>
+            <div class="info-card">
+                <div class="card-icon green"><i class="fa-solid fa-handshake"></i></div>
+                <h3 class="card-title">Communauté</h3>
+                <p class="card-text">Notre force vient de notre communauté. Nous mettons tout en œuvre pour créer un environnement d'entraide.</p>
+            </div>
+            <div class="info-card">
+                <div class="card-icon pink"><i class="fa-solid fa-rocket"></i></div>
+                <h3 class="card-title">Innovation</h3>
+                <p class="card-text">Nous développons constamment de nouvelles fonctionnalités pour offrir la meilleure expérience utilisateur.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <h2>🎉 Rejoignez NovaTrade !</h2>
+        <p>Des milliers d'utilisateurs nous font déjà confiance. Pourquoi pas vous ?</p>
+        <a href="{{ url_for('inscription_page') }}" class="btn-cta">
+            <i class="fa-solid fa-user-plus"></i>
+            Créer un compte gratuit
+        </a>
+    </section>
+
+    <footer class="footer">
+        <p>© 2026 NovaTrade. Tous droits réservés.</p>
+        <p style="margin-top: 8px; font-size: 12px;">Créé avec ❤️ par l'équipe NovaTrade</p>
+    </footer>
+</body>
+</html>
