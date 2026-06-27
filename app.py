@@ -3672,6 +3672,7 @@ def team_page():
 
     return render_template(
         "team.html",
+        user=user,
         referral_link=referral_link,
         stats=stats,
         level1_users=level1,

@@ -371,7 +371,7 @@ body {
     <div class="menu-toggle"><i class="fa fa-bars"></i></div>
     <div class="user-container">
         <i class="fa fa-user user-icon"></i>
-        <div class="user">{{ user.username if user else 'Invité' }}</div>
+        <div class="user">{{ user.username if user and user.username else 'Invité' }}</div>
     </div>
 </div>
 
