@@ -362,7 +362,7 @@
                 <div class="stat-label">Total retraits</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">{{ retraits|selectattr('statut', 'eq', 'approuve')|list|length + retraits|selectattr('statut', 'eq', 'approuvé')|list|length }}</div>
+                <div class="stat-value">{{ retraits|selectattr('statut', 'eq', 'successful')|list|length }}</div>
                 <div class="stat-label">Approuvés</div>
             </div>
             <div class="stat-card">
@@ -392,17 +392,17 @@
                             <div class="withdrawal-amount">{{ "{:,.0f}".format(retrait.montant) }} XOF</div>
                             {% set status_class = 'status-en_attente' %}
                             {% set status_text = 'En attente' %}
-                            {% if retrait.statut == 'approuve' or retrait.statut == 'approuvé' %}
+                            {% if retrait.statut == 'successful' %}
                                 {% set status_class = 'status-approuve' %}
                                 {% set status_text = 'Approuvé' %}
-                            {% elif retrait.statut == 'refuse' or retrait.statut == 'refusé' %}
+                            {% elif retrait.statut == 'failed' or retrait.statut == 'refused' %}
                                 {% set status_class = 'status-refuse' %}
                                 {% set status_text = 'Refusé' %}
                             {% endif %}
                             <span class="withdrawal-status {{ status_class }}">
                                 {% if retrait.statut == 'en_attente' %}
                                     <i class="fa fa-clock"></i>
-                                {% elif retrait.statut == 'approuve' or retrait.statut == 'approuvé' %}
+                                {% elif retrait.statut == 'successful' %}
                                     <i class="fa fa-check-circle"></i>
                                 {% else %}
                                     <i class="fa fa-times-circle"></i>
@@ -430,7 +430,7 @@
                             </div>
                         </div>
 
-                        {% if (retrait.statut == 'refuse' or retrait.statut == 'refusé') and retrait.motif_refus %}
+                        {% if retrait.statut in ['failed', 'refused'] and retrait.motif_refus %}
                         <div class="rejection-reason">
                             <i class="fa fa-exclamation-triangle"></i>
                             <span>Motif: {{ retrait.motif_refus }}</span>
