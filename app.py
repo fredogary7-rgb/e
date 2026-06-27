@@ -2647,11 +2647,13 @@ from urllib.parse import urlencode
 def webhook_soleaspay():
 
     import logging
+    from datetime import datetime
 
     data = request.get_json(silent=True)
 
     print("=" * 50)
     print("WEBHOOK RECU")
+    print("HEADERS:", dict(request.headers))
     print("JSON:", data)
     print("=" * 50)
 
@@ -2660,48 +2662,51 @@ def webhook_soleaspay():
 
     # 🔒 sécurité
     received_key = request.headers.get("x-private-key")
-    if received_key != SOLEAS_WEBHOOK_SECRET:
+    if not received_key or received_key != SOLEAS_WEBHOOK_SECRET:
         return jsonify({"error": "Unauthorized"}), 403
 
     operation = data.get("operation")
+    status = str(data.get("status", "")).upper()
 
-    # ==================================================
-    # 🔵 CAS DEPOT (ACTIVATION)
-    # ==================================================
+    # ======================================================
+    # 🔵 CAS DEPOT (PURCHASE = activation)
+    # ======================================================
     if operation == "PURCHASE":
 
-        internal_ref = (
-            data.get("internalRef")
-            or data.get("reference")
-            or (data.get("data") or {}).get("reference")
-        )
-
+        # 📌 récupération fiable
         external_ref = (
-            data.get("externalRef")
-            or (data.get("data") or {}).get("external_reference")
+            (data.get("data") or {}).get("external_reference")
+            or data.get("externalRef")
         )
 
-        logging.info(f"DEPOT webhook: internal={internal_ref} external={external_ref}")
+        internal_ref = (
+            (data.get("data") or {}).get("reference")
+            or data.get("reference")
+        )
 
-        depot_id = None
+        print("DEPOT external_ref:", external_ref)
+        print("DEPOT internal_ref:", internal_ref)
 
-        if external_ref and external_ref.startswith("E-"):
-            try:
-                depot_id = int(external_ref.split("-")[1])
-            except:
-                pass
+        # ❗ validation
+        if not external_ref or not external_ref.startswith("E-"):
+            return jsonify({"error": "Invalid depot reference"}), 400
 
-        depot = Depot.query.get(depot_id) if depot_id else None
+        try:
+            depot_id = int(external_ref.split("-")[1])
+        except:
+            return jsonify({"error": "Bad depot ID"}), 400
+
+        depot = Depot.query.get(depot_id)
 
         if not depot:
-            logging.error("DEPOT NOT FOUND")
+            logging.error(f"DEPOT NOT FOUND: {external_ref}")
             return jsonify({"error": "Depot not found"}), 404
 
-        status = str(data.get("status", "")).upper()
-
+        # 🔒 anti double traitement
         if depot.statut == "success":
             return jsonify({"received": True}), 200
 
+        # ✔ statut mapping simple
         if status in ["SUCCESS", "COMPLETED", "APPROVED"]:
             depot.statut = "success"
 
@@ -2712,61 +2717,77 @@ def webhook_soleaspay():
         elif status in ["FAILED", "REJECTED"]:
             depot.statut = "failed"
 
+        else:
+            depot.statut = "pending"
+
+        depot.last_sync = datetime.utcnow()
+
         db.session.commit()
+
+        logging.info(f"DEPOT UPDATED: {depot.id} -> {depot.statut}")
 
         return jsonify({"received": True}), 200
 
-    # ==================================================
-    # 🟢 CAS RETRAIT
-    # ==================================================
-    elif operation == "WITHDRAWAL":
+    # ======================================================
+    # 🟢 CAS RETRAIT (WITHDRAW)
+    # ======================================================
+    elif operation in ["WITHDRAW", "WITHDRAWAL"]:
 
         details = data.get("data") or {}
 
-        reference_soleaspay = details.get("reference")
+        reference = details.get("reference") or data.get("reference")
 
-        logging.info(f"RETRAIT webhook: {reference_soleaspay}")
+        print("RETRAIT reference:", reference)
+
+        if not reference:
+            return jsonify({"error": "No reference"}), 400
 
         retrait = Retrait.query.filter_by(
-            reference_soleaspay=reference_soleaspay
+            reference_soleaspay=reference
         ).first()
 
-        if retrait is None:
+        if not retrait:
+            logging.error(f"RETRAIT NOT FOUND: {reference}")
             return jsonify({"error": "Retrait not found"}), 404
 
-        if retrait.statut in ["successful", "failed", "refused"]:
+        # 🔒 anti double traitement
+        if retrait.statut in ["successful", "failed", "refused", "cancelled"]:
             return jsonify({"received": True}), 200
 
-        status = str(data.get("status", "")).upper()
-
-        mapping = {
-            "SUCCESS": "successful",
-            "COMPLETED": "successful",
-            "APPROVED": "successful",
-            "PENDING": "en_attente",
-            "FAILED": "failed",
-            "REJECTED": "refused",
-            "CANCELLED": "cancelled",
-        }
-
-        new_status = mapping.get(status, "en_attente")
+        # ✔ mapping statuts
+        if status in ["SUCCESS", "COMPLETED", "APPROVED"]:
+            new_status = "successful"
+        elif status in ["FAILED"]:
+            new_status = "failed"
+        elif status in ["REJECTED"]:
+            new_status = "refused"
+        elif status in ["CANCELLED"]:
+            new_status = "cancelled"
+        else:
+            new_status = "en_attente"
 
         old_status = retrait.statut
         retrait.statut = new_status
+        retrait.soleaspay_status = status
         retrait.last_sync = datetime.utcnow()
 
+        # 💰 crédit UNE seule fois
         if old_status != "successful" and new_status == "successful":
             user = db.session.get(User, retrait.user_id)
+
             if user:
                 user.total_retrait = (user.total_retrait or 0) + retrait.montant
 
         db.session.commit()
 
+        logging.info(f"RETRAIT UPDATED: {retrait.id} -> {new_status}")
+
         return jsonify({"received": True}), 200
 
-    # ==================================================
+    # ======================================================
+    # ❌ CAS INCONNU
+    # ======================================================
     return jsonify({"ignored": True}), 200
-
 @app.route("/paiement/soleaspay/retour")
 def bkapay_retour():
     status = request.args.get("status")
