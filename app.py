@@ -1059,6 +1059,54 @@ def stats_depots():
 
     return render_template("admin_stats.html", actifs=total_actifs, passifs=total_passifs)
 
+@app.route("/admin/validate-deposit/<int:deposit_id>")
+def admin_validate_deposit(deposit_id):
+    """Valider un dépôt"""
+    user = get_logged_in_user()
+    
+    if not user or not user.is_admin:
+        return "Accès refusé", 403
+    
+    deposit = Depot.query.get(deposit_id)
+    if not deposit:
+        return "Dépôt non trouvé", 404
+    
+    deposit.statut = 'valide'
+    
+    # Créditer l'utilisateur
+    deposit_user = User.query.get(deposit.user_id)
+    if deposit_user:
+        deposit_user.solde_depot = (deposit_user.solde_depot or 0) + deposit.montant
+        deposit_user.solde_total = (deposit_user.solde_total or 0) + deposit.montant
+        
+        if not deposit_user.premier_depot:
+            deposit_user.premier_depot = True
+            # Commission parrainage
+            if deposit_user.parrain:
+                donner_commission(deposit_user.parrain, deposit.montant)
+    
+    db.session.commit()
+    flash(f"Dépôt de {deposit.montant} XOF validé avec succès !", "success")
+    return redirect(url_for('admin_deposits'))
+
+@app.route("/admin/reject-deposit/<int:deposit_id>")
+def admin_reject_deposit(deposit_id):
+    """Rejeter un dépôt"""
+    user = get_logged_in_user()
+    
+    if not user or not user.is_admin:
+        return "Accès refusé", 403
+    
+    deposit = Depot.query.get(deposit_id)
+    if not deposit:
+        return "Dépôt non trouvé", 404
+    
+    deposit.statut = 'refuse'
+    db.session.commit()
+    
+    flash(f"Dépôt de {deposit.montant} XOF rejeté.", "warning")
+    return redirect(url_for('admin_deposits'))
+
 @app.route("/admin/canal/edit", methods=["GET", "POST"])
 def admin_canal_edit():
     if request.method == "POST":
