@@ -2468,7 +2468,7 @@ def webhook_soleaspay():
     import logging
     
     print("=" * 50)
-    print("WEBHOOK RECU")
+    print("WEBHOOK RECU - VERSION 2.0")  # ✅ Marqueur de version
     print("HEADERS:", dict(request.headers))
     print("JSON:", request.get_json())
     print("=" * 50)
@@ -2486,11 +2486,13 @@ def webhook_soleaspay():
     # mais sa propre référence (ex: "ck4a0XgLQhi33gFurpbS")
     reference_soleaspay = details.get("reference")
     
+    # ✅ LOG EXPLICITE POUR DEBUG
+    print(f"[WEBHOOK] reference_soleaspay={reference_soleaspay}")
+    logging.info(f"[WEBHOOK] Recherche retrait par reference_soleaspay={reference_soleaspay}")
+    
     if not reference_soleaspay:
         logging.warning(f"[WEBHOOK] Pas de référence SoleasPay dans le webhook")
         return jsonify({"ignored": True})
-    
-    logging.info(f"[WEBHOOK] Référence SoleasPay reçue: {reference_soleaspay}")
     
     # Retrouver le retrait par sa référence SoleasPay stockée lors de la création
     retrait = Retrait.query.filter_by(reference_soleaspay=reference_soleaspay).first()
