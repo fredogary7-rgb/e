@@ -5464,7 +5464,6 @@ def confirmer_commande(commande_id):
     montant_vente = commande.total - commande.frais_livraison
     vendeur = boutique.proprietaire
     vendeur.solde_revenu = (vendeur.solde_revenu or 0) + montant_vente
-    vendeur.solde_parrainage = (vendeur.solde_parrainage or 0) + montant_vente
     
     # Mettre à jour les statistiques de ventes
     for article in commande.articles:
