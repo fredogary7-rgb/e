@@ -284,6 +284,48 @@ body {
     border-left: 3px solid transparent;
     gap: 12px;
     font-style: italic;
+
+/* SIDEBAR LINKS - Couleurs dynamiques */
+.sidebar a {
+    position: relative;
+    overflow: hidden;
+}
+.sidebar a::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, rgba(56,189,248,0.08) 0%, rgba(134,239,172,0.08) 50%, rgba(249,168,212,0.08) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.sidebar a:hover::before {
+    opacity: 1;
+}
+.sidebar a:hover {
+    background: transparent;
+    border-left-color: var(--accent-blue);
+    color: var(--text-primary);
+    padding-left: 30px;
+}
+.sidebar a:nth-child(3):hover { border-left-color: #86efac; }
+.sidebar a:nth-child(4):hover { border-left-color: #f9a8d4; }
+.sidebar a:nth-child(5):hover { border-left-color: #fde68a; }
+.sidebar a:nth-child(6):hover { border-left-color: #7dd3fc; }
+.sidebar a:nth-child(7):hover { border-left-color: #86efac; }
+.sidebar a:nth-child(8):hover { border-left-color: #f9a8d4; }
+.sidebar a:nth-child(9):hover { border-left-color: #fde68a; }
+.sidebar a:nth-child(10):hover { border-left-color: #38bdf8; }
+.sidebar a:nth-child(11):hover { border-left-color: #86efac; }
+.sidebar a:nth-child(12):hover { border-left-color: #f9a8d4; }
+
+.sidebar a.active {
+    background: linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(134,239,172,0.1) 50%, rgba(249,168,212,0.1) 100%);
+    border-left: 3px solid var(--accent-blue);
+    color: var(--accent-blue);
+    font-weight: 700;
+}
+
 }
 
 .sidebar a:hover {
@@ -388,6 +430,82 @@ body {
 /* STAT BOXES */
 .stat-row {
     display: flex;
+
+/* STAT BOXES ANIMATION DYNAMIQUE */
+@keyframes statPulse {
+    0%, 100% { box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    50% { box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+}
+@keyframes statGlowGreen {
+    0%, 100% { box-shadow: 0 4px 15px rgba(134,239,172,0.3); }
+    50% { box-shadow: 0 8px 35px rgba(134,239,172,0.6); }
+}
+@keyframes statGlowBlue {
+    0%, 100% { box-shadow: 0 4px 15px rgba(56,189,248,0.3); }
+    50% { box-shadow: 0 8px 35px rgba(56,189,248,0.6); }
+}
+@keyframes statGlowPink {
+    0%, 100% { box-shadow: 0 4px 15px rgba(249,168,212,0.3); }
+    50% { box-shadow: 0 8px 35px rgba(249,168,212,0.6); }
+}
+@keyframes statGlowYellow {
+    0%, 100% { box-shadow: 0 4px 15px rgba(253,230,138,0.3); }
+    50% { box-shadow: 0 8px 35px rgba(253,230,138,0.6); }
+}
+@keyframes statShine {
+    0% { transform: translateX(-100%) rotate(25deg); }
+    100% { transform: translateX(200%) rotate(25deg); }
+}
+.stat-box {
+    animation: statPulse 4s ease-in-out infinite;
+}
+.stat-box::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 60%;
+    height: 200%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transform: rotate(25deg);
+    animation: statShine 3s ease-in-out infinite;
+}
+.stat-box:nth-child(1) {
+    animation-delay: 0s;
+    background: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+}
+.stat-box:nth-child(1)::after { animation-delay: 0s; }
+.stat-box:nth-child(2) {
+    animation: statGlowGreen 3s ease-in-out infinite;
+    animation-delay: 0.6s;
+    background: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
+}
+.stat-box:nth-child(2)::after { animation-delay: 1s; }
+.stat-box:nth-child(3) {
+    animation: statGlowPink 3.5s ease-in-out infinite;
+    animation-delay: 0.3s;
+    background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
+}
+.stat-box:nth-child(3)::after { animation-delay: 0.5s; }
+.stat-box:nth-child(4) {
+    animation: statGlowYellow 3s ease-in-out infinite;
+    animation-delay: 0.9s;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+}
+.stat-box:nth-child(4)::after { animation-delay: 1.5s; }
+.stat-box:nth-child(5) {
+    animation: statGlowBlue 3.2s ease-in-out infinite;
+    animation-delay: 1.2s;
+    background: linear-gradient(135deg, #ddd6fe 0%, #a78bfa 100%);
+}
+.stat-box:nth-child(5)::after { animation-delay: 0.8s; }
+.stat-box:nth-child(6) {
+    animation: statGlowGreen 3.8s ease-in-out infinite;
+    animation-delay: 1.5s;
+    background: linear-gradient(135deg, #a5f3fc 0%, #67e8f9 100%);
+}
+.stat-box:nth-child(6)::after { animation-delay: 1.2s; }
+
     gap: 12px;
     margin-bottom: 12px;
 }
@@ -1021,6 +1139,17 @@ footer {
     font-weight: 600;
     border: 1px solid rgba(249, 168, 212, 0.2);
     transition: all 0.3s ease;
+}
+
+
+/* BOUTIQUE LINK - Badge new */
+.boutique-link .badge-new {
+    background: rgba(249, 168, 212, 0.3);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 9px;
+    font-weight: 700;
+    font-style: italic;
 }
 
 .boutique-link:hover {
