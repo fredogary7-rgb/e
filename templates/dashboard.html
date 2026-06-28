@@ -284,6 +284,9 @@ body {
     border-left: 3px solid transparent;
     gap: 12px;
     font-style: italic;
+}
+
+
 
 /* SIDEBAR LINKS - Couleurs dynamiques */
 .sidebar a {
@@ -326,6 +329,8 @@ body {
     font-weight: 700;
 }
 
+#sidebar { display: block; } .sidebar a.fix {
+
 }
 
 .sidebar a:hover {
@@ -340,6 +345,60 @@ body {
     color: var(--accent-blue);
     border-left-color: var(--accent-blue);
     font-weight: 600;
+
+/* ─── SIDEBAR DYNAMIQUE (override) ─── */
+.sidebar a {
+    position: relative !important;
+    overflow: hidden !important;
+}
+.sidebar a::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, rgba(56,189,248,0.1) 0%, rgba(134,239,172,0.1) 50%, rgba(249,168,212,0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+.sidebar a:hover::before { opacity: 1; }
+/* ─── SIDEBAR DYNAMIQUE FINAL ─── */
+.sidebar a:hover {
+    transform: translateX(6px) !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+}
+.sidebar a:nth-of-type(1):hover { background: linear-gradient(135deg, #38bdf8, #0ea5e9) !important; border-left-color: #38bdf8 !important; }
+.sidebar a:nth-of-type(2):hover { background: linear-gradient(135deg, #86efac, #22c55e) !important; border-left-color: #86efac !important; }
+.sidebar a:nth-of-type(3):hover { background: linear-gradient(135deg, #f9a8d4, #ec4899) !important; border-left-color: #f9a8d4 !important; }
+.sidebar a:nth-of-type(4):hover { background: linear-gradient(135deg, #fde68a, #eab308) !important; border-left-color: #fde68a !important; }
+.sidebar a:nth-of-type(5):hover { background: linear-gradient(135deg, #38bdf8, #0ea5e9) !important; border-left-color: #38bdf8 !important; }
+.sidebar a:nth-of-type(6):hover { background: linear-gradient(135deg, #86efac, #22c55e) !important; border-left-color: #86efac !important; }
+.sidebar a:nth-of-type(7):hover { background: linear-gradient(135deg, #f9a8d4, #ec4899) !important; border-left-color: #f9a8d4 !important; }
+.sidebar a:nth-of-type(8):hover { background: linear-gradient(135deg, #fde68a, #eab308) !important; border-left-color: #fde68a !important; }
+.sidebar a:nth-of-type(9):hover { background: linear-gradient(135deg, #38bdf8, #0ea5e9) !important; border-left-color: #38bdf8 !important; }
+.sidebar a:nth-of-type(10):hover { background: linear-gradient(135deg, #86efac, #22c55e) !important; border-left-color: #86efac !important; }
+.sidebar a:nth-of-type(11):hover { background: linear-gradient(135deg, #f9a8d4, #ec4899) !important; border-left-color: #f9a8d4 !important; }
+.sidebar a:nth-of-type(12):hover { background: linear-gradient(135deg, #fde68a, #eab308) !important; border-left-color: #fde68a !important; }
+.sidebar a:nth-of-type(13):hover { background: linear-gradient(135deg, #38bdf8, #0ea5e9) !important; border-left-color: #38bdf8 !important; }
+.sidebar a:nth-of-type(14):hover { background: linear-gradient(135deg, #86efac, #22c55e) !important; border-left-color: #86efac !important; }
+.sidebar a:nth-of-type(15):hover { background: linear-gradient(135deg, #f9a8d4, #ec4899) !important; border-left-color: #f9a8d4 !important; }
+.sidebar a:nth-of-type(16):hover { background: linear-gradient(135deg, #fde68a, #eab308) !important; border-left-color: #fde68a !important; }
+.sidebar a:nth-of-type(17):hover { background: linear-gradient(135deg, #38bdf8, #0ea5e9) !important; border-left-color: #38bdf8 !important; }
+.sidebar a:nth-of-type(18):hover { background: linear-gradient(135deg, #86efac, #22c55e) !important; border-left-color: #86efac !important; }
+.sidebar a:nth-of-type(19):hover { background: linear-gradient(135deg, #f9a8d4, #ec4899) !important; border-left-color: #f9a8d4 !important; }
+
+.sidebar a:hover {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+    padding-left: 30px !important;
+}
+.sidebar a.active {
+    background: linear-gradient(135deg, rgba(56,189,248,0.18) 0%, rgba(134,239,172,0.1) 50%, rgba(249,168,212,0.1) 100%) !important;
+    border-left: 3px solid var(--accent-blue) !important;
+    color: var(--accent-blue) !important;
+    font-weight: 700 !important;
+}
+
 }
 
 .sidebar a i {
@@ -431,6 +490,9 @@ body {
 .stat-row {
     display: flex;
 
+}
+
+
 /* STAT BOXES ANIMATION DYNAMIQUE */
 @keyframes statPulse {
     0%, 100% { box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
@@ -505,6 +567,8 @@ body {
     background: linear-gradient(135deg, #a5f3fc 0%, #67e8f9 100%);
 }
 .stat-box:nth-child(6)::after { animation-delay: 1.2s; }
+
+.stat-row {
 
     gap: 12px;
     margin-bottom: 12px;
