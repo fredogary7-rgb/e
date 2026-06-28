@@ -758,7 +758,7 @@ footer {
     backdrop-filter: blur(20px);
     border: 1px solid var(--border-color);
     border-radius: 20px;
-    padding: 18px;
+    padding: 22px;
     margin-bottom: 18px;
     box-shadow: var(--shadow-medium);
 }
@@ -770,12 +770,12 @@ footer {
 }
 .market-header h3 {
     font-style: italic;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--text-primary);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
 .market-header h3 i { color: var(--accent-blue); }
 .market-count {
@@ -796,20 +796,21 @@ footer {
     display: none;
     text-decoration: none;
     flex-direction: row;
-    align-items: center;
-    gap: 14px;
+    align-items: stretch;
+    gap: 16px;
     background: rgba(255,255,255,0.9);
     border: 1px solid var(--border-color);
     border-radius: 16px;
     overflow: hidden;
     transition: opacity 0.5s ease;
+    min-height: 150px;
 }
 .market-slide.active {
     display: flex;
 }
 .market-slide-img {
-    flex: 0 0 120px;
-    height: 110px;
+    flex: 0 0 150px;
+    min-height: 150px;
     background: rgba(56,189,248,0.05);
     position: relative;
     overflow: hidden;
@@ -840,34 +841,37 @@ footer {
 }
 .market-slide-info {
     flex: 1;
-    padding: 10px 12px 10px 0;
+    padding: 16px 16px 16px 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 .market-slide-name {
     font-style: italic;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 .market-slide-price {
     font-style: italic;
-    font-size: 16px;
+    font-size: 19px;
     font-weight: 800;
     color: var(--accent-blue);
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 .market-slide-price.promo { color: #f472b6; }
 .market-slide-btn {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
     font-style: italic;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
     color: #fff;
     background: var(--gradient-blue);
-    padding: 6px 14px;
-    border-radius: 10px;
+    padding: 8px 18px;
+    border-radius: 12px;
 }
 .market-dots {
     display: flex;
