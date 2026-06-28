@@ -2656,6 +2656,11 @@ def dashboard_page():
     if not user.last_play_date and not no_rounds_left and not is_blocked_500:
         can_play = True
 
+
+    # --- PRODUITS DES VENDEURS (carousel dashboard) ---
+    produits_recents = Produit.query.filter_by(est_actif=True).order_by(Produit.date_creation.desc()).limit(20).all()
+
+
     return render_template(
         "dashboard.html",
         user=user,
@@ -2674,8 +2679,24 @@ def dashboard_page():
         can_play=can_play,
         next_date=next_date,
         rounds_left=user.remaining_rounds or 0,
-        is_blocked_500=(is_blocked_500 or no_rounds_left)
+        is_blocked_500=(is_blocked_500 or no_rounds_left),
+
+        # --- PRODUITS VENDEURS ---
+        produits_recents=produits_recents
     )
+
+
+
+
+
+
+
+
+
+if False:
+
+        is_blocked_500=(is_blocked_500 or no_rounds_left)
+        pass # fin if False
 
 def user_is_activated(user):
 

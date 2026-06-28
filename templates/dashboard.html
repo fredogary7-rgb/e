@@ -752,6 +752,146 @@ footer {
     font-style: italic;
 }
 
+/* MARKET CAROUSEL */
+.market-section {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow-medium);
+}
+
+.market-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.market-header h3 {
+    font-style: italic;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.market-header h3 i {
+    color: var(--accent-blue);
+}
+
+.market-count {
+    font-style: italic;
+    font-size: 11px;
+    color: var(--text-secondary);
+    background: rgba(56, 189, 248, 0.1);
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.market-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(56, 189, 248, 0.3) transparent;
+    -webkit-overflow-scrolling: touch;
+}
+
+.market-scroll::-webkit-scrollbar {
+    height: 4px;
+}
+.market-scroll::-webkit-scrollbar-track { background: transparent; }
+.market-scroll::-webkit-scrollbar-thumb {
+    background: rgba(56, 189, 248, 0.3);
+    border-radius: 4px;
+}
+
+.product-card-mini {
+    flex: 0 0 130px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(56, 189, 248, 0.08);
+}
+
+.product-card-mini:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(56, 189, 248, 0.2);
+    border-color: var(--border-glow);
+}
+
+.product-img-mini {
+    width: 100%;
+    height: 110px;
+    background: rgba(56, 189, 248, 0.05);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-img-mini img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-no-img {
+    font-size: 32px;
+    color: var(--accent-blue);
+    opacity: 0.4;
+}
+
+.promo-badge {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    background: linear-gradient(135deg, #f9a8d4, #f472b6);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    font-style: italic;
+    padding: 2px 7px;
+    border-radius: 8px;
+}
+
+.product-info-mini {
+    padding: 8px 10px 10px;
+}
+
+.product-name-mini {
+    font-style: italic;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-price-mini {
+    font-style: italic;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--accent-blue);
+}
+
+.product-price-mini.promo {
+    color: #f472b6;
+}
+
 /* BOUTIQUE LINK */
 .boutique-link {
     background: linear-gradient(135deg, rgba(249, 168, 212, 0.15) 0%, rgba(244, 114, 182, 0.1) 100%) !important;
@@ -961,6 +1101,40 @@ footer {
             </video>
         </div>
     </div>
+
+    <!-- BOUTIQUE CAROUSEL -->
+    {% if produits_recents %}
+    <div class="market-section">
+        <div class="market-header">
+            <h3><i class="fa fa-store"></i> Boutiques des vendeurs</h3>
+            <span class="market-count">{{ produits_recents|length }} produits</span>
+        </div>
+        <div class="market-scroll">
+            {% for produit in produits_recents %}
+            <a href="/produit/{{ produit.id }}" class="product-card-mini">
+                <div class="product-img-mini">
+                    {% if produit.liste_images %}
+                    <img src="{{ produit.liste_images[0] if produit.liste_images[0].startswith('/') or produit.liste_images[0].startswith('http') else '/static/' + produit.liste_images[0] }}" alt="{{ produit.nom }}">
+                    {% else %}
+                    <div class="product-no-img"><i class="fa fa-image"></i></div>
+                    {% endif %}
+                    {% if produit.est_en_promo and produit.prix_promo %}
+                    <span class="promo-badge">Promo</span>
+                    {% endif %}
+                </div>
+                <div class="product-info-mini">
+                    <p class="product-name-mini">{{ produit.nom[:22] }}{% if produit.nom|length > 22 %}…{% endif %}</p>
+                    {% if produit.est_en_promo and produit.prix_promo %}
+                    <p class="product-price-mini promo">XOF {{ "{:,}".format(produit.prix_promo|int) }}</p>
+                    {% else %}
+                    <p class="product-price-mini">XOF {{ "{:,}".format(produit.prix|int) }}</p>
+                    {% endif %}
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 
     <!-- REFERRAL -->
     <div class="ref-section">
