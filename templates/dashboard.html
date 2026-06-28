@@ -287,7 +287,7 @@ body {
 }
 
 .sidebar a:hover {
-    background: rgba(56, 189, 248, 0.08);
+    background: pink;
     color: var(--accent-blue);
     border-left-color: var(--accent-blue);
     padding-left: 28px;
@@ -1062,6 +1062,65 @@ footer {
         width: 290px;
     }
 }
+
+/* ██████ SIDEBAR TOUS ROSE ██████ */
+.sidebar a {
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+    background: linear-gradient(135deg, rgba(249,168,212,0.1) 0%, rgba(244,114,182,0.06) 100%) !important;
+    margin: 4px 12px !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(249,168,212,0.15) !important;
+}
+.sidebar a:hover {
+    background: linear-gradient(135deg, rgba(249,168,212,0.25) 0%, rgba(244,114,182,0.15) 100%) !important;
+    color: var(--text-primary) !important;
+    border-left-color: #f472b6 !important;
+    border-color: rgba(249,168,212,0.35) !important;
+    transform: translateY(-1px) !important;
+}
+.sidebar a.active {
+    background: linear-gradient(135deg, rgba(249,168,212,0.2) 0%, rgba(244,114,182,0.12) 100%) !important;
+    border-left-color: #f472b6 !important;
+    color: #db2777 !important;
+}
+
+/* ██████ STAT BOXES DYNAMIQUE ██████ */
+@keyframes statPulse {
+    0%, 100% { box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    50% { box-shadow: 0 8px 35px rgba(0,0,0,0.15); }
+}
+@keyframes statShine {
+    0% { transform: translateX(-100%) rotate(25deg); }
+    100% { transform: translateX(200%) rotate(25deg); }
+}
+.stat-box {
+    animation: statPulse 3s ease-in-out infinite !important;
+}
+.stat-box::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 60%; height: 200%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+    transform: rotate(25deg);
+    animation: statShine 3s ease-in-out infinite;
+    pointer-events: none;
+}
+.stat-box:nth-child(1) { animation-delay: 0s; background: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%) !important; }
+.stat-box:nth-child(1)::after { animation-delay: 0s; }
+.stat-box:nth-child(2) { animation-delay: 0.4s; background: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%) !important; }
+.stat-box:nth-child(2)::after { animation-delay: 0.7s; }
+.stat-box:nth-child(3) { animation-delay: 0.8s; background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%) !important; }
+.stat-box:nth-child(3)::after { animation-delay: 1.4s; }
+.stat-box:nth-child(4) { animation-delay: 1.2s; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important; }
+.stat-box:nth-child(4)::after { animation-delay: 2.1s; }
+.stat-box:nth-child(5) { animation-delay: 1.6s; background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%) !important; }
+.stat-box:nth-child(5)::after { animation-delay: 0.3s; }
+.stat-box:nth-child(6) { animation-delay: 2s; background: linear-gradient(135deg, #86efac 0%, #22c55e 100%) !important; }
+.stat-box:nth-child(6)::after { animation-delay: 1s; }
+
+
 </style>
 </head>
 <body>
