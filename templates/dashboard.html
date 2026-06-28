@@ -752,9 +752,9 @@ footer {
     font-style: italic;
 }
 
-/* MARKET CAROUSEL */
+/* MARKET CAROUSEL AUTO */
 .market-section {
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255,255,255,0.7);
     backdrop-filter: blur(20px);
     border: 1px solid var(--border-color);
     border-radius: 20px;
@@ -762,14 +762,12 @@ footer {
     margin-bottom: 18px;
     box-shadow: var(--shadow-medium);
 }
-
 .market-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 14px;
 }
-
 .market-header h3 {
     font-style: italic;
     font-size: 15px;
@@ -779,84 +777,59 @@ footer {
     align-items: center;
     gap: 8px;
 }
-
-.market-header h3 i {
-    color: var(--accent-blue);
-}
-
+.market-header h3 i { color: var(--accent-blue); }
 .market-count {
     font-style: italic;
     font-size: 11px;
     color: var(--text-secondary);
-    background: rgba(56, 189, 248, 0.1);
+    background: rgba(56,189,248,0.1);
     padding: 3px 10px;
     border-radius: 10px;
     font-weight: 600;
 }
-
-.market-scroll {
-    display: flex;
-    gap: 12px;
-    overflow-x: auto;
-    padding-bottom: 8px;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(56, 189, 248, 0.3) transparent;
-    -webkit-overflow-scrolling: touch;
+.market-slider-wrap {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
 }
-
-.market-scroll::-webkit-scrollbar {
-    height: 4px;
-}
-.market-scroll::-webkit-scrollbar-track { background: transparent; }
-.market-scroll::-webkit-scrollbar-thumb {
-    background: rgba(56, 189, 248, 0.3);
-    border-radius: 4px;
-}
-
-.product-card-mini {
-    flex: 0 0 130px;
-    background: rgba(255, 255, 255, 0.9);
+.market-slide {
+    display: none;
+    text-decoration: none;
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.9);
     border: 1px solid var(--border-color);
     border-radius: 16px;
     overflow: hidden;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(56, 189, 248, 0.08);
+    transition: opacity 0.5s ease;
 }
-
-.product-card-mini:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(56, 189, 248, 0.2);
-    border-color: var(--border-glow);
+.market-slide.active {
+    display: flex;
 }
-
-.product-img-mini {
-    width: 100%;
+.market-slide-img {
+    flex: 0 0 120px;
     height: 110px;
-    background: rgba(56, 189, 248, 0.05);
+    background: rgba(56,189,248,0.05);
     position: relative;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
-.product-img-mini img {
+.market-slide-img img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
-
-.product-no-img {
-    font-size: 32px;
+.market-no-img {
+    font-size: 36px;
     color: var(--accent-blue);
-    opacity: 0.4;
+    opacity: 0.35;
 }
-
-.promo-badge {
+.market-promo-badge {
     position: absolute;
-    top: 6px;
-    left: 6px;
+    top: 6px; left: 6px;
     background: linear-gradient(135deg, #f9a8d4, #f472b6);
     color: #fff;
     font-size: 9px;
@@ -865,31 +838,54 @@ footer {
     padding: 2px 7px;
     border-radius: 8px;
 }
-
-.product-info-mini {
-    padding: 8px 10px 10px;
+.market-slide-info {
+    flex: 1;
+    padding: 10px 12px 10px 0;
 }
-
-.product-name-mini {
+.market-slide-name {
+    font-style: italic;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+.market-slide-price {
+    font-style: italic;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--accent-blue);
+    margin-bottom: 10px;
+}
+.market-slide-price.promo { color: #f472b6; }
+.market-slide-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     font-style: italic;
     font-size: 12px;
     font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    color: #fff;
+    background: var(--gradient-blue);
+    padding: 6px 14px;
+    border-radius: 10px;
 }
-
-.product-price-mini {
-    font-style: italic;
-    font-size: 12px;
-    font-weight: 800;
-    color: var(--accent-blue);
+.market-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 12px;
 }
-
-.product-price-mini.promo {
-    color: #f472b6;
+.market-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: rgba(56,189,248,0.25);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+.market-dot.active {
+    background: var(--accent-blue);
+    width: 20px;
+    border-radius: 4px;
 }
 
 /* BOUTIQUE LINK */
@@ -1102,46 +1098,50 @@ footer {
         </div>
     </div>
 
-    <!-- BOUTIQUE CAROUSEL -->
-    {% if produits_recents %}
-    <div class="market-section">
-        <div class="market-header">
-            <h3><i class="fa fa-store"></i> Boutiques des vendeurs</h3>
-            <span class="market-count">{{ produits_recents|length }} produits</span>
-        </div>
-        <div class="market-scroll">
-            {% for produit in produits_recents %}
-            <a href="/produit/{{ produit.id }}" class="product-card-mini">
-                <div class="product-img-mini">
-                    {% if produit.liste_images %}
-                    <img src="{{ produit.liste_images[0] if produit.liste_images[0].startswith('/') or produit.liste_images[0].startswith('http') else '/static/' + produit.liste_images[0] }}" alt="{{ produit.nom }}">
-                    {% else %}
-                    <div class="product-no-img"><i class="fa fa-image"></i></div>
-                    {% endif %}
-                    {% if produit.est_en_promo and produit.prix_promo %}
-                    <span class="promo-badge">Promo</span>
-                    {% endif %}
-                </div>
-                <div class="product-info-mini">
-                    <p class="product-name-mini">{{ produit.nom[:22] }}{% if produit.nom|length > 22 %}…{% endif %}</p>
-                    {% if produit.est_en_promo and produit.prix_promo %}
-                    <p class="product-price-mini promo">XOF {{ "{:,}".format(produit.prix_promo|int) }}</p>
-                    {% else %}
-                    <p class="product-price-mini">XOF {{ "{:,}".format(produit.prix|int) }}</p>
-                    {% endif %}
-                </div>
-            </a>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-
     <!-- REFERRAL -->
     <div class="ref-section">
         <p>🔗 Lien de parrainage</p>
         <div class="ref-link" id="refLink">{{ referral_link }}</div>
         <button class="btn-copy" onclick="copyReferral()"><i class="fa fa-copy"></i> Copier le lien</button>
     </div>
+
+
+    <!-- BOUTIQUE CAROUSEL AUTO -->
+    {% if produits_recents %}
+    <div class="market-section">
+        <div class="market-header">
+            <h3><i class="fa fa-store"></i> Produits des vendeurs</h3>
+            <span class="market-count">{{ produits_recents|length }} produits</span>
+        </div>
+        <div class="market-slider-wrap" id="marketSlider">
+            {% for produit in produits_recents %}
+            <a href="/produit/{{ produit.id }}" class="market-slide{% if loop.first %} active{% endif %}">
+                <div class="market-slide-img">
+                    {% if produit.liste_images %}
+                    <img src="{{ produit.liste_images[0] if produit.liste_images[0].startswith('/') or produit.liste_images[0].startswith('http') else '/static/' + produit.liste_images[0] }}" alt="{{ produit.nom }}">
+                    {% else %}
+                    <div class="market-no-img"><i class="fa fa-image"></i></div>
+                    {% endif %}
+                    {% if produit.est_en_promo and produit.prix_promo %}
+                    <span class="market-promo-badge">🏷️ Promo</span>
+                    {% endif %}
+                </div>
+                <div class="market-slide-info">
+                    <p class="market-slide-name">{{ produit.nom[:30] }}{% if produit.nom|length > 30 %}…{% endif %}</p>
+                    {% if produit.est_en_promo and produit.prix_promo %}
+                    <p class="market-slide-price promo">XOF {{ "{:,}".format(produit.prix_promo|int) }}</p>
+                    {% else %}
+                    <p class="market-slide-price">XOF {{ "{:,}".format(produit.prix|int) }}</p>
+                    {% endif %}
+                    <span class="market-slide-btn">Voir le produit <i class="fa fa-arrow-right"></i></span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        <div class="market-dots" id="marketDots"></div>
+    </div>
+    {% endif %}
+
 
     <footer>2026 © NovaTrade by Nina Academy ✨</footer>
 </div>
@@ -1203,6 +1203,34 @@ function prepareWhatsappNumber() {
     const phone = document.getElementById("phoneNumber").value.replace(/\s+/g, '');
     document.getElementById("fullWhatsapp").value = code + phone;
 }
+
+// ─── CAROUSEL AUTO PRODUITS ───────────────────────
+(function() {
+    const slides = document.querySelectorAll('.market-slide');
+    const dotsContainer = document.getElementById('marketDots');
+    if (!slides.length || !dotsContainer) return;
+
+    let current = 0;
+
+    slides.forEach(function(_, i) {
+        const dot = document.createElement('span');
+        dot.className = 'market-dot' + (i === 0 ? ' active' : '');
+        dot.onclick = function() { goTo(i); };
+        dotsContainer.appendChild(dot);
+    });
+
+    function goTo(index) {
+        slides[current].classList.remove('active');
+        dotsContainer.children[current].classList.remove('active');
+        current = (index + slides.length) % slides.length;
+        slides[current].classList.add('active');
+        dotsContainer.children[current].classList.add('active');
+    }
+
+    setInterval(function() { goTo(current + 1); }, 2000);
+})();
+
+
 </script>
 
 </body>
