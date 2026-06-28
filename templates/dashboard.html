@@ -102,6 +102,122 @@ body {
     color: var(--text-primary);
 }
 
+/* USER DROPDOWN PANEL */
+.user-container {
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    user-select: none;
+}
+.user-container:hover {
+    background: rgba(56, 189, 248, 0.2);
+}
+.user-dropdown {
+    position: absolute;
+    top: 52px;
+    right: 0;
+    width: 280px;
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 22px;
+    box-shadow: 0 12px 40px rgba(56, 189, 248, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2000;
+}
+.user-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.user-dropdown-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+.user-dropdown-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: var(--gradient-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 800;
+    font-style: italic;
+    text-transform: uppercase;
+}
+.user-dropdown-name {
+    font-style: italic;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text-primary);
+}
+.user-dropdown-role {
+    font-style: italic;
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+.user-dropdown-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+.user-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+.user-dropdown-item i {
+    width: 18px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--accent-blue);
+}
+.user-dropdown-item span {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+.user-dropdown-logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 14px;
+    background: rgba(219, 39, 119, 0.1);
+    color: #db2777;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+.user-dropdown-logout:hover {
+    background: rgba(219, 39, 119, 0.2);
+    transform: translateY(-1px);
+}
+
+
+
 /* SIDEBAR */
 .sidebar {
     position: fixed;
@@ -1018,6 +1134,39 @@ footer {
     <div class="menu-toggle" id="menuToggle"><i class="fa fa-bars"></i></div>
     <div class="user-container">
         <i class="fa fa-user user-icon"></i>
+
+        <div class="user-dropdown" id="userDropdown">
+            <div class="user-dropdown-header">
+                <div class="user-dropdown-avatar">{{ user.username[0] }}</div>
+                <div>
+                    <div class="user-dropdown-name">{{ user.username }}</div>
+                    <div class="user-dropdown-role">Utilisateur NovaTrade</div>
+                </div>
+            </div>
+            <div class="user-dropdown-info">
+                <div class="user-dropdown-item">
+                    <i class="fa fa-envelope"></i>
+                    <div>Email<br><span>{{ user.email or 'Non défini' }}</span></div>
+                </div>
+                <div class="user-dropdown-item">
+                    <i class="fa fa-phone"></i>
+                    <div>Téléphone<br><span>{{ user.phone or 'Non défini' }}</span></div>
+                </div>
+                <div class="user-dropdown-item">
+                    <i class="fa fa-calendar"></i>
+                    <div>Inscrit le<br><span>{{ user.date_creation.strftime('%d/%m/%Y') if user.date_creation else '—' }}</span></div>
+                </div>
+                <div class="user-dropdown-item">
+                    <i class="fa fa-user-plus"></i>
+                    <div>Parrain<br><span>{{ user.parrain or 'Aucun' }}</span></div>
+                </div>
+            </div>
+            <a href="/logout" class="user-dropdown-logout">
+                <i class="fa fa-sign-out"></i> Déconnexion
+            </a>
+        </div>
+
+
         <div class="user">{{ user.username }}</div>
     </div>
 </div>
@@ -1233,6 +1382,25 @@ function prepareWhatsappNumber() {
 
     setInterval(function() { goTo(current + 1); }, 2000);
 })();
+
+
+// ─── USER DROPDOWN TOGGLE ───────────────────────
+(function() {
+    const uc = document.querySelector('.topbar .user-container');
+    if (!uc) return;
+    uc.id = 'userToggle';
+    uc.addEventListener('click', function(e) {
+        e.stopPropagation();
+        document.getElementById('userDropdown').classList.toggle('active');
+    });
+    document.addEventListener('click', function(e) {
+        const dd = document.getElementById('userDropdown');
+        if (dd && !uc.contains(e.target)) {
+            dd.classList.remove('active');
+        }
+    });
+})();
+
 
 
 </script>
