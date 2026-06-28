@@ -847,19 +847,12 @@ footer {
 
     <a href="javascript:void(0);" id="tasksToggle"><i class="fa fa-tasks"></i> Tâches <i class="fa fa-chevron-down" style="float:right;"></i></a>
     <div class="sub-menu" id="subTasks">
-        <a href="{{ url_for('glass_bridge_page') }}"><i class="fa fa-gamepad"></i> Game jeudi</a>
-        <a href="/youtube"><i class="fab fa-youtube"></i> Vidéo YouTube</a>
         <a href="/tiktok"><i class="fab fa-tiktok"></i> Vidéo TikTok</a>
-        <a href="/instagram"><i class="fab fa-instagram"></i> Vidéo Insta</a>
-        <a href="{{ url_for('apple_game_page') }}"><i class="fa fa-gamepad"></i> Game lundi</a>
     </div>
 
     <a href="javascript:void(0);" id="retraitsToggle"><i class="fa fa-money-bill"></i> Retraits <i class="fa fa-chevron-down" style="float:right;"></i></a>
     <div class="sub-menu" id="subRetraits">
         <a href="/retrait"><i class="fa fa-wallet"></i> Solde retrait</a>
-        <a href="/retrait-casino"><i class="fa fa-dice"></i> Retrait Casino</a>
-        <a href="/retrait-jeux"><i class="fa fa-trophy"></i> Retrait Jeux</a>
-        <a href="{{ url_for('retrait_points_page') }}"><i class="fa fa-coins"></i> Solde des points</a>
         <a href="/mes-retraits"><i class="fa fa-history"></i> Mes retraits</a>
     </div>
 
@@ -951,20 +944,7 @@ footer {
             <span class="stat-title">Solde Revenu</span>
             <span class="stat-amount">XOF {{ "{:,}".format(user.solde_parrainage or 0) }}</span>
         </div>
-        <div class="stat-box">
-            <i class="fa fa-dice stat-icon"></i>
-            <span class="stat-title">Solde Fortune</span>
-            <span class="stat-amount">XOF {{ "{:,}".format(user.bonus or 0) }}</span>
-        </div>
-    </div>
 
-    <!-- TROISIÈME LIGNE DE STATS -->
-    <div class="stat-row">
-        <div class="stat-box">
-            <i class="fa fa-clipboard-list stat-icon"></i>
-            <span class="stat-title">Point des tâches</span>
-            <span class="stat-amount">{{ user.points or 0 }} pts</span>
-        </div>
         <div class="stat-box">
             <i class="fa fa-money-bill-wave stat-icon"></i>
             <span class="stat-title">Retraits totaux</span>
@@ -982,127 +962,11 @@ footer {
         </div>
     </div>
 
-    <!-- GAME CARD -->
-    <div class="game-card">
-        <div class="game-header">
-            <div class="game-icon-wrapper">
-                <div class="game-icon">
-                    <i class="fas fa-apple-alt"></i>
-                </div>
-                <div class="game-info">
-                    <h3>Apple of Fortune</h3>
-                    <p>{{ rounds_left }} essais restants</p>
-                </div>
-            </div>
-            {% if is_blocked_500 %}
-                <span class="game-status status-ended">TERMINÉ</span>
-            {% elif not can_play %}
-                <span class="game-status status-locked">VERROUILLÉ</span>
-            {% else %}
-                <span class="game-status status-active">ACTIF</span>
-            {% endif %}
-        </div>
-
-        <div class="game-info-box">
-            {% if is_blocked_500 %}
-                <p>🎯 Objectif atteint ou rounds terminés. Revenez pour le prochain cycle !</p>
-            {% elif not can_play %}
-                <p>⏳ <strong>Prochain round :</strong> {{ next_date.strftime('%d/%m à %H:%M') }}. Soyez prêt !</p>
-            {% else %}
-                <p>✅ <strong>C'est le moment !</strong> Vous avez 24h pour jouer ce round. Bonne chance !</p>
-            {% endif %}
-        </div>
-
-        {% if is_blocked_500 %}
-            <button disabled class="game-btn game-btn-disabled">
-                <i class="fa fa-lock"></i> Session terminée
-            </button>
-        {% elif not can_play %}
-            <button disabled class="game-btn game-btn-disabled">
-                <i class="fa fa-clock"></i> Indisponible
-            </button>
-        {% else %}
-            <a href="{{ url_for('apple_game') }}" class="game-btn game-btn-play">
-                <i class="fa fa-play"></i> Jouer maintenant
-            </a>
-        {% endif %}
-    </div>
-
     <!-- REFERRAL -->
     <div class="ref-section">
         <p>🔗 Lien de parrainage</p>
         <div class="ref-link" id="refLink">{{ referral_link }}</div>
         <button class="btn-copy" onclick="copyReferral()"><i class="fa fa-copy"></i> Copier le lien</button>
-    </div>
-
-    <!-- SCHEDULE -->
-    <div class="glass-card schedule-card">
-        <h3>📅 Horaire NovaTrade</h3>
-
-        <div class="schedule-item">
-            <div class="schedule-left">
-                <div class="schedule-icon" style="background: var(--gradient-blue);">
-                    <i class="fa fa-gamepad"></i>
-                </div>
-                <div class="schedule-text">
-                    <strong>Game lundi</strong>
-                    <span>08h00</span>
-                </div>
-            </div>
-            <div class="day-badge">Lundi</div>
-        </div>
-
-        <div class="schedule-item">
-            <div class="schedule-left">
-                <div class="schedule-icon" style="background: var(--gradient-pink);">
-                    <i class="fab fa-tiktok"></i>
-                </div>
-                <div class="schedule-text">
-                    <strong>Vidéos TikTok</strong>
-                    <span>08h00</span>
-                </div>
-            </div>
-            <div class="day-badge">Mardi</div>
-        </div>
-
-        <div class="schedule-item">
-            <div class="schedule-left">
-                <div class="schedule-icon" style="background: linear-gradient(135deg, #fca5a5 0%, #f87171 100%);">
-                    <i class="fab fa-youtube"></i>
-                </div>
-                <div class="schedule-text">
-                    <strong>Vidéos YouTube</strong>
-                    <span>08h00</span>
-                </div>
-            </div>
-            <div class="day-badge">Mercredi</div>
-        </div>
-
-        <div class="schedule-item">
-            <div class="schedule-left">
-                <div class="schedule-icon" style="background: linear-gradient(135deg, #fde68a 0%, #fbbf24 100%);">
-                    <i class="fa fa-gamepad"></i>
-                </div>
-                <div class="schedule-text">
-                    <strong>Game jeudi</strong>
-                    <span>08h00</span>
-                </div>
-            </div>
-            <div class="day-badge">Jeudi</div>
-        </div>
-
-        <div class="schedule-item">
-            <div class="schedule-left">
-                <div class="schedule-icon" style="background: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 100%);">
-                    <i class="fab fa-instagram"></i>
-                </div>
-                <div class="schedule-text">
-                    <strong>Vidéos Instagram</strong>
-                    <span>08h00</span>
-                </div>
-            </div>
-            <div class="day-badge">Vendredi</div>
-        </div>
     </div>
 
     <footer>2026 © NovaTrade by Nina Academy ✨</footer>
