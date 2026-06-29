@@ -1203,6 +1203,40 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.market-section *,.ref-sectio
 @media(max-width:600px){.stat-row{grid-template-columns:1fr!important}}
 
 
+/* ═══════════ DASHBOARD STATS PREMIUM ═══════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.stat-row{display:contents!important}
+.stat-box,.wide-box{border-radius:20px!important;padding:22px 20px!important;background:rgba(255,255,255,.75)!important;backdrop-filter:blur(16px)!important;border:1px solid rgba(255,255,255,.5)!important;box-shadow:0 4px 20px rgba(0,0,0,.06)!important;transition:all .35s!important;display:flex!important;flex-direction:column!important;gap:8px!important;min-height:130px!important;justify-content:center!important;position:relative!important;overflow:hidden!important;animation:fadeUp .6s ease both}
+.stat-box:nth-child(2){animation-delay:.1s}
+.stat-box:nth-child(3){animation-delay:.2s}
+.stat-box:nth-child(4){animation-delay:.3s}
+.stat-box:hover,.wide-box:hover{transform:translateY(-6px)!important;box-shadow:0 12px 35px rgba(0,0,0,.12)!important}
+.stat-icon{width:42px!important;height:42px!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:18px!important;margin-bottom:4px!important}
+.stat-amount{font-size:26px!important;font-weight:900!important;color:#1e293b!important}
+.stat-title{font-size:11px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:1px!important;color:#64748b!important}
+.stat-box:nth-child(1) .stat-icon{background:rgba(148,163,184,.12)!important;color:#64748b!important}
+.stat-box:nth-child(2) .stat-icon{background:rgba(56,189,248,.14)!important;color:#38bdf8!important}
+.wide-box .stat-icon{background:rgba(168,85,247,.12)!important;color:#a855f7!important;width:42px!important;height:42px!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:18px!important}
+.wide-box{margin:0!important;width:auto!important;animation:fadeUp .6s .15s ease both}
+.wide-box .stat-amount{color:#1e293b!important;font-size:26px!important}
+.wide-box .stat-title{font-size:11px!important;text-transform:uppercase!important;letter-spacing:1px!important;display:flex!important;align-items:center!important;gap:8px!important}
+.stat-box:nth-child(3) .stat-icon{background:rgba(249,168,212,.14)!important;color:#f472b6!important}
+.stat-box:nth-child(4) .stat-icon{background:rgba(253,230,138,.18)!important;color:#eab308!important}
+.whatsapp-card{animation:fadeUp .6s .4s ease both;border-radius:20px!important;padding:24px!important;background:rgba(255,255,255,.75)!important;backdrop-filter:blur(16px)!important;border:2px solid rgba(37,211,102,.15)!important;margin:0!important}
+.whatsapp-card h3{font-size:16px!important;font-weight:800!important;display:flex!important;align-items:center!important;gap:8px!important;color:#25D366!important}
+.whatsapp-card p{font-size:12px!important;color:#64748b!important;margin-bottom:14px!important;font-weight:600}
+.phone-group{display:flex!important;gap:8px!important;flex-wrap:wrap!important}
+.phone-group select,.phone-group input{flex:1!important;min-width:120px!important;padding:12px!important;border-radius:14px!important;border:1px solid rgba(148,163,184,.25)!important;background:rgba(255,255,255,.9)!important;font-weight:600!important;font-size:13px!important;outline:none!important}
+.phone-group select:focus,.phone-group input:focus{border-color:#25D366!important;box-shadow:0 0 0 3px rgba(37,211,102,.1)!important}
+.whatsapp-btn{width:100%!important;margin-top:12px!important;padding:12px!important;border-radius:14px!important;background:#25D366!important;color:#fff!important;border:none!important;font-weight:700!important;font-size:14px!important;cursor:pointer!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;transition:all .3s}
+.whatsapp-btn:hover{background:#20bd5a!important;transform:translateY(-2px)}
+.main{display:grid!important;grid-template-columns:repeat(2,1fr)!important;gap:14px!important;align-items:stretch!important}
+.glass-card.welcome-holder,.video-box,.market-section,.ref-section,footer{grid-column:1/-1!important}
+@media(min-width:768px){.main{grid-template-columns:repeat(3,1fr)!important}}
+@media(min-width:1024px){.main{grid-template-columns:repeat(4,1fr)!important}}
+@media(max-width:400px){.main{grid-template-columns:1fr!important}}
+
+
 </style>
 </head>
 <body>
@@ -1232,6 +1266,64 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.market-section *,.ref-sectio
         <span><i class="fa fa-store"></i> Ma Boutique</span>
         <span class="badge-new">✨ Nouveau</span>
     </a>
+
+
+/* ═══════════ DASHBOARD STATS PREMIUM ═══════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes countUp{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+.stat-row{display:contents!important}
+.stat-box{animation:fadeUp .6s ease both}
+.stat-box:nth-child(2){animation-delay:.1s}
+.stat-box:nth-child(3){animation-delay:.2s}
+.stat-box:nth-child(4){animation-delay:.3s}
+/* CARTE STAT PREMIUM */
+.stat-box,.wide-box{
+ border-radius:20px!important;padding:22px 20px!important;
+ background:rgba(255,255,255,.75)!important;
+ backdrop-filter:blur(16px)!important;-webkit-backdrop-filter:blur(16px)!important;
+ border:1px solid rgba(255,255,255,.5)!important;
+ box-shadow:0 4px 20px rgba(0,0,0,.06)!important;
+ transition:all .35s cubic-bezier(.4,0,.2,1)!important;
+ display:flex!important;flex-direction:column!important;gap:8px!important;
+ min-height:130px!important;justify-content:center!important;position:relative!important;overflow:hidden!important
+}
+.stat-box:hover,.wide-box:hover{transform:translateY(-6px)!important;box-shadow:0 12px 35px rgba(0,0,0,.12)!important}
+.stat-box:before,.wide-box:before{content:'';position:absolute;top:-50%;right:-50%;width:120px;height:120px;border-radius:50%;opacity:.08;transition:all .5s}
+.stat-box:hover:before,.wide-box:hover:before{transform:scale(2);opacity:.12}
+/* ICON CIRCLE */
+.stat-icon{width:42px!important;height:42px!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:18px!important;margin-bottom:0!important}
+.stat-amount{font-size:26px!important;font-weight:900!important;color:#1e293b!important;animation:countUp .5s ease}
+.stat-title{font-size:11px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:1px!important;color:#64748b!important;margin:0!important}
+/* COLORS */
+.stat-box:nth-child(1) .stat-icon,.stat-box:nth-child(2) .stat-icon,.stat-box:nth-child(3) .stat-icon,.stat-box:nth-child(4) .stat-icon{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px}
+.stat-box:nth-child(1) .stat-icon{background:rgba(148,163,184,.12);color:#64748b!important}
+.stat-box:nth-child(2) .stat-icon{background:rgba(56,189,248,.14);color:#38bdf8!important}
+.stat-box:nth-child(3) .stat-icon{background:rgba(249,168,212,.14);color:#f472b6!important}
+.stat-box:nth-child(4) .stat-icon{background:rgba(253,230,138,.18);color:#eab308!important}
+/* SOLDE JEUX */
+.wide-box{gap:8px!important;margin:0!important;width:auto!important}
+.wide-box .stat-icon{background:rgba(168,85,247,.12)!important;color:#a855f7!important;width:42px!important;height:42px!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:18px!important}
+.wide-box .stat-amount{color:#1e293b!important;font-size:26px!important}
+.wide-box .stat-title{font-size:11px!important;text-transform:uppercase!important;letter-spacing:1px!important;display:flex!important;align-items:center!important;gap:8px!important}
+/* WHATSAPP CARD */
+.whatsapp-card{animation:fadeUp .6s .4s ease both;border-radius:20px!important;padding:24px!important;background:rgba(255,255,255,.75)!important;backdrop-filter:blur(16px)!important;border:2px solid rgba(37,211,102,.15)!important;margin:0!important}
+.whatsapp-card h3{font-size:16px!important;font-weight:800!important;display:flex!important;align-items:center!important;gap:8px!important;color:#25D366}
+.whatsapp-card p{font-size:12px!important;color:#64748b!important;margin-bottom:14px!important;font-weight:600}
+.phone-group{display:flex!important;gap:8px!important;flex-wrap:wrap!important}
+.phone-group select,.phone-group input{flex:1!important;min-width:120px!important;padding:12px!important;border-radius:14px!important;border:1px solid rgba(148,163,184,.25)!important;background:rgba(255,255,255,.9)!important;font-weight:600!important;font-size:13px!important;outline:none!important;transition:all .3s}
+.phone-group select:focus,.phone-group input:focus{border-color:#25D366!important;box-shadow:0 0 0 3px rgba(37,211,102,.1)!important}
+.whatsapp-btn{width:100%!important;margin-top:12px!important;padding:12px!important;border-radius:14px!important;background:#25D366!important;color:#fff!important;border:none!important;font-weight:700!important;font-size:14px!important;cursor:pointer!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;transition:all .3s}
+.whatsapp-btn:hover{background:#20bd5a!important;transform:translateY(-2px)}
+/* GRID CONTAINER */
+.main{display:grid!important;grid-template-columns:repeat(2,1fr)!important;gap:14px!important;align-items:stretch!important}
+.glass-card.welcome-holder{grid-column:1/-1!important}
+.video-box{grid-column:1/-1!important}
+.market-section{grid-column:1/-1!important}
+.ref-section{grid-column:1/-1!important}
+footer{grid-column:1/-1!important}
+@media(min-width:768px){.main{grid-template-columns:repeat(3,1fr)!important}}
+@media(min-width:1024px){.main{grid-template-columns:repeat(4,1fr)!important}}
+@media(max-width:400px){.main{grid-template-columns:1fr!important}}
 
     <!-- PUBLICITÉS -->
     <a href="/publicites"><i class="fa fa-video"></i> Publicités <span class="badge-new">🎬 Nouveau</span></a>
