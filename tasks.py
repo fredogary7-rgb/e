@@ -3,7 +3,7 @@ from datetime import datetime, date
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from app import app, db, get_logged_in_user, user_is_activated, Produit, Publicite, Boutique
 
-TEMPLATE='taches_tiktok.html'
+TEMPLATE='taches_inc.html'
 
 TASK_COUNT=10; TASK_REWARD_MIN=25; TASK_REWARD_MAX=100
 
@@ -62,6 +62,11 @@ def taches_page():
     if not user: flash("Connectez-vous.","danger"); return redirect(url_for('connexion_page'))
     if not user_is_activated(user): flash("Compte non activé.","warning"); return redirect(url_for('dashboard_page'))
     now=datetime.now(); today=now.date()
+    if now.weekday()>=5: return render_template(TEMPLATE,user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="⏸️ Lun-Ven uniquement.")
+    if now.hour<8: return render_template(TEMPLATE,user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="⏰ Ouvre à 08h00.")
+    if now.hour>=23: return render_template(TEMPLATE,user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="🌙 Terminé.")
+    if rw: return render_template(TEMPLATE,user=user,taches=[],shared_count=TASK_COUNT,total=TASK_COUNT,can_start=False,reward_amount=rw.montant,message=f"✅ +{int(rw.montant)} FCFA aujourd'hui!")
+
     if now.weekday()>=5: return render_template('taches_clean.html',user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="⏸️ Lun-Ven uniquement.")
     if now.hour<8: return render_template('taches_clean.html',user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="⏰ Ouvre à 08h00.")
     if now.hour>=23: return render_template('taches_clean.html',user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="🌙 Terminé.")
