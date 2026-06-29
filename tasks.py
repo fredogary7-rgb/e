@@ -3,7 +3,7 @@ from datetime import datetime, date
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from app import app, db, get_logged_in_user, user_is_activated, Produit, Publicite, Boutique
 
-TEMPLATE='taches_inc.html'
+TEMPLATE='taches_v3.html'
 
 TASK_COUNT=10; TASK_REWARD_MIN=25; TASK_REWARD_MAX=100
 
