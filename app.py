@@ -6297,6 +6297,8 @@ def taches_page():
     return render_template('taches.html', user=user, taches=taches_data, shared_count=shared_count, total=TASK_COUNT, can_start=True, estimated_reward=estimated)
 
 if False:
+    pass
+
 
 """
 
