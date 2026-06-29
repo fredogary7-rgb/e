@@ -6252,6 +6252,24 @@ def taches_page():
         return render_template('taches.html', user=user, taches=[], shared_count=0, total=TASK_COUNT, can_start=False, message="🌙 Tâches terminées. Revenez demain à 08h00 !")
 
     can_do, msg = can_do_tasks_today(user.id, today)
+    if not can_do:
+        reward = TaskReward.query.filter_by(user_id=user.id, date=today).first()
+        return render_template('taches.html', user=user, taches=[], shared_count=TASK_COUNT, total=TASK_COUNT, can_start=False, reward_amount=reward.montant if reward else 0, message=f"✅ Vous avez gagné {int(reward.montant) if reward else 0} FCFA aujourd'hui !")
+
+    tasks = get_or_create_daily_tasks(today)
+    shared_count, user_task_map, _ = get_user_task_progress(user.id, today)
+    taches_data = []
+    for task in tasks:
+        p = task.produit
+        ut = user_task_map.get(task.id)
+        taches_data.append({'task_id': task.id, 'produit': p, 'shared': ut.shared if ut else False, 'boutique_nom': p.boutique.nom if p.boutique else 'NovaTrade'})
+
+    import random
+    estimated = random.randint(TASK_REWARD_MIN, TASK_REWARD_MAX)
+    return render_template('taches.html', user=user, taches=taches_data, shared_count=shared_count, total=TASK_COUNT, can_start=True, estimated_reward=estimated)
+
+
+
 
 @app.route('/api/share-task', methods=['POST'])
 def api_share_task():
