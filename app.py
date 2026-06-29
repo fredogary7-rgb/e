@@ -6423,6 +6423,10 @@ def admin_taches():
     return render_template('admin_taches.html', user=user, tasks=tasks, today=today, vendeur_stats=vendeur_stats)
 
 
+"""
+
+def __dead_code_ignore__():
+
 if False:
 
     if not can_do:
@@ -6440,6 +6444,8 @@ if False:
     import random
     estimated = random.randint(TASK_REWARD_MIN, TASK_REWARD_MAX)
     return render_template('taches.html', user=user, taches=taches_data, shared_count=shared_count, total=TASK_COUNT, can_start=True, estimated_reward=estimated)
+
+"""
 
 
 
