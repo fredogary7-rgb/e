@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Tâches - NovaTrade</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{background:linear-gradient(135deg,#f0f9ff,#f0fdf4,#fdf2f8);min-height:100vh;font-style:italic;color:#334155}
+.container{max-width:1100px;margin:0 auto;padding:20px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.header h1{font-weight:800;font-size:24px}
+.header a{color:#38bdf8;text-decoration:none;font-weight:700}
+.btn{padding:10px 22px;border:none;border-radius:12px;font-weight:700;font-style:italic;cursor:pointer;font-size:13px}
+.btn-blue{background:#38bdf8;color:#fff}
+.btn-red{background:#ef4444;color:#fff}
+.btn-green{background:#22c55e;color:#fff}
+.card{background:rgba(255,255,255,.85);border:1px solid rgba(148,163,184,.2);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 4px 12px rgba(56,189,248,.08)}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.card-title{font-weight:700;font-size:15px}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:10px;font-size:12px;color:#64748b;font-weight:600;border-bottom:2px solid rgba(148,163,184,.2)}
+td{padding:10px;font-size:13px;border-bottom:1px solid rgba(148,163,184,.1)}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:24px}
+.stat-card{background:rgba(255,255,255,.85);border-radius:14px;padding:16px;text-align:center;border:1px solid rgba(148,163,184,.2)}
+.stat-card .num{font-size:28px;font-weight:800}
+.stat-card .lbl{font-size:12px;color:#64748b;font-weight:600}
+form{display:inline}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>📋 Admin - Tâches Quotidiennes</h1>
+<a href="/dashboard"><i class="fa fa-arrow-left"></i> Dashboard</a>
+</div>
+
+<div class="card">
+<div class="card-header">
+<span class="card-title">📅 {{ today.strftime('%d/%m/%Y') }}</span>
+<div>
+<form method="POST" style="display:inline"><input type="hidden" name="action" value="generate"><button class="btn btn-blue"><i class="fa fa-magic"></i> Générer</button></form>
+<form method="POST" style="display:inline"><input type="hidden" name="action" value="regenerate"><button class="btn btn-red"><i class="fa fa-refresh"></i> Régénérer</button></form>
+</div>
+</div>
+{% if tasks %}
+<table>
+<tr><th>#</th><th>Image</th><th>Produit</th><th>Boutique</th><th>Partages</th><th>Statut</th><th>Action</th></tr>
+{% for t in tasks %}
+<tr>
+<td>{{ loop.index }}</td>
+<td style="width:50px">{% if t.produit.liste_images %}<img src="{{ t.produit.liste_images[0] if t.produit.liste_images[0].startswith('/') or t.produit.liste_images[0].startswith('http') else '/static/'+t.produit.liste_images[0] }}" style="width:40px;height:40px;object-fit:cover;border-radius:8px">{% else %}<i class="fa fa-image"></i>{% endif %}</td>
+<td><strong>{{ t.produit.nom[:30] }}</strong></td>
+<td>{{ t.produit.boutique.nom if t.produit.boutique else '—' }}</td>
+<td style="font-weight:800;color:#38bdf8">{{ t.share_count }}</td>
+<td><span style="color:{% if t.actif %}#22c55e{% else %}#ef4444{% endif %};font-weight:700">{% if t.actif %}Actif{% else %}Inactif{% endif %}</span></td>
+<td>
+<form method="POST"><input type="hidden" name="action" value="toggle"><input type="hidden" name="task_id" value="{{ t.id }}"><button class="btn {% if t.actif %}btn-red{% else %}btn-green{% endif %}" style="padding:6px 14px;font-size:11px">{% if t.actif %}Désactiver{% else %}Activer{% endif %}</button></form>
+</td>
+</tr>
+{% endfor %}
+</table>
+{% else %}
+<p style="text-align:center;color:#64748b;padding:20px">Aucune tâche pour aujourd'hui. Cliquez sur "Générer".</p>
+{% endif %}
+</div>
+
+<div class="stat-grid">
+<div class="stat-card"><div class="num" style="color:#38bdf8">{{ tasks|length }}</div><div class="lbl">Tâches du jour</div></div>
+<div class="stat-card"><div class="num" style="color:#22c55e">{{ tasks|sum(attribute='share_count') }}</div><div class="lbl">Partages totaux</div></div>
+</div>
+
+<div class="card" style="margin-top:20px">
+<div class="card-title" style="margin-bottom:12px">🏆 Top vendeurs (partages)</div>
+<table>
+<tr><th>Boutique</th><th>Partages</th></tr>
+{% for v in vendeur_stats %}
+<tr><td>{{ v.nom }}</td><td style="font-weight:800;color:#38bdf8">{{ v.total }}</td></tr>
+{% endfor %}
+</table>
+</div>
+</div>
+</body>
+</html>
