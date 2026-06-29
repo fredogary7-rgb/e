@@ -345,19 +345,6 @@ body {
 /* GLASS CARD */
 .glass-card {
     background: var(--bg-card);
-.main {
-    padding: 18px 24px;
-    position: relative;
-    z-index: 1;
-    background: transparent;
-}
-
-.main {
-    padding: 18px 24px;
-    position: relative;
-    z-index: 1;
-}
-
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--border-color);
@@ -1120,192 +1107,22 @@ footer {
     animation: statShine 3s ease-in-out infinite;
     pointer-events: none;
 }
-/* Rangée 1 */
 .stat-box:nth-child(1) { animation-delay: 0s; background: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%) !important; }
 .stat-box:nth-child(1)::after { animation-delay: 0s; }
 .stat-box:nth-child(2) { animation-delay: 0.4s; background: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%) !important; }
 .stat-box:nth-child(2)::after { animation-delay: 0.7s; }
-/* Rangée 2 - cibler via nth-of-type sur stat-row */
-.stat-row:nth-of-type(2) .stat-box:nth-child(1) { animation-delay: 0.8s; background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%) !important; }
-.stat-row:nth-of-type(2) .stat-box:nth-child(1)::after { animation-delay: 1.4s; }
-.stat-row:nth-of-type(2) .stat-box:nth-child(2) { animation-delay: 1.2s; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important; }
-.stat-row:nth-of-type(2) .stat-box:nth-child(2)::after { animation-delay: 2.1s; }
-/* Wide box & autres */
-.stat-box:nth-child(5) { animation-delay: 1.6s; background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%) !important; }
+.stat-box:nth-child(3) { animation-delay: 0.8s; background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%) !important; }
+.stat-box:nth-child(3)::after { animation-delay: 1.4s; }
+.stat-box:nth-child(4) { animation-delay: 1.2s; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important; }
+.stat-box:nth-child(4)::after { animation-delay: 2.1s; }
+.stat-box:nth-child(5) { animation-delay: 1.6s; background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%) !important; }
 .stat-box:nth-child(5)::after { animation-delay: 0.3s; }
-.stat-box:nth-child(6) { animation-delay: 2s; background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%) !important; }
+.stat-box:nth-child(6) { animation-delay: 2s; background: linear-gradient(135deg, #86efac 0%, #22c55e 100%) !important; }
 .stat-box:nth-child(6)::after { animation-delay: 1s; }
 
 
 /* ██████ SOUS-MENUS BLEU CLAIR ██████ */
 .sub-menu a, .sub-menu .menu-item {
-
-/* ██████ BACKGROUND ANIMÉ IMPRESSIONNANT ██████ */
-body {
-    background: linear-gradient(135deg, #f0f9ff, #f0fdf4, #fdf2f8, #fef3c7, #f0f9ff);
-    background-size: 600% 600%;
-    animation: bgShift 12s ease-in-out infinite;
-}
-@keyframes bgShift {
-    0% { background-position: 0% 0%; }
-    25% { background-position: 50% 50%; }
-    50% { background-position: 100% 100%; }
-    75% { background-position: 50% 0%; }
-    100% { background-position: 0% 0%; }
-}
-
-/* Particules flottantes */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    pointer-events: none;
-    z-index: 0;
-    background:
-        radial-gradient(circle at 20% 30%, rgba(56,189,248,0.25) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(134,239,172,0.25) 0%, transparent 45%),
-        radial-gradient(circle at 60% 80%, rgba(249,168,212,0.25) 0%, transparent 50%),
-        radial-gradient(circle at 10% 70%, rgba(253,230,138,0.25) 0%, transparent 40%),
-        radial-gradient(circle at 90% 60%, rgba(56,189,248,0.2) 0%, transparent 45%),
-        radial-gradient(circle at 40% 10%, rgba(249,168,212,0.2) 0%, transparent 40%);
-    animation: bgParticles 8s ease-in-out infinite alternate;
-}
-@keyframes bgParticles {
-    0% {
-        background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
-        opacity: 0.7;
-    }
-    50% {
-        background-position: 3% 2%, -2% 3%, 2% -1%, -1% 2%, 1% -2%, -2% -1%;
-        opacity: 1;
-    }
-    100% {
-        background-position: -2% -1%, 3% -2%, -1% 3%, 2% -1%, -3% 1%, 1% 3%;
-        opacity: 0.7;
-    }
-}
-
-/* Bulles flottantes via box-shadow */
-body::after {
-
-/* ██████ FOND ANIMÉ SPECTACULAIRE ██████ */
-.bg-animated {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 0;
-    pointer-events: none;
-    overflow: hidden;
-    background: linear-gradient(135deg, #e0f2fe 0%, #dcfce7 25%, #fce7f3 50%, #fef9c3 75%, #e0f2fe 100%);
-    background-size: 400% 400%;
-    animation: bgShift 15s ease-in-out infinite;
-}
-@keyframes bgShift {
-    0%   { background-position: 0% 0%; }
-    25%  { background-position: 100% 0%; }
-    50%  { background-position: 100% 100%; }
-    75%  { background-position: 0% 100%; }
-    100% { background-position: 0% 0%; }
-}
-
-/* Blobs flottants */
-.bg-blob {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(60px);
-    opacity: 0.5;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
-}
-.bg-blob-1 {
-    width: 350px; height: 350px;
-    background: radial-gradient(circle, rgba(56,189,248,0.6) 0%, transparent 70%);
-    top: -5%; left: -5%;
-    animation: blob1 8s infinite;
-}
-.bg-blob-2 {
-    width: 280px; height: 280px;
-    background: radial-gradient(circle, rgba(134,239,172,0.6) 0%, transparent 70%);
-    bottom: -5%; right: -5%;
-    animation: blob2 10s infinite;
-}
-.bg-blob-3 {
-    width: 300px; height: 300px;
-    background: radial-gradient(circle, rgba(249,168,212,0.6) 0%, transparent 70%);
-    top: 40%; left: 50%;
-    animation: blob3 9s infinite;
-}
-.bg-blob-4 {
-    width: 250px; height: 250px;
-    background: radial-gradient(circle, rgba(253,230,138,0.6) 0%, transparent 70%);
-    top: 10%; right: 10%;
-    animation: blob4 11s infinite;
-}
-
-@keyframes blob1 {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(80px, 40px) scale(1.3); }
-    66% { transform: translate(-30px, 80px) scale(0.8); }
-}
-@keyframes blob2 {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(-60px, -50px) scale(1.2); }
-    66% { transform: translate(40px, -80px) scale(0.9); }
-}
-@keyframes blob3 {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(-100px, -60px) scale(1.4); }
-}
-@keyframes blob4 {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(-50px, 60px) scale(1.1); }
-    66% { transform: translate(70px, -30px) scale(1.3); }
-}
-
-/* Grille animée subtile */
-.bg-grid {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-image:
-        linear-gradient(rgba(56,189,248,0.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(56,189,248,0.06) 1px, transparent 1px);
-    background-size: 60px 60px;
-    animation: gridMove 20s linear infinite;
-}
-@keyframes gridMove {
-    0% { background-position: 0 0; }
-    100% { background-position: 60px 60px; }
-}
-
-
-    content: '';
-    position: fixed;
-    top: 0; left: 0;
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: transparent;
-    pointer-events: none;
-    z-index: 0;
-    box-shadow:
-        80vw 15vh 0 rgba(56,189,248,0.3),
-        15vw 85vh 0 rgba(134,239,172,0.25),
-        70vw 75vh 0 rgba(249,168,212,0.3),
-        25vw 25vh 0 rgba(253,230,138,0.25),
-        90vw 45vh 0 rgba(56,189,248,0.2),
-        50vw 55vh 0 rgba(249,168,212,0.25),
-        35vw 65vh 0 rgba(134,239,172,0.2),
-        65vw 8vh 0 rgba(253,230,138,0.2),
-        10vw 45vh 0 rgba(56,189,248,0.2),
-        55vw 35vh 0 rgba(249,168,212,0.2);
-    animation: floatBubbles 10s ease-in-out infinite;
-}
-@keyframes floatBubbles {
-    0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
-    25% { transform: translateY(-15px) scale(1.5); opacity: 1; }
-    50% { transform: translateY(5px) scale(0.8); opacity: 0.5; }
-    75% { transform: translateY(-8px) scale(1.3); opacity: 0.8; }
-}
-
-
     color: var(--text-primary) !important;
     font-weight: 500 !important;
     background: linear-gradient(135deg, rgba(56,189,248,0.08) 0%, rgba(125,211,252,0.04) 100%) !important;
@@ -1324,9 +1141,24 @@ body::after {
 
 
 
-</style>
-</head>
-<body>
+
+/* ██████ FOND ANIMÉ ██████ */
+.bg-animated{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:hidden;background:linear-gradient(135deg,#e0f2fe,#dcfce7,#fce7f3,#fef9c3,#e0f2fe);background-size:400% 400%;animation:bgShift 15s ease-in-out infinite}
+@keyframes bgShift{0%{background-position:0 0}25%{background-position:100% 0}50%{background-position:100% 100%}75%{background-position:0 100%}100%{background-position:0 0}}
+.bg-blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.45;animation-timing-function:ease-in-out;animation-iteration-count:infinite}
+.bg-blob-1{width:350px;height:350px;background:radial-gradient(circle,rgba(56,189,248,.55),transparent 70%);top:-5%;left:-5%;animation:blob1 8s infinite}
+.bg-blob-2{width:280px;height:280px;background:radial-gradient(circle,rgba(134,239,172,.55),transparent 70%);bottom:-5%;right:-5%;animation:blob2 10s infinite}
+.bg-blob-3{width:300px;height:300px;background:radial-gradient(circle,rgba(249,168,212,.55),transparent 70%);top:40%;left:50%;animation:blob3 9s infinite}
+.bg-blob-4{width:250px;height:250px;background:radial-gradient(circle,rgba(253,230,138,.55),transparent 70%);top:10%;right:10%;animation:blob4 11s infinite}
+@keyframes blob1{0%,100%{transform:translate(0,0)scale(1)}33%{transform:translate(80px,40px)scale(1.3)}66%{transform:translate(-30px,80px)scale(.8)}}
+@keyframes blob2{0%,100%{transform:translate(0,0)scale(1)}33%{transform:translate(-60px,-50px)scale(1.2)}66%{transform:translate(40px,-80px)scale(.9)}}
+@keyframes blob3{0%,100%{transform:translate(0,0)scale(1)}50%{transform:translate(-100px,-60px)scale(1.4)}}
+@keyframes blob4{0%,100%{transform:translate(0,0)scale(1)}33%{transform:translate(-50px,60px)scale(1.1)}66%{transform:translate(70px,-30px)scale(1.3)}}
+.bg-grid{position:absolute;top:0;left:0;width:100%;height:100%;background-image:linear-gradient(rgba(56,189,248,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.05) 1px,transparent 1px);background-size:60px 60px;animation:gridMove 20s linear infinite}
+@keyframes gridMove{0%{background-position:0 0}100%{background-position:60px 60px}}
+.main{position:relative;z-index:1;background:transparent}
+
+
 
 <div class="bg-animated">
     <div class="bg-blob bg-blob-1"></div>
@@ -1336,6 +1168,19 @@ body::after {
     <div class="bg-grid"></div>
 </div>
 
+
+</style>
+</head>
+<body>
+
+
+<div class="bg-animated">
+    <div class="bg-blob bg-blob-1"></div>
+    <div class="bg-blob bg-blob-2"></div>
+    <div class="bg-blob bg-blob-3"></div>
+    <div class="bg-blob bg-blob-4"></div>
+    <div class="bg-grid"></div>
+</div>
 
 
 <div class="overlay" id="overlay"></div>
