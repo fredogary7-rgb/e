@@ -1205,6 +1205,32 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.market-section *,.ref-sectio
 
 /* ═══════════ DASHBOARD STATS PREMIUM ═══════════ */
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.stat-box,.wide-box{border-radius:20px!important;padding:24px 20px!important;background:rgba(255,255,255,.8)!important;backdrop-filter:blur(12px)!important;border:1px solid rgba(255,255,255,.5)!important;box-shadow:0 4px 20px rgba(0,0,0,.06)!important;transition:all .35s!important;display:flex!important;flex-direction:column!important;gap:6px!important;min-height:120px!important;justify-content:center!important;position:relative!important;overflow:hidden!important;animation:fadeUp .6s ease both;flex:1!important}
+.stat-box:nth-child(2){animation-delay:.1s}.stat-box:nth-child(3){animation-delay:.2s}.stat-box:nth-child(4){animation-delay:.3s}
+.stat-box:hover,.wide-box:hover{transform:translateY(-4px)!important;box-shadow:0 10px 30px rgba(0,0,0,.1)!important}
+.stat-icon{width:42px!important;height:42px!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:18px!important;margin-bottom:4px!important}
+.stat-amount{font-size:24px!important;font-weight:900!important;color:#1e293b!important}
+.stat-title{font-size:11px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:1px!important;color:#64748b!important}
+.stat-box:nth-child(1) .stat-icon{background:rgba(148,163,184,.12);color:#64748b}
+.stat-box:nth-child(2) .stat-icon{background:rgba(56,189,248,.14);color:#38bdf8}
+.stat-box:nth-child(3) .stat-icon{background:rgba(249,168,212,.14);color:#f472b6}
+.stat-box:nth-child(4) .stat-icon{background:rgba(253,230,138,.18);color:#eab308}
+.wide-box{flex-direction:row!important;align-items:center!important;gap:14px!important;margin:0 0 14px 0!important;width:100%!important;animation:fadeUp .6s .15s ease both}
+.wide-box .stat-icon{background:rgba(168,85,247,.12)!important;color:#a855f7!important;width:42px!important;height:42px!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:18px!important;flex-shrink:0}
+.wide-box .stat-title{display:flex!important;align-items:center!important;gap:8px!important}
+.stat-row{display:flex!important;gap:14px!important;margin-bottom:14px!important}
+/* WHATSAPP CARD */
+.whatsapp-card{border-radius:20px!important;padding:24px!important;background:rgba(255,255,255,.8)!important;backdrop-filter:blur(12px)!important;border:2px solid rgba(37,211,102,.15)!important;margin-bottom:18px!important;animation:fadeUp .4s ease both;width:100%!important;box-sizing:border-box!important}
+.whatsapp-card h3{font-size:16px!important;font-weight:800!important;display:flex!important;align-items:center!important;gap:8px!important;color:#25D366}
+.whatsapp-card p{font-size:12px!important;color:#64748b!important;margin-bottom:14px!important;font-weight:600}
+.phone-group{display:flex!important;gap:10px!important}
+.phone-group select,.phone-group input{flex:1!important;min-width:120px!important;padding:12px!important;border-radius:14px!important;border:1px solid rgba(148,163,184,.25)!important;background:rgba(255,255,255,.9)!important;font-weight:600!important;font-size:13px!important;outline:none}
+.phone-group button{padding:12px 24px!important;border-radius:14px!important;background:#25D366!important;color:#fff!important;border:none!important;font-weight:700!important;font-size:13px!important;cursor:pointer!important;white-space:nowrap!important}
+@media(max-width:600px){.stat-row{flex-direction:column!important;gap:14px!important}.phone-group{flex-wrap:wrap!important}}
+
+
+/* ═══════════ DASHBOARD STATS PREMIUM ═══════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 .stat-row{display:contents!important}
 .stat-box,.wide-box{border-radius:20px!important;padding:22px 20px!important;background:rgba(255,255,255,.75)!important;backdrop-filter:blur(16px)!important;border:1px solid rgba(255,255,255,.5)!important;box-shadow:0 4px 20px rgba(0,0,0,.06)!important;transition:all .35s!important;display:flex!important;flex-direction:column!important;gap:8px!important;min-height:130px!important;justify-content:center!important;position:relative!important;overflow:hidden!important;animation:fadeUp .6s ease both}
 .stat-box:nth-child(2){animation-delay:.1s}
