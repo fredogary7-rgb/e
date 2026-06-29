@@ -5,6 +5,8 @@ from app import app, db, get_logged_in_user, user_is_activated, Produit, Publici
 
 TEMPLATE='tiktok.html'
 
+TEMPLATE='taches_v3.html'
+
 TASK_COUNT=10; TASK_REWARD_MIN=25; TASK_REWARD_MAX=100
 
 class DailyTask(db.Model):
@@ -32,7 +34,6 @@ class TaskReward(db.Model):
     date=db.Column(db.Date,nullable=False,index=True)
     montant=db.Column(db.Float,nullable=False)
     created_at=db.Column(db.DateTime,default=datetime.utcnow)
-
 def _sel(date_obj):
     from app import Produit, Publicite
     import random, hashlib
@@ -54,6 +55,7 @@ def _sel(date_obj):
     rem=[('produit',p.id) for p in rp]+[('publicite',p.id) for p in rpu]
     rng.shuffle(rem); items+=rem[:TASK_COUNT-len(items)]
     return items[:TASK_COUNT]
+
 
 def _sel(date_obj):
     prods=Produit.query.filter_by(est_actif=True).order_by((Produit.vues+Produit.ventes*10).desc()).limit(7).all()
@@ -80,14 +82,43 @@ def _prog(user_id,date_obj):
 
 @app.route('/taches')
 def taches_page():
+    from app import get_logged_in_user, user_is_activated
+    import random
     user=get_logged_in_user()
     if not user: flash("Connectez-vous.","danger"); return redirect(url_for('connexion_page'))
     if not user_is_activated(user): flash("Compte non activé.","warning"); return redirect(url_for('dashboard_page'))
     now=datetime.now(); today=now.date()
-    if now.weekday()>=5: return render_template(TEMPLATE,user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="⏸️ Lun-Ven.")
-    if now.hour<8: return render_template(TEMPLATE,user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="⏰ 08h00.")
-    if now.hour>=23: return render_template(TEMPLATE,user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="🌙 Terminé.")
+    # Valeurs par défaut pour tous les chemins
+    rw=None; est=0; sc=0; td=[]
+    # Vérifications horaires
+    if now.weekday()>=5:
+        return render_template(TEMPLATE,user=user,taches=td,shared_count=sc,total=TASK_COUNT,can_start=False,message="⏸️ Lun-Ven uniquement.")
+    if now.hour<8:
+        return render_template(TEMPLATE,user=user,taches=td,shared_count=sc,total=TASK_COUNT,can_start=False,message="⏰ Ouvre à 08h00.")
+    if now.hour>=23:
+        return render_template(TEMPLATE,user=user,taches=td,shared_count=sc,total=TASK_COUNT,can_start=False,message="🌙 Terminé.")
+    # Déjà récompensé ?
+    rw=TaskReward.query.filter_by(user_id=user.id,date=today).first()
+    if rw:
+        return render_template(TEMPLATE,user=user,taches=td,shared_count=TASK_COUNT,total=TASK_COUNT,can_start=False,reward_amount=rw.montant,message=f"✅ +{int(rw.montant)} FCFA aujourd'hui!")
+    # Générer les tâches et calculer la progression
+    tasks=_tasks(today)
+    sc,utm=_prog(user.id,today)
+    for task in tasks:
+        ut=utm.get(task.id)
+        if task.content_type=='publicite' and task.publicite:
+            p=task.publicite; td.append({'task_id':task.id,'type':'publicite','nom':p.titre,'image':p.video_url,'video':p.video_url,'description':p.description,'boutique_nom':p.boutique.nom if p.boutique else 'NovaTrade','shared':ut.shared if ut else False})
+        else:
+            p=task.produit; td.append({'task_id':task.id,'type':'produit','nom':p.nom if p else '?','image':(p.liste_images[0] if p and p.liste_images else None),'video':None,'description':p.description if p else None,'boutique_nom':p.boutique.nom if p and p.boutique else 'NovaTrade','shared':ut.shared if ut else False})
+    est=random.randint(TASK_REWARD_MIN,TASK_REWARD_MAX)
+    return render_template(TEMPLATE,user=user,taches=td,shared_count=sc,total=TASK_COUNT,can_start=True,estimated_reward=est)
 
+@app.route('/taches')
+def taches_page():
+    user=get_logged_in_user()
+    if not user: flash("Connectez-vous.","danger"); return redirect(url_for('connexion_page'))
+    if not user_is_activated(user): flash("Compte non activé.","warning"); return redirect(url_for('dashboard_page'))
+    now=datetime.now(); today=now.date()
     if now.weekday()>=5: return render_template('taches_clean.html',user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="⏸️ Lun-Ven uniquement.")
     if now.hour<8: return render_template('taches_clean.html',user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="⏰ Ouvre à 08h00.")
     if now.hour>=23: return render_template('taches_clean.html',user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="🌙 Terminé.")
@@ -100,10 +131,36 @@ def taches_page():
             p=task.publicite; td.append({'task_id':task.id,'type':'publicite','nom':p.titre,'image':p.video_url,'boutique_nom':p.boutique.nom if p.boutique else 'NovaTrade','shared':ut.shared if ut else False})
         else:
             p=task.produit; td.append({'task_id':task.id,'type':'produit','nom':p.nom if p else '?','image':(p.liste_images[0] if p and p.liste_images else None),'boutique_nom':p.boutique.nom if p and p.boutique else 'NovaTrade','shared':ut.shared if ut else False})
-    return render_template(TEMPLATE,user=user,taches=td,shared_count=sc,total=TASK_COUNT,can_start=True,estimated_reward=est)
-
     import random; est=random.randint(TASK_REWARD_MIN,TASK_REWARD_MAX)
     return render_template('taches_clean.html',user=user,taches=td,shared_count=sc,total=TASK_COUNT,can_start=True,estimated_reward=est)
+@app.route('/taches')
+def taches_page():
+    from app import get_logged_in_user, user_is_activated
+    import random
+    user=get_logged_in_user()
+    if not user: flash("Connectez-vous.","danger"); return redirect(url_for('connexion_page'))
+    if not user_is_activated(user): flash("Compte non activé.","warning"); return redirect(url_for('dashboard_page'))
+    now=datetime.now(); today=now.date()
+    rw=None; est=0; sc=0; td=[]
+    if now.weekday()>=5:
+        return render_template(TEMPLATE,user=user,taches=td,shared_count=sc,total=TASK_COUNT,can_start=False,message="⏸️ Lun-Ven.")
+    if now.hour<8:
+        return render_template(TEMPLATE,user=user,taches=td,shared_count=sc,total=TASK_COUNT,can_start=False,message="⏰ 08h00.")
+    if now.hour>=23:
+        return render_template(TEMPLATE,user=user,taches=td,shared_count=sc,total=TASK_COUNT,can_start=False,message="🌙 Terminé.")
+    rw=TaskReward.query.filter_by(user_id=user.id,date=today).first()
+    if rw:
+        return render_template(TEMPLATE,user=user,taches=td,shared_count=TASK_COUNT,total=TASK_COUNT,can_start=False,reward_amount=rw.montant,message=f"✅ +{int(rw.montant)} FCFA!")
+    tasks=_tasks(today); sc,utm=_prog(user.id,today)
+    for task in tasks:
+        ut=utm.get(task.id)
+        if task.content_type=='publicite' and task.publicite:
+            p=task.publicite; td.append({'task_id':task.id,'type':'publicite','nom':p.titre,'image':p.video_url,'video':p.video_url,'description':p.description,'boutique_nom':p.boutique.nom if p.boutique else 'NovaTrade','shared':ut.shared if ut else False})
+        else:
+            p=task.produit; td.append({'task_id':task.id,'type':'produit','nom':p.nom if p else '?','image':(p.liste_images[0] if p and p.liste_images else None),'video':None,'description':p.description if p else None,'boutique_nom':p.boutique.nom if p and p.boutique else 'NovaTrade','shared':ut.shared if ut else False})
+    est=random.randint(TASK_REWARD_MIN,TASK_REWARD_MAX)
+    return render_template(TEMPLATE,user=user,taches=td,shared_count=sc,total=TASK_COUNT,can_start=True,estimated_reward=est)
+
 
 @app.route('/api/share-task',methods=['POST'])
 def api_share_task():
