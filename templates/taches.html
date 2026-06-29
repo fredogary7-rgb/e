@@ -106,7 +106,13 @@ body{background:var(--grad);background-size:400% 400%;animation:bgShift 15s ease
 </div>
 <button class="btn-share{% if t.shared %} shared{% endif %}" id="btnShare{{ t.task_id }}" onclick="shareTask({{ t.task_id }})" {% if t.shared %}disabled{% endif %}>
 <i class="fa {% if t.shared %}fa-check{% else %}fa-share-alt{% endif %}"></i> {{ 'Partagé' if t.shared else 'Partager' }}
+{% endfor %}
+
 </button>
+{% if True %}
+
+{% endif %}
+
 {% endif %}
 
 -->
