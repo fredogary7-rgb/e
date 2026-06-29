@@ -1,14 +1,10 @@
 """Module Tâches Quotidiennes - NovaTrade"""
 from datetime import datetime, date
 from flask import render_template, request, redirect, url_for, flash, jsonify
-from app import app, db
+from app import app, db, get_logged_in_user, user_is_activated, Produit, Publicite, Boutique
 
 TASK_COUNT=10; TASK_REWARD_MIN=25; TASK_REWARD_MAX=100
 
-class DailyTask(db.Model):
-    __tablename__='daily_tasks'
-    __table_args__={'extend_existing':True}
-    id=db.Column(db.Integer,primary_key=True)
 class DailyTask(db.Model):
     __tablename__='daily_tasks'
     id=db.Column(db.Integer,primary_key=True)
@@ -17,10 +13,6 @@ class DailyTask(db.Model):
     content_type=db.Column(db.String(20),default='produit')
     date=db.Column(db.Date,nullable=False,index=True)
     ordre=db.Column(db.Integer,default=0); actif=db.Column(db.Boolean,default=True)
-class UserTask(db.Model):
-    __tablename__='user_tasks'
-    __table_args__={'extend_existing':True}
-    id=db.Column(db.Integer,primary_key=True)
     produit=db.relationship('Produit',backref='daily_tasks')
     publicite=db.relationship('Publicite',backref='daily_tasks')
 
@@ -29,10 +21,6 @@ class UserTask(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
     task_id=db.Column(db.Integer,db.ForeignKey('daily_tasks.id'),nullable=False)
-class TaskReward(db.Model):
-    __tablename__='task_rewards'
-    __table_args__={'extend_existing':True}
-    id=db.Column(db.Integer,primary_key=True)
     shared=db.Column(db.Boolean,default=False); shared_at=db.Column(db.DateTime)
 
 class TaskReward(db.Model):
@@ -44,7 +32,6 @@ class TaskReward(db.Model):
     created_at=db.Column(db.DateTime,default=datetime.utcnow)
 
 def _sel(date_obj):
-    from app import Produit, Publicite
     prods=Produit.query.filter_by(est_actif=True).order_by((Produit.vues+Produit.ventes*10).desc()).limit(7).all()
     pubs=Publicite.query.filter_by(est_actif=True).order_by((Publicite.vues+Publicite.partages*5).desc()).limit(5).all()
     items=[('produit',p.id) for p in prods]+[('publicite',pub.id) for pub in pubs]
@@ -69,7 +56,6 @@ def _prog(user_id,date_obj):
 
 @app.route('/taches')
 def taches_page():
-    from app import get_logged_in_user, user_is_activated
     user=get_logged_in_user()
     if not user: flash("Connectez-vous.","danger"); return redirect(url_for('connexion_page'))
     if not user_is_activated(user): flash("Compte non activé.","warning"); return redirect(url_for('dashboard_page'))
@@ -91,7 +77,6 @@ def taches_page():
 
 @app.route('/api/share-task',methods=['POST'])
 def api_share_task():
-    from app import get_logged_in_user, user_is_activated, Publicite
     user=get_logged_in_user()
     if not user or not user_is_activated(user): return jsonify({'success':False}),403
     data=request.get_json(); task_id=data.get('task_id')
@@ -111,7 +96,6 @@ def api_share_task():
 
 @app.route('/api/claim-task-reward',methods=['POST'])
 def api_claim_task_reward():
-    from app import get_logged_in_user
     user=get_logged_in_user()
     if not user: return jsonify({'success':False}),401
     today=datetime.now().date()
@@ -126,7 +110,6 @@ def api_claim_task_reward():
 
 @app.route('/admin/taches',methods=['GET','POST'])
 def admin_taches():
-    from app import get_logged_in_user, Boutique, Produit
     user=get_logged_in_user()
     if not user or not user.is_admin: flash("Accès refusé.","danger"); return redirect(url_for('connexion_page'))
     today=date.today()

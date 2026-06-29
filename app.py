@@ -805,6 +805,8 @@ class Follow(db.Model):
     def __repr__(self):
         return f"<Follow {self.follower.username} -> {self.following.username}>"
 
+"""
+
 
 # ─── TÂCHES QUOTIDIENNES ─────────────────────────
 class DailyTask(db.Model):
@@ -851,6 +853,8 @@ class TaskReward(db.Model):
 
     def __repr__(self):
         return f'<TaskReward user={self.user_id} date={self.date} montant={self.montant}>'
+"""
+
 
 
 
