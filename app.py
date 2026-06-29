@@ -6266,14 +6266,22 @@ def taches_page():
     now = datetime.now()
     today = now.date()
     if now.weekday() >= 5:
+        return render_template('taches_clean.html', user=user, taches=[], shared_count=0, total=TASK_COUNT, can_start=False, message="⏸️ Tâches dispo seulement du lundi au vendredi.")
+
         return render_template('taches.html', user=user, taches=[], shared_count=0, total=TASK_COUNT, can_start=False, message="⏸️ Tâches dispo seulement du lundi au vendredi.")
 
     start_time = now.replace(hour=8, minute=0, second=0, microsecond=0)
     end_time = now.replace(hour=23, minute=59, second=59, microsecond=0)
+        return render_template('taches_clean.html', user=user, taches=[], shared_count=0, total=TASK_COUNT, can_start=False, message="⏰ Les tâches ouvrent à 08h00.")
+
     if now < start_time:
+        return render_template('taches_clean.html', user=user, taches=[], shared_count=0, total=TASK_COUNT, can_start=False, message="🌙 Tâches terminées. Revenez demain à 08h00 !")
+
         return render_template('taches.html', user=user, taches=[], shared_count=0, total=TASK_COUNT, can_start=False, message="⏰ Les tâches ouvrent à 08h00.")
     if now > end_time:
         return render_template('taches.html', user=user, taches=[], shared_count=0, total=TASK_COUNT, can_start=False, message="🌙 Tâches terminées. Revenez demain à 08h00 !")
+
+        return render_template('taches_clean.html', user=user, taches=[], shared_count=TASK_COUNT, total=TASK_COUNT, can_start=False, reward_amount=reward.montant if reward else 0, message=f"✅ Vous avez gagné {int(reward.montant) if reward else 0} FCFA aujourd'hui !")
 
     can_do, msg = can_do_tasks_today(user.id, today)
     if not can_do:
@@ -6294,6 +6302,7 @@ def taches_page():
 
     import random
     estimated = random.randint(TASK_REWARD_MIN, TASK_REWARD_MAX)
+    return render_template('taches_clean.html', user=user, taches=taches_data, shared_count=shared_count, total=TASK_COUNT, can_start=True, estimated_reward=estimated)
     return render_template('taches.html', user=user, taches=taches_data, shared_count=shared_count, total=TASK_COUNT, can_start=True, estimated_reward=estimated)
 
 if False:
