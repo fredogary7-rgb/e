@@ -823,6 +823,8 @@ class DailyTask(db.Model):
         return f'<DailyTask {self.id} type={self.content_type} date={self.date}>'
 
 if False:
+    pass
+
 """
 
 
