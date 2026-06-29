@@ -808,15 +808,18 @@ class Follow(db.Model):
 
 # ─── TÂCHES QUOTIDIENNES ─────────────────────────
 class DailyTask(db.Model):
-    """Tâche quotidienne - un produit à partager"""
+    """Tâche quotidienne - un produit ou une publicité à partager"""
     __tablename__ = 'daily_tasks'
     id = db.Column(db.Integer, primary_key=True)
-    produit_id = db.Column(db.Integer, db.ForeignKey('produits.id', ondelete='CASCADE'), nullable=False)
+    produit_id = db.Column(db.Integer, db.ForeignKey('produits.id', ondelete='CASCADE'), nullable=True)
+    publicite_id = db.Column(db.Integer, db.ForeignKey('publicites.id', ondelete='CASCADE'), nullable=True)
+    content_type = db.Column(db.String(20), default='produit')  # 'produit' ou 'publicite'
     date = db.Column(db.Date, nullable=False, index=True)
     ordre = db.Column(db.Integer, default=0)
     actif = db.Column(db.Boolean, default=True)
 
     produit = db.relationship('Produit', backref=db.backref('daily_tasks', lazy='dynamic'))
+    publicite = db.relationship('Publicite', backref=db.backref('daily_tasks', lazy='dynamic'))
 
     def __repr__(self):
         return f'<DailyTask {self.id} produit={self.produit_id} date={self.date}>'
@@ -6207,17 +6210,38 @@ TASK_COUNT = 10
 TASK_REWARD_MIN = 25
 TASK_REWARD_MAX = 100
 
+TASK_COUNT = 10
+TASK_REWARD_MIN = 25
+TASK_REWARD_MAX = 100
+SHARE_COOLDOWN = 5  # secondes avant validation
+
 def select_daily_products(date_obj):
+    """Sélectionne produits + publicités pour les tâches du jour."""
     produits = Produit.query.filter_by(est_actif=True) \
-        .order_by((Produit.vues + Produit.ventes * 10).desc()).limit(TASK_COUNT).all()
-    return produits
+        .order_by((Produit.vues + Produit.ventes * 10).desc()).limit(7).all()
+    pubs = Publicite.query.filter_by(est_actif=True) \
+        .order_by((Publicite.vues + Publicite.partages * 5).desc()).limit(5).all()
+    # Combiner et mélanger
+    items = []
+    for p in produits:
+        items.append(('produit', p.id, p.vues + p.ventes * 10))
+    for pub in pubs:
+        items.append(('publicite', pub.id, pub.vues + pub.partages * 5))
+    import random
+    random.seed(str(date_obj))
+    random.shuffle(items)
+    return items[:TASK_COUNT]
+
 
 def get_or_create_daily_tasks(date_obj):
     tasks = DailyTask.query.filter_by(date=date_obj, actif=True).order_by(DailyTask.ordre).all()
     if not tasks:
-        produits = select_daily_products(date_obj)
-        for i, p in enumerate(produits):
-            task = DailyTask(produit_id=p.id, date=date_obj, ordre=i, actif=True)
+        items = select_daily_products(date_obj)
+        for i, (ctype, cid, _score) in enumerate(items):
+            if ctype == 'produit':
+                task = DailyTask(produit_id=cid, content_type='produit', date=date_obj, ordre=i, actif=True)
+            else:
+                task = DailyTask(publicite_id=cid, content_type='publicite', date=date_obj, ordre=i, actif=True)
             db.session.add(task)
         db.session.commit()
         tasks = DailyTask.query.filter_by(date=date_obj, actif=True).order_by(DailyTask.ordre).all()
@@ -6258,6 +6282,18 @@ def taches_page():
 
     tasks = get_or_create_daily_tasks(today)
     shared_count, user_task_map, _ = get_user_task_progress(user.id, today)
+    taches_data = []
+    for task in tasks:
+        ut = user_task_map.get(task.id)
+        if task.content_type == 'publicite' and task.publicite:
+            pub = task.publicite
+            taches_data.append({'task_id': task.id, 'type': 'publicite', 'nom': pub.titre, 'image': pub.video_url, 'boutique_nom': pub.boutique.nom if pub.boutique else 'NovaTrade', 'shared': ut.shared if ut else False})
+        else:
+            p = task.produit
+            taches_data.append({'task_id': task.id, 'type': 'produit', 'nom': p.nom if p else 'Produit', 'image': (p.liste_images[0] if p and p.liste_images else None), 'boutique_nom': p.boutique.nom if p and p.boutique else 'NovaTrade', 'shared': ut.shared if ut else False})
+if False:
+
+
     taches_data = []
     for task in tasks:
         p = task.produit
@@ -6371,6 +6407,8 @@ def admin_taches():
         .order_by(sa_func.count(UserTask.id).desc()).limit(20).all()
     return render_template('admin_taches.html', user=user, tasks=tasks, today=today, vendeur_stats=vendeur_stats)
 
+
+if False:
 
     if not can_do:
         reward = TaskReward.query.filter_by(user_id=user.id, date=today).first()
