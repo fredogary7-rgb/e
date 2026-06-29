@@ -62,11 +62,11 @@ def taches_page():
     if not user: flash("Connectez-vous.","danger"); return redirect(url_for('connexion_page'))
     if not user_is_activated(user): flash("Compte non activé.","warning"); return redirect(url_for('dashboard_page'))
     now=datetime.now(); today=now.date()
-    if now.weekday()>=5: return render_template('taches_clean.html',user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="⏸️ Lun-Ven uniquement.")
-    if now.hour<8: return render_template('taches_clean.html',user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="⏰ Ouvre à 08h00.")
-    if now.hour>=23: return render_template('taches_clean.html',user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="🌙 Terminé.")
+    if now.weekday()>=5: return render_template('tiktok_v3.html',user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="⏸️ Lun-Ven uniquement.")
+    if now.hour<8: return render_template('tiktok_v3.html',user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="⏰ Ouvre à 08h00.")
+    if now.hour>=23: return render_template('tiktok_v3.html',user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="🌙 Terminé.")
     rw=TaskReward.query.filter_by(user_id=user.id,date=today).first()
-    if rw: return render_template('taches_clean.html',user=user,taches=[],shared_count=TASK_COUNT,total=TASK_COUNT,can_start=False,reward_amount=rw.montant,message=f"✅ +{int(rw.montant)} FCFA aujourd'hui!")
+    if rw: return render_template('tiktok_v3.html',user=user,taches=[],shared_count=TASK_COUNT,total=TASK_COUNT,can_start=False,reward_amount=rw.montant,message=f"✅ +{int(rw.montant)} FCFA aujourd'hui!")
     tasks=_tasks(today); sc,utm=_prog(user.id,today); td=[]
     for task in tasks:
         ut=utm.get(task.id)
@@ -75,7 +75,7 @@ def taches_page():
         else:
             p=task.produit; td.append({'task_id':task.id,'type':'produit','nom':p.nom if p else '?','image':(p.liste_images[0] if p and p.liste_images else None),'boutique_nom':p.boutique.nom if p and p.boutique else 'NovaTrade','shared':ut.shared if ut else False})
     import random; est=random.randint(TASK_REWARD_MIN,TASK_REWARD_MAX)
-    return render_template('taches_clean.html',user=user,taches=td,shared_count=sc,total=TASK_COUNT,can_start=True,estimated_reward=est)
+    return render_template('tiktok_v3.html',user=user,taches=td,shared_count=sc,total=TASK_COUNT,can_start=True,estimated_reward=est)
 
 @app.route('/api/share-task',methods=['POST'])
 def api_share_task():
