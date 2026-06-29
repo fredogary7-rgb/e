@@ -3,7 +3,7 @@ from datetime import datetime, date
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from app import app, db, get_logged_in_user, user_is_activated, Produit, Publicite, Boutique
 
-TEMPLATE='taches_tiktok.html'
+TEMPLATE='tiktok.html'
 
 TASK_COUNT=10; TASK_REWARD_MIN=25; TASK_REWARD_MAX=100
 
@@ -84,6 +84,10 @@ def taches_page():
     if not user: flash("Connectez-vous.","danger"); return redirect(url_for('connexion_page'))
     if not user_is_activated(user): flash("Compte non activé.","warning"); return redirect(url_for('dashboard_page'))
     now=datetime.now(); today=now.date()
+    if now.weekday()>=5: return render_template(TEMPLATE,user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="⏸️ Lun-Ven.")
+    if now.hour<8: return render_template(TEMPLATE,user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="⏰ 08h00.")
+    if now.hour>=23: return render_template(TEMPLATE,user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="🌙 Terminé.")
+
     if now.weekday()>=5: return render_template('taches_clean.html',user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="⏸️ Lun-Ven uniquement.")
     if now.hour<8: return render_template('taches_clean.html',user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="⏰ Ouvre à 08h00.")
     if now.hour>=23: return render_template('taches_clean.html',user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="🌙 Terminé.")
@@ -96,6 +100,8 @@ def taches_page():
             p=task.publicite; td.append({'task_id':task.id,'type':'publicite','nom':p.titre,'image':p.video_url,'boutique_nom':p.boutique.nom if p.boutique else 'NovaTrade','shared':ut.shared if ut else False})
         else:
             p=task.produit; td.append({'task_id':task.id,'type':'produit','nom':p.nom if p else '?','image':(p.liste_images[0] if p and p.liste_images else None),'boutique_nom':p.boutique.nom if p and p.boutique else 'NovaTrade','shared':ut.shared if ut else False})
+    return render_template(TEMPLATE,user=user,taches=td,shared_count=sc,total=TASK_COUNT,can_start=True,estimated_reward=est)
+
     import random; est=random.randint(TASK_REWARD_MIN,TASK_REWARD_MAX)
     return render_template('taches_clean.html',user=user,taches=td,shared_count=sc,total=TASK_COUNT,can_start=True,estimated_reward=est)
 
