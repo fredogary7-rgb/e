@@ -1203,6 +1203,53 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.market-section *,.ref-sectio
 @media(max-width:600px){.stat-row{grid-template-columns:1fr!important}}
 
 
+/* ═══════════ DASHBOARD PREMIUM ═══════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,.4)}50%{box-shadow:0 0 0 8px rgba(37,211,102,0)}}
+.main{display:flex!important;flex-direction:column!important;gap:14px!important}
+.glass-card{order:1!important}
+.stat-row{order:3!important;display:flex!important;gap:14px!important}
+.wide-box{order:2!important;margin:0!important}
+.whatsapp-card{order:0!important;margin:0 0 4px 0!important}
+.video-box{order:4!important}
+.glass-card{order:0!important}
+.whatsapp-card{order:1!important;margin:0 0 4px 0!important}
+.wide-box{order:2!important;margin:0!important}
+.stat-row{order:3!important;display:flex!important;gap:14px!important}
+
+.market-section{order:5!important}
+.ref-section{order:6!important}
+footer{order:7!important}
+/* CARTES STATS */
+.stat-box,.wide-box{border-radius:22px!important;padding:24px 22px!important;background:rgba(255,255,255,.82)!important;backdrop-filter:blur(20px)!important;-webkit-backdrop-filter:blur(20px)!important;border:1px solid rgba(255,255,255,.6)!important;box-shadow:0 4px 24px rgba(0,0,0,.05)!important;transition:all .35s cubic-bezier(.4,0,.2,1)!important;display:flex!important;flex-direction:column!important;gap:4px!important;min-height:130px!important;justify-content:center!important;animation:fadeUp .5s ease both!important;flex:1!important;position:relative!important;overflow:hidden!important}
+.stat-box:nth-child(2){animation-delay:.1s}.stat-box:nth-child(3){animation-delay:.2s}.stat-box:nth-child(4){animation-delay:.3s}
+.stat-box:hover,.wide-box:hover{transform:translateY(-5px)!important;box-shadow:0 14px 36px rgba(0,0,0,.1)!important}
+.stat-icon{width:44px!important;height:44px!important;border-radius:14px!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:20px!important;margin-bottom:8px!important}
+.stat-amount{font-size:26px!important;font-weight:900!important;color:#0f172a!important;letter-spacing:-.5px}
+.stat-title{font-size:11px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:1.5px!important;color:#94a3b8!important}
+.stat-box:nth-child(1) .stat-icon{background:rgba(100,116,139,.1)!important;color:#64748b!important}
+.stat-box:nth-child(2) .stat-icon{background:rgba(56,189,248,.12)!important;color:#0ea5e9!important}
+.stat-box:nth-child(3) .stat-icon{background:rgba(249,168,212,.12)!important;color:#ec4899!important}
+.stat-box:nth-child(4) .stat-icon{background:rgba(250,204,21,.15)!important;color:#eab308!important}
+/* SOLDE JEUX */
+.wide-box{flex-direction:row!important;align-items:center!important;gap:16px!important;animation:fadeUp .5s .15s ease both!important}
+.wide-box .stat-icon{background:rgba(168,85,247,.12)!important;color:#a855f7!important;margin:0!important;flex-shrink:0}
+.wide-box .stat-title{display:flex!important;align-items:center!important;gap:10px!important}
+.wide-box .stat-amount{margin-left:auto!important}
+/* WHATSAPP PREMIUM */
+.whatsapp-card{animation:fadeUp .4s ease both!important;border-radius:22px!important;padding:28px!important;background:linear-gradient(135deg,rgba(255,255,255,.9),rgba(240,253,244,.9))!important;backdrop-filter:blur(20px)!important;
+-webkit-backdrop-filter:blur(20px)!important;border:2px solid rgba(37,211,102,.2)!important;position:relative!important;overflow:hidden!important}
+.whatsapp-card:before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:rgba(37,211,102,.06);animation:pulse 3s infinite}
+.whatsapp-card h3{font-size:17px!important;font-weight:800!important;display:flex!important;align-items:center!important;gap:10px!important;color:#16a34a!important;margin-bottom:6px!important}
+.whatsapp-card p{font-size:12px!important;color:#64748b!important;margin-bottom:16px!important;font-weight:600}
+.phone-group{display:flex!important;gap:10px!important;align-items:center!important}
+.phone-group select{padding:12px 16px!important;border-radius:14px!important;border:1px solid rgba(148,163,184,.2)!important;background:#fff!important;font-weight:600!important;font-size:13px!important;outline:none}
+.phone-group input{flex:1!important;padding:12px 16px!important;border-radius:14px!important;border:1px solid rgba(148,163,184,.2)!important;background:#fff!important;font-weight:600!important;font-size:13px!important;outline:none}
+.phone-group button{background:#25D366!important;color:#fff!important;border:none!important;border-radius:14px!important;padding:12px 28px!important;font-weight:700!important;cursor:pointer!important;font-size:13px!important;transition:all .3s;white-space:nowrap}
+.phone-group button:hover{background:#1ea350!important;transform:scale(1.03)}
+@media(max-width:600px){.stat-row{flex-direction:column!important}.phone-group{flex-wrap:wrap!important}.phone-group button{width:100%!important}}
+
+
 /* ═══════════ DASHBOARD STATS PREMIUM ═══════════ */
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 .stat-box,.wide-box{border-radius:20px!important;padding:24px 20px!important;background:rgba(255,255,255,.8)!important;backdrop-filter:blur(12px)!important;border:1px solid rgba(255,255,255,.5)!important;box-shadow:0 4px 20px rgba(0,0,0,.06)!important;transition:all .35s!important;display:flex!important;flex-direction:column!important;gap:6px!important;min-height:120px!important;justify-content:center!important;position:relative!important;overflow:hidden!important;animation:fadeUp .6s ease both;flex:1!important}
