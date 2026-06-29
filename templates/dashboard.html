@@ -1180,12 +1180,6 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.market-section *,.ref-sectio
 </div>
 
 
-
-/* WhatsApp au-dessus des stats */
-.main{display:flex!important;flex-direction:column!important}
-.whatsapp-card{order:1!important}
-.stat-row,.wide-box,.video-box,.market-section,.ref-section,footer{order:2!important}
-
 </style>
 </head>
 <body>
@@ -1342,7 +1336,7 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.market-section *,.ref-sectio
 
     <!-- SOLDE JEUX - WIDE BOX -->
     <div class="wide-box">
-        <span class="stat-title"><i class="fa fa-gamepad"></i> Solde des tâches</span>
+        <span class="stat-title"><i class="fa fa-gamepad"></i> Solde des jeux</span>
         <span class="stat-amount">XOF {{ "{:,}".format(user.solde_jeux or 0) }}</span>
     </div>
 
