@@ -3,7 +3,7 @@ from datetime import datetime, date
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from app import app, db, get_logged_in_user, user_is_activated, Produit, Publicite, Boutique
 
-TEMPLATE='taches_v3.html'
+TEMPLATE='taches_tiktok.html'
 
 TASK_COUNT=10; TASK_REWARD_MIN=25; TASK_REWARD_MAX=100
 
@@ -67,6 +67,16 @@ def taches_page():
     if now.hour>=23: return render_template('taches_clean.html',user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="🌙 Terminé.")
     rw=TaskReward.query.filter_by(user_id=user.id,date=today).first()
     if rw: return render_template('taches_clean.html',user=user,taches=[],shared_count=TASK_COUNT,total=TASK_COUNT,can_start=False,reward_amount=rw.montant,message=f"✅ +{int(rw.montant)} FCFA aujourd'hui!")
+    tasks=_tasks(today); sc,utm=_prog(user.id,today); td=[]
+    for task in tasks:
+        ut=utm.get(task.id)
+        if task.content_type=='publicite' and task.publicite:
+            p=task.publicite; td.append({'task_id':task.id,'type':'publicite','nom':p.titre,'image':p.video_url,'video':p.video_url,'description':p.description,'boutique_nom':p.boutique.nom if p.boutique else 'NovaTrade','shared':ut.shared if ut else False})
+        else:
+            p=task.produit; td.append({'task_id':task.id,'type':'produit','nom':p.nom if p else '?','image':(p.liste_images[0] if p and p.liste_images else None),'video':None,'description':p.description if p else None,'boutique_nom':p.boutique.nom if p and p.boutique else 'NovaTrade','shared':ut.shared if ut else False})
+    import random; est=random.randint(TASK_REWARD_MIN,TASK_REWARD_MAX)
+    return render_template(TEMPLATE,user=user,taches=td,shared_count=sc,total=TASK_COUNT,can_start=True,estimated_reward=est)
+
     tasks=_tasks(today); sc,utm=_prog(user.id,today); td=[]
     for task in tasks:
         ut=utm.get(task.id)
