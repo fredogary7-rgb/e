@@ -3011,7 +3011,7 @@ def netflix_view_page():
 
 @app.route('/politique')
 def politique_page():
-    return render_template('politique.html')
+    return render_template('politique_v2.html')
 
 
 
