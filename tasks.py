@@ -7,12 +7,20 @@ TASK_COUNT=10; TASK_REWARD_MIN=25; TASK_REWARD_MAX=100
 
 class DailyTask(db.Model):
     __tablename__='daily_tasks'
+    __table_args__={'extend_existing':True}
+    id=db.Column(db.Integer,primary_key=True)
+class DailyTask(db.Model):
+    __tablename__='daily_tasks'
     id=db.Column(db.Integer,primary_key=True)
     produit_id=db.Column(db.Integer,db.ForeignKey('produits.id'),nullable=True)
     publicite_id=db.Column(db.Integer,db.ForeignKey('publicites.id'),nullable=True)
     content_type=db.Column(db.String(20),default='produit')
     date=db.Column(db.Date,nullable=False,index=True)
     ordre=db.Column(db.Integer,default=0); actif=db.Column(db.Boolean,default=True)
+class UserTask(db.Model):
+    __tablename__='user_tasks'
+    __table_args__={'extend_existing':True}
+    id=db.Column(db.Integer,primary_key=True)
     produit=db.relationship('Produit',backref='daily_tasks')
     publicite=db.relationship('Publicite',backref='daily_tasks')
 
@@ -21,6 +29,10 @@ class UserTask(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
     task_id=db.Column(db.Integer,db.ForeignKey('daily_tasks.id'),nullable=False)
+class TaskReward(db.Model):
+    __tablename__='task_rewards'
+    __table_args__={'extend_existing':True}
+    id=db.Column(db.Integer,primary_key=True)
     shared=db.Column(db.Boolean,default=False); shared_at=db.Column(db.DateTime)
 
 class TaskReward(db.Model):
