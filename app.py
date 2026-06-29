@@ -6275,16 +6275,16 @@ def taches_page():
         return render_template('taches_clean.html', user=user, taches=[], shared_count=0, total=TASK_COUNT, can_start=False, message="⏰ Les tâches ouvrent à 08h00.")
 
     if now < start_time:
+        return render_template('taches.html', user=user, taches=[], shared_count=0, total=TASK_COUNT, can_start=False, message="⏰ Les tâches ouvrent à 08h00.")
         return render_template('taches_clean.html', user=user, taches=[], shared_count=0, total=TASK_COUNT, can_start=False, message="🌙 Tâches terminées. Revenez demain à 08h00 !")
 
-        return render_template('taches.html', user=user, taches=[], shared_count=0, total=TASK_COUNT, can_start=False, message="⏰ Les tâches ouvrent à 08h00.")
     if now > end_time:
         return render_template('taches.html', user=user, taches=[], shared_count=0, total=TASK_COUNT, can_start=False, message="🌙 Tâches terminées. Revenez demain à 08h00 !")
 
-        return render_template('taches_clean.html', user=user, taches=[], shared_count=TASK_COUNT, total=TASK_COUNT, can_start=False, reward_amount=reward.montant if reward else 0, message=f"✅ Vous avez gagné {int(reward.montant) if reward else 0} FCFA aujourd'hui !")
-
     can_do, msg = can_do_tasks_today(user.id, today)
     if not can_do:
+        return render_template('taches_clean.html', user=user, taches=[], shared_count=TASK_COUNT, total=TASK_COUNT, can_start=False, reward_amount=reward.montant if reward else 0, message=f"✅ Vous avez gagné {int(reward.montant) if reward else 0} FCFA aujourd'hui !")
+
         reward = TaskReward.query.filter_by(user_id=user.id, date=today).first()
         return render_template('taches.html', user=user, taches=[], shared_count=TASK_COUNT, total=TASK_COUNT, can_start=False, reward_amount=reward.montant if reward else 0, message=f"✅ Vous avez gagné {int(reward.montant) if reward else 0} FCFA aujourd'hui !")
 
@@ -6299,10 +6299,11 @@ def taches_page():
         else:
             p = task.produit
             taches_data.append({'task_id': task.id, 'type': 'produit', 'nom': p.nom if p else 'Produit', 'image': (p.liste_images[0] if p and p.liste_images else None), 'boutique_nom': p.boutique.nom if p and p.boutique else 'NovaTrade', 'shared': ut.shared if ut else False})
+    return render_template('taches_clean.html', user=user, taches=taches_data, shared_count=shared_count, total=TASK_COUNT, can_start=True, estimated_reward=estimated)
+
 
     import random
     estimated = random.randint(TASK_REWARD_MIN, TASK_REWARD_MAX)
-    return render_template('taches_clean.html', user=user, taches=taches_data, shared_count=shared_count, total=TASK_COUNT, can_start=True, estimated_reward=estimated)
     return render_template('taches.html', user=user, taches=taches_data, shared_count=shared_count, total=TASK_COUNT, can_start=True, estimated_reward=estimated)
 
 if False:
