@@ -85,6 +85,14 @@ def taches_page():
             p=task.produit; td.append({'task_id':task.id,'type':'produit','nom':p.nom if p else '?','image':(p.liste_images[0] if p and p.liste_images else None),'boutique_nom':p.boutique.nom if p and p.boutique else 'NovaTrade','shared':ut.shared if ut else False})
     import random; est=random.randint(TASK_REWARD_MIN,TASK_REWARD_MAX)
     return render_template('tiktok_v3.html',user=user,taches=td,shared_count=sc,total=TASK_COUNT,can_start=True,estimated_reward=est)
+    # Flux dynamique : nouvelles DailyTask à chaque ouverture
+    DailyTask.query.filter_by(date=today).delete()
+    for i,(ctype,cid) in enumerate(_sel(today)):
+        t=DailyTask(produit_id=cid,content_type='produit',date=today,ordre=i) if ctype=='produit' else DailyTask(publicite_id=cid,content_type='publicite',date=today,ordre=i)
+        db.session.add(t)
+    db.session.commit()
+    tasks=DailyTask.query.filter_by(date=today,actif=True).order_by(DailyTask.ordre).all()
+
 
 @app.route('/api/share-task',methods=['POST'])
 def api_share_task():
