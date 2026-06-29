@@ -349,6 +349,13 @@ body {
     padding: 18px 24px;
     position: relative;
     z-index: 1;
+    background: transparent;
+}
+
+.main {
+    padding: 18px 24px;
+    position: relative;
+    z-index: 1;
 }
 
     backdrop-filter: blur(20px);
@@ -1180,6 +1187,96 @@ body::before {
 
 /* Bulles flottantes via box-shadow */
 body::after {
+
+/* ██████ FOND ANIMÉ SPECTACULAIRE ██████ */
+.bg-animated {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    background: linear-gradient(135deg, #e0f2fe 0%, #dcfce7 25%, #fce7f3 50%, #fef9c3 75%, #e0f2fe 100%);
+    background-size: 400% 400%;
+    animation: bgShift 15s ease-in-out infinite;
+}
+@keyframes bgShift {
+    0%   { background-position: 0% 0%; }
+    25%  { background-position: 100% 0%; }
+    50%  { background-position: 100% 100%; }
+    75%  { background-position: 0% 100%; }
+    100% { background-position: 0% 0%; }
+}
+
+/* Blobs flottants */
+.bg-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.5;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+.bg-blob-1 {
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(56,189,248,0.6) 0%, transparent 70%);
+    top: -5%; left: -5%;
+    animation: blob1 8s infinite;
+}
+.bg-blob-2 {
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(134,239,172,0.6) 0%, transparent 70%);
+    bottom: -5%; right: -5%;
+    animation: blob2 10s infinite;
+}
+.bg-blob-3 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(249,168,212,0.6) 0%, transparent 70%);
+    top: 40%; left: 50%;
+    animation: blob3 9s infinite;
+}
+.bg-blob-4 {
+    width: 250px; height: 250px;
+    background: radial-gradient(circle, rgba(253,230,138,0.6) 0%, transparent 70%);
+    top: 10%; right: 10%;
+    animation: blob4 11s infinite;
+}
+
+@keyframes blob1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(80px, 40px) scale(1.3); }
+    66% { transform: translate(-30px, 80px) scale(0.8); }
+}
+@keyframes blob2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-60px, -50px) scale(1.2); }
+    66% { transform: translate(40px, -80px) scale(0.9); }
+}
+@keyframes blob3 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-100px, -60px) scale(1.4); }
+}
+@keyframes blob4 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-50px, 60px) scale(1.1); }
+    66% { transform: translate(70px, -30px) scale(1.3); }
+}
+
+/* Grille animée subtile */
+.bg-grid {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image:
+        linear-gradient(rgba(56,189,248,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56,189,248,0.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridMove 20s linear infinite;
+}
+@keyframes gridMove {
+    0% { background-position: 0 0; }
+    100% { background-position: 60px 60px; }
+}
+
+
     content: '';
     position: fixed;
     top: 0; left: 0;
@@ -1230,6 +1327,16 @@ body::after {
 </style>
 </head>
 <body>
+
+<div class="bg-animated">
+    <div class="bg-blob bg-blob-1"></div>
+    <div class="bg-blob bg-blob-2"></div>
+    <div class="bg-blob bg-blob-3"></div>
+    <div class="bg-blob bg-blob-4"></div>
+    <div class="bg-grid"></div>
+</div>
+
+
 
 <div class="overlay" id="overlay"></div>
 
