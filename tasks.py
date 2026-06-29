@@ -76,6 +76,12 @@ def taches_page():
     if now.hour>=23: return render_template('tiktok_v3.html',user=user,taches=[],shared_count=0,total=TASK_COUNT,can_start=False,message="🌙 Terminé.")
     rw=TaskReward.query.filter_by(user_id=user.id,date=today).first()
     if rw: return render_template('tiktok_v3.html',user=user,taches=[],shared_count=TASK_COUNT,total=TASK_COUNT,can_start=False,reward_amount=rw.montant,message=f"✅ +{int(rw.montant)} FCFA aujourd'hui!")
+    DailyTask.query.filter_by(date=today).delete()
+    for i,(ctype,cid) in enumerate(_sel(today)):
+        t=DailyTask(produit_id=cid,content_type='produit',date=today,ordre=i) if ctype=='produit' else DailyTask(publicite_id=cid,content_type='publicite',date=today,ordre=i)
+        db.session.add(t)
+    db.session.commit()
+
     tasks=_tasks(today); sc,utm=_prog(user.id,today); td=[]
     for task in tasks:
         ut=utm.get(task.id)
