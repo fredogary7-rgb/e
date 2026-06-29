@@ -39,6 +39,15 @@ def _sel(date_obj):
     items=[('produit',p.id) for p in prods]+[('publicite',pub.id) for pub in pubs]
     import random; random.seed(str(date_obj)); random.shuffle(items)
     return items[:TASK_COUNT]
+def _sel(date_obj):
+    from app import Produit, Publicite
+    from sqlalchemy import func as sf
+    prods=Produit.query.filter_by(est_actif=True).order_by(sf.random()).limit(6).all()
+    pubs=Publicite.query.filter_by(est_actif=True).order_by(sf.random()).limit(6).all()
+    items=[('produit',p.id) for p in prods]+[('publicite',pub.id) for pub in pubs]
+    import random; random.shuffle(items)
+    return items[:TASK_COUNT]
+
 
 def _tasks(date_obj):
     tasks=DailyTask.query.filter_by(date=date_obj,actif=True).order_by(DailyTask.ordre).all()
@@ -91,6 +100,12 @@ def api_share_task():
     if ut and ut.shared: return jsonify({'success':False}),400
     if ut: ut.shared=True; ut.shared_at=datetime.utcnow()
     else: db.session.add(UserTask(user_id=user.id,task_id=task_id,shared=True,shared_at=datetime.utcnow()))
+    if task.content_type=='publicite' and task.publicite_id:
+        task.publicite.partages=(task.publicite.partages or 0)+1
+    else:
+        pub=Publicite.query.filter_by(produit_id=task.produit_id).first()
+        if pub: pub.partages=(pub.partages or 0)+1
+
     pub=Publicite.query.filter_by(produit_id=task.produit_id).first()
     if pub: pub.partages=(pub.partages or 0)+1
     db.session.commit(); sc,_=_prog(user.id,today)

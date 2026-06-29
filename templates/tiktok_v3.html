@@ -45,9 +45,9 @@ body{background:#000;overflow:hidden;height:100vh;color:#fff}
 <div class="f" id="fd">
 {% for t in taches %}
 <div class="s" id="s{{ t.task_id }}">
-<div class="bg">{% if t.produit and t.produit.liste_images %}<img src="{{ t.produit.liste_images[0] if t.produit.liste_images[0].startswith('/') or t.produit.liste_images[0].startswith('http') else '/static/'+t.produit.liste_images[0] }}" alt="{{ t.produit.nom }}">{% else %}<div class="ph"><i class="fa fa-image"></i></div>{% endif %}</div>
+<div class="bg">{% if t.type == 'publicite' %}<i class="fa fa-video" style="font-size:80px;opacity:.3;color:#f9a8d4"></i>{% elif t.produit and t.produit.liste_images %}<img src="{{ t.produit.liste_images[0] if t.produit.liste_images[0].startswith('/') or t.produit.liste_images[0].startswith('http') else '/static/'+t.produit.liste_images[0] }}" alt="{{ t.produit.nom }}">{% else %}<div class="ph"><i class="fa fa-image"></i></div>{% endif %}</div>
 <div class="act"><div class="a{% if t.shared %} done{% endif %}" onclick="share({{ t.task_id }})"><i class="fa {% if t.shared %}fa-check-circle{% else %}fa-share-alt{% endif %}"></i><span>{% if t.shared %}Validé{% else %}Partager{% endif %}</span></div></div>
-<div class="inf"><div class="v"><i class="fa fa-store"></i> {{ t.boutique_nom }}</div><div class="nm">{{ t.produit.nom if t.produit else 'Produit' }}</div><div class="rw"><i class="fa fa-coins"></i> Récompense</div></div>
+<div class="inf"><div class="v"><i class="fa fa-store"></i> {{ t.boutique_nom }}</div><div class="nm">{{ t.nom if t.nom else (t.produit.nom if t.produit else 'Produit') }}</div><div class="rw"><i class="fa fa-coins"></i> Récompense</div></div>
 <button class="bt{% if t.shared %} ok{% else %} go{% endif %}" id="b{{ t.task_id }}" onclick="share({{ t.task_id }})">{% if t.shared %}<i class="fa fa-check"></i> Validé{% else %}<i class="fa fa-share-alt"></i> Partager{% endif %}</button>
 </div>
 {% endfor %}
