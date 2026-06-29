@@ -1203,10 +1203,42 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.market-section *,.ref-sectio
 @media(max-width:600px){.stat-row{grid-template-columns:1fr!important}}
 
 
+/* ═════ DASHBOARD STRUCTURE ═════ */
+.main{display:flex!important;flex-direction:column!important;gap:16px!important}
+.whatsapp-card{order:1!important}
+.stats-grid{order:2!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important;align-items:stretch!important}
+/* CARTES STATS */
+.stat-box,.wide-box{height:140px!important;min-height:140px!important;max-height:140px!important;border-radius:22px!important;padding:20px!important;background:rgba(255,255,255,.82)!important;backdrop-filter:blur(20px)!important;border:1px solid rgba(255,255,255,.5)!important;box-shadow:0 4px 20px rgba(0,0,0,.05)!important;display:flex!important;flex-direction:column!important;justify-content:center!important;transition:all .3s!important}
+.stat-box:hover,.wide-box:hover{transform:translateY(-3px)!important;box-shadow:0 10px 28px rgba(0,0,0,.1)!important}
+.stat-icon{width:40px!important;height:40px!important;border-radius:12px!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:18px!important;margin-bottom:6px!important}
+.stat-amount{font-size:24px!important;font-weight:900!important;color:#0f172a!important}
+.stat-title{font-size:11px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:1px!important;color:#94a3b8!important}
+.stat-box:nth-child(1) .stat-icon{background:rgba(100,116,139,.1)!important;color:#64748b!important}
+.stat-box:nth-child(2) .stat-icon{background:rgba(56,189,248,.12)!important;color:#0ea5e9!important}
+.stat-box:nth-child(3) .stat-icon{background:rgba(249,168,212,.12)!important;color:#ec4899!important}
+.stat-box:nth-child(4) .stat-icon{background:rgba(250,204,21,.15)!important;color:#eab308!important}
+.stat-row{display:contents!important}
+.wide-box{flex-direction:row!important;align-items:center!important;gap:14px!important;margin:0!important;width:auto!important}
+.wide-box .stat-icon{background:rgba(168,85,247,.12)!important;color:#a855f7!important;margin:0!important;flex-shrink:0}
+.wide-box .stat-title{display:flex!important;align-items:center!important;gap:8px!important}
+.wide-box .stat-amount{margin-left:auto!important}
+/* WHATSAPP */
+.whatsapp-card{border-radius:22px!important;padding:22px!important;background:linear-gradient(135deg,rgba(255,255,255,.92),rgba(240,253,244,.92))!important;backdrop-filter:blur(20px)!important;border:2px solid rgba(37,211,102,.15)!important;margin:0!important;width:100%!important;box-sizing:border-box!important}
+.whatsapp-card h3{font-size:16px!important;font-weight:800!important;color:#16a34a!important;margin-bottom:6px!important}
+.whatsapp-card p{font-size:12px!important;color:#64748b;margin-bottom:14px!important;font-weight:600}
+.phone-group{display:flex!important;gap:10px!important}
+.phone-group select{padding:10px 14px!important;border-radius:12px!important;border:1px solid rgba(148,163,184,.2)!important;background:#fff!important;font-weight:600!important;font-size:13px!important}
+.phone-group input{flex:1!important;padding:10px 14px!important;border-radius:12px!important;border:1px solid rgba(148,163,184,.2)!important;background:#fff!important;font-weight:600!important;font-size:13px!important}
+.phone-group button{background:#25D366!important;color:#fff!important;border:none!important;border-radius:12px!important;padding:10px 24px!important;font-weight:700!important;cursor:pointer!important;font-size:13px!important;white-space:nowrap!important}
+@media(max-width:600px){.stats-grid{grid-template-columns:1fr!important}.phone-group{flex-wrap:wrap!important}.phone-group button{width:100%!important}}
+
+
 /* ═══════════ DASHBOARD PREMIUM ═══════════ */
 @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,.4)}50%{box-shadow:0 0 0 8px rgba(37,211,102,0)}}
 .main{display:flex!important;flex-direction:column!important;gap:14px!important}
+.whatsapp-card{grid-column:1/-1!important;order:-1!important}
+
 .glass-card{order:1!important}
 .stat-row{order:3!important;display:flex!important;gap:14px!important}
 .wide-box{order:2!important;margin:0!important}
@@ -1462,6 +1494,8 @@ footer{grid-column:1/-1!important}
 
 <div class="topbar">
     <div class="menu-toggle" id="menuToggle"><i class="fa fa-bars"></i></div>
+<div class="stats-grid">
+
     <div class="user-container">
         <i class="fa fa-user user-icon"></i>
 
@@ -1519,6 +1553,8 @@ footer{grid-column:1/-1!important}
             <i class="fa fa-chart-line stat-icon"></i>
             <span class="stat-title">Profit</span>
             <span class="stat-amount">XOF {{ "{:,}".format(user.solde_revenu or 0) }}</span>
+</div>
+
         </div>
     </div>
 
