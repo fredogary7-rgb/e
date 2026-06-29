@@ -1107,17 +1107,20 @@ footer {
     animation: statShine 3s ease-in-out infinite;
     pointer-events: none;
 }
+/* Rangée 1 */
 .stat-box:nth-child(1) { animation-delay: 0s; background: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%) !important; }
 .stat-box:nth-child(1)::after { animation-delay: 0s; }
 .stat-box:nth-child(2) { animation-delay: 0.4s; background: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%) !important; }
 .stat-box:nth-child(2)::after { animation-delay: 0.7s; }
-.stat-box:nth-child(3) { animation-delay: 0.8s; background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%) !important; }
-.stat-box:nth-child(3)::after { animation-delay: 1.4s; }
-.stat-box:nth-child(4) { animation-delay: 1.2s; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important; }
-.stat-box:nth-child(4)::after { animation-delay: 2.1s; }
-.stat-box:nth-child(5) { animation-delay: 1.6s; background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%) !important; }
+/* Rangée 2 - cibler via nth-of-type sur stat-row */
+.stat-row:nth-of-type(2) .stat-box:nth-child(1) { animation-delay: 0.8s; background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%) !important; }
+.stat-row:nth-of-type(2) .stat-box:nth-child(1)::after { animation-delay: 1.4s; }
+.stat-row:nth-of-type(2) .stat-box:nth-child(2) { animation-delay: 1.2s; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important; }
+.stat-row:nth-of-type(2) .stat-box:nth-child(2)::after { animation-delay: 2.1s; }
+/* Wide box & autres */
+.stat-box:nth-child(5) { animation-delay: 1.6s; background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%) !important; }
 .stat-box:nth-child(5)::after { animation-delay: 0.3s; }
-.stat-box:nth-child(6) { animation-delay: 2s; background: linear-gradient(135deg, #86efac 0%, #22c55e 100%) !important; }
+.stat-box:nth-child(6) { animation-delay: 2s; background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%) !important; }
 .stat-box:nth-child(6)::after { animation-delay: 1s; }
 
 
