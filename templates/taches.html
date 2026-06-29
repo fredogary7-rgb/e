@@ -90,6 +90,8 @@ body{background:var(--grad);background-size:400% 400%;animation:bgShift 15s ease
 <!--old
 
 {% endfor %}
+{% if False %}
+
 {% for t in taches %}
 <div class="task-card{% if t.shared %} shared{% endif %}" id="taskCard{{ t.task_id }}">
 <div class="task-img">
@@ -105,6 +107,8 @@ body{background:var(--grad);background-size:400% 400%;animation:bgShift 15s ease
 <button class="btn-share{% if t.shared %} shared{% endif %}" id="btnShare{{ t.task_id }}" onclick="shareTask({{ t.task_id }})" {% if t.shared %}disabled{% endif %}>
 <i class="fa {% if t.shared %}fa-check{% else %}fa-share-alt{% endif %}"></i> {{ 'Partagé' if t.shared else 'Partager' }}
 </button>
+{% endif %}
+
 -->
 </div>
 {% endfor %}
