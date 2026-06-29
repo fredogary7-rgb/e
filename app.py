@@ -6291,6 +6291,11 @@ def taches_page():
         else:
             p = task.produit
             taches_data.append({'task_id': task.id, 'type': 'produit', 'nom': p.nom if p else 'Produit', 'image': (p.liste_images[0] if p and p.liste_images else None), 'boutique_nom': p.boutique.nom if p and p.boutique else 'NovaTrade', 'shared': ut.shared if ut else False})
+
+    import random
+    estimated = random.randint(TASK_REWARD_MIN, TASK_REWARD_MAX)
+    return render_template('taches.html', user=user, taches=taches_data, shared_count=shared_count, total=TASK_COUNT, can_start=True, estimated_reward=estimated)
+
 if False:
 
 
@@ -6298,6 +6303,10 @@ if False:
     for task in tasks:
         p = task.produit
         ut = user_task_map.get(task.id)
+    pass
+
+if False:
+
         taches_data.append({'task_id': task.id, 'produit': p, 'shared': ut.shared if ut else False, 'boutique_nom': p.boutique.nom if p.boutique else 'NovaTrade'})
 
     import random
