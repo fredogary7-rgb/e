@@ -3009,6 +3009,12 @@ def whatsapp_number():
 def netflix_view_page():
     return render_template("netflix2.html")
 
+@app.route('/politique')
+def politique_page():
+    return render_template('politique.html')
+
+
+
 
 @app.route("/apk")
 def apk_page():
