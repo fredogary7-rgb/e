@@ -47,13 +47,16 @@ form{display:inline}
 </div>
 {% if tasks %}
 <table>
-<tr><th>#</th><th>Image</th><th>Produit</th><th>Boutique</th><th>Partages</th><th>Statut</th><th>Action</th></tr>
+<tr><th>#</th><th>Type</th><th>Contenu</th><th>Boutique</th><th>Partages</th><th>Statut</th><th>Action</th></tr>
 {% for t in tasks %}
 <tr>
 <td>{{ loop.index }}</td>
-<td style="width:50px">{% if t.produit.liste_images %}<img src="{{ t.produit.liste_images[0] if t.produit.liste_images[0].startswith('/') or t.produit.liste_images[0].startswith('http') else '/static/'+t.produit.liste_images[0] }}" style="width:40px;height:40px;object-fit:cover;border-radius:8px">{% else %}<i class="fa fa-image"></i>{% endif %}</td>
-<td><strong>{{ t.produit.nom[:30] }}</strong></td>
-<td>{{ t.produit.boutique.nom if t.produit.boutique else '—' }}</td>
+<td style="width:40px;text-align:center">
+{% if t.publicite_id and t.publicite %}<span style="background:#f9a8d4;color:#fff;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700">🎬 Pub</span>
+{% else %}<span style="background:#38bdf8;color:#fff;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700">📦 Prod</span>{% endif %}
+</td>
+<td><strong>{% if t.publicite_id and t.publicite %}{{ t.publicite.titre[:30] }}{% elif t.produit %}{{ t.produit.nom[:30] }}{% else %}—{% endif %}</strong></td>
+<td>{% if t.publicite_id and t.publicite %}{{ t.publicite.boutique.nom if t.publicite.boutique else '—' }}{% elif t.produit %}{{ t.produit.boutique.nom if t.produit.boutique else '—' }}{% else %}—{% endif %}</td>
 <td style="font-weight:800;color:#38bdf8">{{ t.share_count }}</td>
 <td><span style="color:{% if t.actif %}#22c55e{% else %}#ef4444{% endif %};font-weight:700">{% if t.actif %}Actif{% else %}Inactif{% endif %}</span></td>
 <td>

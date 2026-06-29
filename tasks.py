@@ -126,6 +126,23 @@ def admin_taches():
     tasks=DailyTask.query.filter_by(date=today).order_by(DailyTask.ordre).all()
     for t in tasks: t.share_count=UserTask.query.filter_by(task_id=t.id,shared=True).count()
     from sqlalchemy import func as f
+    from sqlalchemy import func as f
+    # Stats produits
+    vs_p=db.session.query(Boutique.nom,f.count(UserTask.id).label('t')).join(Produit,Produit.boutique_id==Boutique.id).join(DailyTask,DailyTask.produit_id==Produit.id).join(UserTask,UserTask.task_id==DailyTask.id).filter(UserTask.shared==True).group_by(Boutique.id).all()
+    # Stats publicités
+    vs_pub=db.session.query(Boutique.nom,f.count(UserTask.id).label('t')).join(Publicite,Publicite.boutique_id==Boutique.id).join(DailyTask,DailyTask.publicite_id==Publicite.id).join(UserTask,UserTask.task_id==DailyTask.id).filter(UserTask.shared==True).group_by(Boutique.id).all()
+    # Merge
+    from collections import defaultdict
+    merged=defaultdict(int)
+    for nom,c in vs_p: merged[nom]+=c
+    for nom,c in vs_pub: merged[nom]+=c
+if False:
+    pass
+
+
+    vs=sorted([type('V',(),{'nom':k,'total':v}) for k,v in merged.items()],key=lambda x:x.total,reverse=True)[:20]
+    return render_template('admin_taches.html',user=user,tasks=tasks,today=today,vendeur_stats=vs)
+
     vs=db.session.query(Boutique.nom,f.count(UserTask.id).label('t')).join(Produit,Produit.boutique_id==Boutique.id).join(DailyTask,DailyTask.produit_id==Produit.id).join(UserTask,UserTask.task_id==DailyTask.id).filter(UserTask.shared==True).group_by(Boutique.id).order_by(f.count(UserTask.id).desc()).limit(20).all()
     return render_template('admin_taches.html',user=user,tasks=tasks,today=today,vendeur_stats=vs)
 
