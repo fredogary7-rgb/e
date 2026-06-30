@@ -2959,7 +2959,7 @@ def whatsapp_number():
 
 @app.route("/netflix-view")
 def netflix_view_page():
-    return render_template("netflix.html")
+    return render_template("netflix2.html")
 
 
 @app.route("/apk")
