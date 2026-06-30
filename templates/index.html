@@ -65,6 +65,17 @@
             overflow: hidden;
             z-index: 0;
             pointer-events: none;
+            background: linear-gradient(135deg, #e0f2fe, #dcfce7, #fce7f3, #fef9c3, #e0f2fe);
+            background-size: 400% 400%;
+            animation: bgShift 15s ease-in-out infinite;
+        }
+
+        @keyframes bgShift {
+            0% { background-position: 0 0; }
+            25% { background-position: 100% 0; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0 100%; }
+            100% { background-position: 0 0; }
         }
 
         .bg-blob {
