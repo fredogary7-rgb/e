@@ -4,465 +4,306 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mes Revenus - NectarPro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+    <link rel="icon" href="/static/images/net.jpg" type="image/jpeg">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        /* RESET & BASE */
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
         
         :root {
             --bg-primary: #f8fafc;
             --bg-secondary: rgba(255, 255, 255, 0.8);
             --bg-card: rgba(255, 255, 255, 0.7);
+            --border-color: rgba(148, 163, 184, 0.2);
+            --border-glow: rgba(56, 189, 248, 0.3);
+            --text-primary: #334155;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
             --accent-blue: #38bdf8;
             --accent-blue-light: #7dd3fc;
             --accent-green: #86efac;
             --accent-pink: #f9a8d4;
-            --accent-purple: #a78bfa;
-            --text-primary: #334155;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
-            --border-color: rgba(148, 163, 184, 0.2);
+            --accent-purple: #c084fc;
+            --accent-gold: #fbbf24;
             --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
-            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
-            --gradient-purple: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 100%);
             --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
+            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
+            --gradient-purple: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%);
+            --gradient-gold: linear-gradient(135deg, #fde68a 0%, #fbbf24 100%);
             --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
+            --radius-sm: 10px;
             --radius-lg: 16px;
             --radius-xl: 20px;
             --radius-2xl: 24px;
+            --shadow-soft: 0 4px 6px rgba(56, 189, 248, 0.08);
             --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
+            --shadow-glow: 0 0 40px rgba(56, 189, 248, 0.15);
+            --shadow-large: 0 12px 32px rgba(56, 189, 248, 0.15);
         }
 
         body {
             background: var(--gradient-bg);
             min-height: 100vh;
-            padding-bottom: 80px;
             font-style: italic;
             color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        .header {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 20px;
+        /* NAVBAR */
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            position: sticky; top: 0; z-index: 1000;
         }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .nav-brand {
+            font-size: 24px; font-weight: 900; font-style: italic;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; text-decoration: none;
         }
-
-        .header h1 {
-            font-style: italic;
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--text-primary);
+        .nav-links { display: flex; gap: 20px; list-style: none; }
+        .nav-links a {
+            color: var(--text-secondary); text-decoration: none;
+            font-weight: 500; font-size: 14px; transition: color 0.3s;
         }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent-blue); }
 
-        .back-btn {
-            width: 40px;
-            height: 40px;
-            background: rgba(56, 189, 248, 0.1);
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent-blue);
-            text-decoration: none;
-            font-size: 16px;
-            transition: all 0.2s;
+        /* BACK LINK */
+        .back-link {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--accent-blue); text-decoration: none;
+            font-size: 14px; margin-bottom: 20px; font-weight: 600; font-style: italic;
+            transition: all 0.2s; padding: 8px 0;
         }
+        .back-link:hover { color: var(--accent-purple); }
 
-        .back-btn:hover {
-            background: rgba(56, 189, 248, 0.2);
+        .container { max-width: 900px; margin: 0 auto; padding: 24px 20px 80px; }
+
+        /* PAGE HEADER */
+        .page-header { text-align: center; margin-bottom: 32px; }
+        .page-header h1 {
+            font-style: italic; font-size: 32px; font-weight: 900;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            margin-bottom: 6px;
         }
+        .page-header p { font-style: italic; font-size: 15px; color: var(--text-secondary); }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
+        /* STATS GRID */
         .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 32px;
         }
-
         .stat-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
+            background: var(--bg-card); backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-xl);
-            padding: 20px;
-            box-shadow: var(--shadow-medium);
-            position: relative;
-            overflow: hidden;
+            border: 1px solid var(--border-color); border-radius: var(--radius-xl);
+            padding: 28px 20px; text-align: center;
+            box-shadow: var(--shadow-medium); transition: all 0.3s; position: relative; overflow: hidden;
         }
-
+        .stat-card:hover {
+            transform: translateY(-4px); box-shadow: var(--shadow-large); border-color: var(--border-glow);
+        }
         .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
         }
-
         .stat-card:nth-child(1)::before { background: var(--gradient-blue); }
         .stat-card:nth-child(2)::before { background: var(--gradient-green); }
         .stat-card:nth-child(3)::before { background: var(--gradient-purple); }
-        .stat-card:nth-child(4)::before { background: var(--gradient-pink); }
+        .stat-card:nth-child(4)::before { background: var(--gradient-gold); }
 
         .stat-icon {
-            width: 45px;
-            height: 45px;
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 12px;
-            font-size: 18px;
+            width: 50px; height: 50px; border-radius: 14px; display: flex;
+            align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 20px;
         }
-
-        .stat-card:nth-child(1) .stat-icon { background: rgba(56, 189, 248, 0.1); color: var(--accent-blue); }
-        .stat-card:nth-child(2) .stat-icon { background: rgba(134, 239, 172, 0.1); color: var(--accent-green); }
-        .stat-card:nth-child(3) .stat-icon { background: rgba(167, 139, 250, 0.1); color: var(--accent-purple); }
-        .stat-card:nth-child(4) .stat-icon { background: rgba(249, 168, 212, 0.1); color: var(--accent-pink); }
+        .stat-card:nth-child(1) .stat-icon { background: rgba(56,189,248,0.12); color: var(--accent-blue); }
+        .stat-card:nth-child(2) .stat-icon { background: rgba(134,239,172,0.12); color: var(--accent-green); }
+        .stat-card:nth-child(3) .stat-icon { background: rgba(192,132,252,0.12); color: var(--accent-purple); }
+        .stat-card:nth-child(4) .stat-icon { background: rgba(251,191,36,0.12); color: var(--accent-gold); }
 
         .stat-label {
-            font-style: italic;
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 4px;
+            font-style: italic; font-size: 12px; color: var(--text-muted);
+            margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
         }
-
         .stat-value {
-            font-style: italic;
-            font-size: 24px;
-            font-weight: 900;
-            color: var(--text-primary);
+            font-style: italic; font-size: 26px; font-weight: 900; color: var(--text-primary);
         }
 
-        .card {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
+        /* SECTION CARD */
+        .section-card {
+            background: var(--bg-card); backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-2xl);
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-color); border-radius: var(--radius-xl);
+            padding: 28px; margin-bottom: 20px;
+            box-shadow: var(--shadow-medium); transition: all 0.3s;
         }
+        .section-card:hover { border-color: rgba(56,189,248,0.3); }
 
         .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 24px; padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
         }
-
-        .card-title {
-            font-style: italic;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .card-title i {
-            color: var(--accent-blue);
+        .card-header i {
+            background: var(--gradient-blue);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
             font-size: 20px;
         }
+        .card-header h2 { font-size: 18px; font-weight: 700; font-style: italic; color: var(--text-primary); }
 
-        .points-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+        /* TEAM STATS */
+        .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .team-stat-box {
+            text-align: center; padding: 24px 18px;
+            background: rgba(56,189,248,0.05); border-radius: var(--radius-lg);
+            border: 1px solid rgba(56,189,248,0.1); transition: all 0.2s;
         }
-
-        .point-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px;
-            background: rgba(56, 189, 248, 0.05);
-            border-radius: var(--radius-lg);
-            transition: all 0.2s;
-        }
-
-        .point-item:hover {
-            transform: translateX(5px);
-            background: rgba(56, 189, 248, 0.1);
-        }
-
-        .point-item-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .point-item-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-
-        .point-item-icon.youtube { background: #FF0000; color: white; }
-        .point-item-icon.tiktok { background: #000000; color: white; }
-        .point-item-icon.instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: white; }
-        .point-item-icon.ads { background: var(--gradient-blue); color: white; }
-        .point-item-icon.spin { background: var(--gradient-purple); color: white; }
-        .point-item-icon.games { background: var(--gradient-green); color: white; }
-
-        .point-item-name {
-            font-style: italic;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .point-item-value {
-            font-style: italic;
-            font-size: 18px;
-            font-weight: 900;
-            color: var(--accent-blue);
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 14px 28px;
-            border-radius: var(--radius-lg);
-            font-style: italic;
-            font-weight: 700;
-            font-size: 14px;
-            text-decoration: none;
-            transition: all 0.2s;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            background: var(--gradient-blue);
-            color: white;
-            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
-        }
-
-        .btn-success {
-            background: var(--gradient-green);
-            color: white;
-            box-shadow: 0 6px 20px rgba(134, 239, 172, 0.3);
-        }
-
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(134, 239, 172, 0.4);
-        }
-
-        .team-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .team-stat {
-            text-align: center;
-            padding: 20px;
-            background: rgba(56, 189, 248, 0.05);
-            border-radius: var(--radius-lg);
-        }
-
+        .team-stat-box:hover { background: rgba(56,189,248,0.1); transform: translateY(-2px); }
         .team-stat-value {
-            font-style: italic;
-            font-size: 28px;
-            font-weight: 900;
-            color: var(--accent-blue);
+            font-style: italic; font-size: 30px; font-weight: 900;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .team-stat-label {
+            font-style: italic; font-size: 12px; color: var(--text-muted);
+            margin-top: 6px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
         }
 
-        .team-stat-label {
-            font-style: italic;
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 5px;
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center; padding: 40px 20px;
+            color: var(--text-secondary); font-style: italic;
         }
+        .empty-state i { font-size: 48px; color: var(--accent-blue); margin-bottom: 16px; display: block; opacity: 0.5; }
+        .empty-state h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+        .empty-state p { font-size: 14px; }
+
+        /* BUTTONS */
+        .actions { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 8px; }
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 16px 32px; border-radius: var(--radius-lg);
+            font-style: italic; font-weight: 700; font-size: 15px;
+            text-decoration: none; transition: all 0.3s; border: none; cursor: pointer;
+        }
+        .btn-primary {
+            background: var(--gradient-blue); color: white;
+            box-shadow: 0 6px 20px rgba(56,189,248,0.35);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px); box-shadow: 0 10px 30px rgba(56,189,248,0.5);
+        }
+        .btn-secondary {
+            background: rgba(56,189,248,0.08); color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        .btn-secondary:hover { background: rgba(56,189,248,0.15); }
+
+        /* FOOTER */
+        .footer {
+            margin-top: 40px; text-align: center; padding: 24px;
+            color: var(--text-secondary); font-size: 13px; font-style: italic;
+        }
+        .footer span { font-weight: 700; color: var(--accent-blue); }
 
         @media (max-width: 768px) {
+            .navbar { padding: 12px 16px; }
+            .nav-links { display: none; }
             .stats-grid { grid-template-columns: 1fr 1fr; }
-            .team-stats { grid-template-columns: 1fr; }
+            .team-grid { grid-template-columns: 1fr; }
+            .container { padding: 16px; }
+            .page-header h1 { font-size: 26px; }
+            .stat-value { font-size: 22px; }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-content">
-            <a href="{{ url_for('dashboard_page') }}" class="back-btn">
-                <i class="fa fa-arrow-left"></i>
-            </a>
-            <h1>Mes Revenus</h1>
-            <div style="width: 40px;"></div>
-        </div>
-    </div>
+
+    <nav class="navbar">
+        <a href="/dashboard" class="nav-brand">NectarPro</a>
+        <ul class="nav-links">
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/mes_retraits">Retraits</a></li>
+            <li><a href="/team">Équipe</a></li>
+            <li><a href="/academy/tiktok">Academy</a></li>
+        </ul>
+    </nav>
 
     <div class="container">
+
+        <!-- Back Link -->
+        <a href="{{ url_for('dashboard_page') }}" class="back-link">
+            <i class="fa fa-arrow-left"></i>
+            Retour au dashboard
+        </a>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Mes Revenus</h1>
+            <p>Suivez vos commissions et les performances de votre équipe</p>
+        </div>
+
         <!-- Stats principales -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fa fa-coins"></i>
-                </div>
+                <div class="stat-icon"><i class="fa fa-coins"></i></div>
                 <div class="stat-label">Total Gains</div>
                 <div class="stat-value">{{ "%.0f"|format(total_commission) }} XOF</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fa fa-users"></i>
-                </div>
-                <div class="stat-label">Équipe</div>
-                <div class="stat-value">{{ team_total }}</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fa fa-star"></i>
-                </div>
-                <div class="stat-label">Points Total</div>
-                <div class="stat-value">{{ total_points }}</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fa fa-wallet"></i>
-                </div>
-                <div class="stat-label">Solde</div>
+                <div class="stat-icon"><i class="fa fa-wallet"></i></div>
+                <div class="stat-label">Solde Disponible</div>
                 <div class="stat-value">{{ "%.0f"|format(user.solde_parrainage or 0) }} XOF</div>
             </div>
-        </div>
-
-        <!-- Points par source -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">
-                    <i class="fa fa-chart-pie"></i>
-                    Points par source
-                </div>
-            </div>
-            <div class="points-list">
-                <div class="point-item">
-                    <div class="point-item-left">
-                        <div class="point-item-icon youtube">
-                            <i class="fa-brands fa-youtube"></i>
-                        </div>
-                        <div class="point-item-name">YouTube</div>
-                    </div>
-                    <div class="point-item-value">{{ user.points_youtube or 0 }}</div>
-                </div>
-                <div class="point-item">
-                    <div class="point-item-left">
-                        <div class="point-item-icon tiktok">
-                            <i class="fa-brands fa-tiktok"></i>
-                        </div>
-                        <div class="point-item-name">TikTok</div>
-                    </div>
-                    <div class="point-item-value">{{ user.points_tiktok or 0 }}</div>
-                </div>
-                <div class="point-item">
-                    <div class="point-item-left">
-                        <div class="point-item-icon instagram">
-                            <i class="fa-brands fa-instagram"></i>
-                        </div>
-                        <div class="point-item-name">Instagram</div>
-                    </div>
-                    <div class="point-item-value">{{ user.points_instagram or 0 }}</div>
-                </div>
-                <div class="point-item">
-                    <div class="point-item-left">
-                        <div class="point-item-icon ads">
-                            <i class="fa fa-ad"></i>
-                        </div>
-                        <div class="point-item-name">Publicités</div>
-                    </div>
-                    <div class="point-item-value">{{ user.points_ads or 0 }}</div>
-                </div>
-                <div class="point-item">
-                    <div class="point-item-left">
-                        <div class="point-item-icon spin">
-                            <i class="fa fa-dharmachakra"></i>
-                        </div>
-                        <div class="point-item-name">Roue de la fortune</div>
-                    </div>
-                    <div class="point-item-value">{{ user.points_spin or 0 }}</div>
-                </div>
-                <div class="point-item">
-                    <div class="point-item-left">
-                        <div class="point-item-icon games">
-                            <i class="fa fa-gamepad"></i>
-                        </div>
-                        <div class="point-item-name">Jeux</div>
-                    </div>
-                    <div class="point-item-value">{{ user.points_games or 0 }}</div>
-                </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa fa-users"></i></div>
+                <div class="stat-label">Membres Équipe</div>
+                <div class="stat-value">{{ team_total }}</div>
             </div>
         </div>
 
-        <!-- Stats équipe -->
-        <div class="card">
+        <!-- Statistiques équipe -->
+        <div class="section-card">
             <div class="card-header">
-                <div class="card-title">
-                    <i class="fa fa-sitemap"></i>
-                    Statistiques équipe
-                </div>
+                <i class="fa fa-sitemap"></i>
+                <h2>Statistiques de l'équipe</h2>
             </div>
-            <div class="team-stats">
-                <div class="team-stat">
-<div class="team-stat-value">{{ user.downlines.count() if user.downlines else 0 }}</div>
-                    <div class="team-stat-label">Niveau 1</div>
+            <div class="team-grid">
+                <div class="team-stat-box">
+                    <div class="team-stat-value">{{ user.downlines.count() if user.downlines else 0 }}</div>
+                    <div class="team-stat-label">Filleuls Niveau 1</div>
                 </div>
-                <div class="team-stat">
+                <div class="team-stat-box">
                     <div class="team-stat-value">{{ team_total }}</div>
                     <div class="team-stat-label">Total Équipe</div>
                 </div>
-                <div class="team-stat">
+                <div class="team-stat-box">
                     <div class="team-stat-value">{{ "%.0f"|format(user.commission_total or 0) }}</div>
-                    <div class="team-stat-label">Commissions</div>
+                    <div class="team-stat-label">Commissions (XOF)</div>
                 </div>
             </div>
         </div>
 
         <!-- Actions -->
-        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-            <a href="{{ url_for('retrait_points_page') }}" class="btn btn-primary">
-                <i class="fa fa-money-bill"></i>
-                Retirer mes points
+        <div class="actions">
+            <a href="{{ url_for('retrait_page') }}" class="btn btn-primary">
+                <i class="fa fa-paper-plane"></i>
+                Effectuer un retrait
             </a>
-            <a href="{{ url_for('team_page') }}" class="btn btn-success">
+            <a href="{{ url_for('team_page') }}" class="btn btn-secondary">
                 <i class="fa fa-users"></i>
                 Voir mon équipe
             </a>
         </div>
+
+        <div class="footer">
+            &copy; 2026 <span>NectarPro</span> — Tous droits réservés.
+        </div>
+
     </div>
+
 </body>
 </html>
