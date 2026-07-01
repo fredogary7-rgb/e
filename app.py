@@ -2897,6 +2897,10 @@ from flask import Flask, render_template
 def about():
     return render_template("about.html")
 
+@app.route("/politique")
+def politique():
+    return render_template("politique.html")
+
 def get_service_name(service_id):
     """
     Cherche le nom du service dans tous les pays pour un ID donné.
