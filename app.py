@@ -2899,7 +2899,7 @@ def about():
 
 @app.route("/politique")
 def politique():
-    return render_template("politique2.html")
+    return render_template("politique_v2.html")
 
 def get_service_name(service_id):
     """
