@@ -4,313 +4,222 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Canal+ Premium APK | NectarPro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+
         :root {
-            --bg: #06060e;
-            --card: #0e0e1a;
-            --card-hover: #14142a;
-            --canal-blue: #0055d4;
-            --canal-light: #3388ff;
-            --canal-glow: rgba(0, 85, 212, 0.4);
-            --canal-gradient: linear-gradient(135deg, #0055d4 0%, #003d99 50%, #002266 100%);
-            --gold: #f5c518;
-            --gold-glow: rgba(245, 197, 24, 0.35);
-            --text: #e8eaed;
-            --text-dim: #9aa0a6;
-            --text-muted: #5f6368;
-            --border: rgba(255, 255, 255, 0.06);
-            --white: #ffffff;
-            --green: #0f9d58;
-            --red: #ea4335;
+            --bg-primary: #f8fafc;
+            --bg-secondary: rgba(255, 255, 255, 0.8);
+            --bg-card: rgba(255, 255, 255, 0.7);
+            --border-color: rgba(148, 163, 184, 0.2);
+            --text-primary: #334155;
+            --text-secondary: #64748b;
+            --accent-blue: #38bdf8;
+            --accent-green: #86efac;
+            --accent-pink: #f9a8d4;
+            --accent-purple: #c084fc;
+            --accent-indigo: #4f46e5;
+            --accent-sky: #0ea5e9;
+            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+            --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
+            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
+            --gradient-purple: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%);
+            --gradient-indigo: linear-gradient(135deg, #818cf8 0%, #4f46e5 100%);
+            --gradient-sky: linear-gradient(135deg, #7dd3fc 0%, #0ea5e9 100%);
+            --shadow-soft: 0 4px 6px rgba(56, 189, 248, 0.08);
+            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
+            --shadow-glow: 0 0 40px rgba(56, 189, 248, 0.15);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
+            background: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
             min-height: 100vh;
+            color: var(--text-primary);
             overflow-x: hidden;
             line-height: 1.6;
         }
 
-        /* === Animated Background === */
-        .bg-orbs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
-        .orb { position: absolute; border-radius: 50%; filter: blur(140px); opacity: 0.12; animation: float 22s infinite ease-in-out; }
-        .orb-1 { width: 700px; height: 700px; background: var(--canal-blue); top: -300px; right: -200px; animation-delay: 0s; }
-        .orb-2 { width: 450px; height: 450px; background: #1a1a40; bottom: -200px; left: -150px; animation-delay: -8s; }
-        .orb-3 { width: 500px; height: 500px; background: var(--gold); top: 40%; left: 55%; animation-delay: -15s; }
-        .orb-4 { width: 350px; height: 350px; background: #1a3a5c; top: 10%; left: 10%; animation-delay: -4s; }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(50px, -60px) scale(1.08); }
-            66% { transform: translate(-40px, 40px) scale(0.94); }
-        }
-
-        /* Grid */
-        .grid-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 0;
-            background-image:
-                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
-            background-size: 64px 64px;
-            mask-image: radial-gradient(ellipse at center, black 35%, transparent 70%);
-        }
-
-        /* === Navbar === */
+        /* NAVBAR */
         .navbar {
-            position: sticky; top: 0; z-index: 100;
-            background: rgba(6, 6, 14, 0.8); backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-bottom: 1px solid var(--border);
-            padding: 16px 32px;
-            display: flex; align-items: center; justify-content: space-between;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 24px; background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky; top: 0; z-index: 1000;
         }
-        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        .nav-logo {
-            width: 44px; height: 44px;
-            background: linear-gradient(135deg, var(--canal-blue), #003d99);
-            border-radius: 12px; display: flex; align-items: center; justify-content: center;
-            font-size: 22px; font-weight: 800; color: white;
-            box-shadow: 0 0 30px var(--canal-glow);
+        .nav-brand {
+            font-size: 24px; font-weight: 900; font-style: italic;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; text-decoration: none;
         }
-        .nav-name {
-            font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 800;
-            background: linear-gradient(135deg, var(--canal-light), var(--white));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        .nav-links { display: flex; gap: 20px; list-style: none; }
+        .nav-links a {
+            color: var(--text-secondary); text-decoration: none;
+            font-weight: 500; font-size: 14px; transition: color 0.3s;
         }
-        .nav-links { display: flex; gap: 6px; }
-        .nav-link {
-            color: var(--text-dim); text-decoration: none; padding: 10px 18px;
-            border-radius: 10px; font-size: 14px; font-weight: 500; transition: all 0.3s;
-        }
-        .nav-link:hover { color: var(--text); background: rgba(255,255,255,0.05); }
-        .nav-link.active { color: var(--canal-light); background: rgba(0, 85, 212, 0.1); }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent-blue); }
 
-        /* === Main Container === */
-        .main-container { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 50px 24px 80px; }
+        /* MAIN */
+        .main-container { max-width: 900px; margin: 0 auto; padding: 50px 24px 80px; }
 
-        /* === Hero === */
-        .hero { text-align: center; padding: 50px 20px 20px; }
+        /* HERO */
+        .hero { text-align: center; padding: 60px 20px 30px; }
         .hero-badge {
             display: inline-flex; align-items: center; gap: 8px;
-            background: rgba(0, 85, 212, 0.12); border: 1px solid rgba(0, 85, 212, 0.25);
-            color: var(--canal-light); padding: 8px 22px; border-radius: 50px;
-            font-size: 13px; font-weight: 600; margin-bottom: 28px; letter-spacing: 0.5px;
+            background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2);
+            color: var(--accent-blue); padding: 8px 20px; border-radius: 50px;
+            font-size: 13px; font-weight: 600; font-style: italic; margin-bottom: 28px;
         }
-        .hero-badge .pulse-dot { width: 9px; height: 9px; background: var(--canal-blue); border-radius: 50%; animation: pulse 2s infinite; }
+        .hero-badge .pulse-dot {
+            width: 8px; height: 8px; background: var(--accent-blue);
+            border-radius: 50%; animation: pulse 2s infinite;
+        }
         @keyframes pulse {
-            0%,100% { box-shadow: 0 0 0 0 var(--canal-glow); }
-            50% { box-shadow: 0 0 0 14px transparent; }
+            0%,100% { box-shadow: 0 0 0 0 rgba(56,189,248,0.4); }
+            50% { box-shadow: 0 0 0 12px transparent; }
         }
 
-        .hero-logo-wrapper {
-            position: relative; display: inline-block; margin-bottom: 32px;
-        }
+        .hero-logo-wrapper { position: relative; display: inline-block; margin-bottom: 28px; }
         .hero-canal-logo {
-            width: 120px; height: 120px;
-            background: var(--canal-gradient);
-            border-radius: 32px; display: flex; align-items: center; justify-content: center;
-            font-size: 56px; color: white;
-            box-shadow: 0 0 60px var(--canal-glow), 0 20px 50px rgba(0,0,0,0.5);
+            width: 110px; height: 110px; background: var(--gradient-indigo);
+            border-radius: 28px; display: flex; align-items: center; justify-content: center;
+            font-size: 50px; color: white; position: relative; z-index: 2;
+            box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3);
             animation: floatLogo 4s ease-in-out infinite;
-            position: relative; z-index: 2;
         }
         .hero-logo-ring {
-            position: absolute; top: -12px; left: -12px; width: 144px; height: 144px;
-            border: 2px solid rgba(0, 85, 212, 0.3); border-radius: 40px;
+            position: absolute; top: -10px; left: -10px; width: 130px; height: 130px;
+            border: 2px solid rgba(79, 70, 229, 0.25); border-radius: 36px;
             animation: rotateRing 8s linear infinite;
         }
-        @keyframes floatLogo {
-            0%,100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        @keyframes rotateRing {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
+        @keyframes floatLogo { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+        @keyframes rotateRing { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
 
         .hero h1 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: clamp(34px, 5vw, 56px); font-weight: 900; line-height: 1.15; margin-bottom: 18px;
+            font-size: clamp(34px, 5vw, 52px); font-weight: 900; font-style: italic;
+            line-height: 1.15; margin-bottom: 16px;
         }
         .hero h1 .canal-text {
-            background: linear-gradient(135deg, var(--white) 0%, var(--canal-light) 100%);
+            background: var(--gradient-indigo);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
         .hero h1 .premium-text {
-            background: linear-gradient(135deg, var(--gold) 0%, #ffd54f 100%);
+            background: var(--gradient-pink);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
         .hero p {
-            font-size: 17px; color: var(--text-dim); max-width: 600px; margin: 0 auto 36px;
+            font-size: 16px; color: var(--text-secondary); max-width: 600px;
+            margin: 0 auto 36px; font-style: italic;
         }
 
-        /* === Download Card === */
+        /* DOWNLOAD CARD */
         .download-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 28px; padding: 48px 40px;
-            text-align: center; position: relative; overflow: hidden;
-            box-shadow: 0 0 50px rgba(0, 85, 212, 0.08);
+            background: var(--bg-card); backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color); border-radius: 28px;
+            padding: 48px 40px; text-align: center;
+            box-shadow: var(--shadow-medium);
         }
-        .download-card::before {
-            content: ''; position: absolute; top: -60%; left: -60%; width: 220%; height: 220%;
-            background: radial-gradient(circle at center, var(--canal-glow) 0%, transparent 45%);
-            opacity: 0.06;
-        }
-        .download-card::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--canal-blue), var(--gold), transparent);
-        }
-
         .download-card .app-icon {
-            width: 80px; height: 80px; margin: 0 auto 24px;
-            background: var(--canal-gradient); border-radius: 22px;
+            width: 72px; height: 72px; margin: 0 auto 20px;
+            background: var(--gradient-indigo); border-radius: 20px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 36px; color: white; position: relative; z-index: 2;
-            box-shadow: 0 10px 30px var(--canal-glow);
+            font-size: 32px; color: white;
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3);
         }
         .download-card h2 {
-            font-family: 'Montserrat', sans-serif; font-size: 28px; font-weight: 800;
-            margin-bottom: 6px; position: relative; z-index: 2;
+            font-size: 26px; font-weight: 900; font-style: italic; margin-bottom: 6px;
         }
         .download-card .version {
-            font-size: 14px; color: var(--text-muted); margin-bottom: 28px; position: relative; z-index: 2;
+            font-size: 14px; color: var(--text-secondary); margin-bottom: 28px; font-style: italic;
         }
         .download-card .version span {
-            background: rgba(0, 170, 255, 0.1); color: var(--canal-light);
-            padding: 4px 12px; border-radius: 50px; font-weight: 600;
+            background: rgba(79, 70, 229, 0.1); color: var(--accent-indigo);
+            padding: 4px 14px; border-radius: 50px; font-weight: 600; font-style: italic;
         }
-
-        .dl-specs {
-            display: flex; justify-content: center; gap: 32px; margin-bottom: 32px;
-            position: relative; z-index: 2; flex-wrap: wrap;
-        }
-        .dl-spec {
-            text-align: center;
-        }
-        .dl-spec .spec-value {
-            font-family: 'Montserrat', sans-serif; font-size: 22px; font-weight: 700; color: var(--canal-light);
-        }
-        .dl-spec .spec-label {
-            font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;
-        }
+        .dl-specs { display: flex; justify-content: center; gap: 32px; margin-bottom: 32px; flex-wrap: wrap; }
+        .dl-spec .spec-value { font-size: 22px; font-weight: 900; font-style: italic; color: var(--accent-indigo); }
+        .dl-spec .spec-label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-top: 2px; }
 
         .btn-download-main {
-            display: inline-flex; align-items: center; gap: 12px;
-            padding: 18px 48px;
-            background: var(--canal-gradient);
-            color: white; text-decoration: none; border-radius: 16px;
-            font-size: 18px; font-weight: 700;
-            box-shadow: 0 8px 32px var(--canal-glow);
-            transition: all 0.3s; position: relative; z-index: 2;
-            border: none; cursor: pointer;
-        }
-        .btn-download-main:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 14px 44px var(--canal-glow), 0 0 0 4px rgba(0, 85, 212, 0.1);
-        }
-        .btn-download-main i { font-size: 20px; }
-
-        .dl-alt {
-            margin-top: 20px; position: relative; z-index: 2;
-            font-size: 13px; color: var(--text-muted);
-        }
-        .dl-alt a { color: var(--canal-light); text-decoration: none; font-weight: 500; }
-        .dl-alt a:hover { text-decoration: underline; }
-
-        /* === Features === */
-        .features-section { margin-top: 60px; }
-        .section-title {
-            font-family: 'Montserrat', sans-serif; font-size: 26px; font-weight: 800;
-            text-align: center; margin-bottom: 12px;
-        }
-        .section-subtitle {
-            text-align: center; color: var(--text-muted); margin-bottom: 40px; font-size: 15px;
-        }
-
-        .features-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
-        }
-        .feature-card {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 20px; padding: 28px;
-            display: flex; gap: 18px; align-items: flex-start;
+            display: inline-flex; align-items: center; gap: 10px; padding: 18px 44px;
+            background: var(--gradient-indigo); color: white; text-decoration: none;
+            border-radius: 14px; font-size: 17px; font-weight: 700; font-style: italic;
+            box-shadow: 0 6px 24px rgba(79, 70, 229, 0.35);
             transition: all 0.3s;
         }
-        .feature-card:hover {
-            border-color: rgba(0, 85, 212, 0.3);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-        }
-        .feature-icon {
-            width: 52px; height: 52px; border-radius: 16px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 24px; flex-shrink: 0;
-        }
-        .feature-card:nth-child(1) .feature-icon { background: rgba(0, 85, 212, 0.2); color: var(--canal-light); }
-        .feature-card:nth-child(2) .feature-icon { background: rgba(245, 197, 24, 0.2); color: var(--gold); }
-        .feature-card:nth-child(3) .feature-icon { background: rgba(15, 157, 88, 0.2); color: var(--green); }
-        .feature-card:nth-child(4) .feature-icon { background: rgba(234, 67, 53, 0.2); color: var(--red); }
-        .feature-card:nth-child(5) .feature-icon { background: rgba(138, 43, 226, 0.2); color: #8a2be2; }
-        .feature-card:nth-child(6) .feature-icon { background: rgba(0, 170, 255, 0.2); color: #0af; }
+        .btn-download-main:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(79, 70, 229, 0.45); }
+        .btn-download-main i { font-size: 20px; }
+        .dl-alt { margin-top: 20px; font-size: 13px; color: var(--text-secondary); font-style: italic; }
+        .dl-alt a { color: var(--accent-indigo); text-decoration: none; font-weight: 600; }
 
-        .feature-info h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
-        .feature-info p { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
-
-        /* === How To === */
-        .how-to { margin-top: 60px; }
-        .steps-list {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 24px; padding: 40px; position: relative; overflow: hidden;
-        }
-        .steps-list::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--canal-blue), transparent);
-        }
-        .step-row {
-            display: flex; align-items: flex-start; gap: 20px; padding: 20px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        .step-row:last-child { border-bottom: none; }
-        .step-num {
-            width: 44px; height: 44px; border-radius: 14px;
-            background: var(--canal-gradient); display: flex; align-items: center;
-            justify-content: center; font-size: 18px; font-weight: 800; color: white;
-            flex-shrink: 0;
-        }
-        .step-row:nth-child(2) .step-num { background: linear-gradient(135deg, #0066cc, #004499); }
-        .step-row:nth-child(3) .step-num { background: linear-gradient(135deg, #004499, #002266); }
-        .step-row:nth-child(4) .step-num { background: linear-gradient(135deg, #002266, #001133); }
-        .step-content h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-        .step-content p { font-size: 13px; color: var(--text-dim); }
-
-        /* === Disclaimer === */
-        .disclaimer {
-            margin-top: 40px; text-align: center;
-            padding: 28px 32px; background: rgba(234, 67, 53, 0.06);
-            border: 1px solid rgba(234, 67, 53, 0.15); border-radius: 16px;
-        }
-        .disclaimer i { color: var(--red); margin-right: 8px; }
-        .disclaimer p { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
-
-        /* === Footer === */
-        .footer {
-            margin-top: 60px; text-align: center; padding: 32px;
-            color: var(--text-muted); font-size: 13px; position: relative; z-index: 1;
-        }
-        .footer span {
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--canal-light), var(--white));
+        /* SECTION */
+        .features-section { margin-top: 60px; }
+        .section-title {
+            font-size: 26px; font-weight: 900; font-style: italic; text-align: center; margin-bottom: 8px;
+            background: var(--gradient-blue);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
+        .section-subtitle { text-align: center; color: var(--text-secondary); margin-bottom: 36px; font-size: 15px; font-style: italic; }
 
-        /* === Responsive === */
+        .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .feature-card {
+            background: var(--bg-card); backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color); border-radius: 20px;
+            padding: 28px; display: flex; gap: 18px; align-items: flex-start;
+            transition: all 0.3s; box-shadow: var(--shadow-soft);
+        }
+        .feature-card:hover { border-color: rgba(79,70,229,0.3); box-shadow: var(--shadow-medium); }
+        .feature-icon {
+            width: 50px; height: 50px; border-radius: 14px; display: flex;
+            align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;
+        }
+        .feature-card:nth-child(1) .feature-icon { background: rgba(79,70,229,0.15); color: var(--accent-indigo); }
+        .feature-card:nth-child(2) .feature-icon { background: rgba(134,239,172,0.15); color: var(--accent-green); }
+        .feature-card:nth-child(3) .feature-icon { background: rgba(56,189,248,0.15); color: var(--accent-blue); }
+        .feature-card:nth-child(4) .feature-icon { background: rgba(249,168,212,0.15); color: var(--accent-pink); }
+        .feature-card:nth-child(5) .feature-icon { background: rgba(192,132,252,0.15); color: var(--accent-purple); }
+        .feature-card:nth-child(6) .feature-icon { background: rgba(14,165,233,0.15); color: var(--accent-sky); }
+        .feature-info h3 { font-size: 17px; font-weight: 700; font-style: italic; margin-bottom: 6px; }
+        .feature-info p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+        /* HOW TO */
+        .how-to { margin-top: 60px; }
+        .steps-list {
+            background: var(--bg-card); backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color); border-radius: 24px;
+            padding: 36px; box-shadow: var(--shadow-soft);
+        }
+        .step-row { display: flex; align-items: flex-start; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--border-color); }
+        .step-row:last-child { border-bottom: none; }
+        .step-num {
+            width: 44px; height: 44px; border-radius: 14px; display: flex;
+            align-items: center; justify-content: center; font-size: 18px;
+            font-weight: 900; font-style: italic; color: white; flex-shrink: 0;
+        }
+        .step-row:nth-child(1) .step-num { background: var(--gradient-indigo); }
+        .step-row:nth-child(2) .step-num { background: var(--gradient-blue); }
+        .step-row:nth-child(3) .step-num { background: var(--gradient-purple); }
+        .step-content h4 { font-size: 16px; font-weight: 700; font-style: italic; margin-bottom: 4px; }
+        .step-content p { font-size: 13px; color: var(--text-secondary); }
+
+        /* DISCLAIMER */
+        .disclaimer {
+            margin-top: 36px; text-align: center; padding: 24px 28px;
+            background: rgba(249,168,212,0.1); border: 1px solid rgba(249,168,212,0.2);
+            border-radius: 16px;
+        }
+        .disclaimer p { font-size: 13px; color: var(--text-secondary); font-style: italic; line-height: 1.6; }
+
+        /* FOOTER */
+        .footer {
+            margin-top: 60px; text-align: center; padding: 32px;
+            color: var(--text-secondary); font-size: 13px; font-style: italic;
+        }
+        .footer span { font-weight: 700; color: var(--accent-indigo); }
+
         @media (max-width: 768px) {
             .navbar { padding: 12px 16px; }
             .nav-links { display: none; }
@@ -318,61 +227,42 @@
             .download-card { padding: 32px 20px; }
             .dl-specs { gap: 16px; }
             .hero h1 { font-size: 30px; }
-            .hero-canal-logo { width: 90px; height: 90px; font-size: 42px; border-radius: 24px; }
-            .hero-logo-ring { top: -10px; left: -10px; width: 110px; height: 110px; border-radius: 32px; }
-            .steps-list { padding: 24px 20px; }
+            .hero-canal-logo { width: 90px; height: 90px; font-size: 40px; }
+            .hero-logo-ring { top: -8px; left: -8px; width: 106px; height: 106px; }
+            .steps-list { padding: 24px 16px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Animated Background -->
-    <div class="bg-orbs">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-        <div class="orb orb-4"></div>
-    </div>
-    <div class="grid-bg"></div>
-
-    <!-- Navbar -->
     <nav class="navbar">
-        <a href="/dashboard" class="nav-brand">
-            <div class="nav-logo">N</div>
-            <span class="nav-name">NectarPro</span>
-        </a>
-        <div class="nav-links">
-            <a href="/dashboard" class="nav-link">Dashboard</a>
-            <a href="/apk" class="nav-link active">APK</a>
-            <a href="/team" class="nav-link">Équipe</a>
-            <a href="/academy/tiktok" class="nav-link">Academy</a>
-        </div>
+        <a href="/dashboard" class="nav-brand">NectarPro</a>
+        <ul class="nav-links">
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/apk" class="active">APK</a></li>
+            <li><a href="/team">Équipe</a></li>
+            <li><a href="/academy/tiktok">Academy</a></li>
+        </ul>
     </nav>
 
-    <!-- Main Content -->
     <div class="main-container">
 
-        <!-- Hero -->
         <section class="hero">
             <div class="hero-badge">
                 <span class="pulse-dot"></span> Exclusivité NectarPro
             </div>
             <div class="hero-logo-wrapper">
-                <div class="hero-canal-logo">
-                    <i class="fa-solid fa-tv"></i>
-                </div>
+                <div class="hero-canal-logo"><i class="fa-solid fa-tv"></i></div>
                 <div class="hero-logo-ring"></div>
             </div>
             <h1>
                 <span class="canal-text">Canal+</span> <span class="premium-text">Premium</span>
             </h1>
             <p>
-                Accédez à <strong>toutes les chaînes Canal+</strong> sans abonnement.
-                Films, séries, sport en direct, documentaires — tout le catalogue premium débloqué gratuitement sur votre mobile.
+                Accédez à <strong>toutes les chaînes Canal+</strong> sans abonnement. Films, séries, sport en direct, documentaires — tout le catalogue premium débloqué gratuitement sur votre mobile.
             </p>
         </section>
 
-        <!-- Download Card -->
         <div class="download-card">
             <div class="app-icon"><i class="fa-solid fa-crown"></i></div>
             <h2>Canal+ Premium APK</h2>
@@ -394,18 +284,13 @@
             </div>
 
             <a href="https://drive.google.com/uc?id=15G5lmyNMw2xYTm_XvvhIX77uBqT99lLq" class="btn-download-main" target="_blank">
-                <i class="fa-solid fa-download"></i>
-                Télécharger l'APK
+                <i class="fa-solid fa-download"></i> Télécharger l'APK
             </a>
             <p class="dl-alt">
-                Lien alternatif : 
-                <a href="https://drive.google.com/file/d/15G5lmyNMw2xYTm_XvvhIX77uBqT99lLq/view" target="_blank">
-                    Google Drive (miroir)
-                </a>
+                Lien alternatif : <a href="https://drive.google.com/file/d/15G5lmyNMw2xYTm_XvvhIX77uBqT99lLq/view" target="_blank">Google Drive (miroir)</a>
             </p>
         </div>
 
-        <!-- Features -->
         <div class="features-section">
             <h2 class="section-title">Ce que vous obtenez</h2>
             <p class="section-subtitle">Le catalogue Canal+ complet, sans aucune restriction</p>
@@ -427,7 +312,7 @@
                 <div class="feature-card">
                     <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
                     <div class="feature-info">
-                        <h3>Sans Root</h3>
+                        <h3>Sans Root Requis</h3>
                         <p>Aucun root requis. Installation simple en un clic, compatible avec tous les appareils Android 6+.</p>
                     </div>
                 </div>
@@ -455,7 +340,6 @@
             </div>
         </div>
 
-        <!-- How To -->
         <div class="how-to">
             <h2 class="section-title">Comment installer</h2>
             <p class="section-subtitle">Trois étapes simples pour profiter de Canal+ Premium</p>
@@ -484,19 +368,15 @@
             </div>
         </div>
 
-        <!-- Disclaimer -->
         <div class="disclaimer">
             <p>
                 <i class="fa-solid fa-circle-info"></i>
-                Cette application est fournie à des <strong>fins éducatives et d'évaluation uniquement</strong>.
-                NectarPro ne détient aucun droit sur la marque Canal+. Nous vous encourageons à soutenir les créateurs
-                de contenu en souscrivant un abonnement officiel si vous appréciez le service.
+                Cette application est fournie à des <strong>fins éducatives et d'évaluation uniquement</strong>. NectarPro ne détient aucun droit sur la marque Canal+. Nous vous encourageons à soutenir les créateurs de contenu en souscrivant un abonnement officiel si vous appréciez le service.
             </p>
         </div>
 
-        <!-- Footer -->
         <div class="footer">
-            &copy; {{ now.year if now else '2026' }} <span>NectarPro</span> — Tous droits réservés.
+            &copy; 2026 <span>NectarPro</span> — Tous droits réservés.
         </div>
 
     </div>
