@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canal+ Premium APK | NectarPro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #06060e;
+            --card: #0e0e1a;
+            --card-hover: #14142a;
+            --canal-blue: #0055d4;
+            --canal-light: #3388ff;
+            --canal-glow: rgba(0, 85, 212, 0.4);
+            --canal-gradient: linear-gradient(135deg, #0055d4 0%, #003d99 50%, #002266 100%);
+            --gold: #f5c518;
+            --gold-glow: rgba(245, 197, 24, 0.35);
+            --text: #e8eaed;
+            --text-dim: #9aa0a6;
+            --text-muted: #5f6368;
+            --border: rgba(255, 255, 255, 0.06);
+            --white: #ffffff;
+            --green: #0f9d58;
+            --red: #ea4335;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* === Animated Background === */
+        .bg-orbs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
+        .orb { position: absolute; border-radius: 50%; filter: blur(140px); opacity: 0.12; animation: float 22s infinite ease-in-out; }
+        .orb-1 { width: 700px; height: 700px; background: var(--canal-blue); top: -300px; right: -200px; animation-delay: 0s; }
+        .orb-2 { width: 450px; height: 450px; background: #1a1a40; bottom: -200px; left: -150px; animation-delay: -8s; }
+        .orb-3 { width: 500px; height: 500px; background: var(--gold); top: 40%; left: 55%; animation-delay: -15s; }
+        .orb-4 { width: 350px; height: 350px; background: #1a3a5c; top: 10%; left: 10%; animation-delay: -4s; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(50px, -60px) scale(1.08); }
+            66% { transform: translate(-40px, 40px) scale(0.94); }
+        }
+
+        /* Grid */
+        .grid-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+            background-size: 64px 64px;
+            mask-image: radial-gradient(ellipse at center, black 35%, transparent 70%);
+        }
+
+        /* === Navbar === */
+        .navbar {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(6, 6, 14, 0.8); backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 32px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-logo {
+            width: 44px; height: 44px;
+            background: linear-gradient(135deg, var(--canal-blue), #003d99);
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 22px; font-weight: 800; color: white;
+            box-shadow: 0 0 30px var(--canal-glow);
+        }
+        .nav-name {
+            font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 800;
+            background: linear-gradient(135deg, var(--canal-light), var(--white));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .nav-links { display: flex; gap: 6px; }
+        .nav-link {
+            color: var(--text-dim); text-decoration: none; padding: 10px 18px;
+            border-radius: 10px; font-size: 14px; font-weight: 500; transition: all 0.3s;
+        }
+        .nav-link:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+        .nav-link.active { color: var(--canal-light); background: rgba(0, 85, 212, 0.1); }
+
+        /* === Main Container === */
+        .main-container { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 50px 24px 80px; }
+
+        /* === Hero === */
+        .hero { text-align: center; padding: 50px 20px 20px; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(0, 85, 212, 0.12); border: 1px solid rgba(0, 85, 212, 0.25);
+            color: var(--canal-light); padding: 8px 22px; border-radius: 50px;
+            font-size: 13px; font-weight: 600; margin-bottom: 28px; letter-spacing: 0.5px;
+        }
+        .hero-badge .pulse-dot { width: 9px; height: 9px; background: var(--canal-blue); border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0%,100% { box-shadow: 0 0 0 0 var(--canal-glow); }
+            50% { box-shadow: 0 0 0 14px transparent; }
+        }
+
+        .hero-logo-wrapper {
+            position: relative; display: inline-block; margin-bottom: 32px;
+        }
+        .hero-canal-logo {
+            width: 120px; height: 120px;
+            background: var(--canal-gradient);
+            border-radius: 32px; display: flex; align-items: center; justify-content: center;
+            font-size: 56px; color: white;
+            box-shadow: 0 0 60px var(--canal-glow), 0 20px 50px rgba(0,0,0,0.5);
+            animation: floatLogo 4s ease-in-out infinite;
+            position: relative; z-index: 2;
+        }
+        .hero-logo-ring {
+            position: absolute; top: -12px; left: -12px; width: 144px; height: 144px;
+            border: 2px solid rgba(0, 85, 212, 0.3); border-radius: 40px;
+            animation: rotateRing 8s linear infinite;
+        }
+        @keyframes floatLogo {
+            0%,100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes rotateRing {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .hero h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(34px, 5vw, 56px); font-weight: 900; line-height: 1.15; margin-bottom: 18px;
+        }
+        .hero h1 .canal-text {
+            background: linear-gradient(135deg, var(--white) 0%, var(--canal-light) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero h1 .premium-text {
+            background: linear-gradient(135deg, var(--gold) 0%, #ffd54f 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero p {
+            font-size: 17px; color: var(--text-dim); max-width: 600px; margin: 0 auto 36px;
+        }
+
+        /* === Download Card === */
+        .download-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 28px; padding: 48px 40px;
+            text-align: center; position: relative; overflow: hidden;
+            box-shadow: 0 0 50px rgba(0, 85, 212, 0.08);
+        }
+        .download-card::before {
+            content: ''; position: absolute; top: -60%; left: -60%; width: 220%; height: 220%;
+            background: radial-gradient(circle at center, var(--canal-glow) 0%, transparent 45%);
+            opacity: 0.06;
+        }
+        .download-card::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--canal-blue), var(--gold), transparent);
+        }
+
+        .download-card .app-icon {
+            width: 80px; height: 80px; margin: 0 auto 24px;
+            background: var(--canal-gradient); border-radius: 22px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 36px; color: white; position: relative; z-index: 2;
+            box-shadow: 0 10px 30px var(--canal-glow);
+        }
+        .download-card h2 {
+            font-family: 'Montserrat', sans-serif; font-size: 28px; font-weight: 800;
+            margin-bottom: 6px; position: relative; z-index: 2;
+        }
+        .download-card .version {
+            font-size: 14px; color: var(--text-muted); margin-bottom: 28px; position: relative; z-index: 2;
+        }
+        .download-card .version span {
+            background: rgba(0, 170, 255, 0.1); color: var(--canal-light);
+            padding: 4px 12px; border-radius: 50px; font-weight: 600;
+        }
+
+        .dl-specs {
+            display: flex; justify-content: center; gap: 32px; margin-bottom: 32px;
+            position: relative; z-index: 2; flex-wrap: wrap;
+        }
+        .dl-spec {
+            text-align: center;
+        }
+        .dl-spec .spec-value {
+            font-family: 'Montserrat', sans-serif; font-size: 22px; font-weight: 700; color: var(--canal-light);
+        }
+        .dl-spec .spec-label {
+            font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;
+        }
+
+        .btn-download-main {
+            display: inline-flex; align-items: center; gap: 12px;
+            padding: 18px 48px;
+            background: var(--canal-gradient);
+            color: white; text-decoration: none; border-radius: 16px;
+            font-size: 18px; font-weight: 700;
+            box-shadow: 0 8px 32px var(--canal-glow);
+            transition: all 0.3s; position: relative; z-index: 2;
+            border: none; cursor: pointer;
+        }
+        .btn-download-main:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 44px var(--canal-glow), 0 0 0 4px rgba(0, 85, 212, 0.1);
+        }
+        .btn-download-main i { font-size: 20px; }
+
+        .dl-alt {
+            margin-top: 20px; position: relative; z-index: 2;
+            font-size: 13px; color: var(--text-muted);
+        }
+        .dl-alt a { color: var(--canal-light); text-decoration: none; font-weight: 500; }
+        .dl-alt a:hover { text-decoration: underline; }
+
+        /* === Features === */
+        .features-section { margin-top: 60px; }
+        .section-title {
+            font-family: 'Montserrat', sans-serif; font-size: 26px; font-weight: 800;
+            text-align: center; margin-bottom: 12px;
+        }
+        .section-subtitle {
+            text-align: center; color: var(--text-muted); margin-bottom: 40px; font-size: 15px;
+        }
+
+        .features-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+        }
+        .feature-card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 20px; padding: 28px;
+            display: flex; gap: 18px; align-items: flex-start;
+            transition: all 0.3s;
+        }
+        .feature-card:hover {
+            border-color: rgba(0, 85, 212, 0.3);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+        }
+        .feature-icon {
+            width: 52px; height: 52px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; flex-shrink: 0;
+        }
+        .feature-card:nth-child(1) .feature-icon { background: rgba(0, 85, 212, 0.2); color: var(--canal-light); }
+        .feature-card:nth-child(2) .feature-icon { background: rgba(245, 197, 24, 0.2); color: var(--gold); }
+        .feature-card:nth-child(3) .feature-icon { background: rgba(15, 157, 88, 0.2); color: var(--green); }
+        .feature-card:nth-child(4) .feature-icon { background: rgba(234, 67, 53, 0.2); color: var(--red); }
+        .feature-card:nth-child(5) .feature-icon { background: rgba(138, 43, 226, 0.2); color: #8a2be2; }
+        .feature-card:nth-child(6) .feature-icon { background: rgba(0, 170, 255, 0.2); color: #0af; }
+
+        .feature-info h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+        .feature-info p { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+
+        /* === How To === */
+        .how-to { margin-top: 60px; }
+        .steps-list {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 24px; padding: 40px; position: relative; overflow: hidden;
+        }
+        .steps-list::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--canal-blue), transparent);
+        }
+        .step-row {
+            display: flex; align-items: flex-start; gap: 20px; padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .step-row:last-child { border-bottom: none; }
+        .step-num {
+            width: 44px; height: 44px; border-radius: 14px;
+            background: var(--canal-gradient); display: flex; align-items: center;
+            justify-content: center; font-size: 18px; font-weight: 800; color: white;
+            flex-shrink: 0;
+        }
+        .step-row:nth-child(2) .step-num { background: linear-gradient(135deg, #0066cc, #004499); }
+        .step-row:nth-child(3) .step-num { background: linear-gradient(135deg, #004499, #002266); }
+        .step-row:nth-child(4) .step-num { background: linear-gradient(135deg, #002266, #001133); }
+        .step-content h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+        .step-content p { font-size: 13px; color: var(--text-dim); }
+
+        /* === Disclaimer === */
+        .disclaimer {
+            margin-top: 40px; text-align: center;
+            padding: 28px 32px; background: rgba(234, 67, 53, 0.06);
+            border: 1px solid rgba(234, 67, 53, 0.15); border-radius: 16px;
+        }
+        .disclaimer i { color: var(--red); margin-right: 8px; }
+        .disclaimer p { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+
+        /* === Footer === */
+        .footer {
+            margin-top: 60px; text-align: center; padding: 32px;
+            color: var(--text-muted); font-size: 13px; position: relative; z-index: 1;
+        }
+        .footer span {
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--canal-light), var(--white));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+
+        /* === Responsive === */
+        @media (max-width: 768px) {
+            .navbar { padding: 12px 16px; }
+            .nav-links { display: none; }
+            .features-grid { grid-template-columns: 1fr; }
+            .download-card { padding: 32px 20px; }
+            .dl-specs { gap: 16px; }
+            .hero h1 { font-size: 30px; }
+            .hero-canal-logo { width: 90px; height: 90px; font-size: 42px; border-radius: 24px; }
+            .hero-logo-ring { top: -10px; left: -10px; width: 110px; height: 110px; border-radius: 32px; }
+            .steps-list { padding: 24px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Animated Background -->
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
+    </div>
+    <div class="grid-bg"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="/dashboard" class="nav-brand">
+            <div class="nav-logo">N</div>
+            <span class="nav-name">NectarPro</span>
+        </a>
+        <div class="nav-links">
+            <a href="/dashboard" class="nav-link">Dashboard</a>
+            <a href="/apk" class="nav-link active">APK</a>
+            <a href="/team" class="nav-link">Équipe</a>
+            <a href="/academy/tiktok" class="nav-link">Academy</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-container">
+
+        <!-- Hero -->
+        <section class="hero">
+            <div class="hero-badge">
+                <span class="pulse-dot"></span> Exclusivité NectarPro
+            </div>
+            <div class="hero-logo-wrapper">
+                <div class="hero-canal-logo">
+                    <i class="fa-solid fa-tv"></i>
+                </div>
+                <div class="hero-logo-ring"></div>
+            </div>
+            <h1>
+                <span class="canal-text">Canal+</span> <span class="premium-text">Premium</span>
+            </h1>
+            <p>
+                Accédez à <strong>toutes les chaînes Canal+</strong> sans abonnement.
+                Films, séries, sport en direct, documentaires — tout le catalogue premium débloqué gratuitement sur votre mobile.
+            </p>
+        </section>
+
+        <!-- Download Card -->
+        <div class="download-card">
+            <div class="app-icon"><i class="fa-solid fa-crown"></i></div>
+            <h2>Canal+ Premium APK</h2>
+            <p class="version">Version <span>5.12.1</span> — Dernière mise à jour : Juin 2026</p>
+
+            <div class="dl-specs">
+                <div class="dl-spec">
+                    <div class="spec-value">89 MB</div>
+                    <div class="spec-label">Taille</div>
+                </div>
+                <div class="dl-spec">
+                    <div class="spec-value">Android 6+</div>
+                    <div class="spec-label">OS Minimum</div>
+                </div>
+                <div class="dl-spec">
+                    <div class="spec-value">100%</div>
+                    <div class="spec-label">Débloqué</div>
+                </div>
+            </div>
+
+            <a href="https://drive.google.com/uc?id=15G5lmyNMw2xYTm_XvvhIX77uBqT99lLq" class="btn-download-main" target="_blank">
+                <i class="fa-solid fa-download"></i>
+                Télécharger l'APK
+            </a>
+            <p class="dl-alt">
+                Lien alternatif : 
+                <a href="https://drive.google.com/file/d/15G5lmyNMw2xYTm_XvvhIX77uBqT99lLq/view" target="_blank">
+                    Google Drive (miroir)
+                </a>
+            </p>
+        </div>
+
+        <!-- Features -->
+        <div class="features-section">
+            <h2 class="section-title">Ce que vous obtenez</h2>
+            <p class="section-subtitle">Le catalogue Canal+ complet, sans aucune restriction</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-film"></i></div>
+                    <div class="feature-info">
+                        <h3>Catalogue Premium Complet</h3>
+                        <p>Tous les films, séries originales, documentaires et émissions exclusives de Canal+.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-futbol"></i></div>
+                    <div class="feature-info">
+                        <h3>Sports en Direct</h3>
+                        <p>Ligue 1, Premier League, Champions League, Top 14, F1, MotoGP — tout le sport en live HD.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="feature-info">
+                        <h3>Sans Root</h3>
+                        <p>Aucun root requis. Installation simple en un clic, compatible avec tous les appareils Android 6+.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-closed-captioning"></i></div>
+                    <div class="feature-info">
+                        <h3>Sous-titres Multi-langues</h3>
+                        <p>Français, anglais, espagnol — choisissez votre langue pour tous les contenus.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-video"></i></div>
+                    <div class="feature-info">
+                        <h3>Qualité 4K / Full HD</h3>
+                        <p>Streaming en haute définition jusqu'à 4K selon votre connexion et appareil.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-infinity"></i></div>
+                    <div class="feature-info">
+                        <h3>Accès Illimité</h3>
+                        <p>Regardez autant que vous voulez, quand vous voulez. Pas de limite de temps ni de contenu.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- How To -->
+        <div class="how-to">
+            <h2 class="section-title">Comment installer</h2>
+            <p class="section-subtitle">Trois étapes simples pour profiter de Canal+ Premium</p>
+            <div class="steps-list">
+                <div class="step-row">
+                    <div class="step-num">1</div>
+                    <div class="step-content">
+                        <h4>Téléchargez l'APK</h4>
+                        <p>Cliquez sur le bouton de téléchargement ci-dessus pour obtenir le fichier APK (89 MB).</p>
+                    </div>
+                </div>
+                <div class="step-row">
+                    <div class="step-num">2</div>
+                    <div class="step-content">
+                        <h4>Activez les sources inconnues</h4>
+                        <p>Allez dans Paramètres → Sécurité → Sources inconnues, et autorisez l'installation depuis cette source.</p>
+                    </div>
+                </div>
+                <div class="step-row">
+                    <div class="step-num">3</div>
+                    <div class="step-content">
+                        <h4>Installez et profitez</h4>
+                        <p>Ouvrez le fichier téléchargé, installez l'application, connectez-vous et profitez du catalogue complet !</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="disclaimer">
+            <p>
+                <i class="fa-solid fa-circle-info"></i>
+                Cette application est fournie à des <strong>fins éducatives et d'évaluation uniquement</strong>.
+                NectarPro ne détient aucun droit sur la marque Canal+. Nous vous encourageons à soutenir les créateurs
+                de contenu en souscrivant un abonnement officiel si vous appréciez le service.
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            &copy; {{ now.year if now else '2026' }} <span>NectarPro</span> — Tous droits réservés.
+        </div>
+
+    </div>
+
+</body>
+</html>
