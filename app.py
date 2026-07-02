@@ -2686,7 +2686,11 @@ def dashboard_page():
         is_blocked_500=(is_blocked_500 or no_rounds_left),
 
         # --- PRODUITS VENDEURS ---
-        produits_recents=produits_recents
+        produits_recents=produits_recents,
+
+        # --- VARIABLES DASHBOARD PREMIUM ---
+        now=now,
+        total_filleuls=User.query.filter_by(parrain=user.username).count()
     )
 
 

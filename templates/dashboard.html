@@ -5,491 +5,657 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NectarPro - Dashboard</title>
 <link rel="icon" href="/static/images/favicon-48.png" sizes="48x48" type="image/png">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-/* RESET & BASE */
-* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+/* ═══════════════════════════════════════════════════════════
+   NECTARPRO DASHBOARD - DESIGN PREMIUM MOTIVATION
+   ═══════════════════════════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
 
-:root {
-    --bg-primary: #fdf2f8;
-    --bg-secondary: rgba(255, 255, 255, 0.85);
-    --bg-card: rgba(255, 255, 255, 0.75);
-    --accent: #db2777;
-    --accent-light: #f9a8d4;
-    --text-primary: #000000;
-    --text-secondary: #1f2937;
-    --text-muted: #6b7280;
-    --border-color: rgba(236, 72, 153, 0.25);
-    --gradient-accent: linear-gradient(135deg, #fbcfe8 0%, #ec4899 50%, #db2777 100%);
-    --gradient-bg: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%);
-    --radius-lg: 16px;
-    --radius-xl: 20px;
-    --radius-2xl: 24px;
-    --shadow-medium: 0 8px 24px rgba(236, 72, 153, 0.15);
-}
-
-body {
-    background: var(--gradient-bg);
-    min-height: 100vh;
-    min-height: 100dvh;
-    color: var(--text-primary);
-    font-style: italic;
-    overflow-x: hidden;
-}
-
-/* TOPBAR */
-.topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 20px;
-    background: var(--bg-card);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border-color);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-.topbar .menu-toggle {
-    font-size: 20px;
-    cursor: pointer;
-    color: #ec4899;
-    width: 42px;
-    height: 42px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-    background: rgba(236, 72, 153, 0.1);
-    transition: all 0.3s;
-}
-.topbar .menu-toggle:hover { background: rgba(236, 72, 153, 0.2); }
-.user-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    position: relative;
-    background: var(--gradient-accent);
-    color: #ffffff;
-    padding: 7px 16px;
-    border-radius: 50px;
-    font-weight: 700;
-    font-size: 13px;
-    box-shadow: 0 2px 8px rgba(236,72,153,0.25);
-}
-.user-icon { font-size: 16px; }
-
-/* USER DROPDOWN */
-.user-dropdown {
-    position: absolute;
-    top: 50px; right: 0;
-    width: 280px;
-    background: rgba(255,255,255,0.97);
-    backdrop-filter: blur(30px);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 12px 40px rgba(236,72,153,0.2);
-    opacity: 0; visibility: hidden;
-    transform: translateY(-10px);
-    transition: all 0.3s;
-    z-index: 2000;
-}
-.user-dropdown.active { opacity:1; visibility:visible; transform:translateY(0); }
-.user-dropdown-header {
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 16px; padding-bottom: 14px;
-    border-bottom: 1px solid var(--border-color);
-}
-.user-dropdown-avatar {
-    width: 48px; height: 48px; border-radius: 14px;
-    background: var(--gradient-accent); color: #fff;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px; font-weight: 800; text-transform: uppercase;
-}
-.user-dropdown-name { font-weight: 700; font-size: 15px; color: #000; }
-.user-dropdown-role { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-.user-dropdown-info { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-.user-dropdown-item { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-secondary); }
-.user-dropdown-item i { width: 18px; text-align: center; color: #ec4899; }
-.user-dropdown-item span { color: #000; font-weight: 600; }
-.user-dropdown-logout {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    width: 100%; padding: 10px; border: none; border-radius: 14px;
-    background: rgba(219,39,119,0.1); color: #db2777; font-weight: 700;
-    text-decoration: none; transition: all 0.3s;
-}
-.user-dropdown-logout:hover { background: rgba(219,39,119,0.2); }
-
-/* SIDEBAR */
-.sidebar {
-    position: fixed; left: -320px; top: 0; width: 320px; height: 100%;
-    background: rgba(255,255,255,0.95); backdrop-filter: blur(30px);
-    transition: 0.4s cubic-bezier(0.4,0,0.2,1); z-index: 1100;
-    overflow-y: auto; border-right: 1px solid var(--border-color);
-}
-.sidebar.active { left: 0; }
-.sidebar-header {
-    padding: 28px 24px; display: flex; align-items: center; gap: 14px;
-    background: linear-gradient(135deg, rgba(236,72,153,0.12) 0%, rgba(249,168,212,0.08) 100%);
-    border-bottom: 1px solid var(--border-color);
-}
-.sidebar-header img { width: 42px; height: 42px; border-radius: 12px; background: white; padding: 4px; }
-.brand-name { font-size: 22px; font-weight: 900; }
-.nova { color: #ec4899; }
-.trade { color: #db2777; }
-.sidebar a {
-    display: flex; align-items: center; padding: 12px 22px; font-size: 13px;
-    color: #000; font-weight: 600; text-decoration: none;
-    transition: all 0.2s; border-left: 3px solid transparent; gap: 10px;
-    background: linear-gradient(135deg,rgba(249,168,212,0.06) 0%,rgba(244,114,182,0.03) 100%);
-    margin: 3px 12px; border-radius: 12px; border: 1px solid rgba(249,168,212,0.1);
-}
-.sidebar a:hover {
-    background: linear-gradient(135deg,rgba(249,168,212,0.2) 0%,rgba(244,114,182,0.1) 100%);
-    border-left-color: #ec4899; color: #000;
-}
-.sidebar a.active {
-    background: linear-gradient(90deg, rgba(236,72,153,0.15) 0%, transparent 100%);
-    border-left-color: #ec4899; color: #db2777; font-weight: 700;
-}
-.sidebar a i { width: 20px; text-align: center; font-size: 14px; color: #ec4899; }
-.sidebar a.active i { color: #db2777; }
-.sub-menu { display: none; background: rgba(236,72,153,0.02); }
-.sub-menu a { padding-left: 50px; font-size: 12px; font-weight: 500; }
-.rotate { transform: rotate(180deg); }
-
-/* BOUTIQUE LINK */
-.boutique-link {
-    background: linear-gradient(135deg, rgba(249,168,212,0.12) 0%, rgba(244,114,182,0.08) 100%)!important;
-    display: flex!important; justify-content: space-between;
-}
-.boutique-link:hover { transform:translateY(-2px); padding-left:26px!important; }
-.badge-new { background: rgba(236,72,153,0.2); padding:2px 8px; border-radius:10px; font-size:9px; font-weight:700; }
-
-/* OVERLAY */
-.overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.2);
-    opacity: 0; visibility: hidden; transition: 0.3s; z-index: 1050;
-}
-.overlay.active { opacity: 1; visibility: visible; }
-
-/* MAIN */
-.main { padding: 20px; max-width: 680px; margin: 0 auto; position: relative; z-index: 1; }
-
-/* GLASS CARD */
-.glass-card {
-    background: var(--bg-card); backdrop-filter: blur(20px);
-    border: 1px solid var(--border-color); border-radius: var(--radius-xl);
-    padding: 24px; margin-bottom: 18px; box-shadow: var(--shadow-medium);
-}
-.welcome-holder {
-    text-align: center; padding: 28px 20px;
-    background: linear-gradient(135deg, rgba(236,72,153,0.06) 0%, rgba(249,168,212,0.04) 100%);
-}
-.welcome-holder h2 { font-weight: 800; font-size: 22px; margin-bottom: 8px; color: #000; }
-.welcome-holder p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; font-weight: 600; }
-
-/* STAT BOXES */
-.stat-row { display: flex; gap: 12px; margin-bottom: 12px; }
-.stat-box {
-    flex: 1; padding: 18px 16px; border-radius: var(--radius-xl);
-    position: relative; overflow: hidden; min-height: 100px;
-    display: flex; flex-direction: column; justify-content: center;
-    backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5);
-    transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    background: rgba(255,255,255,0.8);
-}
-.stat-box:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-.stat-box:nth-child(1) { border-left: 4px solid #f9a8d4; }
-.stat-box:nth-child(2) { border-left: 4px solid #ec4899; }
-.stat-box:nth-child(3) { border-left: 4px solid #db2777; }
-.stat-box:nth-child(4) { border-left: 4px solid #f472b6; }
-.stat-icon {
-    width: 38px; height: 38px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 17px; margin-bottom: 8px;
-    background: rgba(236,72,153,0.1); color: #ec4899;
-}
-.stat-title { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-.stat-amount { font-size: 20px; font-weight: 800; color: #000; }
-
-/* WIDE BOX */
-.wide-box {
-    width: 100%; padding: 18px 22px; border-radius: var(--radius-xl);
-    background: rgba(255,255,255,0.8); backdrop-filter: blur(10px);
-    border: 1px solid var(--border-color); border-left: 4px solid #ec4899;
-    color: #000; display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 18px; box-shadow: var(--shadow-medium);
-}
-.wide-box .stat-title { font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-.wide-box .stat-amount { font-size: 20px; font-weight: 900; color: #000; }
-
-/* WHATSAPP */
-.whatsapp-card {
-    background: rgba(255,255,255,0.7); border: 1px solid rgba(236,72,153,0.2);
-    border-radius: var(--radius-xl); padding: 22px; margin-bottom: 18px; backdrop-filter: blur(10px);
-}
-.whatsapp-card h3 { font-weight: 700; font-size: 15px; color: #000; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
-.whatsapp-card h3 i { color: #25D366; }
-.whatsapp-card p { font-size: 12px; color: var(--text-secondary); font-weight: 600; margin-bottom: 16px; }
-.phone-group { display: flex; gap: 8px; background: rgba(255,255,255,0.8); border-radius: 14px; padding: 5px; border: 1px solid rgba(236,72,153,0.15); }
-.country-select { border: none; background: transparent; padding: 10px; font-size: 13px; outline: none; width: 45%; color: #000; border-right: 1px solid rgba(236,72,153,0.15); font-weight: 600; }
-.phone-input { border: none; background: transparent; padding: 10px; font-size: 14px; outline: none; width: 55%; color: #000; font-weight: 600; }
-.whatsapp-btn {
-    width: 100%; margin-top: 12px; padding: 12px; border: none; border-radius: 14px;
-    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
-    color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.3s;
-}
-.whatsapp-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(34,197,94,0.3); }
-
-/* REFERRAL */
-.ref-section {
-    background: var(--bg-card); backdrop-filter: blur(20px);
-    border: 1px solid var(--border-color); border-radius: var(--radius-xl);
-    padding: 22px; text-align: center; margin-bottom: 18px;
-}
-.ref-section p { font-weight: 700; font-size: 14px; color: #000; margin-bottom: 12px; }
-.ref-link {
-    background: rgba(236,72,153,0.05); padding: 12px; border-radius: 14px;
-    font-size: 11px; font-weight: 600; margin: 12px 0; color: var(--text-secondary);
-    word-break: break-all; border: 1px dashed rgba(236,72,153,0.2);
-}
-.btn-copy {
-    width: 100%; padding: 12px; border: none; border-radius: 14px;
-    background: var(--gradient-accent); color: #000; font-weight: 800;
-    font-size: 14px; cursor: pointer; transition: all 0.3s;
-    box-shadow: 0 6px 20px rgba(236,72,153,0.3);
-}
-.btn-copy:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(236,72,153,0.45); }
-
-/* VIDEO */
-.video-box { margin-bottom: 18px; }
-.video-box h3 { font-weight: 700; font-size: 15px; color: #000; text-align: center; margin-bottom: 12px; }
-.video-container { background: #fff; border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-medium); border: 1px solid var(--border-color); }
-.video-box video { width: 100%; display: block; }
-
-/* MARKET CAROUSEL */
-.market-section {
-    background: rgba(255,255,255,0.7); backdrop-filter: blur(20px);
-    border: 1px solid var(--border-color); border-radius: var(--radius-xl);
-    padding: 22px; margin-bottom: 18px; box-shadow: var(--shadow-medium);
-}
-.market-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-.market-header h3 { font-weight: 700; font-size: 16px; color: #000; display: flex; align-items: center; gap: 10px; }
-.market-header h3 i { color: #ec4899; }
-.market-count {
-    font-size: 11px; color: var(--text-secondary); background: rgba(236,72,153,0.1);
-    padding: 3px 10px; border-radius: 10px; font-weight: 700;
-}
-.market-slider-wrap { position: relative; overflow: hidden; border-radius: 16px; }
-.market-slide {
-    display: none; text-decoration: none; flex-direction: row; align-items: stretch; gap: 16px;
-    background: rgba(255,255,255,0.9); border: 1px solid var(--border-color);
-    border-radius: 16px; overflow: hidden; transition: opacity 0.5s; min-height: 150px;
-}
-.market-slide.active { display: flex; }
-.market-slide-img {
-    flex: 0 0 150px; min-height: 150px; background: rgba(236,72,153,0.05);
-    position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
-}
-.market-slide-img img { width: 100%; height: 100%; object-fit: cover; }
-.market-no-img { font-size: 36px; color: #ec4899; opacity: 0.35; }
-.market-promo-badge {
-    position: absolute; top: 6px; left: 6px;
-    background: linear-gradient(135deg, #f9a8d4, #f472b6);
-    color: #fff; font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 8px;
-}
-.market-slide-info { flex: 1; padding: 16px 16px 16px 4px; display: flex; flex-direction: column; justify-content: center; }
-.market-slide-name { font-weight: 700; font-size: 16px; color: #000; margin-bottom: 8px; }
-.market-slide-price { font-weight: 800; font-size: 19px; color: #db2777; margin-bottom: 12px; }
-.market-slide-price.promo { color: #f472b6; }
-.market-slide-btn {
-    display: inline-flex; align-items: center; gap: 7px; font-weight: 700; font-size: 13px;
-    color: #000; background: var(--gradient-accent); padding: 8px 18px; border-radius: 12px;
-}
-.market-dots { display: flex; justify-content: center; gap: 6px; margin-top: 12px; }
-.market-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: rgba(236,72,153,0.25); transition: all 0.3s; cursor: pointer;
-}
-.market-dot.active { background: #ec4899; width: 20px; border-radius: 4px; }
-
-/* FOOTER */
-footer { text-align: center; padding: 22px; font-size: 12px; color: var(--text-muted); font-weight: 700; }
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-    .stat-row { flex-direction: row; gap: 10px; }
-    .stat-box { min-height: 85px; padding: 14px 12px; }
-    .stat-amount { font-size: 17px; }
-    .stat-title { font-size: 10px; }
-    .stat-icon { width: 32px; height: 32px; font-size: 14px; margin-bottom: 4px; }
-    .wide-box { padding: 16px; }
-    .main { padding: 12px 8px; }
-    .whatsapp-card { padding: 16px; }
-    .sidebar { width: 290px; }
+:root{
+    --bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);
+    --glass:rgba(255,255,255,0.72);
+    --glass-hover:rgba(255,255,255,0.88);
+    --accent:#db2777;
+    --accent2:#ec4899;
+    --accent-light:#f9a8d4;
+    --gold:#f59e0b;
+    --gold-light:#fef3c7;
+    --emerald:#10b981;
+    --emerald-light:#d1fae5;
+    --violet:#8b5cf6;
+    --violet-light:#ede9fe;
+    --sky:#0ea5e9;
+    --sky-light:#e0f2fe;
+    --text:#000;
+    --text2:#1f2937;
+    --muted:#6b7280;
+    --border:rgba(236,72,153,0.2);
+    --shadow-sm:0 2px 8px rgba(236,72,153,0.08);
+    --shadow:0 8px 32px rgba(236,72,153,0.12);
+    --shadow-lg:0 16px 48px rgba(236,72,153,0.18);
+    --radius-sm:12px;
+    --radius:18px;
+    --radius-lg:24px;
+    --radius-xl:32px;
 }
 
-/* TEXTE GRAS + ITALIQUE GLOBAL */
-body,.main *,.sidebar a,.topbar *,.user-dropdown *,.market-section *,.ref-section *,.video-box *,.whatsapp-card *,.wide-box *,.glass-card *,.stat-box *,.stat-row *{font-style:italic!important}
-.stat-amount,.stat-title,.main h2,.main h3,.main p,.sidebar a,.topbar .user,.user-dropdown-name,.market-slide-name,.market-slide-price,.market-slide-btn,.whatsapp-card h3,.glass-card h2,.glass-card p,.btn-copy,.video-box h3,.wide-box .stat-title,.wide-box .stat-amount{font-weight:700!important}
+/* ██████ BODY ██████ */
+body{
+    background:var(--bg);
+    min-height:100vh;min-height:100dvh;
+    color:var(--text);
+    font-style:italic;
+    overflow-x:hidden;
+    position:relative;
+}
 
+/* ██████ FOND PARTICULES ANIMÉES ██████ */
+.bg-particles{
+    position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+}
+.particle{
+    position:absolute;border-radius:50%;
+    background:radial-gradient(circle,rgba(236,72,153,0.18),transparent 70%);
+    animation:floatUp linear infinite;
+}
+.particle:nth-child(1){width:180px;height:180px;left:5%;top:70%;animation-duration:18s;animation-delay:0s}
+.particle:nth-child(2){width:120px;height:120px;left:60%;top:80%;animation-duration:14s;animation-delay:3s}
+.particle:nth-child(3){width:200px;height:200px;left:30%;top:75%;animation-duration:22s;animation-delay:6s}
+.particle:nth-child(4){width:100px;height:100px;left:80%;top:85%;animation-duration:16s;animation-delay:9s}
+.particle:nth-child(5){width:150px;height:150px;left:50%;top:90%;animation-duration:20s;animation-delay:2s}
+.particle:nth-child(6){width:90px;height:90px;left:15%;top:50%;animation-duration:12s;animation-delay:5s}
+.particle:nth-child(7){width:160px;height:160px;left:75%;top:60%;animation-duration:24s;animation-delay:8s}
+@keyframes floatUp{
+    0%{transform:translateY(0)scale(0.6);opacity:0}
+    10%{opacity:0.7}
+    90%{opacity:0.4}
+    100%{transform:translateY(-110vh)scale(1.4);opacity:0}
+}
+
+/* ██████ TOPBAR ██████ */
+.topbar{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:10px 20px;
+    background:rgba(255,255,255,0.7);
+    backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+    border-bottom:1px solid var(--border);
+    position:sticky;top:0;z-index:1000;
+}
+.menu-toggle{
+    font-size:20px;cursor:pointer;color:var(--accent2);
+    width:42px;height:42px;display:flex;align-items:center;justify-content:center;
+    border-radius:var(--radius-sm);
+    background:rgba(236,72,153,0.08);transition:all .3s;
+}
+.menu-toggle:hover{background:rgba(236,72,153,0.16);transform:scale(1.05)}
+.user-pill{
+    display:flex;align-items:center;gap:8px;cursor:pointer;position:relative;
+    background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;
+    padding:7px 18px;border-radius:50px;font-weight:700;font-size:13px;
+    box-shadow:0 4px 16px rgba(219,39,119,0.35);
+    transition:all .3s;
+}
+.user-pill:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(219,39,119,0.5)}
+
+/* ██████ DROPDOWN USER ██████ */
+.user-dropdown{
+    position:absolute;top:50px;right:0;width:300px;
+    background:rgba(255,255,255,0.96);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+    border:1px solid var(--border);border-radius:var(--radius-lg);
+    padding:22px;box-shadow:var(--shadow-lg);
+    opacity:0;visibility:hidden;transform:translateY(-8px)scale(0.96);
+    transition:all .25s cubic-bezier(.4,0,.2,1);z-index:2000;
+}
+.user-dropdown.active{opacity:1;visibility:visible;transform:translateY(0)scale(1)}
+.user-dd-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.user-dd-avatar{
+    width:52px;height:52px;border-radius:16px;
+    background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:24px;font-weight:800;text-transform:uppercase;
+}
+.user-dd-name{font-weight:700;font-size:16px;color:var(--text)}
+.user-dd-role{font-size:11px;color:var(--muted);margin-top:2px}
+.user-dd-info{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.user-dd-item{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text2)}
+.user-dd-item i{width:18px;text-align:center;color:var(--accent2);font-size:13px}
+.user-dd-item span{color:var(--text);font-weight:600}
+.user-dd-logout{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    width:100%;padding:11px;border:none;border-radius:14px;
+    background:rgba(219,39,119,0.08);color:var(--accent);font-weight:700;font-size:13px;
+    text-decoration:none;transition:all .3s;
+}
+.user-dd-logout:hover{background:rgba(219,39,119,0.18);transform:translateY(-1px)}
+
+/* ██████ SIDEBAR ██████ */
+.sidebar{
+    position:fixed;left:-340px;top:0;width:340px;height:100%;
+    background:rgba(255,255,255,0.92);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+    transition:.4s cubic-bezier(.4,0,.2,1);z-index:1100;
+    overflow-y:auto;border-right:1px solid var(--border);
+}
+.sidebar.active{left:0}
+.sidebar-header{
+    padding:30px 24px;display:flex;align-items:center;gap:14px;
+    background:linear-gradient(135deg,rgba(236,72,153,0.1) 0%,rgba(249,168,212,0.06) 100%);
+    border-bottom:1px solid var(--border);
+}
+.sidebar-header img{width:44px;height:44px;border-radius:14px;background:#fff;padding:4px;box-shadow:var(--shadow-sm)}
+.brand-name{font-size:24px;font-weight:900}
+.brand-n{color:var(--accent2)}
+.brand-p{color:var(--accent)}
+.sidebar a{
+    display:flex;align-items:center;padding:12px 22px;font-size:13px;
+    color:var(--text);font-weight:600;text-decoration:none;
+    transition:all .2s;border-left:3px solid transparent;gap:10px;
+    background:linear-gradient(135deg,rgba(249,168,212,0.04),rgba(244,114,182,0.02));
+    margin:3px 12px;border-radius:var(--radius-sm);border:1px solid rgba(249,168,212,0.08);
+}
+.sidebar a:hover{
+    background:linear-gradient(135deg,rgba(249,168,212,0.16),rgba(244,114,182,0.08));
+    border-left-color:var(--accent2);transform:translateX(4px);
+}
+.sidebar a.active{
+    background:linear-gradient(90deg,rgba(236,72,153,0.12) 0%,transparent 100%);
+    border-left-color:var(--accent);color:var(--accent);font-weight:700;
+}
+.sidebar a i{width:20px;text-align:center;font-size:14px;color:var(--accent2)}
+.sidebar a.active i{color:var(--accent)}
+.sub-menu{display:none;background:rgba(236,72,153,0.02)}
+.sub-menu a{padding-left:50px;font-size:12px;font-weight:500}
+.rotate{transform:rotate(180deg)}
+.badge-new{background:rgba(236,72,153,0.18);padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700}
+.overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,0.18);
+    opacity:0;visibility:hidden;transition:.3s;z-index:1050;
+}
+.overlay.active{opacity:1;visibility:visible}
+
+/* ██████ MAIN ██████ */
+.main{padding:20px;max-width:720px;margin:0 auto;position:relative;z-index:1}
+
+/* ██████ HEADER MOTIVATION ██████ */
+.hero-card{
+    background:linear-gradient(135deg,rgba(236,72,153,0.08),rgba(219,39,119,0.04));
+    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    border:1px solid var(--border);border-radius:var(--radius-xl);
+    padding:30px 24px;text-align:center;margin-bottom:20px;
+    box-shadow:var(--shadow);position:relative;overflow:hidden;
+}
+.hero-card::before{
+    content:'';position:absolute;top:-30px;right:-30px;
+    width:120px;height:120px;border-radius:50%;
+    background:radial-gradient(circle,rgba(236,72,153,0.15),transparent 70%);
+    animation:heroGlow 3s ease-in-out infinite;
+}
+@keyframes heroGlow{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.3);opacity:.9}}
+.hero-greeting{font-weight:800;font-size:26px;color:var(--text);margin-bottom:4px}
+.hero-greeting .wave{display:inline-block;animation:waveAnim 1s ease-in-out infinite;transform-origin:70% 70%}
+@keyframes waveAnim{0%,100%{transform:rotate(0)}25%{transform:rotate(20deg)}50%{transform:rotate(-10deg)}75%{transform:rotate(15deg)}}
+.hero-sub{font-weight:600;font-size:13px;color:var(--text2);opacity:.8}
+.hero-stats-mini{
+    display:flex;justify-content:center;gap:24px;margin-top:18px;flex-wrap:wrap;
+}
+.hero-stat-mini{
+    display:flex;align-items:center;gap:8px;font-weight:700;font-size:12px;
+    color:var(--text2);background:rgba(255,255,255,0.6);
+    padding:8px 16px;border-radius:30px;border:1px solid var(--border);
+}
+.hero-stat-mini i{color:var(--accent2);font-size:14px}
+.hero-stat-mini .val{color:var(--accent);font-weight:800}
+
+/* ██████ CARTE SOLDE PRINCIPALE - STYLE BANCAIRE PREMIUM ██████ */
+.balance-card{
+    background:linear-gradient(135deg,#ec4899,#db2777,#be185d);
+    border-radius:var(--radius-xl);padding:28px 24px;
+    color:#fff;margin-bottom:20px;
+    box-shadow:0 12px 40px rgba(219,39,119,0.35);
+    position:relative;overflow:hidden;
+}
+.balance-card::after{
+    content:'';position:absolute;top:-40px;right:-40px;
+    width:180px;height:180px;border-radius:50%;
+    background:rgba(255,255,255,0.08);
+}
+.balance-card::before{
+    content:'';position:absolute;bottom:-30px;left:-20px;
+    width:120px;height:120px;border-radius:50%;
+    background:rgba(255,255,255,0.06);
+}
+.balance-label{
+    font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:2px;
+    opacity:.85;margin-bottom:6px;position:relative;z-index:1;
+}
+.balance-amount{
+    font-weight:900;font-size:38px;position:relative;z-index:1;
+    text-shadow:0 2px 8px rgba(0,0,0,0.15);
+}
+.balance-sub{
+    font-weight:600;font-size:12px;opacity:.8;margin-top:4px;position:relative;z-index:1;
+}
+.balance-badge{
+    position:absolute;top:20px;right:24px;z-index:1;
+    background:rgba(255,255,255,0.2);backdrop-filter:blur(10px);
+    padding:6px 14px;border-radius:20px;font-weight:700;font-size:11px;
+    border:1px solid rgba(255,255,255,0.3);
+}
+.balance-actions{
+    display:flex;gap:10px;margin-top:20px;position:relative;z-index:1;
+}
+.balance-btn{
+    flex:1;padding:11px;border-radius:14px;border:none;
+    font-weight:700;font-size:13px;cursor:pointer;
+    transition:all .3s;text-align:center;text-decoration:none;
+    display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.balance-btn-primary{
+    background:#fff;color:var(--accent);
+}
+.balance-btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.15)}
+.balance-btn-outline{
+    background:rgba(255,255,255,0.15);color:#fff;
+    border:1px solid rgba(255,255,255,0.3);
+}
+.balance-btn-outline:hover{background:rgba(255,255,255,0.25)}
+
+/* ██████ GRILLE STATS 2x2 ██████ */
+.stats-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;
+}
+.stat-card{
+    background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    border:1px solid var(--border);border-radius:var(--radius-lg);
+    padding:20px;box-shadow:var(--shadow-sm);
+    transition:all .3s;position:relative;overflow:hidden;
+}
+.stat-card:hover{
+    transform:translateY(-4px);box-shadow:var(--shadow);
+    background:var(--glass-hover);
+}
+.stat-card-icon{
+    width:44px;height:44px;border-radius:14px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:20px;margin-bottom:12px;
+}
+.stat-card:nth-child(1) .stat-card-icon{background:var(--sky-light);color:var(--sky)}
+.stat-card:nth-child(2) .stat-card-icon{background:var(--emerald-light);color:var(--emerald)}
+.stat-card:nth-child(3) .stat-card-icon{background:var(--violet-light);color:var(--violet)}
+.stat-card:nth-child(4) .stat-card-icon{background:var(--gold-light);color:var(--gold)}
+.stat-card-label{font-weight:600;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.stat-card-value{font-weight:800;font-size:22px;color:var(--text);margin-top:3px}
+.stat-card-sub{
+    font-weight:600;font-size:10px;color:var(--emerald);margin-top:3px;
+    display:flex;align-items:center;gap:4px;
+}
+
+/* ██████ BARRE DE PROGRESSION MOTIVATION ██████ */
+.progress-section{
+    background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    border:1px solid var(--border);border-radius:var(--radius-lg);
+    padding:22px;margin-bottom:20px;box-shadow:var(--shadow-sm);
+}
+.progress-header{
+    display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;
+}
+.progress-title{font-weight:700;font-size:15px;color:var(--text)}
+.progress-pct{font-weight:800;font-size:14px;color:var(--accent)}
+.progress-bar-bg{
+    height:10px;background:rgba(236,72,153,0.1);border-radius:10px;overflow:hidden;
+}
+.progress-bar-fill{
+    height:100%;border-radius:10px;
+    background:linear-gradient(90deg,#f9a8d4,#ec4899,#db2777);
+    background-size:200% 100%;
+    animation:progressShine 2s ease-in-out infinite;
+    transition:width 1.5s cubic-bezier(.4,0,.2,1);
+}
+@keyframes progressShine{
+    0%{background-position:200% 0}
+    100%{background-position:-200% 0}
+}
+.progress-info{
+    font-weight:600;font-size:11px;color:var(--muted);margin-top:8px;
+    display:flex;align-items:center;gap:6px;
+}
+.progress-info i{color:var(--accent2);font-size:12px}
+
+/* ██████ SECTION MOTIVATION / STREAK ██████ */
+.motivation-row{
+    display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;
+}
+.motiv-card{
+    background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    border:1px solid var(--border);border-radius:var(--radius-lg);
+    padding:20px;text-align:center;box-shadow:var(--shadow-sm);
+    transition:all .3s;
+}
+.motiv-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.motiv-icon{
+    font-size:32px;margin-bottom:8px;
+    display:inline-block;animation:bounceMotiv 2s ease-in-out infinite;
+}
+@keyframes bounceMotiv{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.motiv-card:nth-child(2) .motiv-icon{animation-delay:.5s}
+.motiv-value{font-weight:900;font-size:28px;color:var(--text)}
+.motiv-label{font-weight:600;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+
+/* ██████ TÂCHES RAPIDES ██████ */
+.quick-actions{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;
+}
+.quick-action{
+    background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border:1px solid var(--border);border-radius:var(--radius-lg);
+    padding:18px 16px;display:flex;align-items:center;gap:14px;
+    text-decoration:none;color:var(--text);font-weight:700;font-size:13px;
+    transition:all .3s;box-shadow:var(--shadow-sm);
+}
+.quick-action:hover{
+    transform:translateY(-2px);box-shadow:var(--shadow);
+    background:var(--glass-hover);
+}
+.quick-action-icon{
+    width:44px;height:44px;border-radius:14px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;flex-shrink:0;
+    background:rgba(236,72,153,0.1);color:var(--accent2);
+}
+.quick-action-arrow{margin-left:auto;color:var(--accent2);opacity:.5;font-size:12px;transition:all .3s}
+.quick-action:hover .quick-action-arrow{opacity:1;transform:translateX(3px)}
+
+/* ██████ WHATSAPP CARD ██████ */
+.whatsapp-card{
+    background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    border:1px solid rgba(37,211,102,0.25);border-radius:var(--radius-lg);
+    padding:22px;margin-bottom:20px;
+}
+.whatsapp-card h3{font-weight:700;font-size:15px;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.whatsapp-card h3 i{color:#25D366;font-size:22px}
+.whatsapp-card p{font-size:12px;color:var(--text2);font-weight:600;margin-bottom:16px}
+.phone-group{display:flex;gap:8px;background:#fff;border-radius:14px;padding:5px;border:1px solid rgba(37,211,102,0.2)}
+.country-select{border:none;background:transparent;padding:10px;font-size:13px;outline:none;width:45%;color:var(--text);border-right:1px solid rgba(37,211,102,0.15);font-weight:600}
+.phone-input{border:none;background:transparent;padding:10px;font-size:14px;outline:none;width:55%;color:var(--text);font-weight:600}
+.whatsapp-btn{
+    width:100%;margin-top:12px;padding:12px;border:none;border-radius:14px;
+    background:linear-gradient(135deg,#4ade80,#22c55e);color:#fff;
+    font-weight:700;font-size:14px;cursor:pointer;transition:all .3s;
+}
+.whatsapp-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(34,197,94,0.35)}
+
+/* ██████ MARKET CAROUSEL ██████ */
+.market-section{
+    background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    border:1px solid var(--border);border-radius:var(--radius-lg);
+    padding:22px;margin-bottom:20px;box-shadow:var(--shadow-sm);
+}
+.market-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.market-header h3{font-weight:700;font-size:16px;color:var(--text);display:flex;align-items:center;gap:10px}
+.market-header h3 i{color:var(--accent2)}
+.market-count{font-size:11px;color:var(--muted);background:rgba(236,72,153,0.08);padding:3px 10px;border-radius:10px;font-weight:700}
+.market-slider-wrap{position:relative;overflow:hidden;border-radius:16px}
+.market-slide{
+    display:none;text-decoration:none;flex-direction:row;align-items:stretch;gap:16px;
+    background:#fff;border:1px solid var(--border);border-radius:16px;
+    overflow:hidden;min-height:150px;transition:opacity .5s;
+}
+.market-slide.active{display:flex}
+.market-slide-img{flex:0 0 150px;min-height:150px;background:rgba(236,72,153,0.04);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.market-slide-img img{width:100%;height:100%;object-fit:cover}
+.market-no-img{font-size:36px;color:var(--accent2);opacity:.35}
+.market-promo-badge{
+    position:absolute;top:6px;left:6px;background:linear-gradient(135deg,#f9a8d4,#f472b6);
+    color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;
+}
+.market-slide-info{flex:1;padding:16px 16px 16px 4px;display:flex;flex-direction:column;justify-content:center}
+.market-slide-name{font-weight:700;font-size:16px;color:var(--text);margin-bottom:8px}
+.market-slide-price{font-weight:800;font-size:19px;color:var(--accent);margin-bottom:12px}
+.market-slide-price.promo{color:#f472b6}
+.market-slide-btn{
+    display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:13px;
+    color:#fff;background:linear-gradient(135deg,#ec4899,#db2777);
+    padding:8px 18px;border-radius:12px;
+}
+.market-dots{display:flex;justify-content:center;gap:6px;margin-top:12px}
+.market-dot{
+    width:7px;height:7px;border-radius:50%;background:rgba(236,72,153,0.25);
+    transition:all .3s;cursor:pointer;
+}
+.market-dot.active{background:var(--accent2);width:20px;border-radius:4px}
+
+/* ██████ FOOTER ██████ */
+footer{text-align:center;padding:22px;font-size:12px;color:var(--muted);font-weight:700}
+
+/* ██████ TEXTE GLOBAL ██████ */
+body,.main *,.sidebar a,.topbar *,.user-dropdown *,.market-section *,.whatsapp-card *,.stat-card *,.motiv-card *,.progress-section *,.hero-card *,.balance-card *,.quick-action *{font-style:italic!important}
+
+/* ██████ RESPONSIVE ██████ */
+@media(max-width:768px){
+    .main{padding:12px 10px}
+    .stats-grid{grid-template-columns:1fr 1fr;gap:10px}
+    .stat-card{padding:16px}
+    .stat-card-value{font-size:18px}
+    .balance-amount{font-size:30px}
+    .motivation-row{grid-template-columns:1fr 1fr;gap:10px}
+    .hero-greeting{font-size:22px}
+    .sidebar{width:300px}
+    .quick-actions{grid-template-columns:1fr 1fr}
+    .balance-actions{flex-direction:column}
+}
+@media(max-width:420px){
+    .stats-grid{grid-template-columns:1fr}
+    .motivation-row{grid-template-columns:1fr}
+    .quick-actions{grid-template-columns:1fr}
+    .hero-stats-mini{gap:10px}
+    .balance-amount{font-size:26px}
+    .market-slide{flex-direction:column}
+    .market-slide-img{flex:0 0 120px;min-height:120px}
+}
 </style>
 </head>
 <body>
 
+<!-- FOND PARTICULES -->
+<div class="bg-particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div>
+</div>
+
 <div class="overlay" id="overlay"></div>
 
+<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <img src="/static/images/net.jpg" alt="Logo">
-        <span class="brand-name"><span class="nova">Nectar</span><span class="trade">Pro</span></span>
+        <span class="brand-name"><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></span>
     </div>
     <a href="/dashboard" class="active"><i class="fa fa-home"></i> Tableau de bord</a>
     <a href="/revenus"><i class="fa fa-wallet"></i> Revenus</a>
-
-    <a href="/boutique/creer" class="boutique-link">
-        <span><i class="fa fa-store"></i> Ma Boutique</span>
-        <span class="badge-new">✨ Nouveau</span>
-    </a>
-
-    <a href="/publicites"><i class="fa fa-video"></i> Publicités <span class="badge-new">🎬 Nouveau</span></a>
-
+    <a href="/boutique/creer"><i class="fa fa-store"></i> Ma Boutique <span class="badge-new">✨</span></a>
+    <a href="/publicites"><i class="fa fa-video"></i> Publicités <span class="badge-new">🎬</span></a>
     <a href="javascript:void(0);" id="channelsToggle"><i class="fa fa-tv"></i> Nos Chaînes <i class="fa fa-chevron-down" style="float:right;"></i></a>
-    <div class="sub-menu" id="subChannels">
-        <a href="/chaine" class="menu-item">
-            <i class="fa fa-bullhorn"></i>
-            <span>Canal Officiel</span>
-            <span style="background:#f9a8d4;color:#fff;border-radius:50%;padding:2px 6px;font-size:10px;">New</span>
-        </a>
-    </div>
-
+    <div class="sub-menu" id="subChannels"><a href="/chaine"><i class="fa fa-bullhorn"></i> Canal Officiel</a></div>
     <a href="javascript:void(0);" id="formationToggle"><i class="fa fa-graduation-cap"></i> Formation <i class="fa fa-chevron-down" style="float:right;"></i></a>
-    <div class="sub-menu" id="subFormation">
-        <a href="/trade"><i class="fa fa-chart-line"></i> Trading</a>
-        <a href="/ecom"><i class="fa fa-store"></i> E-commerce</a>
-    </div>
-
+    <div class="sub-menu" id="subFormation"><a href="/trade"><i class="fa fa-chart-line"></i> Trading</a><a href="/ecom"><i class="fa fa-store"></i> E-commerce</a></div>
     <a href="javascript:void(0);" id="tasksToggle"><i class="fa fa-tasks"></i> Tâches <i class="fa fa-chevron-down" style="float:right;"></i></a>
-    <div class="sub-menu" id="subTasks">
-        <a href="/taches"><i class="fa fa-share-alt"></i> Partages rémunérés</a>
-        <a href="/tiktok"><i class="fab fa-tiktok"></i> Vidéo TikTok</a>
-    </div>
-
+    <div class="sub-menu" id="subTasks"><a href="/taches"><i class="fa fa-share-alt"></i> Partages rémunérés</a><a href="/tiktok"><i class="fab fa-tiktok"></i> Vidéo TikTok</a></div>
     <a href="javascript:void(0);" id="retraitsToggle"><i class="fa fa-money-bill"></i> Retraits <i class="fa fa-chevron-down" style="float:right;"></i></a>
-    <div class="sub-menu" id="subRetraits">
-        <a href="/retrait"><i class="fa fa-wallet"></i> Solde retrait</a>
-        <a href="/mes-retraits"><i class="fa fa-history"></i> Mes retraits</a>
-    </div>
-
+    <div class="sub-menu" id="subRetraits"><a href="/retrait"><i class="fa fa-wallet"></i> Solde retrait</a><a href="/mes-retraits"><i class="fa fa-history"></i> Mes retraits</a></div>
     <a href="javascript:void(0);" id="moiToggle"><i class="fa fa-user"></i> Moi <i class="fa fa-chevron-down" style="float:right;"></i></a>
-    <div class="sub-menu" id="subMoi">
-        <a href="/profile"><i class="fa fa-user"></i> Mon profile</a>
-        <a href="/team"><i class="fa fa-users"></i> Mon équipes</a>
-    </div>
-
+    <div class="sub-menu" id="subMoi"><a href="/profile"><i class="fa fa-user"></i> Mon profile</a><a href="/team"><i class="fa fa-users"></i> Mon équipes</a></div>
     <a href="/market"><i class="fa fa-store"></i> Market</a>
     <a href="/download/contact"><i class="fa fa-address-book"></i> Contacts vcf</a>
     <a href="/academy/tiktok"><i class="fab fa-tiktok"></i> Formation Tiktok</a>
-    <a href="/academy/affiliation"><i class="fa fa-info-circle"></i> Présentation de NectarPro</a>
-    <a href="/academy/design"><i class="fa fa-palette"></i> Formation Design Graphique</a>
+    <a href="/academy/affiliation"><i class="fa fa-info-circle"></i> Présentation</a>
+    <a href="/academy/design"><i class="fa fa-palette"></i> Design Graphique</a>
     <a href="/apk"><i class="fa fa-th"></i> Apk Premium</a>
     <a href="/apk-canal"><i class="fa fa-tv"></i> Télécharger Canal+</a>
     <a href="/netflix-view"><i class="fa fa-play-circle"></i> Netflix Direct</a>
     <a href="/about"><i class="fa fa-info-circle"></i> À propos</a>
-    <a href="/politique"><i class="fa fa-file-contract"></i> Politique d'utilisation</a>
+    <a href="/politique"><i class="fa fa-file-contract"></i> Politique</a>
     <a href="/logout" style="color:#db2777;"><i class="fa fa-sign-out"></i> Déconnexion</a>
 </div>
 
+<!-- TOPBAR -->
 <div class="topbar">
     <div class="menu-toggle" id="menuToggle"><i class="fa fa-bars"></i></div>
-    <div class="user-container" id="userToggle">
-        <i class="fa fa-user-circle user-icon"></i>
-        {{ user.username }}
-
+    <div class="user-pill" id="userToggle">
+        <i class="fa fa-user-circle"></i> {{ user.username }}
         <div class="user-dropdown" id="userDropdown">
-            <div class="user-dropdown-header">
-                <div class="user-dropdown-avatar">{{ user.username[0] }}</div>
-                <div>
-                    <div class="user-dropdown-name">{{ user.username }}</div>
-                    <div class="user-dropdown-role">Utilisateur NectarPro</div>
-                </div>
+            <div class="user-dd-header">
+                <div class="user-dd-avatar">{{ user.username[0] }}</div>
+                <div><div class="user-dd-name">{{ user.username }}</div><div class="user-dd-role">Utilisateur NectarPro</div></div>
             </div>
-            <div class="user-dropdown-info">
-                <div class="user-dropdown-item">
-                    <i class="fa fa-envelope"></i>
-                    <div>Email<br><span>{{ user.email or 'Non défini' }}</span></div>
-                </div>
-                <div class="user-dropdown-item">
-                    <i class="fa fa-phone"></i>
-                    <div>Téléphone<br><span>{{ user.phone or 'Non défini' }}</span></div>
-                </div>
-                <div class="user-dropdown-item">
-                    <i class="fa fa-calendar"></i>
-                    <div>Inscrit le<br><span>{{ user.date_creation.strftime('%d/%m/%Y') if user.date_creation else '—' }}</span></div>
-                </div>
-                <div class="user-dropdown-item">
-                    <i class="fa fa-user-plus"></i>
-                    <div>Parrain<br><span>{{ user.parrain or 'Aucun' }}</span></div>
-                </div>
+            <div class="user-dd-info">
+                <div class="user-dd-item"><i class="fa fa-envelope"></i><div>Email<br><span>{{ user.email or 'Non défini' }}</span></div></div>
+                <div class="user-dd-item"><i class="fa fa-phone"></i><div>Téléphone<br><span>{{ user.phone or 'Non défini' }}</span></div></div>
+                <div class="user-dd-item"><i class="fa fa-calendar"></i><div>Inscrit le<br><span>{{ user.date_creation.strftime('%d/%m/%Y') if user.date_creation else '—' }}</span></div></div>
+                <div class="user-dd-item"><i class="fa fa-user-plus"></i><div>Parrain<br><span>{{ user.parrain or 'Aucun' }}</span></div></div>
             </div>
-            <a href="/logout" class="user-dropdown-logout">
-                <i class="fa fa-sign-out"></i> Déconnexion
-            </a>
+            <a href="/logout" class="user-dd-logout"><i class="fa fa-sign-out"></i> Déconnexion</a>
         </div>
     </div>
 </div>
 
 <div class="main">
-    
-    <div class="glass-card welcome-holder">
-        <h2>Bienvenue sur NectarPro 🚀</h2>
-        <p>Accédez à des activités diversifiées et des produits numériques adaptés à vos besoins.</p>
-    </div>
 
-    <!-- DÉPENSES + PROFIT -->
-    <div class="stat-row">
-        <div class="stat-box">
-            <div class="stat-icon"><i class="fa fa-credit-card"></i></div>
-            <span class="stat-title">Dépenses</span>
-            <span class="stat-amount">XOF 4,500</span>
+    <!-- ═══ HERO MOTIVATION ═══ -->
+    <div class="hero-card">
+        <div class="hero-greeting">
+            Bonjour {{ user.username }} <span class="wave">👋</span>
         </div>
-        <div class="stat-box">
-            <div class="stat-icon"><i class="fa fa-chart-line"></i></div>
-            <span class="stat-title">Profit</span>
-            <span class="stat-amount">XOF {{ "{:,}".format(user.solde_revenu or 0) }}</span>
+        <div class="hero-sub">Chaque jour est une nouvelle opportunité de grandir 🚀</div>
+        <div class="hero-stats-mini">
+            <div class="hero-stat-mini"><i class="fa fa-star"></i> Niveau <span class="val">{{ ((user.solde_revenu or 0) // 5000 + 1)|int }}</span></div>
+            <div class="hero-stat-mini"><i class="fa fa-fire"></i> Actif depuis <span class="val">{{ ((now - user.date_creation).days if user.date_creation else 1) }} jours</span></div>
+            <div class="hero-stat-mini"><i class="fa fa-users"></i> Filleuls <span class="val">{{ total_filleuls or 0 }}</span></div>
         </div>
     </div>
 
-    <!-- SOLDE JEUX -->
-    <div class="wide-box">
-        <span class="stat-title"><i class="fa fa-gamepad"></i> Solde des tâches</span>
-        <span class="stat-amount">XOF {{ "{:,}".format(user.solde_jeux or 0) }}</span>
+    <!-- ═══ CARTE SOLDE PRINCIPALE ═══ -->
+    <div class="balance-card">
+        <div class="balance-badge"><i class="fa fa-gem"></i> Actif</div>
+        <div class="balance-label">Solde Total</div>
+        {% set solde_total = (user.solde_revenu or 0) + (user.solde_jeux or 0) + (user.solde_parrainage or 0) %}
+        <div class="balance-amount">XOF {{ "{:,}".format(solde_total) }}</div>
+        <div class="balance-sub">💎 Votre fortune NectarPro</div>
+        <div class="balance-actions">
+            <a href="/retrait" class="balance-btn balance-btn-primary"><i class="fa fa-wallet"></i> Retirer</a>
+            <a href="/taches" class="balance-btn balance-btn-outline"><i class="fa fa-plus-circle"></i> Gagner +</a>
+        </div>
     </div>
 
+    <!-- ═══ GRILLE STATS 2x2 ═══ -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-card-icon"><i class="fa fa-chart-line"></i></div>
+            <div class="stat-card-label">Profit</div>
+            <div class="stat-card-value">XOF {{ "{:,}".format(user.solde_revenu or 0) }}</div>
+            <div class="stat-card-sub"><i class="fa fa-arrow-up"></i> Revenus minage</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-icon"><i class="fa fa-gamepad"></i></div>
+            <div class="stat-card-label">Solde Tâches</div>
+            <div class="stat-card-value">XOF {{ "{:,}".format(user.solde_jeux or 0) }}</div>
+            <div class="stat-card-sub"><i class="fa fa-check-circle"></i> Missions complétées</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-icon"><i class="fa fa-hand-holding-usd"></i></div>
+            <div class="stat-card-label">Solde Revenu</div>
+            <div class="stat-card-value">XOF {{ "{:,}".format(user.solde_parrainage or 0) }}</div>
+            <div class="stat-card-sub"><i class="fa fa-users"></i> Parrainage</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-icon"><i class="fa fa-money-bill-wave"></i></div>
+            <div class="stat-card-label">Retraits Totaux</div>
+            <div class="stat-card-value">XOF {{ "{:,}".format(total_withdrawn_user or 0) }}</div>
+            <div class="stat-card-sub"><i class="fa fa-arrow-up"></i> Déjà retiré</div>
+        </div>
+    </div>
+
+    <!-- ═══ PROGRESSION ═══ -->
+    <div class="progress-section">
+        <div class="progress-header">
+            <span class="progress-title">🎯 Objectif quotidien</span>
+            {% set obj = 5000 %}
+            {% set pct = ((user.solde_revenu or 0) / obj * 100)|int %}
+            <span class="progress-pct">{{ pct if pct <= 100 else 100 }}%</span>
+        </div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width:{{ pct if pct <= 100 else 100 }}%"></div>
+        </div>
+        <div class="progress-info">
+            <i class="fa fa-bullseye"></i> 
+            {% if pct >= 100 %}
+                🎉 Objectif atteint ! Continuez comme ça !
+            {% elif pct >= 50 %}
+                🔥 Vous êtes à mi-chemin, ne lâchez rien !
+            {% else %}
+                💪 {{ (obj - (user.solde_revenu or 0))|int }} XOF restants pour atteindre votre objectif
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- ═══ MOTIVATION + STREAK ═══ -->
+    <div class="motivation-row">
+        <div class="motiv-card">
+            <div class="motiv-icon">🔥</div>
+            <div class="motiv-value">{{ ((now - user.date_creation).days if user.date_creation else 1) }}</div>
+            <div class="motiv-label">Jours d'activité</div>
+        </div>
+        <div class="motiv-card">
+            <div class="motiv-icon">⭐</div>
+            <div class="motiv-value">{{ ((user.solde_revenu or 0) // 5000 + 1)|int }}</div>
+            <div class="motiv-label">Niveau actuel</div>
+        </div>
+    </div>
+
+    <!-- ═══ ACTIONS RAPIDES ═══ -->
+    <div class="quick-actions">
+        <a href="/taches" class="quick-action">
+            <div class="quick-action-icon"><i class="fa fa-share-alt"></i></div>
+            <span>Partages rémunérés</span>
+            <i class="fa fa-chevron-right quick-action-arrow"></i>
+        </a>
+        <a href="/tiktok" class="quick-action">
+            <div class="quick-action-icon"><i class="fab fa-tiktok"></i></div>
+            <span>Vidéo TikTok</span>
+            <i class="fa fa-chevron-right quick-action-arrow"></i>
+        </a>
+        <a href="/market" class="quick-action">
+            <div class="quick-action-icon"><i class="fa fa-store"></i></div>
+            <span>Market</span>
+            <i class="fa fa-chevron-right quick-action-arrow"></i>
+        </a>
+        <a href="/boutique/creer" class="quick-action">
+            <div class="quick-action-icon"><i class="fa fa-plus-circle"></i></div>
+            <span>Créer boutique</span>
+            <i class="fa fa-chevron-right quick-action-arrow"></i>
+        </a>
+    </div>
+
+    <!-- ═══ WHATSAPP ═══ -->
     {% if not user.whatsapp_number %}
     <div class="whatsapp-card">
         <h3><i class="fab fa-whatsapp"></i> Ajoutez votre WhatsApp</h3>
         <p>Sélectionnez votre pays puis entrez votre numéro WhatsApp</p>
-        
         <form method="POST" action="/whatsapp-number" onsubmit="prepareWhatsappNumber()">
             <div class="phone-group">
                 <select id="countryCode" class="country-select" required>
-                <option value="+228">🇹🇬 Togo (+228)</option>
-                <option value="+229">🇧🇯 Bénin (+229)</option>
-                <option value="+237">🇨🇲 Cameroun (+237)</option>
-                <option value="+242">🇨🇬 Congo Brazzaville (+242)</option>
-                <option value="+225">🇨🇮 Côte d'Ivoire (+225)</option>
-                <option value="+226">🇧🇫 Burkina Faso (+226)</option>
-                <option value="+223">🇲🇱 Mali (+223)</option>
-                <option value="+221">🇸🇳 Sénégal (+221)</option>
-                <option value="+243">🇨🇩 Congo Kinshasa (+243)</option>
-                <option value="+227">🇳🇪 Niger (+227)</option>
-                <option value="+241">🇬🇦 Gabon (+241)</option>
+                    <option value="+228">🇹🇬 Togo (+228)</option>
+                    <option value="+229">🇧🇯 Bénin (+229)</option>
+                    <option value="+237">🇨🇲 Cameroun (+237)</option>
+                    <option value="+242">🇨🇬 Congo B. (+242)</option>
+                    <option value="+225">🇨🇮 Côte d'Ivoire (+225)</option>
+                    <option value="+226">🇧🇫 Burkina (+226)</option>
+                    <option value="+223">🇲🇱 Mali (+223)</option>
+                    <option value="+221">🇸🇳 Sénégal (+221)</option>
+                    <option value="+243">🇨🇩 Congo K. (+243)</option>
+                    <option value="+227">🇳🇪 Niger (+227)</option>
+                    <option value="+241">🇬🇦 Gabon (+241)</option>
                 </select>
                 <input type="tel" id="phoneNumber" class="phone-input" placeholder="Numéro WhatsApp" required>
             </div>
@@ -499,38 +665,7 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.market-section *,.ref-sectio
     </div>
     {% endif %}
 
-    <!-- SOLDE REVENU + RETRAITS -->
-    <div class="stat-row">
-        <div class="stat-box">
-            <div class="stat-icon"><i class="fa fa-hand-holding-usd"></i></div>
-            <span class="stat-title">Solde Revenu</span>
-            <span class="stat-amount">XOF {{ "{:,}".format(user.solde_parrainage or 0) }}</span>
-        </div>
-        <div class="stat-box">
-            <div class="stat-icon"><i class="fa fa-money-bill-wave"></i></div>
-            <span class="stat-title">Retraits totaux</span>
-            <span class="stat-amount">XOF {{ "{:,}".format(total_withdrawn_user or 0) }}</span>
-        </div>
-    </div>
-
-    <!-- VIDEO -->
-    <div class="video-box">
-        <h3>🎬 Présentation NectarPro</h3>
-        <div class="video-container">
-            <video controls playsinline>
-                <source src="{{ url_for('static', filename='videos/lu.mp4') }}" type="video/mp4">
-            </video>
-        </div>
-    </div>
-
-    <!-- REFERRAL -->
-    <div class="ref-section">
-        <p>🔗 Lien de parrainage</p>
-        <div class="ref-link" id="refLink">{{ referral_link }}</div>
-        <button class="btn-copy" onclick="copyReferral()"><i class="fa fa-copy"></i> Copier le lien</button>
-    </div>
-
-    <!-- BOUTIQUE CAROUSEL -->
+    <!-- ═══ MARKET CAROUSEL ═══ -->
     {% if produits_recents %}
     <div class="market-section">
         <div class="market-header">
@@ -570,93 +705,22 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.market-section *,.ref-sectio
 </div>
 
 <script>
-function copyReferral() {
-    const refLink = document.getElementById("refLink").textContent;
-    navigator.clipboard.writeText(refLink).then(() => {
-        alert("Lien de parrainage copié ! 🎉");
-    });
-}
+const sidebar=document.getElementById("sidebar"),overlay=document.getElementById("overlay"),menuToggle=document.getElementById("menuToggle");
+menuToggle.onclick=()=>{sidebar.classList.add("active");overlay.classList.add("active")};
+overlay.onclick=()=>{sidebar.classList.remove("active");overlay.classList.remove("active")};
 
-const sidebar = document.getElementById("sidebar");
-const overlay = document.getElementById("overlay");
-const menuToggle = document.getElementById("menuToggle");
+function setupToggle(t,m){let a=document.getElementById(t),b=document.getElementById(m);a&&b&&(a.onclick=()=>{let h=b.style.display==="none"||b.style.display==="";b.style.display=h?"block":"none";a.querySelector(".fa-chevron-down").classList.toggle("rotate",h)})}
+setupToggle("channelsToggle","subChannels");setupToggle("formationToggle","subFormation");
+setupToggle("tasksToggle","subTasks");setupToggle("retraitsToggle","subRetraits");
 
-menuToggle.onclick = () => { sidebar.classList.add("active"); overlay.classList.add("active"); };
-overlay.onclick = () => { sidebar.classList.remove("active"); overlay.classList.remove("active"); };
+let mt=document.getElementById("moiToggle"),sm=document.getElementById("subMoi");
+mt.onclick=()=>{sm.style.display==="none"?(sm.style.display="block",mt.querySelector(".fa-chevron-down").classList.add("rotate")):(sm.style.display="none",mt.querySelector(".fa-chevron-down").classList.remove("rotate"))};
 
-function setupToggle(toggleId, menuId) {
-    const toggle = document.getElementById(toggleId);
-    const menu = document.getElementById(menuId);
-    if(toggle && menu) {
-        toggle.onclick = () => {
-            const isHidden = menu.style.display === "none" || menu.style.display === "";
-            menu.style.display = isHidden ? "block" : "none";
-            toggle.querySelector(".fa-chevron-down").classList.toggle("rotate", isHidden);
-        };
-    }
-}
+function prepareWhatsappNumber(){document.getElementById("fullWhatsapp").value=document.getElementById("countryCode").value+document.getElementById("phoneNumber").value.replace(/\s+/g,'')}
 
-setupToggle("channelsToggle", "subChannels");
-setupToggle("formationToggle", "subFormation");
-setupToggle("tasksToggle", "subTasks");
-setupToggle("retraitsToggle", "subRetraits");
+(function(){let s=document.querySelectorAll('.market-slide'),d=document.getElementById('marketDots');if(!s.length||!d)return;let c=0;s.forEach((_,i)=>{let dot=document.createElement('span');dot.className='market-dot'+(i===0?' active':'');dot.onclick=()=>{s[c].classList.remove('active');d.children[c].classList.remove('active');c=(i+s.length)%s.length;s[c].classList.add('active');d.children[c].classList.add('active')};d.appendChild(dot)});setInterval(()=>{s[c].classList.remove('active');d.children[c].classList.remove('active');c=(c+1)%s.length;s[c].classList.add('active');d.children[c].classList.add('active')},2500)})();
 
-const moiToggle = document.getElementById("moiToggle");
-const subMoi = document.getElementById("subMoi");
-moiToggle.onclick = () => {
-    if(subMoi.style.display === "none"){
-        subMoi.style.display = "block";
-        moiToggle.querySelector(".fa-chevron-down").classList.add("rotate");
-    } else {
-        subMoi.style.display = "none";
-        moiToggle.querySelector(".fa-chevron-down").classList.remove("rotate");
-    }
-};
-
-function prepareWhatsappNumber() {
-    const code = document.getElementById("countryCode").value;
-    const phone = document.getElementById("phoneNumber").value.replace(/\s+/g, '');
-    document.getElementById("fullWhatsapp").value = code + phone;
-}
-
-// ─── CAROUSEL AUTO PRODUITS ───────────────────────
-(function() {
-    const slides = document.querySelectorAll('.market-slide');
-    const dotsContainer = document.getElementById('marketDots');
-    if (!slides.length || !dotsContainer) return;
-    let current = 0;
-    slides.forEach(function(_, i) {
-        const dot = document.createElement('span');
-        dot.className = 'market-dot' + (i === 0 ? ' active' : '');
-        dot.onclick = function() { goTo(i); };
-        dotsContainer.appendChild(dot);
-    });
-    function goTo(index) {
-        slides[current].classList.remove('active');
-        dotsContainer.children[current].classList.remove('active');
-        current = (index + slides.length) % slides.length;
-        slides[current].classList.add('active');
-        dotsContainer.children[current].classList.add('active');
-    }
-    setInterval(function() { goTo(current + 1); }, 2000);
-})();
-
-// ─── USER DROPDOWN TOGGLE ───────────────────────
-(function() {
-    const uc = document.querySelector('.topbar .user-container');
-    if (!uc) return;
-    uc.addEventListener('click', function(e) {
-        e.stopPropagation();
-        document.getElementById('userDropdown').classList.toggle('active');
-    });
-    document.addEventListener('click', function(e) {
-        const dd = document.getElementById('userDropdown');
-        if (dd && !uc.contains(e.target)) {
-            dd.classList.remove('active');
-        }
-    });
-})();
+(function(){let u=document.querySelector('.topbar .user-pill');if(!u)return;u.addEventListener('click',e=>{e.stopPropagation();document.getElementById('userDropdown').classList.toggle('active')});document.addEventListener('click',e=>{let dd=document.getElementById('userDropdown');if(dd&&!u.contains(e.target))dd.classList.remove('active')})})();
 </script>
-
 </body>
 </html>
