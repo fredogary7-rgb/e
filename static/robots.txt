@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://nectarpro.com/sitemap.xml
+Sitemap: https://nectarpro.cc/sitemap.xml
