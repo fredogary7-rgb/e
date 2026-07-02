@@ -83,6 +83,14 @@ body{
     border-bottom:1px solid var(--border);
     position:sticky;top:0;z-index:1000;
 }
+.topbar-logo{
+    display:flex;align-items:center;gap:8px;
+    position:absolute;left:50%;transform:translateX(-50%);
+}
+.topbar-logo img{width:32px;height:32px;border-radius:10px;box-shadow:0 2px 8px rgba(236,72,153,0.2)}
+.topbar-logo span{font-size:18px;font-weight:900}
+.topbar-logo .brand-n{color:var(--accent2)}
+.topbar-logo .brand-p{color:var(--accent)}
 .menu-toggle{
     font-size:20px;cursor:pointer;color:var(--accent2);
     width:42px;height:42px;display:flex;align-items:center;justify-content:center;
@@ -502,6 +510,10 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.market-section *,.whatsapp-c
 <!-- TOPBAR -->
 <div class="topbar">
     <div class="menu-toggle" id="menuToggle"><i class="fa fa-bars"></i></div>
+    <div class="topbar-logo">
+        <img src="/static/images/net.jpg" alt="NectarPro">
+        <span class="brand-name"><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></span>
+    </div>
     <div class="user-pill" id="userToggle">
         <i class="fa fa-user-circle"></i> {{ user.username }}
         <div class="user-dropdown" id="userDropdown">
