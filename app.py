@@ -1,4 +1,4 @@
-import time
+non import time
 import requests
 import os
 import re
@@ -3014,12 +3014,6 @@ def nous_page():
 @app.route("/trade")
 def trade():
     return render_template("trade.html")
-
-from flask import send_from_directory
-
-@app.route("/sitemap.xml")
-def sitemap():
-    return send_from_directory(".", "sitemap.xml")
 
 from flask import request, redirect, url_for, flash
 import os
@@ -6148,6 +6142,21 @@ try:
     print("TEST ECRITURE OK :", test_path)
 except Exception as e:
     print("TEST ECRITURE ECHEC :", e)
+
+# Routes SEO - Sitemap et Robots.txt (servis à la racine)
+from flask import send_from_directory
+
+@app.route('/sitemap.xml')
+def serve_sitemap():
+    """Sert le sitemap.xml à la racine pour Google Search Console"""
+    return send_from_directory('static', 'sitemap.xml', 
+        mimetype='application/xml; charset=utf-8')
+
+@app.route('/robots.txt')
+def serve_robots():
+    """Sert le robots.txt à la racine"""
+    return send_from_directory('static', 'robots.txt', 
+        mimetype='text/plain; charset=utf-8')
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))  # Render fournit le PORT
