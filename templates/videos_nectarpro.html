@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NectarPro - Vidéos</title>
+    <link rel="icon" href="/static/images/favicon-48.png" sizes="48x48" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           NECTARPRO VIDEOS - DESIGN PREMIUM CINEMATIC
+           ═══════════════════════════════════════════════════════════ */
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+
+        :root{
+            --bg:linear-gradient(135deg,#0f0f1a 0%,#1a0a20 30%,#0d0d1f 60%,#1a0a20 100%);
+            --glass:rgba(255,255,255,0.04);
+            --glass-hover:rgba(255,255,255,0.08);
+            --accent:#ec4899;
+            --accent2:#f472b6;
+            --accent-light:#f9a8d4;
+            --gold:#fbbf24;
+            --gold-light:rgba(251,191,36,0.15);
+            --text:#ffffff;
+            --text2:#d1d5db;
+            --muted:#9ca3af;
+            --border:rgba(236,72,153,0.18);
+            --shadow:0 8px 32px rgba(236,72,153,0.10);
+            --shadow-lg:0 20px 60px rgba(236,72,153,0.15);
+            --radius-sm:12px;
+            --radius:18px;
+            --radius-lg:24px;
+            --radius-xl:32px;
+        }
+
+        body{
+            background:var(--bg);
+            min-height:100vh;min-height:100dvh;
+            color:var(--text);
+            overflow-x:hidden;
+            position:relative;
+        }
+
+        /* ██████ FOND PARTICULES ANIMÉES ██████ */
+        .bg-particles{
+            position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+        }
+        .particle{
+            position:absolute;border-radius:50%;
+            background:radial-gradient(circle,rgba(236,72,153,0.12),transparent 70%);
+            animation:floatUp linear infinite;
+        }
+        .particle:nth-child(1){width:250px;height:250px;left:5%;top:70%;animation-duration:22s;animation-delay:0s}
+        .particle:nth-child(2){width:180px;height:180px;left:60%;top:80%;animation-duration:18s;animation-delay:3s}
+        .particle:nth-child(3){width:300px;height:300px;left:30%;top:75%;animation-duration:26s;animation-delay:6s}
+        .particle:nth-child(4){width:140px;height:140px;left:80%;top:85%;animation-duration:20s;animation-delay:9s}
+        .particle:nth-child(5){width:200px;height:200px;left:50%;top:90%;animation-duration:24s;animation-delay:2s}
+        @keyframes floatUp{
+            0%{transform:translateY(0)scale(0.5);opacity:0}
+            10%{opacity:0.5}
+            90%{opacity:0.3}
+            100%{transform:translateY(-110vh)scale(1.5);opacity:0}
+        }
+
+        /* ██████ TOPBAR ██████ */
+        .topbar{
+            display:flex;justify-content:space-between;align-items:center;
+            padding:14px 24px;
+            background:rgba(15,15,26,0.75);
+            backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+            border-bottom:1px solid var(--border);
+            position:sticky;top:0;z-index:1000;
+        }
+        .topbar-logo{
+            display:flex;align-items:center;gap:10px;
+            position:absolute;left:50%;transform:translateX(-50%);
+        }
+        .topbar-logo img{width:36px;height:36px;border-radius:10px;box-shadow:0 2px 12px rgba(236,72,153,0.3)}
+        .topbar-logo span{font-size:20px;font-weight:900}
+        .topbar-logo .brand-n{color:var(--accent2)}
+        .topbar-logo .brand-p{color:var(--accent)}
+        .back-btn{
+            font-size:14px;cursor:pointer;color:var(--accent2);
+            padding:10px 18px;display:flex;align-items:center;gap:8px;
+            border-radius:var(--radius-sm);
+            background:rgba(236,72,153,0.08);transition:all .3s;
+            text-decoration:none;font-weight:600;
+        }
+        .back-btn:hover{background:rgba(236,72,153,0.18);transform:translateX(-3px)}
+        .topbar-badge{
+            background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;
+            padding:7px 18px;border-radius:50px;font-weight:700;font-size:13px;
+            box-shadow:0 4px 16px rgba(219,39,119,0.35);
+        }
+
+        /* ██████ MAIN ██████ */
+        .main{
+            max-width:800px;margin:0 auto;padding:30px 20px;
+            position:relative;z-index:1;
+        }
+
+        /* ██████ HERO HEADER ██████ */
+        .hero-videos{
+            text-align:center;margin-bottom:36px;position:relative;
+        }
+        .hero-videos::before{
+            content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);
+            width:200px;height:200px;border-radius:50%;
+            background:radial-gradient(circle,rgba(236,72,153,0.12),transparent 70%);
+            animation:heroGlow 4s ease-in-out infinite;z-index:-1;
+        }
+        @keyframes heroGlow{0%,100%{transform:translateX(-50%)scale(1);opacity:.4}50%{transform:translateX(-50%)scale(1.4);opacity:.8}}
+        .hero-videos h1{
+            font-size:42px;font-weight:900;letter-spacing:-1px;
+            background:linear-gradient(135deg,#f472b6,#ec4899,#db2777,#f472b6);
+            background-size:300% 300%;
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            background-clip:text;
+            animation:gradientShift 4s ease infinite;
+            margin-bottom:8px;
+        }
+        @keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+        .hero-videos p{
+            font-weight:600;font-size:15px;color:var(--muted);
+            display:flex;align-items:center;justify-content:center;gap:10px;
+        }
+        .hero-videos p i{color:var(--accent2);animation:bounceIcon 1.5s ease-in-out infinite}
+        @keyframes bounceIcon{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+        /* ██████ STATS BAR ██████ */
+        .stats-bar{
+            display:flex;gap:14px;margin-bottom:28px;flex-wrap:wrap;justify-content:center;
+        }
+        .stat-mini{
+            background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+            border:1px solid var(--border);border-radius:var(--radius);
+            padding:16px 22px;text-align:center;min-width:100px;
+            box-shadow:var(--shadow);transition:all .3s;
+        }
+        .stat-mini:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);background:var(--glass-hover)}
+        .stat-mini .icon{font-size:22px;margin-bottom:6px;color:var(--accent2)}
+        .stat-mini .value{font-weight:800;font-size:20px;color:var(--text)}
+        .stat-mini .label{font-weight:500;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+
+        /* ██████ VIDEO LIST ██████ */
+        .video-grid{
+            display:flex;flex-direction:column;gap:20px;
+        }
+        .video-card{
+            background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+            border:1px solid var(--border);border-radius:var(--radius-lg);
+            overflow:hidden;box-shadow:var(--shadow);
+            transition:all .4s cubic-bezier(.4,0,.2,1);
+            position:relative;
+        }
+        .video-card:hover{
+            transform:translateY(-4px);box-shadow:var(--shadow-lg);
+            border-color:rgba(236,72,153,0.35);
+            background:var(--glass-hover);
+        }
+        .video-card::after{
+            content:'';position:absolute;inset:0;border-radius:var(--radius-lg);
+            background:linear-gradient(135deg,rgba(236,72,153,0.06),transparent);
+            pointer-events:none;
+        }
+        .video-header{
+            padding:16px 20px;display:flex;align-items:center;gap:14px;
+            border-bottom:1px solid var(--border);
+        }
+        .video-icon-circle{
+            width:48px;height:48px;border-radius:14px;
+            background:linear-gradient(135deg,rgba(236,72,153,0.2),rgba(219,39,119,0.1));
+            display:flex;align-items:center;justify-content:center;
+            font-size:20px;color:var(--accent2);
+            flex-shrink:0;
+        }
+        .video-info{flex:1;min-width:0}
+        .video-title{
+            font-weight:700;font-size:16px;color:var(--text);
+            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+        }
+        .video-meta{
+            font-weight:500;font-size:11px;color:var(--muted);margin-top:3px;
+        }
+        .video-size-badge{
+            background:rgba(236,72,153,0.1);color:var(--accent2);
+            padding:4px 10px;border-radius:10px;font-weight:700;font-size:11px;
+            flex-shrink:0;
+        }
+        .video-card video{
+            width:100%;display:block;
+            max-height:500px;object-fit:contain;
+            background:#000;
+            cursor:pointer;
+        }
+        .video-actions{
+            padding:14px 20px;display:flex;gap:10px;
+            border-top:1px solid var(--border);
+        }
+        .vid-btn{
+            flex:1;padding:12px;border-radius:14px;
+            font-weight:700;font-size:12px;cursor:pointer;
+            transition:all .3s;text-align:center;text-decoration:none;
+            display:flex;align-items:center;justify-content:center;gap:8px;
+            border:none;
+        }
+        .vid-btn-play{
+            background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;
+            box-shadow:0 4px 18px rgba(219,39,119,0.3);
+        }
+        .vid-btn-play:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(219,39,119,0.45)}
+        .vid-btn-dl{
+            background:rgba(255,255,255,0.08);color:var(--text);
+            border:1px solid var(--border);
+        }
+        .vid-btn-dl:hover{background:rgba(255,255,255,0.14);transform:translateY(-2px)}
+
+        /* ██████ MODAL PLEIN ÉCRAN ██████ */
+        .video-modal{
+            position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.95);
+            backdrop-filter:blur(10px);
+            display:flex;align-items:center;justify-content:center;
+            opacity:0;visibility:hidden;transition:all .35s cubic-bezier(.4,0,.2,1);
+        }
+        .video-modal.active{opacity:1;visibility:visible}
+        .video-modal video{
+            max-width:95vw;max-height:90vh;border-radius:16px;
+            box-shadow:0 0 80px rgba(236,72,153,0.2);
+        }
+        .modal-close{
+            position:absolute;top:24px;right:24px;z-index:2;
+            width:48px;height:48px;border-radius:50%;
+            background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);
+            color:#fff;font-size:20px;cursor:pointer;
+            display:flex;align-items:center;justify-content:center;
+            transition:all .3s;
+        }
+        .modal-close:hover{background:rgba(255,255,255,0.2);transform:rotate(90deg)}
+
+        /* ██████ EMPTY STATE ██████ */
+        .empty-state{
+            text-align:center;padding:80px 20px;
+        }
+        .empty-state .empty-icon{
+            font-size:80px;color:var(--accent2);opacity:.3;
+            animation:floatSlow 3s ease-in-out infinite;
+        }
+        @keyframes floatSlow{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+        .empty-state h2{
+            font-weight:800;font-size:26px;color:var(--text);margin:20px 0 8px;
+        }
+        .empty-state p{font-weight:500;color:var(--muted);font-size:14px}
+
+        /* ██████ RESPONSIVE ██████ */
+        @media(max-width:768px){
+            .hero-videos h1{font-size:30px}
+            .main{padding:20px 12px}
+            .stats-bar{gap:8px}
+            .stat-mini{padding:12px 14px;min-width:80px}
+            .stat-mini .value{font-size:17px}
+            .video-card video{max-height:250px}
+        }
+        @media(max-width:420px){
+            .hero-videos h1{font-size:24px}
+            .video-header{padding:12px 14px}
+            .video-actions{flex-direction:column}
+        }
+    </style>
+</head>
+<body>
+
+<!-- FOND PARTICULES -->
+<div class="bg-particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div>
+</div>
+
+<!-- TOPBAR -->
+<header class="topbar">
+    <a href="/dashboard" class="back-btn"><i class="fa fa-arrow-left"></i> Retour</a>
+    <div class="topbar-logo">
+        <img src="/static/images/net.jpg" alt="NectarPro">
+        <span class="brand-name"><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></span>
+    </div>
+    <div class="topbar-badge"><i class="fa fa-play-circle"></i> Vidéos</div>
+</header>
+
+<main class="main">
+
+    <!-- ═══ HERO HEADER ═══ -->
+    <section class="hero-videos">
+        <h1>NectarPro Vidéos</h1>
+        <p><i class="fa fa-film"></i> Découvrez les vidéos exclusives de la plateforme</p>
+    </section>
+
+    <!-- ═══ STATS BAR ═══ -->
+    <div class="stats-bar">
+        <div class="stat-mini">
+            <div class="icon"><i class="fa fa-video"></i></div>
+            <div class="value">{{ videos|length }}</div>
+            <div class="label">Vidéos</div>
+        </div>
+        <div class="stat-mini">
+            <div class="icon"><i class="fa fa-hdd"></i></div>
+            <div class="value">{{ "%.1f"|format(videos|sum(attribute='taille_mo')) if videos else 0 }}</div>
+            <div class="label">Total (Mo)</div>
+        </div>
+        <div class="stat-mini">
+            <div class="icon"><i class="fa fa-clock"></i></div>
+            <div class="value">🎬</div>
+            <div class="label">Visionnez</div>
+        </div>
+    </div>
+
+    <!-- ═══ VIDEO LIST ═══ -->
+    {% if videos %}
+    <div class="video-grid" id="videoGrid">
+        {% for video in videos %}
+        <div class="video-card" data-url="{{ video.url }}" data-nom="{{ video.nom }}">
+            <div class="video-header">
+                <div class="video-icon-circle"><i class="fa fa-play"></i></div>
+                <div class="video-info">
+                    <div class="video-title">{{ video.nom|capitalize }}</div>
+                    <div class="video-meta">{{ video.filename }}</div>
+                </div>
+                <div class="video-size-badge">{{ video.taille_mo }} Mo</div>
+            </div>
+            <video preload="metadata" controlsList="nodownload" onclick="openModal(this)" title="{{ video.nom }}">
+                <source src="{{ video.url }}" type="video/{{ video.filename.split('.')[-1] }}">
+                Votre navigateur ne supporte pas la lecture vidéo.
+            </video>
+            <div class="video-actions">
+                <button class="vid-btn vid-btn-play" onclick="openVideoCard(this)" title="Lecture plein écran">
+                    <i class="fa fa-expand"></i> Plein écran
+                </button>
+                <a href="{{ video.url }}" download="{{ video.filename }}" class="vid-btn vid-btn-dl">
+                    <i class="fa fa-download"></i> Télécharger
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- ═══ EMPTY STATE ═══ -->
+    <div class="empty-state">
+        <div class="empty-icon"><i class="fa fa-film"></i></div>
+        <h2>Aucune vidéo disponible</h2>
+        <p>Revenez bientôt pour découvrir les vidéos exclusives NectarPro ! ✨</p>
+    </div>
+    {% endif %}
+
+</main>
+
+<!-- ═══ MODAL PLEIN ÉCRAN ═══ -->
+<div class="video-modal" id="videoModal">
+    <button class="modal-close" id="modalClose"><i class="fa fa-times"></i></button>
+    <video id="modalVideo" controls playsinline autoplay></video>
+</div>
+
+<script>
+    /* ═══ MODAL PLEIN ÉCRAN ═══ */
+    const modal = document.getElementById('videoModal');
+    const modalVideo = document.getElementById('modalVideo');
+    const modalClose = document.getElementById('modalClose');
+
+    function openModal(el) {
+        const videoCard = el.closest('.video-card');
+        const url = videoCard.dataset.url;
+        modalVideo.innerHTML = '';
+        const ext = url.split('.').pop().toLowerCase();
+        const mimeMap = {mp4:'video/mp4',mov:'video/quicktime',webm:'video/webm',avi:'video/x-msvideo',mkv:'video/x-matroska'};
+        const source = document.createElement('source');
+        source.src = url;
+        source.type = mimeMap[ext] || 'video/mp4';
+        modalVideo.appendChild(source);
+        modalVideo.load();
+        modalVideo.play();
+        modal.classList.add('active');
+    }
+
+    function openVideoCard(btn) {
+        const videoCard = btn.closest('.video-card');
+        const video = videoCard.querySelector('video');
+        if (video.requestFullscreen) {
+            video.requestFullscreen();
+        } else if (video.webkitRequestFullscreen) {
+            video.webkitRequestFullscreen();
+        } else {
+            openModal(video);
+        }
+    }
+
+    modalClose.onclick = function() {
+        modalVideo.pause();
+        modalVideo.innerHTML = '';
+        modal.classList.remove('active');
+    };
+
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modalVideo.pause();
+            modalVideo.innerHTML = '';
+            modal.classList.remove('active');
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            modalVideo.pause();
+            modalVideo.innerHTML = '';
+            modal.classList.remove('active');
+        }
+    });
+</script>
+
+</body>
+</html>

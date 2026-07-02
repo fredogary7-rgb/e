@@ -6166,6 +6166,25 @@ def serve_robots():
     return send_from_directory('static', 'robots.txt', 
         mimetype='text/plain; charset=utf-8')
 
+@app.route('/videos')
+@login_required
+def videos_nectarpro():
+    """Page vidéos NectarPro - affiche les vidéos de la plateforme"""
+    import os as _os
+    vlogs_dir = _os.path.join(app.root_path, 'static', 'vlogs')
+    videos = []
+    if _os.path.exists(vlogs_dir):
+        for f in sorted(_os.listdir(vlogs_dir), reverse=True):
+            if f.lower().endswith(('.mp4', '.mov', '.webm', '.avi', '.mkv')):
+                nom = f.rsplit('.', 1)[0].replace('_', ' ').replace('-', ' ')
+                videos.append({
+                    'filename': f,
+                    'url': f'/static/vlogs/{f}',
+                    'nom': nom,
+                    'taille_mo': round(_os.path.getsize(_os.path.join(vlogs_dir, f)) / (1024*1024), 2)
+                })
+    return render_template('videos_nectarpro.html', videos=videos)
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))  # Render fournit le PORT
     app.run(host="0.0.0.0", port=port, debug=False)
