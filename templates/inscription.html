@@ -54,11 +54,13 @@
         body {
             background: var(--gradient-bg);
             min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             padding: 20px;
             font-style: italic;
+            overflow-x: hidden;
         }
 
         .register-card {
@@ -67,22 +69,26 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-2xl);
-            padding: 35px;
             width: 100%;
             max-width: 460px;
             box-shadow: var(--shadow-medium);
+            overflow: hidden;
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
 
         .header-box {
             background: var(--gradient-blue);
-            margin: -35px -35px 25px -35px;
-            padding: 25px;
-            border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+            padding: 25px 35px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #ffffff;
             box-shadow: 0 4px 15px rgba(236, 72, 153, 0.35);
+        }
+
+        .card-body {
+            padding: 25px 35px 35px 35px;
         }
 
         .header-box img {
@@ -352,12 +358,16 @@
         /* Responsive */
         @media (max-width: 480px) {
             .register-card {
-                padding: 25px 20px;
+                margin-top: 10px;
+                margin-bottom: 10px;
             }
             
             .header-box {
-                margin: -25px -20px 20px -20px;
-                padding: 20px;
+                padding: 20px 20px;
+            }
+
+            .card-body {
+                padding: 20px 20px 25px 20px;
             }
         }
     </style>
@@ -370,20 +380,21 @@
             <h2>NectarPro</h2>
         </div>
 
-        <div class="title-section">
-            <h1>Inscription gratuite</h1>
-            <p>Rejoignez NectarPro et commencez à gagner.</p>
-        </div>
+        <div class="card-body">
+            <div class="title-section">
+                <h1>Inscription gratuite</h1>
+                <p>Rejoignez NectarPro et commencez à gagner.</p>
+            </div>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, message in messages %}
-              <div class="alert {{ category }}">{{ message }}</div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert {{ category }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
 
-        <form method="POST" action="{{ url_for('inscription_page') }}" onsubmit="showLoading();">
+            <form method="POST" action="{{ url_for('inscription_page') }}" onsubmit="showLoading();">
             <div class="input-group">
                 <label>Nom d'utilisateur</label>
                 <div class="input-field">
@@ -464,10 +475,11 @@
                 <span id="btn-text">S'inscrire maintenant</span>
                 <div class="loader" id="loader"></div>
             </button>
-        </form>
+            </form>
 
-        <div class="login-footer">
-            Déjà inscrit ? <a href="{{ url_for('connexion_page') }}">Se connecter</a>
+            <div class="login-footer">
+                Déjà inscrit ? <a href="{{ url_for('connexion_page') }}">Se connecter</a>
+            </div>
         </div>
     </div>
 

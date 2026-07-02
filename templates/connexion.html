@@ -35,11 +35,13 @@
         body {
             background: var(--gradient-bg);
             min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             padding: 20px;
             font-style: italic;
+            overflow-x: hidden;
         }
 
         .login-card {
@@ -48,23 +50,27 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-2xl);
-            padding: 35px;
             width: 100%;
             max-width: 440px;
             box-shadow: var(--shadow-medium);
             text-align: center;
+            overflow: hidden;
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
 
         .header-box {
             background: var(--gradient-blue);
-            margin: -35px -35px 25px -35px;
-            padding: 25px;
-            border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+            padding: 25px 35px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #ffffff;
             box-shadow: 0 4px 15px rgba(236, 72, 153, 0.35);
+        }
+
+        .card-body {
+            padding: 25px 35px 35px 35px;
         }
 
         .header-box img {
@@ -336,12 +342,16 @@
         /* Responsive */
         @media (max-width: 480px) {
             .login-card {
-                padding: 25px 20px;
+                margin-top: 10px;
+                margin-bottom: 10px;
             }
             
             .header-box {
-                margin: -25px -20px 20px -20px;
-                padding: 20px;
+                padding: 20px 20px;
+            }
+
+            .card-body {
+                padding: 20px 20px 25px 20px;
             }
         }
     </style>
@@ -354,59 +364,61 @@
             <h2>NectarPro</h2>
         </div>
 
-        <div class="title-section">
-            <h1>Bon retour !</h1>
-            <p>Connectez-vous pour accéder à votre espace.</p>
-        </div>
+        <div class="card-body">
+            <div class="title-section">
+                <h1>Bon retour !</h1>
+                <p>Connectez-vous pour accéder à votre espace.</p>
+            </div>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, message in messages %}
-              <div class="alert {{ category }}">{{ message }}</div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert {{ category }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
 
-        <form method="POST" action="/connexion" onsubmit="return handleLogin(event);">
-            <div class="input-group">
-                <label>Nom d'utilisateur</label>
-                <div class="input-field">
-                    <i class="fa fa-user prefix-icon"></i>
-                    <input type="text" name="username" placeholder="Votre nom d'utilisateur" required>
+            <form method="POST" action="/connexion" onsubmit="return handleLogin(event);">
+                <div class="input-group">
+                    <label>Nom d'utilisateur</label>
+                    <div class="input-field">
+                        <i class="fa fa-user prefix-icon"></i>
+                        <input type="text" name="username" placeholder="Votre nom d'utilisateur" required>
+                    </div>
                 </div>
-            </div>
 
-            <div class="input-group">
-                <label>Mot de passe</label>
-                <div class="input-field">
-                    <i class="fa fa-lock prefix-icon"></i>
-                    <input type="password" id="pass" name="password" placeholder="Votre mot de passe" required>
-                    <i class="fa fa-eye password-toggle" onclick="togglePass()"></i>
+                <div class="input-group">
+                    <label>Mot de passe</label>
+                    <div class="input-field">
+                        <i class="fa fa-lock prefix-icon"></i>
+                        <input type="password" id="pass" name="password" placeholder="Votre mot de passe" required>
+                        <i class="fa fa-eye password-toggle" onclick="togglePass()"></i>
+                    </div>
+                    <a href="/reset-password" class="forgot-password">Mot de passe oublié ?</a>
                 </div>
-                <a href="/reset-password" class="forgot-password">Mot de passe oublié ?</a>
+
+                <label class="policy-check">
+                    <input type="checkbox" id="check-policy" onchange="togglePolicies()">
+                    <span>J'accepte les politiques d'utilisation</span>
+                </label>
+
+                <div id="policy-box">
+                    <h4><i class="fa fa-shield-alt"></i> Engagement</h4>
+                    <ul>
+                        <li><i class="fa fa-check-circle"></i> Compte Unique autorisé.</li>
+                        <li><i class="fa fa-check-circle"></i> Toute fraude entraîne un bannissement.</li>
+                    </ul>
+                </div>
+
+                <button type="submit" class="btn-login" id="login-btn" disabled>
+                    <span id="btn-text">Se connecter</span>
+                    <div class="loader" id="loader"></div>
+                </button>
+            </form>
+
+            <div class="footer-links">
+                Pas encore de compte ? <a href="/inscription">Créer un compte</a>
             </div>
-
-            <label class="policy-check">
-                <input type="checkbox" id="check-policy" onchange="togglePolicies()">
-                <span>J'accepte les politiques d'utilisation</span>
-            </label>
-
-            <div id="policy-box">
-                <h4><i class="fa fa-shield-alt"></i> Engagement</h4>
-                <ul>
-                    <li><i class="fa fa-check-circle"></i> Compte Unique autorisé.</li>
-                    <li><i class="fa fa-check-circle"></i> Toute fraude entraîne un bannissement.</li>
-                </ul>
-            </div>
-
-            <button type="submit" class="btn-login" id="login-btn" disabled>
-                <span id="btn-text">Se connecter</span>
-                <div class="loader" id="loader"></div>
-            </button>
-        </form>
-
-        <div class="footer-links">
-            Pas encore de compte ? <a href="/inscription">Créer un compte</a>
         </div>
     </div>
 
