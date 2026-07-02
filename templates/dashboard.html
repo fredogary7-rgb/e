@@ -560,6 +560,34 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.market-section *,.whatsapp-c
         </div>
     </div>
 
+    <!-- ═══ WHATSAPP ═══ -->
+    {% if not user.whatsapp_number %}
+    <div class="whatsapp-card">
+        <h3><i class="fab fa-whatsapp"></i> Ajoutez votre WhatsApp</h3>
+        <p>Sélectionnez votre pays puis entrez votre numéro WhatsApp</p>
+        <form method="POST" action="/whatsapp-number" onsubmit="prepareWhatsappNumber()">
+            <div class="phone-group">
+                <select id="countryCode" class="country-select" required>
+                    <option value="+228">🇹🇬 Togo (+228)</option>
+                    <option value="+229">🇧🇯 Bénin (+229)</option>
+                    <option value="+237">🇨🇲 Cameroun (+237)</option>
+                    <option value="+242">🇨🇬 Congo B. (+242)</option>
+                    <option value="+225">🇨🇮 Côte d'Ivoire (+225)</option>
+                    <option value="+226">🇧🇫 Burkina (+226)</option>
+                    <option value="+223">🇲🇱 Mali (+223)</option>
+                    <option value="+221">🇸🇳 Sénégal (+221)</option>
+                    <option value="+243">🇨🇩 Congo K. (+243)</option>
+                    <option value="+227">🇳🇪 Niger (+227)</option>
+                    <option value="+241">🇬🇦 Gabon (+241)</option>
+                </select>
+                <input type="tel" id="phoneNumber" class="phone-input" placeholder="Numéro WhatsApp" required>
+            </div>
+            <input type="hidden" name="number" id="fullWhatsapp">
+            <button type="submit" class="whatsapp-btn"><i class="fab fa-whatsapp"></i> Enregistrer</button>
+        </form>
+    </div>
+    {% endif %}
+
     <!-- ═══ GRILLE STATS 2x2 ═══ -->
     <div class="stats-grid">
         <div class="stat-card">
@@ -649,33 +677,6 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.market-section *,.whatsapp-c
         </a>
     </div>
 
-    <!-- ═══ WHATSAPP ═══ -->
-    {% if not user.whatsapp_number %}
-    <div class="whatsapp-card">
-        <h3><i class="fab fa-whatsapp"></i> Ajoutez votre WhatsApp</h3>
-        <p>Sélectionnez votre pays puis entrez votre numéro WhatsApp</p>
-        <form method="POST" action="/whatsapp-number" onsubmit="prepareWhatsappNumber()">
-            <div class="phone-group">
-                <select id="countryCode" class="country-select" required>
-                    <option value="+228">🇹🇬 Togo (+228)</option>
-                    <option value="+229">🇧🇯 Bénin (+229)</option>
-                    <option value="+237">🇨🇲 Cameroun (+237)</option>
-                    <option value="+242">🇨🇬 Congo B. (+242)</option>
-                    <option value="+225">🇨🇮 Côte d'Ivoire (+225)</option>
-                    <option value="+226">🇧🇫 Burkina (+226)</option>
-                    <option value="+223">🇲🇱 Mali (+223)</option>
-                    <option value="+221">🇸🇳 Sénégal (+221)</option>
-                    <option value="+243">🇨🇩 Congo K. (+243)</option>
-                    <option value="+227">🇳🇪 Niger (+227)</option>
-                    <option value="+241">🇬🇦 Gabon (+241)</option>
-                </select>
-                <input type="tel" id="phoneNumber" class="phone-input" placeholder="Numéro WhatsApp" required>
-            </div>
-            <input type="hidden" name="number" id="fullWhatsapp">
-            <button type="submit" class="whatsapp-btn"><i class="fab fa-whatsapp"></i> Enregistrer</button>
-        </form>
-    </div>
-    {% endif %}
 
     <!-- ═══ MARKET CAROUSEL ═══ -->
     {% if produits_recents %}
