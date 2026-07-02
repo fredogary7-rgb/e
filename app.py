@@ -2237,6 +2237,9 @@ def dashboard_bloque():
     import logging
 
     user = get_logged_in_user()
+    if not user:
+        flash("Veuillez vous connecter.", "danger")
+        return redirect(url_for("connexion_page"))
 
     if user_is_activated(user):
         return redirect(url_for("dashboard_page"))
@@ -2244,7 +2247,8 @@ def dashboard_bloque():
     pending_depot = None
     user_has_pending_depot = bool(pending_depot)
 
-    country_code = COUNTRY_CODE.get(user.country.strip())
+    user_country = (user.country or "").strip()
+    country_code = COUNTRY_CODE.get(user_country) if user_country else None
     if not country_code:
         flash("Pays non supporté.", "danger")
         return redirect(url_for("connexion_page"))
