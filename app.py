@@ -1,4 +1,4 @@
-non import time
+import time
 import requests
 import os
 import re
