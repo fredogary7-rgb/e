@@ -3449,58 +3449,83 @@ def admin_deposits():
         return redirect(url_for("admin_finance"))
 
     page = request.args.get("page", 1, type=int)
+    search = request.args.get("q", "").strip()
+    sort = request.args.get("sort", "date_desc")  # date_desc, date_asc, amount_desc, amount_asc
+    status_filter = request.args.get("status", "")  # all, pending, validated, rejected
     PER_PAGE = 50
 
     # ==========================
-    # UTILISATEURS PAGINÉS
+    # RECHERCHE + FILTRES + TRI
+    # ==========================
+    query = Depot.query
+
+    if search:
+        # Recherche via user_name (indexé) ou phone
+        query = query.filter(
+            db.or_(
+                Depot.user_name.ilike(f"%{search}%"),
+                Depot.phone.ilike(f"%{search}%"),
+                Depot.reference.ilike(f"%{search}%")
+            )
+        )
+
+    if status_filter == "pending":
+        query = query.filter(Depot.statut.in_(["pending", "en_attente"]))
+    elif status_filter == "validated":
+        query = query.filter(Depot.statut == "valide")
+    elif status_filter == "rejected":
+        query = query.filter(Depot.statut.in_(["refuse", "rejete", "failed"]))
+
+    # Tri
+    if sort == "date_asc":
+        query = query.order_by(Depot.date.asc())
+    elif sort == "amount_desc":
+        query = query.order_by(Depot.montant.desc())
+    elif sort == "amount_asc":
+        query = query.order_by(Depot.montant.asc())
+    else:
+        query = query.order_by(Depot.date.desc())
+
+    # Pagination
+    pagination = query.paginate(page=page, per_page=PER_PAGE, error_out=False)
+    deposits_all = pagination.items
+
+    # Enrichir chaque dépôt avec une relation user simulée
+    for d in deposits_all:
+        if not hasattr(d, '_user_loaded'):
+            d._user_loaded = True
+            if d.user_id:
+                d._user = User.query.get(d.user_id)
+            elif d.user_name:
+                d._user = User.query.filter_by(username=d.user_name).first()
+            else:
+                d._user = None
+        d.user_obj = d._user
+
+    # ==========================
+    # STATISTIQUES
+    # ==========================
+    total_amount = db.session.query(
+        func.coalesce(func.sum(Depot.montant), 0)
+    ).filter(Depot.statut.in_(["valide", "pending"])).scalar()
+
+    pending_count = Depot.query.filter(
+        Depot.statut.in_(["pending", "en_attente"])
+    ).count()
+
+    validated_count = Depot.query.filter_by(statut="valide").count()
+
+    # ==========================
+    # UTILISATEURS (garde compatible admin existant)
     # ==========================
     users_paginated = User.query.order_by(
         User.date_creation.desc()
     ).paginate(page=page, per_page=PER_PAGE, error_out=False)
 
-    # Séparation Actifs / Inactifs
     actifs = [u for u in users_paginated.items if u.premier_depot]
     inactifs = [u for u in users_paginated.items if not u.premier_depot]
-
     total_actifs = User.query.filter_by(premier_depot=True).count()
     total_inactifs = User.query.filter_by(premier_depot=False).count()
-
-    # ==========================
-    # STATISTIQUES GLOBALES
-    # ==========================
-    total_amount = db.session.query(
-        func.coalesce(func.sum(Depot.montant), 0)
-    ).scalar()
-
-    total_depots = Depot.query.count()
-
-    total_retraits = db.session.query(
-        func.coalesce(func.sum(Retrait.montant), 0)
-    ).scalar()
-
-    nombre_retraits = Retrait.query.count()
-
-    # ==========================
-    # DÉPÔTS EN ATTENTE
-    # ==========================
-    subquery = (
-        db.session.query(func.max(Depot.id).label("last_id"))
-        .join(User, Depot.user_name == User.username)
-        .filter(
-            Depot.statut == "en_attente",
-            User.premier_depot == False
-        )
-        .group_by(Depot.phone)
-        .subquery()
-    )
-
-    depots = (
-        Depot.query
-        .filter(Depot.id.in_(db.session.query(subquery.c.last_id)))
-        .join(User, Depot.user_name == User.username)
-        .order_by(Depot.date.desc())
-        .all()
-    )
 
     # ==========================
     # RETRAITS
@@ -3513,10 +3538,14 @@ def admin_deposits():
     )
 
     retraits_list = []
-
     for retrait, username in retraits_paginated.items:
         retrait.username_display = username
         retraits_list.append(retrait)
+
+    total_retraits = db.session.query(
+        func.coalesce(func.sum(Retrait.montant), 0)
+    ).scalar()
+    nombre_retraits = Retrait.query.count()
 
     # ==========================
     # TEMPLATE
@@ -3524,23 +3553,18 @@ def admin_deposits():
     return render_template(
         "admin_deposits.html",
         user=user,
-
+        deposits=deposits_all,
+        total_amount=total_amount,
+        pending_count=pending_count,
+        validated_count=validated_count,
         users=users_paginated.items,
         users_paginated=users_paginated,
-
-        depots=depots,
-
         retraits=retraits_list,
         retraits_paginated=retraits_paginated,
-
         actifs=actifs,
         inactifs=inactifs,
-
         total_actifs=total_actifs,
         total_inactifs=total_inactifs,
-
-        total_amount=total_amount,
-        total_depots=total_depots,
         total_retraits=total_retraits,
         nombre_retraits=nombre_retraits
     )
