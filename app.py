@@ -3655,6 +3655,36 @@ def admin_retraits():
         retraits=retraits
     )
 
+@app.route("/admin/deposits/delete-all")
+def delete_all_deposits():
+    user_admin = get_logged_in_admin()
+    if not user_admin:
+        flash("Accès refusé.", "danger")
+        return redirect(url_for("admin_finance"))
+    try:
+        count = Depot.query.delete()
+        db.session.commit()
+        flash(f"{count} dépôt(s) supprimé(s) avec succès.", "success")
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Erreur lors de la suppression : {str(e)}", "danger")
+    return redirect(url_for("admin_deposits"))
+
+@app.route("/admin/retraits/delete-all")
+def delete_all_retraits():
+    user_admin = get_logged_in_admin()
+    if not user_admin:
+        flash("Accès refusé.", "danger")
+        return redirect(url_for("admin_finance"))
+    try:
+        count = Retrait.query.delete()
+        db.session.commit()
+        flash(f"{count} retrait(s) supprimé(s) avec succès.", "success")
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Erreur lors de la suppression : {str(e)}", "danger")
+    return redirect(url_for("admin_deposits"))
+
 @app.route("/admin/retraits/valider/<int:retrait_id>")
 def valider_retrait(retrait_id):
     user_admin = get_logged_in_user()

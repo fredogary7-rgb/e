@@ -3,24 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Dépôts - NectarPro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Admin Dépôts — NectarPro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         :root {
-            --bg: #0f172a;
-            --bg-card: #1e293b;
-            --bg-card-hover: #233044;
-            --accent: #38bdf8;
-            --accent2: #818cf8;
-            --green: #4ade80;
-            --amber: #fbbf24;
-            --red: #f87171;
-            --text: #f1f5f9;
-            --text-muted: #94a3b8;
-            --border: rgba(148, 163, 184, 0.1);
-            --radius: 12px;
-            --shadow: 0 4px 24px rgba(0,0,0,0.3);
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --muted: #64748b;
+            --accent: #3b82f6;
+            --accent-light: #eff6ff;
+            --green: #10b981;
+            --green-light: #ecfdf5;
+            --amber: #f59e0b;
+            --amber-light: #fffbeb;
+            --red: #ef4444;
+            --red-light: #fef2f2;
+            --radius: 10px;
         }
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
@@ -28,276 +30,426 @@
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
-            line-height: 1.5;
         }
-        /* Sidebar */
-        .sidebar {
-            position: fixed; top:0; left:0; bottom:0;
-            width: 240px; background: var(--bg-card);
-            border-right: 1px solid var(--border);
-            padding: 24px 16px;
-            display: flex; flex-direction: column;
-            z-index: 100;
+        /* ============= HEADER ============= */
+        .top-nav {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 32px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
-        .sidebar-brand {
-            font-size: 22px; font-weight: 900; font-style: italic;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 36px; padding: 0 8px;
+        .brand {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .sidebar-nav { list-style: none; flex:1; }
-        .sidebar-nav li { margin-bottom: 4px; }
-        .sidebar-nav a {
-            display: flex; align-items: center; gap: 12px;
-            padding: 12px 16px; border-radius: 10px;
-            color: var(--text-muted); text-decoration: none;
-            font-weight: 500; font-size: 14px;
-            transition: all 0.2s;
+        .brand i { font-size: 22px; }
+        .nav-links {
+            display: flex;
+            gap: 4px;
+            list-style: none;
         }
-        .sidebar-nav a:hover, .sidebar-nav a.active {
-            background: rgba(56,189,248,0.1); color: var(--accent);
+        .nav-links a {
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.15s;
         }
-        .sidebar-nav a i { width: 20px; text-align: center; }
-        /* Main */
-        .main { margin-left: 240px; padding: 32px; }
-        /* Top bar */
-        .top-bar {
-            display: flex; justify-content: space-between;
-            align-items: center; margin-bottom: 32px;
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--accent);
+            background: var(--accent-light);
         }
-        .page-title {
-            font-size: 28px; font-weight: 800;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
         }
-        .admin-badge {
-            display: flex; align-items: center; gap: 10px;
-            background: var(--bg-card); padding: 8px 16px;
-            border-radius: 10px; border: 1px solid var(--border);
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--accent);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
         }
-        .admin-avatar {
-            width: 32px; height: 32px; border-radius: 8px;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 13px;
+        /* ============= MAIN ============= */
+        .main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 28px 32px;
         }
-        /* Stats */
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr);
-            gap: 16px; margin-bottom: 24px;
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
         }
-        .stat-card {
-            background: var(--bg-card); border-radius: var(--radius);
-            padding: 20px; border: 1px solid var(--border);
-            transition: transform 0.2s;
+        .page-header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
         }
-        .stat-card:hover { transform: translateY(-2px); }
-        .stat-icon {
-            width: 40px; height: 40px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 18px; margin-bottom: 12px;
+        .page-header p {
+            font-size: 13px;
+            color: var(--muted);
         }
-        .stat-icon.blue { background: rgba(56,189,248,0.15); color: var(--accent); }
-        .stat-icon.green { background: rgba(74,222,128,0.15); color: var(--green); }
-        .stat-icon.amber { background: rgba(251,191,36,0.15); color: var(--amber); }
-        .stat-icon.red { background: rgba(248,113,113,0.15); color: var(--red); }
-        .stat-label { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-bottom: 4px; }
-        .stat-value { font-size: 24px; font-weight: 800; }
-        .stat-value.green { color: var(--green); }
-        .stat-value.amber { color: var(--amber); }
-        .stat-value.red { color: var(--red); }
-        /* Search & filters */
-        .filters-bar {
-            display: flex; gap: 12px; margin-bottom: 20px;
-            flex-wrap: wrap; align-items: center;
+        .danger-zone {
+            display: flex;
+            gap: 10px;
         }
-        .search-box {
-            flex: 1; min-width: 260px; position: relative;
-        }
-        .search-box input {
-            width: 100%; padding: 12px 16px 12px 44px;
-            background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: 10px; color: var(--text);
-            font-size: 14px; font-family: 'Inter', sans-serif;
-            outline: none; transition: border 0.2s;
-        }
-        .search-box input:focus { border-color: var(--accent); }
-        .search-box i {
-            position: absolute; left: 16px; top: 50%;
-            transform: translateY(-50%); color: var(--text-muted);
-        }
-        .filter-btn {
-            padding: 10px 20px; border-radius: 10px;
-            border: 1px solid var(--border); background: var(--bg-card);
-            color: var(--text-muted); font-size: 13px; font-weight: 600;
-            cursor: pointer; transition: all 0.2s;
+        .btn-danger {
+            background: var(--red-light);
+            color: var(--red);
+            border: 1px solid #fecaca;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
             font-family: 'Inter', sans-serif;
             white-space: nowrap;
         }
-        .filter-btn:hover { border-color: var(--accent); color: var(--text); }
-        .filter-btn.active {
-            background: rgba(56,189,248,0.15); border-color: var(--accent); color: var(--accent);
+        .btn-danger:hover {
+            background: var(--red);
+            color: #fff;
+            border-color: var(--red);
         }
-        .sort-select {
-            padding: 10px 16px; border-radius: 10px;
-            background: var(--bg-card); border: 1px solid var(--border);
-            color: var(--text); font-size: 13px; font-weight: 600;
-            cursor: pointer; font-family: 'Inter', sans-serif;
+        /* ============= STATS ============= */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+        }
+        .stat-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--muted);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .stat-value.blue { color: var(--accent); }
+        .stat-value.green { color: var(--green); }
+        .stat-value.amber { color: var(--amber); }
+        /* ============= FILTERS ============= */
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .search-input {
+            flex: 1;
+            min-width: 220px;
+            padding: 10px 16px 10px 40px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            background: var(--surface);
+            color: var(--text);
             outline: none;
+            transition: border 0.15s;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 14px center;
         }
-        .sort-select:focus { border-color: var(--accent); }
-        /* Table */
-        .table-container {
-            background: var(--bg-card); border-radius: var(--radius);
-            border: 1px solid var(--border); overflow: hidden;
+        .search-input:focus { border-color: var(--accent); }
+        .chip {
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--muted);
+            transition: all 0.15s;
+            white-space: nowrap;
         }
-        .table-header-bar {
-            padding: 16px 20px; border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
+        .chip:hover { border-color: var(--accent); color: var(--accent); }
+        .chip.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
         }
-        .table-header-bar h3 { font-size: 15px; font-weight: 700; }
-        .result-count { font-size: 12px; color: var(--text-muted); }
-        table { width: 100%; border-collapse: collapse; }
-        thead { background: rgba(56,189,248,0.03); }
+        select.chip {
+            cursor: pointer;
+            appearance: none;
+            padding-right: 32px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+        }
+        /* ============= TABLE ============= */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-header h2 {
+            font-size: 15px;
+            font-weight: 700;
+        }
+        .card-header .count {
+            font-size: 12px;
+            color: var(--muted);
+            background: var(--bg);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
         th {
-            padding: 14px 16px; text-align: left; font-weight: 600;
-            font-size: 11px; color: var(--text-muted);
-            text-transform: uppercase; letter-spacing: 0.5px;
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--muted);
+            border-bottom: 1px solid var(--border);
+            background: var(--bg);
         }
-        td { padding: 14px 16px; border-top: 1px solid var(--border); font-size: 13px; }
-        tbody tr { transition: background 0.15s; }
-        tbody tr:hover { background: var(--bg-card-hover); }
-        .user-cell { display: flex; align-items: center; gap: 10px; }
-        .user-avatar-dot {
-            width: 32px; height: 32px; border-radius: 8px;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 12px; color: #fff;
+        td {
+            padding: 14px 16px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--accent-light); }
+        .user-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-initial {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--accent-light);
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
         }
         .user-name { font-weight: 600; }
-        .user-phone { font-size: 11px; color: var(--text-muted); }
-        .amount { font-weight: 700; font-size: 14px; }
-        .mono { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; color: var(--text-muted); }
-        /* Status badges */
+        .user-meta { font-size: 11px; color: var(--muted); }
+        .amount { font-weight: 700; font-size: 13px; }
+        .ref-mono {
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 11px;
+            color: var(--muted);
+        }
         .badge {
-            display: inline-flex; align-items: center; gap: 5px;
-            padding: 5px 12px; border-radius: 20px;
-            font-size: 11px; font-weight: 700; letter-spacing: 0.3px;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
         }
-        .badge-success { background: rgba(74,222,128,0.12); color: var(--green); }
-        .badge-pending { background: rgba(251,191,36,0.12); color: var(--amber); }
-        .badge-failed { background: rgba(248,113,113,0.12); color: var(--red); }
+        .badge-success { background: var(--green-light); color: var(--green); }
+        .badge-pending { background: var(--amber-light); color: var(--amber); }
+        .badge-failed { background: var(--red-light); color: var(--red); }
         /* Actions */
-        .actions { display: flex; gap: 8px; }
+        .action-group { display: flex; gap: 6px; }
         .btn-icon {
-            width: 32px; height: 32px; border-radius: 8px; border: none;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.2s; font-size: 13px;
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .btn-approve { background: rgba(74,222,128,0.12); color: var(--green); }
-        .btn-approve:hover { background: rgba(74,222,128,0.25); transform: scale(1.05); }
-        .btn-reject { background: rgba(248,113,113,0.12); color: var(--red); }
-        .btn-reject:hover { background: rgba(248,113,113,0.25); transform: scale(1.05); }
-        .no-action { color: var(--text-muted); font-size: 12px; }
-        /* Empty state */
-        .empty-state {
-            text-align: center; padding: 48px 20px;
+        .btn-approve { background: var(--green-light); color: var(--green); }
+        .btn-approve:hover { background: var(--green); color: #fff; }
+        .btn-reject { background: var(--red-light); color: var(--red); }
+        .btn-reject:hover { background: var(--red); color: #fff; }
+        /* Flash messages */
+        .flashes {
+            list-style: none;
+            margin-bottom: 20px;
         }
-        .empty-state i { font-size: 40px; color: var(--text-muted); margin-bottom: 12px; opacity:0.5; }
-        .empty-state p { color: var(--text-muted); font-size: 14px; }
+        .flash {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .flash-success { background: var(--green-light); color: var(--green); border: 1px solid #a7f3d0; }
+        .flash-danger { background: var(--red-light); color: var(--red); border: 1px solid #fecaca; }
+        .flash-warning { background: var(--amber-light); color: var(--amber); border: 1px solid #fde68a; }
+        .flash-info { background: var(--accent-light); color: var(--accent); border: 1px solid #bfdbfe; }
+        /* Empty */
+        .empty {
+            text-align: center;
+            padding: 48px 20px;
+            color: var(--muted);
+        }
+        .empty i { font-size: 36px; margin-bottom: 10px; opacity: 0.3; }
         /* Responsive */
-        @media (max-width: 1024px) {
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .sidebar { width: 60px; }
-            .sidebar-brand, .sidebar-nav a span { display: none; }
-            .main { margin-left: 60px; }
+        @media (max-width: 900px) {
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .main { padding: 16px; }
+            .nav-links { display: none; }
+            .page-header { flex-direction: column; gap: 12px; }
         }
-        @media (max-width: 640px) {
-            .stats-grid { grid-template-columns: 1fr; }
-            .filters-bar { flex-direction: column; }
-            .search-box { min-width: unset; }
+        @media (max-width: 600px) {
+            .stats-row { grid-template-columns: 1fr; }
+            .toolbar { flex-direction: column; }
+            .search-input { min-width: unset; }
         }
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="sidebar-brand">NectarPro</div>
-        <ul class="sidebar-nav">
-            <li><a href="{{ url_for('dashboard_page') }}"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
-            <li><a href="{{ url_for('admin_deposits') }}" class="active"><i class="fas fa-coins"></i> <span>Dépôts</span></a></li>
-            <li><a href="{{ url_for('admin_retraits') }}"><i class="fas fa-arrow-up"></i> <span>Retraits</span></a></li>
-            <li><a href="{{ url_for('admin_users') }}"><i class="fas fa-users"></i> <span>Utilisateurs</span></a></li>
-            <li><a href="{{ url_for('admin_users_inactifs') }}"><i class="fas fa-user-slash"></i> <span>Inactifs</span></a></li>
-            <li><a href="{{ url_for('admin_users_actifs') }}"><i class="fas fa-user-check"></i> <span>Actifs</span></a></li>
-            <li><a href="{{ url_for('admin_parrainage') }}"><i class="fas fa-sitemap"></i> <span>Parrainage</span></a></li>
-            <li><a href="{{ url_for('admin_canal_edit') }}"><i class="fas fa-bullhorn"></i> <span>Canal</span></a></li>
-            <li><a href="{{ url_for('logout_page') }}"><i class="fas fa-sign-out-alt"></i> <span>Déconnexion</span></a></li>
-        </ul>
-    </aside>
 
-    <!-- Main Content -->
-    <div class="main">
-        <!-- Top Bar -->
-        <div class="top-bar">
-            <h1 class="page-title">💰 Gestion des Dépôts</h1>
-            <div class="admin-badge">
-                <div class="admin-avatar">{{ user.username[0]|upper }}</div>
-                <span style="font-weight:600;font-size:13px;">{{ user.username }}</span>
-            </div>
+<!-- ============ TOP NAV ============ -->
+<nav class="top-nav">
+    <div class="brand">
+        <i class="fas fa-cube"></i> NectarPro
+    </div>
+    <ul class="nav-links">
+        <li><a href="{{ url_for('admin_deposits') }}" class="active">Dépôts</a></li>
+        <li><a href="{{ url_for('admin_retraits') }}">Retraits</a></li>
+        <li><a href="{{ url_for('admin_users') }}">Utilisateurs</a></li>
+        <li><a href="{{ url_for('admin_users_inactifs') }}">Inactifs</a></li>
+        <li><a href="{{ url_for('admin_users_actifs') }}">Actifs</a></li>
+        <li><a href="{{ url_for('admin_parrainage') }}">Parrainage</a></li>
+        <li><a href="{{ url_for('admin_canal_edit') }}">Canal</a></li>
+        <li><a href="{{ url_for('logout_page') }}">Déconnexion</a></li>
+    </ul>
+    <div class="user-info">
+        <div class="avatar">{{ user.username[0]|upper }}</div>
+        {{ user.username }}
+    </div>
+</nav>
+
+<!-- ============ MAIN ============ -->
+<div class="main">
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for category, message in messages %}
+        <li class="flash flash-{{ category }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Page header -->
+    <div class="page-header">
+        <div>
+            <h1>Gestion des Dépôts</h1>
+            <p>Validez, rejetez ou recherchez les dépôts des utilisateurs.</p>
         </div>
-
-        <!-- Stats -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon blue"><i class="fas fa-receipt"></i></div>
-                <div class="stat-label">Total Transactions</div>
-                <div class="stat-value">{{ deposits|length }}</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon green"><i class="fas fa-money-bill-wave"></i></div>
-                <div class="stat-label">Montant Total</div>
-                <div class="stat-value green">{{ "%.0f"|format(total_amount) }} XOF</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon amber"><i class="fas fa-clock"></i></div>
-                <div class="stat-label">En Attente</div>
-                <div class="stat-value amber">{{ pending_count }}</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
-                <div class="stat-label">Validés</div>
-                <div class="stat-value green">{{ validated_count }}</div>
-            </div>
+        <div class="danger-zone">
+            <button class="btn-danger" onclick="confirmDeleteAll('deposits')">
+                <i class="fas fa-trash-alt"></i> Supprimer tous les dépôts
+            </button>
+            <button class="btn-danger" onclick="confirmDeleteAll('retraits')">
+                <i class="fas fa-trash-alt"></i> Supprimer tous les retraits
+            </button>
         </div>
+    </div>
 
-        <!-- Search & Filters -->
-        <form class="filters-bar" method="GET" action="{{ url_for('admin_deposits') }}" id="filtersForm">
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" name="q" placeholder="Rechercher par nom, téléphone ou référence..."
-                       value="{{ request.args.get('q', '') }}" id="searchInput">
-            </div>
-            <input type="hidden" name="sort" value="{{ request.args.get('sort', 'date_desc') }}">
-            <a href="?status=&sort=date_desc" class="filter-btn {% if not request.args.get('status') %}active{% endif %}">Tous</a>
-            <a href="?status=pending&sort={{ request.args.get('sort', 'date_desc') }}" class="filter-btn {% if request.args.get('status') == 'pending' %}active{% endif %}">⏳ En attente</a>
-            <a href="?status=validated&sort={{ request.args.get('sort', 'date_desc') }}" class="filter-btn {% if request.args.get('status') == 'validated' %}active{% endif %}">✅ Validés</a>
-            <a href="?status=rejected&sort={{ request.args.get('sort', 'date_desc') }}" class="filter-btn {% if request.args.get('status') == 'rejected' %}active{% endif %}">❌ Rejetés</a>
-            <select class="sort-select" name="sort" onchange="this.form.submit()">
-                <option value="date_desc" {% if request.args.get('sort','date_desc')=='date_desc' %}selected{% endif %}>📅 Plus récent</option>
-                <option value="date_asc" {% if request.args.get('sort')=='date_asc' %}selected{% endif %}>📅 Plus ancien</option>
-                <option value="amount_desc" {% if request.args.get('sort')=='amount_desc' %}selected{% endif %}>💰 Montant ↓</option>
-                <option value="amount_asc" {% if request.args.get('sort')=='amount_asc' %}selected{% endif %}>💰 Montant ↑</option>
-            </select>
-        </form>
+    <!-- Stats -->
+    <div class="stats-row">
+        <div class="stat">
+            <div class="stat-label">Total Transactions</div>
+            <div class="stat-value blue">{{ deposits|length }}</div>
+        </div>
+        <div class="stat">
+            <div class="stat-label">Montant Total</div>
+            <div class="stat-value green">{{ "%.0f"|format(total_amount) }} XOF</div>
+        </div>
+        <div class="stat">
+            <div class="stat-label">En Attente</div>
+            <div class="stat-value amber">{{ pending_count }}</div>
+        </div>
+        <div class="stat">
+            <div class="stat-label">Validés</div>
+            <div class="stat-value green">{{ validated_count }}</div>
+        </div>
+    </div>
 
-        <!-- Table -->
-        <div class="table-container">
-            <div class="table-header-bar">
-                <h3>📋 Liste des Dépôts</h3>
-                <span class="result-count">{{ deposits|length }} résultat(s)</span>
-            </div>
-            {% if deposits %}
+    <!-- Filters -->
+    <form class="toolbar" method="GET" action="{{ url_for('admin_deposits') }}" id="filterForm">
+        <input type="text" name="q" class="search-input" placeholder="Rechercher par nom, téléphone ou référence..."
+               value="{{ request.args.get('q', '') }}" id="searchInput">
+        <a href="?status=&sort=date_desc" class="chip {% if not request.args.get('status') %}active{% endif %}">Tous</a>
+        <a href="?status=pending&sort={{ request.args.get('sort', 'date_desc') }}" class="chip {% if request.args.get('status') == 'pending' %}active{% endif %}">En attente</a>
+        <a href="?status=validated&sort={{ request.args.get('sort', 'date_desc') }}" class="chip {% if request.args.get('status') == 'validated' %}active{% endif %}">Validés</a>
+        <a href="?status=rejected&sort={{ request.args.get('sort', 'date_desc') }}" class="chip {% if request.args.get('status') == 'rejected' %}active{% endif %}">Rejetés</a>
+        <select name="sort" class="chip" onchange="document.getElementById('filterForm').submit()">
+            <option value="date_desc" {% if request.args.get('sort','date_desc')=='date_desc' %}selected{% endif %}>Plus récent</option>
+            <option value="date_asc" {% if request.args.get('sort')=='date_asc' %}selected{% endif %}>Plus ancien</option>
+            <option value="amount_desc" {% if request.args.get('sort')=='amount_desc' %}selected{% endif %}>Montant ↓</option>
+            <option value="amount_asc" {% if request.args.get('sort')=='amount_asc' %}selected{% endif %}>Montant ↑</option>
+        </select>
+    </form>
+
+    <!-- Table -->
+    <div class="card">
+        <div class="card-header">
+            <h2>Liste des Dépôts</h2>
+            <span class="count">{{ deposits|length }} résultat(s)</span>
+        </div>
+        {% if deposits %}
+        <div style="overflow-x: auto;">
             <table>
                 <thead>
                     <tr>
@@ -314,76 +466,87 @@
                     {% for deposit in deposits %}
                     <tr>
                         <td>
-                            <div class="user-cell">
-                                <div class="user-avatar-dot">
-                                    {% set uname = deposit.user_obj.username if deposit.user_obj else deposit.user_name or '?' %}
-                                    {{ uname[0]|upper }}
+                            <div class="user-row">
+                                <div class="user-initial">
+                                    {{ (deposit.user_obj.username if deposit.user_obj else deposit.user_name or '?')[0]|upper }}
                                 </div>
                                 <div>
-                                    <div class="user-name">{{ uname }}</div>
-                                    <div class="user-phone">{{ deposit.phone }}</div>
+                                    <div class="user-name">{{ deposit.user_obj.username if deposit.user_obj else deposit.user_name or 'Inconnu' }}</div>
+                                    <div class="user-meta">{{ deposit.phone }}</div>
                                 </div>
                             </div>
                         </td>
                         <td><span class="amount">{{ "%.0f"|format(deposit.montant) }} XOF</span></td>
                         <td>{{ deposit.operator }}</td>
-                        <td><span class="mono">{{ deposit.reference or '—' }}</span></td>
+                        <td><span class="ref-mono">{{ deposit.reference or '—' }}</span></td>
                         <td>{{ deposit.date.strftime('%d/%m/%Y %H:%M') }}</td>
                         <td>
                             {% if deposit.statut == 'valide' %}
-                            <span class="badge badge-success">✅ Validé</span>
+                            <span class="badge badge-success">Validé</span>
                             {% elif deposit.statut in ('en_attente', 'pending') %}
-                            <span class="badge badge-pending">⏳ En attente</span>
+                            <span class="badge badge-pending">En attente</span>
                             {% else %}
-                            <span class="badge badge-failed">❌ {{ deposit.statut }}</span>
+                            <span class="badge badge-failed">{{ deposit.statut }}</span>
                             {% endif %}
                         </td>
                         <td>
                             {% if deposit.statut in ('en_attente', 'pending') %}
-                            <div class="actions">
-                                <button class="btn-icon btn-approve" onclick="handleAction({{ deposit.id }}, 'valider')" title="Valider">
+                            <div class="action-group">
+                                <button class="btn-icon btn-approve" onclick="handleDeposit({{ deposit.id }}, 'valider')" title="Valider">
                                     <i class="fas fa-check"></i>
                                 </button>
-                                <button class="btn-icon btn-reject" onclick="handleAction({{ deposit.id }}, 'rejeter')" title="Rejeter">
+                                <button class="btn-icon btn-reject" onclick="handleDeposit({{ deposit.id }}, 'rejeter')" title="Rejeter">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
                             {% else %}
-                            <span class="no-action">—</span>
+                            <span style="color: var(--muted); font-size: 12px;">—</span>
                             {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            {% else %}
-            <div class="empty-state">
-                <i class="fas fa-search"></i>
-                <p>Aucun dépôt trouvé.<br>Essayez de modifier vos filtres.</p>
-            </div>
-            {% endif %}
         </div>
+        {% else %}
+        <div class="empty">
+            <i class="fas fa-inbox"></i>
+            <p>Aucun dépôt trouvé. Essayez de modifier vos filtres.</p>
+        </div>
+        {% endif %}
     </div>
+</div>
 
-    <script>
-    function handleAction(depositId, action) {
-        const messages = {
-            'valider': 'Valider ce dépôt et créditer l\'utilisateur ?',
-            'rejeter': 'Rejeter définitivement ce dépôt ?'
-        };
-        if (confirm(messages[action])) {
-            window.location.href = '/admin/deposits/' + action + '/' + depositId + window.location.search;
+<script>
+// Valider / Rejeter un dépôt
+function handleDeposit(id, action) {
+    const msg = action === 'valider'
+        ? 'Valider ce dépôt et créditer l\'utilisateur ?'
+        : 'Rejeter définitivement ce dépôt ?';
+    if (confirm(msg)) {
+        window.location.href = '/admin/deposits/' + action + '/' + id;
+    }
+}
+
+// Supprimer tous les dépôts ou retraits
+function confirmDeleteAll(type) {
+    const label = type === 'deposits' ? 'dépôts' : 'retraits';
+    const msg = 'ATTENTION !\n\nCette action va supprimer TOUS les ' + label + ' de la base de données.\n\nCette action est IRRÉVERSIBLE.\n\nConfirmer la suppression ?';
+    if (confirm(msg)) {
+        if (confirm('Dernière confirmation : Supprimer TOUS les ' + label + ' ?')) {
+            window.location.href = '/admin/' + type + '/delete-all';
         }
     }
+}
 
-    // Auto-submit search after typing stops
-    let searchTimeout;
-    document.getElementById('searchInput').addEventListener('input', function() {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            document.getElementById('filtersForm').submit();
-        }, 500);
-    });
-    </script>
+// Auto-submit après saisie (avec délai)
+let timeout;
+document.getElementById('searchInput').addEventListener('input', function() {
+    clearTimeout(timeout);
+    timeout = setTimeout(function() {
+        document.getElementById('filterForm').submit();
+    }, 400);
+});
+</script>
 </body>
 </html>
