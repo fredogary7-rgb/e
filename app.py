@@ -3452,15 +3452,17 @@ def admin_deposits():
     search = request.args.get("q", "").strip()
     sort = request.args.get("sort", "date_desc")  # date_desc, date_asc, amount_desc, amount_asc
     status_filter = request.args.get("status", "")  # all, pending, validated, rejected
+    retrait_search = request.args.get("rq", "").strip()
+    user_search = request.args.get("uq", "").strip()
+    user_filter = request.args.get("ufilter", "all")
     PER_PAGE = 50
 
     # ==========================
-    # RECHERCHE + FILTRES + TRI
+    # RECHERCHE + FILTRES + TRI — DÉPÔTS
     # ==========================
     query = Depot.query
 
     if search:
-        # Recherche via user_name (indexé) ou phone
         query = query.filter(
             db.or_(
                 Depot.user_name.ilike(f"%{search}%"),
@@ -3476,7 +3478,6 @@ def admin_deposits():
     elif status_filter == "rejected":
         query = query.filter(Depot.statut.in_(["refuse", "rejete", "failed"]))
 
-    # Tri
     if sort == "date_asc":
         query = query.order_by(Depot.date.asc())
     elif sort == "amount_desc":
@@ -3486,11 +3487,9 @@ def admin_deposits():
     else:
         query = query.order_by(Depot.date.desc())
 
-    # Pagination
     pagination = query.paginate(page=page, per_page=PER_PAGE, error_out=False)
     deposits_all = pagination.items
 
-    # Enrichir chaque dépôt avec une relation user simulée
     for d in deposits_all:
         if not hasattr(d, '_user_loaded'):
             d._user_loaded = True
@@ -3503,36 +3502,24 @@ def admin_deposits():
         d.user_obj = d._user
 
     # ==========================
-    # STATISTIQUES
+    # RETRAITS — avec recherche
     # ==========================
-    total_amount = db.session.query(
-        func.coalesce(func.sum(Depot.montant), 0)
-    ).filter(Depot.statut.in_(["valide", "pending"])).scalar()
-
-    pending_count = Depot.query.filter(
-        Depot.statut.in_(["pending", "en_attente"])
-    ).count()
-
-    validated_count = Depot.query.filter_by(statut="valide").count()
-
-    # ==========================
-    # UTILISATEURS (garde compatible admin existant)
-    # ==========================
-    users_paginated = User.query.order_by(
-        User.date_creation.desc()
-    ).paginate(page=page, per_page=PER_PAGE, error_out=False)
-
-    actifs = [u for u in users_paginated.items if u.premier_depot]
-    inactifs = [u for u in users_paginated.items if not u.premier_depot]
-    total_actifs = User.query.filter_by(premier_depot=True).count()
-    total_inactifs = User.query.filter_by(premier_depot=False).count()
-
-    # ==========================
-    # RETRAITS
-    # ==========================
-    retraits_paginated = (
+    retraits_query = (
         db.session.query(Retrait, User.username)
         .join(User, Retrait.user_id == User.id)
+    )
+
+    if retrait_search:
+        retraits_query = retraits_query.filter(
+            db.or_(
+                User.username.ilike(f"%{retrait_search}%"),
+                Retrait.reference_soleaspay.ilike(f"%{retrait_search}%"),
+                Retrait.payment_method.ilike(f"%{retrait_search}%")
+            )
+        )
+
+    retraits_paginated = (
+        retraits_query
         .order_by(Retrait.date.desc())
         .paginate(page=page, per_page=PER_PAGE, error_out=False)
     )
@@ -3542,31 +3529,39 @@ def admin_deposits():
         retrait.username_display = username
         retraits_list.append(retrait)
 
-    total_retraits = db.session.query(
-        func.coalesce(func.sum(Retrait.montant), 0)
-    ).scalar()
-    nombre_retraits = Retrait.query.count()
+    # ==========================
+    # UTILISATEURS — avec recherche + filtre
+    # ==========================
+    users_query = db.session.query(
+        User.id, User.username, User.email, User.phone, User.parrain,
+        User.solde_parrainage, User.premier_depot, User.date_creation
+    )
 
-    # ==========================
-    # TEMPLATE
-    # ==========================
+    if user_search:
+        users_query = users_query.filter(
+            db.or_(
+                User.username.ilike(f"%{user_search}%"),
+                User.email.ilike(f"%{user_search}%"),
+                User.phone.ilike(f"%{user_search}%")
+            )
+        )
+
+    if user_filter == "actifs":
+        users_query = users_query.filter(User.premier_depot == True)
+    elif user_filter == "inactifs":
+        users_query = users_query.filter(
+            db.or_(User.premier_depot == False, User.premier_depot == None)
+        )
+
+    users_list = users_query.order_by(User.date_creation.desc()).limit(200).all()
+    users_objects = User.query.order_by(User.date_creation.desc()).limit(200).all()
+
     return render_template(
         "admin_deposits.html",
         user=user,
         deposits=deposits_all,
-        total_amount=total_amount,
-        pending_count=pending_count,
-        validated_count=validated_count,
-        users=users_paginated.items,
-        users_paginated=users_paginated,
         retraits=retraits_list,
-        retraits_paginated=retraits_paginated,
-        actifs=actifs,
-        inactifs=inactifs,
-        total_actifs=total_actifs,
-        total_inactifs=total_inactifs,
-        total_retraits=total_retraits,
-        nombre_retraits=nombre_retraits
+        users=users_list,
     )
 
 @app.route("/admin/deposits/valider/<int:depot_id>")
