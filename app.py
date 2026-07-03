@@ -6215,6 +6215,12 @@ def serve_robots():
     return send_from_directory('static', 'robots.txt', 
         mimetype='text/plain; charset=utf-8')
 
+@app.route('/manifest.json')
+def serve_manifest():
+    """Sert le manifest PWA à la racine"""
+    return send_from_directory('static', 'manifest.json',
+        mimetype='application/manifest+json; charset=utf-8')
+
 @app.route('/videos')
 @login_required
 def videos_nectarpro():
