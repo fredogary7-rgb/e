@@ -2308,8 +2308,8 @@ def dashboard_bloque():
             "description": f"Activation {user.username}",
             "payer": fullname,
             "payerEmail": user.email,
-            "successUrl": "https://nova-trade.cc/dashboard/pay/ok",
-            "failureUrl": "https://nova-trade.cc/dashboard_bloque"
+            "successUrl": "https://nectarpro.cc/dashboard/pay/ok",
+            "failureUrl": "https://nectarpro.cc/dashboard_bloque"
         }
 
         headers = {
