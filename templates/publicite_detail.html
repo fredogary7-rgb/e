@@ -492,8 +492,14 @@ const publiciteId = {{ publicite.id }};
 
 // Commander produit
 function commanderProduit(pubId) {
-    // Rediriger vers la page du produit ou le panier
-    window.location.href = '/produit/{{ publicite.produit_id if publicite.produit_id else publicite.id }}';
+    // Rediriger vers la page du produit (slug) associé à la publicité
+    {% if publicite.produit %}
+    window.location.href = "{{ url_for('voir_produit_public', slug=publicite.produit.slug) }}";
+    {% elif publicite.lien_produit %}
+    window.location.href = "{{ publicite.lien_produit }}";
+    {% else %}
+    alert("Aucun produit lié à cette publicité.");
+    {% endif %}
 }
 
 // Toggle like
