@@ -891,9 +891,21 @@ document.getElementById('publiciteForm').addEventListener('submit', async functi
             btn.disabled = false;
         }
     } catch (error) {
-        showError('Erreur de connexion. Vérifiez votre connexion internet.');
         btn.classList.remove('loading');
         btn.disabled = false;
+
+        if (error.response) {
+            const result = await error.response.json();
+            if (error.response.status === 401 && result.redirect) {
+                window.location.href = result.redirect;
+                return;
+            }
+            showError(result.message || 'Erreur du serveur.');
+        } else if (error.request) {
+            showError('Pas de réponse du serveur. Vérifiez votre connexion internet.');
+        } else {
+            showError('Erreur lors de la création de la publicité.');
+        }
     }
 });
 

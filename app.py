@@ -10,8 +10,8 @@ from datetime import datetime, timedelta, timezone, date, UTC
 from functools import wraps
 from urllib.parse import urlencode
 
-# Timeout global pour les opérations S3
-socket.setdefaulttimeout(60)  # 60 secondes
+# Timeout global pour les opérations S3 et uploads vidéo
+socket.setdefaulttimeout(300)  # 300 secondes (5 min) pour les uploads vidéo
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -889,6 +889,20 @@ def login_required(f):
     def wrapper(*args, **kwargs):
         if not get_logged_in_user():
             return redirect(url_for("connexion_page"))
+        return f(*args, **kwargs)
+    return wrapper
+
+
+def api_login_required(f):
+    """Protège une route API, renvoie JSON 401 si non connecté (au lieu d'une redirection HTML)."""
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if not get_logged_in_user():
+            return jsonify({
+                "success": False,
+                "message": "Session expirée. Veuillez vous reconnecter.",
+                "redirect": url_for("connexion_page")
+            }), 401
         return f(*args, **kwargs)
     return wrapper
 
@@ -5659,7 +5673,7 @@ def creer_publicite():
 
 
 @app.route("/api/publicite/creer", methods=["POST"])
-@login_required
+@api_login_required
 def api_creer_publicite():
     """API pour créer une publicité vidéo - Upload vers Cloudinary"""
     user = get_logged_in_user()
@@ -5767,7 +5781,7 @@ def api_creer_publicite():
 
 
 @app.route("/api/publicite/<int:pub_id>/like", methods=["POST"])
-@login_required
+@api_login_required
 def api_like_publicite(pub_id):
     """API pour liker/retirer un like d'une publicité"""
     user = get_logged_in_user()
@@ -5820,7 +5834,7 @@ def api_commentaires_publicite(pub_id):
 
 
 @app.route("/api/publicite/<int:pub_id>/commentaire", methods=["POST"])
-@login_required
+@api_login_required
 def api_ajouter_commentaire(pub_id):
     """API pour ajouter un commentaire à une publicité"""
     user = get_logged_in_user()
@@ -5885,7 +5899,7 @@ def api_vue_publicite(pub_id):
 # ==============================
 
 @app.route("/api/user/<int:user_id>/follow", methods=["POST"])
-@login_required
+@api_login_required
 def api_follow_user(user_id):
     """API pour suivre/unfollow un utilisateur"""
     user = get_logged_in_user()
@@ -6050,7 +6064,7 @@ def detail_publicite(pub_id):
 
 
 @app.route("/api/publicite/<int:pub_id>/supprimer", methods=["POST"])
-@login_required
+@api_login_required
 def api_supprimer_publicite(pub_id):
     """API pour supprimer une publicité (propriétaire uniquement)"""
     publicite = Publicite.query.get_or_404(pub_id)
@@ -6079,7 +6093,7 @@ def api_supprimer_publicite(pub_id):
 # ─── ROUTES API POUR PUBLICITÉS (SAUVEGARDER, SIGNALER, etc.) ──────────────
 
 @app.route("/api/publicite/<int:pub_id>/sauvegarder", methods=["POST"])
-@login_required
+@api_login_required
 def api_sauvegarder_publicite(pub_id):
     """API pour sauvegarder/retirer une publicité"""
     user = get_logged_in_user()
@@ -6103,7 +6117,7 @@ def api_sauvegarder_publicite(pub_id):
 
 
 @app.route("/api/publicite/<int:pub_id>/signaler", methods=["POST"])
-@login_required
+@api_login_required
 def api_signaler_publicite(pub_id):
     """API pour signaler une publicité inappropriée"""
     user = get_logged_in_user()
@@ -6137,7 +6151,7 @@ def api_signaler_publicite(pub_id):
 
 
 @app.route("/api/publicite/<int:pub_id>/vue", methods=["POST"])
-@login_required
+@api_login_required
 def api_publicite_vue(pub_id):
     """API pour compter une vue unique par utilisateur"""
     user = get_logged_in_user()
@@ -6161,7 +6175,7 @@ def api_publicite_vue(pub_id):
 
 
 @app.route("/api/publicite/<int:pub_id>/share", methods=["POST"])
-@login_required
+@api_login_required
 def api_publicite_share(pub_id):
     """API pour compter un partage"""
     publicite = Publicite.query.get_or_404(pub_id)
