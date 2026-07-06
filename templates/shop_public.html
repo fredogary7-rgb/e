@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% if boutique %}{{ boutique.nom }} - Boutique en ligne{% else %}Toutes les boutiques - NectarPro{% endif %}</title>
+    <link rel="icon" href="/static/images/net.jpg" type="image/jpeg">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
@@ -11,43 +12,56 @@
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
         
         :root {
-            --bg-primary: #f8fafc;
-            --bg-secondary: rgba(255, 255, 255, 0.8);
-            --bg-card: rgba(255, 255, 255, 0.7);
-            --accent-blue: #38bdf8;
-            --accent-blue-light: #7dd3fc;
-            --accent-green: #86efac;
-            --accent-pink: #f9a8d4;
-            --text-primary: #334155;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
-            --border-color: rgba(148, 163, 184, 0.2);
-            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
-            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
-            --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
-            --radius-lg: 16px;
-            --radius-xl: 20px;
-            --radius-2xl: 24px;
-            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
+            --bg: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 30%, #fbcfe8 60%, #fce7f3 100%);
+            --glass: rgba(255,255,255,0.72);
+            --glass-hover: rgba(255,255,255,0.88);
+            --accent: #db2777;
+            --accent2: #ec4899;
+            --accent-light: #f9a8d4;
+            --text: #0f172a;
+            --text2: #1f2937;
+            --muted: #6b7280;
+            --border: rgba(236,72,153,0.2);
+            --shadow-sm: 0 2px 8px rgba(236,72,153,0.08);
+            --shadow: 0 8px 32px rgba(236,72,153,0.12);
+            --shadow-lg: 0 16px 48px rgba(236,72,153,0.18);
+            --radius-sm: 12px;
+            --radius: 18px;
+            --radius-lg: 24px;
         }
 
         body {
-            background: var(--gradient-bg);
+            background: var(--bg);
             min-height: 100vh;
             padding: 0;
             font-style: italic;
-            color: var(--text-primary);
+            color: var(--text);
+            position: relative;
+            overflow-x: hidden;
         }
 
+        /* PARTICULES */
+        .bg-particles { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+        .particle { position:absolute; border-radius:50%; background:radial-gradient(circle,rgba(236,72,153,0.18),transparent 70%); animation:floatUp linear infinite; }
+        .particle:nth-child(1) { width:180px; height:180px; left:5%; top:70%; animation-duration:18s; animation-delay:0s; }
+        .particle:nth-child(2) { width:120px; height:120px; left:60%; top:80%; animation-duration:14s; animation-delay:3s; }
+        .particle:nth-child(3) { width:200px; height:200px; left:30%; top:75%; animation-duration:22s; animation-delay:6s; }
+        .particle:nth-child(4) { width:100px; height:100px; left:80%; top:85%; animation-duration:16s; animation-delay:9s; }
+        .particle:nth-child(5) { width:150px; height:150px; left:50%; top:90%; animation-duration:20s; animation-delay:2s; }
+        .particle:nth-child(6) { width:90px; height:90px; left:15%; top:50%; animation-duration:12s; animation-delay:5s; }
+        .particle:nth-child(7) { width:160px; height:160px; left:75%; top:60%; animation-duration:24s; animation-delay:8s; }
+        @keyframes floatUp { 0% { transform:translateY(0)scale(0.6); opacity:0; } 10% { opacity:0.7; } 90% { opacity:0.4; } 100% { transform:translateY(-110vh)scale(1.4); opacity:0; } }
+
+        /* NAVBAR */
         .navbar {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border-color);
+            background: var(--glass);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            padding: 10px 20px;
+            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
         }
 
         .navbar-content {
@@ -59,93 +73,144 @@
         }
 
         .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             font-style: italic;
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--accent-blue);
+            font-size: 20px;
+            font-weight: 900;
             text-decoration: none;
         }
+        .navbar-logo img { width: 28px; height: 28px; border-radius: 8px; box-shadow: 0 2px 8px rgba(236,72,153,0.2); }
+        .navbar-logo .brand-n { color: var(--accent2); }
+        .navbar-logo .brand-p { color: var(--accent); }
 
         .navbar-links {
             display: flex;
-            gap: 20px;
+            gap: 15px;
             align-items: center;
         }
 
         .navbar-links a {
-            color: var(--text-secondary);
+            color: var(--text2);
             text-decoration: none;
             font-style: italic;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 13px;
             transition: color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .navbar-links a:hover {
-            color: var(--accent-blue);
+            color: var(--accent2);
         }
 
         .cart-icon {
             position: relative;
-            color: var(--text-secondary);
+            color: var(--text2);
+            font-size: 18px;
         }
 
         .cart-icon:hover {
-            color: var(--accent-blue);
+            color: var(--accent2);
         }
 
         .cart-count {
             position: absolute;
             top: -8px;
             right: -8px;
-            background: var(--gradient-pink);
+            background: linear-gradient(135deg, #ec4899, #db2777);
             color: white;
-            font-size: 11px;
+            font-size: 10px;
+            font-weight: 700;
             width: 18px;
             height: 18px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 2px 8px rgba(219,39,119,0.3);
         }
 
+        .btn-nav-pink {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #ec4899, #db2777);
+            color: white !important;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 13px;
+            box-shadow: 0 4px 16px rgba(219,39,119,0.35);
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        .btn-nav-pink:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(219,39,119,0.5); color: white !important; }
+
+        .btn-nav-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(236,72,153,0.08);
+            color: var(--accent) !important;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 13px;
+            transition: all 0.3s;
+            text-decoration: none;
+            border: 1px solid var(--border);
+        }
+        .btn-nav-outline:hover { background: rgba(236,72,153,0.16); transform: translateY(-1px); }
+
+        /* CONTAINER */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            position: relative;
+            z-index: 1;
         }
 
+        /* SHOP HEADER */
         .shop-header {
-            background: var(--bg-card);
+            background: var(--glass);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-2xl);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
             padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: var(--shadow-medium);
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-sm);
             display: flex;
             gap: 30px;
             align-items: center;
+            transition: all 0.3s;
         }
+        .shop-header:hover { box-shadow: var(--shadow); border-color: var(--accent2); }
 
         .shop-logo {
-            width: 120px;
-            height: 120px;
-            border-radius: var(--radius-xl);
-            background: var(--gradient-blue);
+            width: 110px;
+            height: 110px;
+            border-radius: var(--radius);
+            background: linear-gradient(135deg, #ec4899, #db2777);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 48px;
+            font-size: 44px;
             color: white;
             flex-shrink: 0;
+            box-shadow: 0 6px 20px rgba(219,39,119,0.3);
         }
 
         .shop-logo img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: var(--radius-xl);
+            border-radius: var(--radius);
         }
 
         .shop-info {
@@ -156,15 +221,15 @@
             font-style: italic;
             font-size: 28px;
             font-weight: 800;
-            color: var(--text-primary);
-            margin-bottom: 10px;
+            color: var(--text);
+            margin-bottom: 8px;
         }
 
         .shop-rating {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .stars {
@@ -173,20 +238,20 @@
         }
 
         .rating-count {
-            color: var(--text-secondary);
+            color: var(--muted);
             font-style: italic;
             font-size: 14px;
         }
 
         .shop-description {
-            color: var(--text-secondary);
+            color: var(--text2);
             line-height: 1.6;
             margin-bottom: 15px;
         }
 
         .shop-meta {
             display: flex;
-            gap: 20px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
@@ -195,11 +260,13 @@
             align-items: center;
             gap: 8px;
             padding: 8px 16px;
-            background: rgba(56, 189, 248, 0.1);
-            border-radius: var(--radius-lg);
+            background: rgba(236,72,153,0.08);
+            border-radius: 20px;
             font-style: italic;
-            font-size: 14px;
-            color: var(--accent-blue);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent2);
+            border: 1px solid var(--border);
         }
 
         .shop-actions {
@@ -214,7 +281,7 @@
             justify-content: center;
             gap: 8px;
             padding: 14px 24px;
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius-sm);
             font-style: italic;
             font-weight: 700;
             font-size: 14px;
@@ -225,28 +292,39 @@
         }
 
         .btn-primary {
-            background: var(--gradient-blue);
+            background: linear-gradient(135deg, #ec4899, #db2777);
             color: white;
-            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
+            box-shadow: 0 6px 20px rgba(219,39,119,0.3);
         }
-
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
+            box-shadow: 0 8px 25px rgba(219,39,119,0.4);
         }
 
         .btn-whatsapp {
             background: #25D366;
             color: white;
+            box-shadow: 0 6px 20px rgba(37,211,102,0.3);
         }
-
         .btn-whatsapp:hover {
             background: #128C7E;
             transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37,211,102,0.4);
         }
 
+        .btn-ghost {
+            background: rgba(236,72,153,0.08);
+            color: var(--accent2);
+            border: 1px solid var(--border);
+        }
+        .btn-ghost:hover {
+            background: rgba(236,72,153,0.16);
+            transform: translateY(-1px);
+        }
+
+        /* PRODUCTS SECTION */
         .products-section {
-            margin-top: 30px;
+            margin-top: 25px;
         }
 
         .section-title {
@@ -254,14 +332,18 @@
             font-size: 22px;
             font-weight: 700;
             margin-bottom: 20px;
-            color: var(--text-primary);
+            color: var(--text);
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
         .section-title i {
-            color: var(--accent-blue);
+            color: var(--accent2);
+            background: rgba(236,72,153,0.1);
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            font-size: 18px;
         }
 
         .products-grid {
@@ -271,13 +353,12 @@
         }
 
         .product-card {
-            background: var(--bg-card);
+            background: rgba(255,255,255,0.6);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-xl);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
             overflow: hidden;
-            box-shadow: var(--shadow-medium);
             transition: all 0.3s;
             text-decoration: none;
             color: inherit;
@@ -286,13 +367,14 @@
 
         .product-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 32px rgba(56, 189, 248, 0.15);
+            box-shadow: var(--shadow);
+            border-color: var(--accent2);
         }
 
         .product-card-image {
             width: 100%;
             height: 200px;
-            background: rgba(56, 189, 248, 0.05);
+            background: rgba(236,72,153,0.05);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -313,7 +395,7 @@
             font-style: italic;
             font-size: 15px;
             font-weight: 600;
-            color: var(--text-primary);
+            color: var(--text);
             margin-bottom: 8px;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -324,39 +406,72 @@
             font-style: italic;
             font-size: 18px;
             font-weight: 800;
-            color: var(--accent-blue);
+            color: var(--accent2);
         }
 
+        /* GLASS CARD */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+        }
+        .glass-card:hover { box-shadow: var(--shadow); border-color: var(--accent2); }
+
+        /* EMPTY STATE */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            background: var(--bg-card);
+            background: var(--glass);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-2xl);
-            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
         }
 
         .empty-state i {
             font-size: 64px;
-            color: var(--accent-blue);
-            opacity: 0.3;
+            color: var(--accent2);
+            opacity: 0.25;
             margin-bottom: 20px;
         }
 
         .empty-state h3 {
             font-style: italic;
             font-size: 20px;
-            color: var(--text-primary);
+            font-weight: 700;
+            color: var(--text);
             margin-bottom: 10px;
         }
 
         .empty-state p {
-            color: var(--text-secondary);
+            color: var(--text2);
             margin-bottom: 20px;
         }
 
+        /* AVATAR CIRCLE STYLE */
+        .user-avatar-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ec4899, #db2777);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 16px rgba(219,39,119,0.35);
+        }
+
+        /* RESPONSIVE */
         @media (max-width: 768px) {
             .shop-header {
                 flex-direction: column;
@@ -380,284 +495,298 @@
                 grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
                 gap: 15px;
             }
+
+            .navbar-content { flex-wrap: wrap; gap: 10px; }
+            .navbar-links { gap: 8px; }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="navbar-content">
-            <div class="navbar-links" style="gap: 15px;">
-                <a href="{{ url_for('liste_produits') }}" style="display: inline-flex; align-items: center; gap: 6px;">
-                    <i class="fa fa-box"></i> Produits
+
+<div class="bg-particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div>
+</div>
+
+<nav class="navbar">
+    <div class="navbar-content">
+        <a href="{{ url_for('liste_produits') }}" class="navbar-logo">
+            <img src="/static/images/net.jpg" alt="NectarPro">
+            <span class="brand-n">Nectar</span><span class="brand-p">Pro</span>
+        </a>
+        <div class="navbar-links">
+            <a href="{{ url_for('liste_produits') }}">
+                <i class="fa fa-box"></i> Produits
+            </a>
+            <a href="{{ url_for('liste_boutiques') }}">
+                <i class="fa fa-store"></i> Boutiques
+            </a>
+            <a href="/cart" class="cart-icon">
+                <i class="fa fa-shopping-cart"></i>
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+            {% if user %}
+                <a href="/dashboard" class="btn-nav-pink">
+                    <i class="fa fa-user"></i> Dashboard
                 </a>
-                <a href="{{ url_for('liste_boutiques') }}" style="display: inline-flex; align-items: center; gap: 6px;">
-                    <i class="fa fa-store"></i> Boutiques
+            {% else %}
+                <a href="{{ url_for('connexion_page') }}" class="btn-nav-outline">
+                    <i class="fa fa-sign-in"></i> Connexion
                 </a>
-                <a href="/cart" class="cart-icon" style="display: inline-flex; align-items: center;">
-                    <i class="fa fa-shopping-cart"></i>
-                    <span class="cart-count" id="cartCount">0</span>
-                </a>
-                {% if user %}
-                    <a href="/dashboard" style="display: inline-flex; align-items: center; gap: 6px; background: var(--gradient-blue); color: white; padding: 8px 16px; border-radius: 20px;">
-                        <i class="fa fa-user"></i> Dashboard
-                    </a>
-                {% else %}
-                    <a href="{{ url_for('connexion_page') }}" style="display: inline-flex; align-items: center; gap: 6px; background: var(--gradient-pink); color: white; padding: 8px 16px; border-radius: 20px;">
-                        <i class="fa fa-sign-in"></i> Connexion
-                    </a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    {% if boutique %}
+    <div class="shop-header">
+        <div class="shop-logo">
+            {% if boutique.logo %}
+                <img src="{{ boutique.logo }}" alt="{{ boutique.nom }}">
+            {% else %}
+                <i class="fa fa-store"></i>
+            {% endif %}
+        </div>
+
+        <div class="shop-info">
+            <h1 class="shop-name">{{ boutique.nom }}</h1>
+            <div class="shop-rating">
+                <div class="stars">
+                    {% for i in range(5) %}
+                        {% if i < note_moyenne|int %}
+                            <i class="fas fa-star"></i>
+                        {% elif i < note_moyenne %}
+                            <i class="fas fa-star-half-alt"></i>
+                        {% else %}
+                            <i class="far fa-star"></i>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <span class="rating-count">{{ "%.1f"|format(note_moyenne) }}/5 ({{ nb_avis }} avis)</span>
+            </div>
+            {% if boutique.description %}
+                <p class="shop-description">{{ boutique.description }}</p>
+            {% endif %}
+            <div class="shop-meta">
+                {% if boutique.ville %}
+                    <span class="meta-tag">
+                        <i class="fa fa-map-marker-alt"></i>
+                        {{ boutique.ville }}, {{ boutique.pays }}
+                    </span>
+                {% endif %}
+                <span class="meta-tag">
+                    <i class="fa fa-box"></i>
+                    {{ produits|length }} produit{{ 's' if produits|length > 1 else '' }}
+                </span>
+                {% if boutique.est_verifie %}
+                    <span class="meta-tag">
+                        <i class="fa fa-check-circle"></i>
+                        Boutique vérifiée
+                    </span>
                 {% endif %}
             </div>
         </div>
-    </nav>
 
-    <div class="container">
-        {% if boutique %}
-        <div class="shop-header">
-            <div class="shop-logo">
-                {% if boutique.logo %}
-                    <img src="{{ boutique.logo }}" alt="{{ boutique.nom }}">
-                {% else %}
-                    <i class="fa fa-store"></i>
-                {% endif %}
+        <div class="shop-actions">
+            {% if boutique.whatsapp %}
+                <a href="https://wa.me/{{ boutique.whatsapp|replace('+', '') }}" class="btn btn-whatsapp" target="_blank">
+                    <i class="fa-brands fa-whatsapp"></i> Contacter
+                </a>
+            {% endif %}
+            <a href="{{ url_for('liste_produits') }}" class="btn btn-ghost">
+                <i class="fa fa-arrow-left"></i> Retour
+            </a>
+        </div>
+    </div>
+
+    <div class="products-section">
+        <h2 class="section-title">
+            <i class="fa fa-th-large"></i> Produits de la boutique
+        </h2>
+
+        {% if produits %}
+            <div class="products-grid">
+                {% for produit in produits %}
+                    <a href="{{ url_for('voir_produit_public', slug=produit.slug) }}" class="product-card">
+                        <div class="product-card-image">
+                    <img src="{{ produit.image_principale }}" alt="{{ produit.nom }}">
+                        </div>
+                        <div class="product-card-info">
+                            <div class="product-card-name">{{ produit.nom }}</div>
+                            <div class="product-card-price">
+                                {% if produit.prix_promo and produit.prix_promo < produit.prix %}
+                                    {{ "%.0f"|format(produit.prix_promo) }} <small>{{ produit.devise or 'XOF' }}</small>
+                                {% else %}
+                                    {{ "%.0f"|format(produit.prix) }} <small>{{ produit.devise or 'XOF' }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
             </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="fa fa-box-open"></i>
+                <h3>Aucun produit disponible</h3>
+                <p>Cette boutique n'a pas encore de produits.</p>
+                <a href="{{ url_for('liste_produits') }}" class="btn btn-primary">
+                    Voir d'autres produits
+                </a>
+            </div>
+        {% endif %}
+    </div>
 
-            <div class="shop-info">
-                <h1 class="shop-name">{{ boutique.nom }}</h1>
-                <div class="shop-rating">
-                    <div class="stars">
+    <!-- Section des avis et commentaires -->
+    <div class="products-section">
+        <h2 class="section-title">
+            <i class="fa fa-comments"></i> Avis des clients
+        </h2>
+
+        <!-- Formulaire pour laisser un avis (si connecté et non propriétaire) -->
+        {% if user and user.id != vendeur.id %}
+        <div class="glass-card">
+            <h3 style="font-style: italic; font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 15px;">
+                <i class="fa fa-pen" style="color: var(--accent2);"></i> Laisser un avis
+            </h3>
+            <form action="{{ url_for('ajouter_avis_boutique', username=vendeur.username) }}" method="POST">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-style: italic; font-size: 14px; color: var(--muted); margin-bottom: 8px;">Note :</label>
+                    <select name="note" required style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; background: rgba(255,255,255,0.8); font-style: italic;">
+                        <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                        <option value="4">⭐⭐⭐⭐ Très bien</option>
+                        <option value="3">⭐⭐⭐ Bien</option>
+                        <option value="2">⭐⭐ Passable</option>
+                        <option value="1">⭐ Mauvais</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-style: italic; font-size: 14px; color: var(--muted); margin-bottom: 8px;">Commentaire :</label>
+                    <textarea name="commentaire" rows="4" placeholder="Partagez votre expérience avec cette boutique..." required style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; background: rgba(255,255,255,0.8); resize: vertical; font-style: italic;"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fa fa-paper-plane"></i> Publier l'avis
+                </button>
+            </form>
+        </div>
+        {% elif not user %}
+        <div style="background: rgba(236,72,153,0.04); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 25px; text-align: center;">
+            <p style="font-style: italic; color: var(--text2); margin-bottom: 12px;">
+                <i class="fa fa-sign-in" style="color: var(--accent2);"></i> Connectez-vous pour laisser un avis
+            </p>
+            <a href="{{ url_for('connexion_page') }}" class="btn btn-primary" style="display: inline-flex;">
+                <i class="fa fa-sign-in"></i> Se connecter
+            </a>
+        </div>
+        {% else %}
+        <div style="background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); border-radius: var(--radius-lg); padding: 15px; margin-bottom: 25px; text-align: center;">
+            <p style="font-style: italic; color: #166534; font-size: 14px;">
+                <i class="fa fa-info-circle"></i> Vous ne pouvez pas laisser un avis sur votre propre boutique.
+            </p>
+        </div>
+        {% endif %}
+
+        <!-- Liste des avis -->
+        {% if avis %}
+            {% for avi in avis %}
+            <div class="glass-card" style="margin-bottom: 15px; padding: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                    <div>
+                        <strong style="font-style: italic; font-size: 15px; color: var(--text);">{{ avi.auteur.username }}</strong>
+                        <div style="font-size: 12px; color: var(--muted); font-style: italic;">
+                            {{ avi.date_creation.strftime('%d/%m/%Y') if avi.date_creation else 'N/A' }}
+                        </div>
+                    </div>
+                    <div class="stars" style="font-size: 14px;">
                         {% for i in range(5) %}
-                            {% if i < note_moyenne|int %}
+                            {% if i < avi.note %}
                                 <i class="fas fa-star"></i>
-                            {% elif i < note_moyenne %}
-                                <i class="fas fa-star-half-alt"></i>
                             {% else %}
                                 <i class="far fa-star"></i>
                             {% endif %}
                         {% endfor %}
                     </div>
-                    <span class="rating-count">{{ "%.1f"|format(note_moyenne) }}/5 ({{ nb_avis }} avis)</span>
                 </div>
-                {% if boutique.description %}
-                    <p class="shop-description">{{ boutique.description }}</p>
-                {% endif %}
-                <div class="shop-meta">
-                    {% if boutique.ville %}
-                        <span class="meta-tag">
-                            <i class="fa fa-map-marker-alt"></i>
-                            {{ boutique.ville }}, {{ boutique.pays }}
-                        </span>
-                    {% endif %}
-                    <span class="meta-tag">
-                        <i class="fa fa-box"></i>
-                        {{ produits|length }} produit{{ 's' if produits|length > 1 else '' }}
-                    </span>
-                    {% if boutique.est_verifie %}
-                        <span class="meta-tag">
-                            <i class="fa fa-check-circle"></i>
-                            Boutique vérifiée
-                        </span>
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="shop-actions">
-                {% if boutique.whatsapp %}
-                    <a href="https://wa.me/{{ boutique.whatsapp|replace('+', '') }}" class="btn btn-whatsapp" target="_blank">
-                        <i class="fa-brands fa-whatsapp"></i> Contacter
-                    </a>
-                {% endif %}
-                <a href="{{ url_for('liste_produits') }}" class="btn btn-primary">
-                    <i class="fa fa-arrow-left"></i> Retour
-                </a>
-            </div>
-        </div>
-
-        <div class="products-section">
-            <h2 class="section-title">
-                <i class="fa fa-th-large"></i> Produits de la boutique
-            </h2>
-
-            {% if produits %}
-                <div class="products-grid">
-                    {% for produit in produits %}
-                        <a href="{{ url_for('voir_produit_public', slug=produit.slug) }}" class="product-card">
-                            <div class="product-card-image">
-                        <img src="{{ produit.image_principale }}" alt="{{ produit.nom }}">
-                            </div>
-                            <div class="product-card-info">
-                                <div class="product-card-name">{{ produit.nom }}</div>
-                                <div class="product-card-price">
-                                    {% if produit.prix_promo and produit.prix_promo < produit.prix %}
-                                        {{ "%.0f"|format(produit.prix_promo) }} <small>{{ produit.devise or 'XOF' }}</small>
-                                    {% else %}
-                                        {{ "%.0f"|format(produit.prix) }} <small>{{ produit.devise or 'XOF' }}</small>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </a>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="empty-state">
-                    <i class="fa fa-box-open"></i>
-                    <h3>Aucun produit disponible</h3>
-                    <p>Cette boutique n'a pas encore de produits.</p>
-                    <a href="{{ url_for('liste_produits') }}" class="btn btn-primary">
-                        Voir d'autres produits
-                    </a>
-                </div>
-            {% endif %}
-        </div>
-
-        <!-- Section des avis et commentaires -->
-        <div class="products-section">
-            <h2 class="section-title">
-                <i class="fa fa-comments"></i> Avis des clients
-            </h2>
-
-            <!-- Formulaire pour laisser un avis (si connecté et non propriétaire) -->
-            {% if user and user.id != vendeur.id %}
-            <div class="glass-card" style="background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 25px; margin-bottom: 25px;">
-                <h3 style="font-style: italic; font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 15px;">
-                    <i class="fa fa-pen" style="color: var(--accent-blue);"></i> Laisser un avis
-                </h3>
-                <form action="{{ url_for('ajouter_avis_boutique', username=vendeur.username) }}" method="POST">
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; font-style: italic; font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">Note :</label>
-                        <select name="note" required style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius-lg); font-size: 14px; background: rgba(255,255,255,0.8); font-style: italic;">
-                            <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
-                            <option value="4">⭐⭐⭐⭐ Très bien</option>
-                            <option value="3">⭐⭐⭐ Bien</option>
-                            <option value="2">⭐⭐ Passable</option>
-                            <option value="1">⭐ Mauvais</option>
-                        </select>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; font-style: italic; font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">Commentaire :</label>
-                        <textarea name="commentaire" rows="4" placeholder="Partagez votre expérience avec cette boutique..." required style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius-lg); font-size: 14px; background: rgba(255,255,255,0.8); resize: vertical; font-style: italic;"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">
-                        <i class="fa fa-paper-plane"></i> Publier l'avis
-                    </button>
-                </form>
-            </div>
-            {% elif not user %}
-            <div style="background: rgba(56, 189, 248, 0.05); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 20px; margin-bottom: 25px; text-align: center;">
-                <p style="font-style: italic; color: var(--text-secondary); margin-bottom: 12px;">
-                    <i class="fa fa-sign-in" style="color: var(--accent-blue);"></i> Connectez-vous pour laisser un avis
+                {% if avi.commentaire %}
+                <p style="font-style: italic; color: var(--text2); line-height: 1.6; margin: 0;">
+                    {{ avi.commentaire }}
                 </p>
-                <a href="{{ url_for('connexion_page') }}" class="btn btn-primary" style="display: inline-flex;">
-                    <i class="fa fa-sign-in"></i> Se connecter
-                </a>
+                {% endif %}
             </div>
-            {% else %}
-            <div style="background: rgba(134, 239, 172, 0.1); border: 1px solid rgba(134, 239, 172, 0.2); border-radius: var(--radius-xl); padding: 15px; margin-bottom: 25px; text-align: center;">
-                <p style="font-style: italic; color: #16a34a; font-size: 14px;">
-                    <i class="fa fa-info-circle"></i> Vous ne pouvez pas laisser un avis sur votre propre boutique.
-                </p>
-            </div>
-            {% endif %}
-
-            <!-- Liste des avis -->
-            {% if avis %}
-                {% for avi in avis %}
-                <div style="background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 20px; margin-bottom: 15px;">
-                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
-                        <div>
-                            <strong style="font-style: italic; font-size: 15px; color: var(--text-primary);">{{ avi.auteur.username }}</strong>
-                            <div style="font-size: 12px; color: var(--text-muted); font-style: italic;">
-                                {{ avi.date_creation.strftime('%d/%m/%Y') if avi.date_creation else 'N/A' }}
-                            </div>
-                        </div>
-                        <div class="stars" style="font-size: 14px;">
-                            {% for i in range(5) %}
-                                {% if i < avi.note %}
-                                    <i class="fas fa-star"></i>
-                                {% else %}
-                                    <i class="far fa-star"></i>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    </div>
-                    {% if avi.commentaire %}
-                    <p style="font-style: italic; color: var(--text-secondary); line-height: 1.6; margin: 0;">
-                        {{ avi.commentaire }}
-                    </p>
-                    {% endif %}
-                </div>
-                {% endfor %}
-            {% else %}
-                <div style="text-align: center; padding: 40px 20px; background: rgba(56, 189, 248, 0.03); border-radius: var(--radius-xl);">
-                    <i class="fa fa-comment-dots" style="font-size: 40px; color: var(--accent-blue); opacity: 0.3; margin-bottom: 15px;"></i>
-                    <p style="font-style: italic; color: var(--text-secondary);">Aucun avis pour le moment. Soyez le premier !</p>
-                </div>
-            {% endif %}
-        </div>
-        {% elif boutiques %}
-        <!-- Liste de toutes les boutiques -->
-        <div class="shop-header">
-            <div class="shop-info">
-                <h1 class="shop-name">Toutes les boutiques</h1>
-                <p class="shop-description">Découvrez toutes les boutiques disponibles sur NectarPro</p>
-                <div class="shop-meta">
-                    <span class="meta-tag">
-                        <i class="fa fa-store"></i>
-                        {{ boutiques|length }} boutique{{ 's' if boutiques|length > 1 else '' }}
-                    </span>
-                </div>
-            </div>
-        </div>
-
-        <div class="products-section">
-            <h2 class="section-title">
-                <i class="fa fa-store"></i> Liste des boutiques
-            </h2>
-            <div class="products-grid">
-                {% for b in boutiques %}
-                <div class="product-card">
-                    <div class="product-card-image">
-                        {% if b.logo %}
-                            <img src="{{ b.logo }}" alt="{{ b.nom }}">
-                        {% else %}
-                            <i class="fa fa-store" style="font-size: 50px; color: var(--accent-blue); opacity: 0.3;"></i>
-                        {% endif %}
-                    </div>
-                    <div class="product-card-info">
-                        <div class="product-card-name">{{ b.nom }}</div>
-                        {% if b.description %}
-                            <div style="font-style: italic; font-size: 12px; color: var(--text-secondary); margin-bottom: 10px;">{{ b.description[:60] }}...</div>
-                        {% endif %}
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-size: 12px; color: var(--text-muted);">
-                                <i class="fa fa-user"></i> {{ b.proprietaire.username }}
-                            </span>
-                            <a href="{{ url_for('boutique_publique', username=b.proprietaire.username) }}" class="btn btn-primary" style="padding: 8px 16px; font-size: 12px;">
-                                Voir
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
+            {% endfor %}
         {% else %}
-        <div class="empty-state">
-            <i class="fa fa-store"></i>
-            <h3>Aucune boutique disponible</h3>
-            <p>Il n'y a pas encore de boutiques sur la plateforme.</p>
-            <a href="{{ url_for('creer_boutique') }}" class="btn btn-primary">
-                <i class="fa fa-plus"></i> Créer une boutique
-            </a>
-        </div>
+            <div style="text-align: center; padding: 40px 20px; background: rgba(236,72,153,0.03); border-radius: var(--radius-lg); border: 1px solid var(--border);">
+                <i class="fa fa-comment-dots" style="font-size: 40px; color: var(--accent2); opacity: 0.3; margin-bottom: 15px;"></i>
+                <p style="font-style: italic; color: var(--muted);">Aucun avis pour le moment. Soyez le premier !</p>
+            </div>
         {% endif %}
     </div>
+    {% elif boutiques %}
+    <!-- Liste de toutes les boutiques -->
+    <div class="shop-header">
+        <div class="shop-info">
+            <h1 class="shop-name">Toutes les boutiques</h1>
+            <p class="shop-description">Découvrez toutes les boutiques disponibles sur NectarPro</p>
+            <div class="shop-meta">
+                <span class="meta-tag">
+                    <i class="fa fa-store"></i>
+                    {{ boutiques|length }} boutique{{ 's' if boutiques|length > 1 else '' }}
+                </span>
+            </div>
+        </div>
+    </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const cart = JSON.parse(localStorage.getItem('eshop_cart') || '[]');
-            const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-            document.getElementById('cartCount').textContent = totalItems;
-        });
-    </script>
+    <div class="products-section">
+        <h2 class="section-title">
+            <i class="fa fa-store"></i> Liste des boutiques
+        </h2>
+        <div class="products-grid">
+            {% for b in boutiques %}
+            <div class="product-card">
+                <div class="product-card-image">
+                    {% if b.logo %}
+                        <img src="{{ b.logo }}" alt="{{ b.nom }}">
+                    {% else %}
+                        <i class="fa fa-store" style="font-size: 50px; color: var(--accent-light); opacity: 0.4;"></i>
+                    {% endif %}
+                </div>
+                <div class="product-card-info">
+                    <div class="product-card-name">{{ b.nom }}</div>
+                    {% if b.description %}
+                        <div style="font-style: italic; font-size: 12px; color: var(--muted); margin-bottom: 10px;">{{ b.description[:60] }}...</div>
+                    {% endif %}
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 12px; color: var(--muted);">
+                            <i class="fa fa-user"></i> {{ b.proprietaire.username }}
+                        </span>
+                        <a href="{{ url_for('boutique_publique', username=b.proprietaire.username) }}" class="btn btn-primary" style="padding: 8px 16px; font-size: 12px;">
+                            Voir
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fa fa-store"></i>
+        <h3>Aucune boutique disponible</h3>
+        <p>Il n'y a pas encore de boutiques sur la plateforme.</p>
+        <a href="{{ url_for('creer_boutique') }}" class="btn btn-primary">
+            <i class="fa fa-plus"></i> Créer une boutique
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const cart = JSON.parse(localStorage.getItem('eshop_cart') || '[]');
+        const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+        document.getElementById('cartCount').textContent = totalItems;
+    });
+</script>
 </body>
 </html>

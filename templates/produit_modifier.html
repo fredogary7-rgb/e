@@ -4,55 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modifier {{ produit.nom }} - NectarPro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+    <link rel="icon" href="/static/images/net.jpg" type="image/jpeg">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        /* RESET & BASE */
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
         
         :root {
-            --bg-primary: #f8fafc;
-            --bg-secondary: rgba(255, 255, 255, 0.8);
-            --bg-card: rgba(255, 255, 255, 0.7);
-            --accent-blue: #38bdf8;
-            --accent-blue-light: #7dd3fc;
-            --accent-green: #86efac;
-            --accent-pink: #f9a8d4;
-            --text-primary: #334155;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
-            --border-color: rgba(148, 163, 184, 0.2);
-            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
-            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
-            --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
-            --radius-lg: 16px;
-            --radius-xl: 20px;
-            --radius-2xl: 24px;
-            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
+            --bg: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 30%, #fbcfe8 60%, #fce7f3 100%);
+            --glass: rgba(255,255,255,0.72);
+            --accent: #db2777;
+            --accent2: #ec4899;
+            --accent-light: #f9a8d4;
+            --text: #0f172a;
+            --text2: #1f2937;
+            --muted: #6b7280;
+            --border: rgba(236,72,153,0.2);
+            --shadow-sm: 0 2px 8px rgba(236,72,153,0.08);
+            --shadow: 0 8px 32px rgba(236,72,153,0.12);
+            --shadow-lg: 0 16px 48px rgba(236,72,153,0.18);
+            --radius-sm: 12px;
+            --radius: 18px;
+            --radius-lg: 24px;
         }
 
         body {
-            background: var(--gradient-bg);
+            background: var(--bg);
             min-height: 100vh;
             padding: 20px;
             font-style: italic;
-            color: var(--text-primary);
+            color: var(--text);
+            position: relative;
+            overflow-x: hidden;
         }
+
+        /* PARTICULES */
+        .bg-particles { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+        .particle { position:absolute; border-radius:50%; background:radial-gradient(circle,rgba(236,72,153,0.18),transparent 70%); animation:floatUp linear infinite; }
+        .particle:nth-child(1) { width:180px; height:180px; left:5%; top:70%; animation-duration:18s; animation-delay:0s; }
+        .particle:nth-child(2) { width:120px; height:120px; left:60%; top:80%; animation-duration:14s; animation-delay:3s; }
+        .particle:nth-child(3) { width:200px; height:200px; left:30%; top:75%; animation-duration:22s; animation-delay:6s; }
+        .particle:nth-child(4) { width:100px; height:100px; left:80%; top:85%; animation-duration:16s; animation-delay:9s; }
+        .particle:nth-child(5) { width:150px; height:150px; left:50%; top:90%; animation-duration:20s; animation-delay:2s; }
+        .particle:nth-child(6) { width:90px; height:90px; left:15%; top:50%; animation-duration:12s; animation-delay:5s; }
+        .particle:nth-child(7) { width:160px; height:160px; left:75%; top:60%; animation-duration:24s; animation-delay:8s; }
+        @keyframes floatUp { 0% { transform:translateY(0)scale(0.6); opacity:0; } 10% { opacity:0.7; } 90% { opacity:0.4; } 100% { transform:translateY(-110vh)scale(1.4); opacity:0; } }
 
         .page-container {
             max-width: 700px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .modern-card {
-            background: var(--bg-card);
+            background: var(--glass);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-2xl);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
             padding: 30px;
-            box-shadow: var(--shadow-medium);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
         }
+        .modern-card:hover { box-shadow: var(--shadow); border-color: var(--accent2); }
 
         .header {
             display: flex;
@@ -65,18 +80,22 @@
             font-style: italic;
             font-size: 22px;
             font-weight: 800;
-            color: var(--text-primary);
+            color: var(--text);
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
         .header h1 i {
-            color: var(--accent-blue);
+            color: var(--accent2);
+            background: rgba(236,72,153,0.1);
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            font-size: 18px;
         }
 
         .header a {
-            color: var(--accent-blue);
+            color: var(--accent2);
             text-decoration: none;
             font-style: italic;
             font-weight: 600;
@@ -85,23 +104,25 @@
             align-items: center;
             gap: 6px;
             padding: 8px 16px;
-            background: rgba(56, 189, 248, 0.1);
-            border-radius: var(--radius-lg);
+            background: rgba(236,72,153,0.08);
+            border-radius: 20px;
+            border: 1px solid var(--border);
             transition: all 0.2s;
         }
 
         .header a:hover {
-            background: rgba(56, 189, 248, 0.2);
+            background: rgba(236,72,153,0.16);
+            transform: translateY(-1px);
         }
 
         .section-title {
             font-style: italic;
             font-size: 16px;
             font-weight: 700;
-            color: var(--text-primary);
+            color: var(--text);
             margin: 25px 0 15px;
             padding-bottom: 10px;
-            border-bottom: 2px solid var(--border-color);
+            border-bottom: 2px solid var(--border);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -112,7 +133,7 @@
         }
 
         .section-title i {
-            color: var(--accent-blue);
+            color: var(--accent2);
         }
 
         .input-group {
@@ -126,14 +147,14 @@
             font-style: italic;
             font-size: 13px;
             font-weight: 600;
-            color: var(--text-primary);
+            color: var(--text);
             margin-bottom: 8px;
             margin-left: 5px;
         }
 
         .input-group label i {
             margin-right: 5px;
-            color: var(--accent-blue);
+            color: var(--accent2);
         }
 
         .input-field {
@@ -145,7 +166,7 @@
             left: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--accent-blue);
+            color: var(--accent2);
             font-size: 16px;
             pointer-events: none;
         }
@@ -155,28 +176,28 @@
         .input-field select {
             width: 100%;
             padding: 13px 15px 13px 45px;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
             background: rgba(255, 255, 255, 0.8);
             font-family: 'Poppins', sans-serif;
             font-style: italic;
             font-size: 14px;
             outline: none;
             transition: 0.3s ease;
-            color: var(--text-primary);
+            color: var(--text);
         }
 
         .input-field input:focus,
         .input-field textarea:focus,
         .input-field select:focus {
-            border-color: var(--accent-blue);
+            border-color: var(--accent2);
             background: #fff;
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
         }
 
         .input-field input::placeholder,
         .input-field textarea::placeholder {
-            color: var(--text-muted);
+            color: var(--muted);
         }
 
         .input-field textarea {
@@ -193,7 +214,7 @@
         .hint {
             font-style: italic;
             font-size: 11px;
-            color: var(--text-muted);
+            color: var(--muted);
             margin-top: 4px;
             margin-left: 5px;
         }
@@ -205,43 +226,43 @@
         .current-image img {
             max-width: 200px;
             max-height: 200px;
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius);
             object-fit: cover;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border);
         }
 
         .current-image p {
             font-style: italic;
             font-size: 13px;
-            color: var(--text-secondary);
+            color: var(--text2);
             margin-top: 8px;
         }
 
         .upload-box {
-            border: 2px dashed var(--border-color);
-            border-radius: var(--radius-lg);
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
             padding: 30px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
-            background: rgba(56, 189, 248, 0.02);
+            background: rgba(236,72,153,0.03);
         }
 
         .upload-box:hover {
-            border-color: var(--accent-blue);
-            background: rgba(56, 189, 248, 0.05);
+            border-color: var(--accent2);
+            background: rgba(236,72,153,0.06);
         }
 
         .upload-box i {
             font-size: 48px;
-            color: var(--accent-blue);
+            color: var(--accent2);
             opacity: 0.5;
             margin-bottom: 10px;
         }
 
         .upload-box p {
             font-style: italic;
-            color: var(--text-secondary);
+            color: var(--text2);
             font-size: 14px;
         }
 
@@ -258,10 +279,10 @@
 
         .size-preset {
             padding: 6px 14px;
-            background: rgba(56, 189, 248, 0.1);
-            color: var(--accent-blue);
-            border: 1px solid transparent;
-            border-radius: var(--radius-lg);
+            background: rgba(236,72,153,0.08);
+            color: var(--accent2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
             font-style: italic;
             font-weight: 600;
             font-size: 13px;
@@ -270,21 +291,22 @@
         }
 
         .size-preset:hover {
-            background: rgba(56, 189, 248, 0.2);
-            border-color: var(--accent-blue);
+            background: rgba(236,72,153,0.16);
+            border-color: var(--accent2);
         }
 
         .size-preset.active {
-            background: var(--gradient-blue);
+            background: linear-gradient(135deg, #ec4899, #db2777);
             color: white;
+            border-color: transparent;
         }
 
         .btn-submit {
             width: 100%;
             padding: 16px;
             border: none;
-            border-radius: var(--radius-lg);
-            background: var(--gradient-blue);
+            border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, #ec4899, #db2777);
             color: white;
             font-family: 'Poppins', sans-serif;
             font-style: italic;
@@ -292,7 +314,7 @@
             font-size: 16px;
             cursor: pointer;
             transition: 0.3s ease;
-            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
+            box-shadow: 0 6px 20px rgba(219,39,119,0.3);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -302,12 +324,12 @@
 
         .btn-submit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
+            box-shadow: 0 8px 25px rgba(219,39,119,0.4);
         }
 
         .alert {
             padding: 14px 18px;
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius-sm);
             font-style: italic;
             font-size: 13px;
             margin-bottom: 16px;
@@ -340,215 +362,222 @@
     </style>
 </head>
 <body>
-    <div class="page-container">
-        <div class="modern-card">
-            <div class="header">
-                <h1><i class="fa fa-edit"></i> Modifier le produit</h1>
-                <a href="{{ url_for('voir_produit', produit_id=produit.id) }}">
-                    <i class="fa fa-eye"></i> Voir
-                </a>
+
+<div class="bg-particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div>
+</div>
+
+<div class="page-container">
+    <div class="modern-card">
+        <div class="header">
+            <h1><i class="fa fa-edit"></i> Modifier le produit</h1>
+            <a href="{{ url_for('voir_produit', produit_id=produit.id) }}">
+                <i class="fa fa-eye"></i> Voir
+            </a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert {{ 'success' if category == 'success' else 'danger' }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" enctype="multipart/form-data">
+            <div class="section-title">
+                <i class="fa fa-box"></i>
+                Informations de base
             </div>
 
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert {{ 'success' if category == 'success' else 'danger' }}">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-
-            <form method="POST" enctype="multipart/form-data">
-                <div class="section-title">
-                    <i class="fa fa-box"></i>
-                    Informations de base
+            <div class="input-group">
+                <label><i class="fa fa-tag"></i> Nom du produit *</label>
+                <div class="input-field">
+                    <i class="fa fa-tag prefix-icon"></i>
+                    <input type="text" id="nom" name="nom" required value="{{ produit.nom }}" placeholder="Ex: Chemise en coton">
                 </div>
+            </div>
 
+            <div class="input-group">
+                <label><i class="fa fa-align-left"></i> Description</label>
+                <div class="input-field">
+                    <i class="fa fa-align-left prefix-icon"></i>
+                    <textarea id="description" name="description" placeholder="Décrivez votre produit...">{{ produit.description or '' }}</textarea>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa fa-image"></i> Image actuelle</label>
+                <div class="current-image">
+                    <img src="{{ produit.image_principale }}" alt="{{ produit.nom }}">
+                    {% if produit.liste_images %}
+                        <p>{{ produit.liste_images|length }} image(s) disponible(s)</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa fa-image"></i> Nouvelle image (optionnel)</label>
+                <div class="upload-box" onclick="document.getElementById('image').click()">
+                    <i class="fa fa-cloud-upload-alt"></i>
+                    <p>Cliquez pour télécharger une nouvelle image</p>
+                    <span class="hint">Formats: JPG, PNG, WebP (Max 5MB)</span>
+                </div>
+                <input type="file" id="image" name="image" accept="image/*" onchange="previewImage(this)">
+            </div>
+
+            <div class="form-row">
                 <div class="input-group">
-                    <label><i class="fa fa-tag"></i> Nom du produit *</label>
+                    <label><i class="fa fa-th-large"></i> Catégorie</label>
+                    <div class="input-field">
+                        <i class="fa fa-th-large prefix-icon"></i>
+                        <select id="categorie_id" name="categorie_id" onchange="updateSizePresets()">
+                            <option value="">-- Sélectionner --</option>
+                            {% for cat in categories %}
+                                <option value="{{ cat.id }}" {% if produit.categorie_id == cat.id %}selected{% endif %}>{{ cat.icone }} {{ cat.nom }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label><i class="fa fa-hashtag"></i> Quantité</label>
+                    <div class="input-field">
+                        <i class="fa fa-hashtag prefix-icon"></i>
+                        <input type="number" id="quantite" name="quantite" value="{{ produit.quantite or 0 }}" min="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">
+                <i class="fa fa-money-bill"></i>
+                Prix
+            </div>
+
+            <div class="form-row">
+                <div class="input-group">
+                    <label><i class="fa fa-tag"></i> Prix (XOF) *</label>
                     <div class="input-field">
                         <i class="fa fa-tag prefix-icon"></i>
-                        <input type="text" id="nom" name="nom" required value="{{ produit.nom }}" placeholder="Ex: Chemise en coton">
+                        <input type="number" id="prix" name="prix" required min="0" step="0.01" value="{{ produit.prix }}" placeholder="Ex: 5000">
                     </div>
                 </div>
-
                 <div class="input-group">
-                    <label><i class="fa fa-align-left"></i> Description</label>
+                    <label><i class="fa fa-percent"></i> Prix promotionnel</label>
                     <div class="input-field">
-                        <i class="fa fa-align-left prefix-icon"></i>
-                        <textarea id="description" name="description" placeholder="Décrivez votre produit...">{{ produit.description or '' }}</textarea>
+                        <i class="fa fa-percent prefix-icon"></i>
+                        <input type="number" id="prix_promo" name="prix_promo" min="0" step="0.01" value="{{ produit.prix_promo or '' }}" placeholder="Ex: 4000">
+                        <div class="hint">Laisser vide si pas de promotion</div>
                     </div>
                 </div>
+            </div>
 
-                <div class="input-group">
-                    <label><i class="fa fa-image"></i> Image actuelle</label>
-                    <div class="current-image">
-                        <img src="{{ produit.image_principale }}" alt="{{ produit.nom }}">
-                        {% if produit.liste_images %}
-                            <p>{{ produit.liste_images|length }} image(s) disponible(s)</p>
-                        {% endif %}
-                    </div>
+            <div class="section-title">
+                <i class="fa fa-palette"></i>
+                Variantes
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa fa-ruler"></i> Tailles disponibles</label>
+                <div class="input-field">
+                    <i class="fa fa-ruler prefix-icon"></i>
+                    <input type="text" id="tailles" name="tailles" value="{{ produit.tailles or '' }}" placeholder="Ex: S, M, L, XL">
                 </div>
-
-                <div class="input-group">
-                    <label><i class="fa fa-image"></i> Nouvelle image (optionnel)</label>
-                    <div class="upload-box" onclick="document.getElementById('image').click()">
-                        <i class="fa fa-cloud-upload-alt"></i>
-                        <p>Cliquez pour télécharger une nouvelle image</p>
-                        <span class="hint">Formats: JPG, PNG, WebP (Max 5MB)</span>
-                    </div>
-                    <input type="file" id="image" name="image" accept="image/*" onchange="previewImage(this)">
+                <div class="hint">Séparez les tailles par des virgules ou cliquez sur les presets ci-dessous</div>
+                
+                <div class="size-presets" id="sizePresets">
+                    <!-- Les presets seront générés dynamiquement selon la catégorie -->
                 </div>
+            </div>
 
-                <div class="form-row">
-                    <div class="input-group">
-                        <label><i class="fa fa-th-large"></i> Catégorie</label>
-                        <div class="input-field">
-                            <i class="fa fa-th-large prefix-icon"></i>
-                            <select id="categorie_id" name="categorie_id" onchange="updateSizePresets()">
-                                <option value="">-- Sélectionner --</option>
-                                {% for cat in categories %}
-                                    <option value="{{ cat.id }}" {% if produit.categorie_id == cat.id %}selected{% endif %}>{{ cat.icone }} {{ cat.nom }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label><i class="fa fa-hashtag"></i> Quantité</label>
-                        <div class="input-field">
-                            <i class="fa fa-hashtag prefix-icon"></i>
-                            <input type="number" id="quantite" name="quantite" value="{{ produit.quantite or 0 }}" min="0">
-                        </div>
-                    </div>
+            <div class="input-group">
+                <label><i class="fa fa-circle"></i> Couleurs disponibles</label>
+                <div class="input-field">
+                    <i class="fa fa-circle prefix-icon"></i>
+                    <input type="text" id="couleurs" name="couleurs" value="{{ produit.couleurs or '' }}" placeholder="Ex: Rouge, Bleu, Vert">
                 </div>
+                <div class="hint">Séparez les couleurs par des virgules</div>
+            </div>
 
-                <div class="section-title">
-                    <i class="fa fa-money-bill"></i>
-                    Prix
-                </div>
-
-                <div class="form-row">
-                    <div class="input-group">
-                        <label><i class="fa fa-tag"></i> Prix (XOF) *</label>
-                        <div class="input-field">
-                            <i class="fa fa-tag prefix-icon"></i>
-                            <input type="number" id="prix" name="prix" required min="0" step="0.01" value="{{ produit.prix }}" placeholder="Ex: 5000">
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label><i class="fa fa-percent"></i> Prix promotionnel</label>
-                        <div class="input-field">
-                            <i class="fa fa-percent prefix-icon"></i>
-                            <input type="number" id="prix_promo" name="prix_promo" min="0" step="0.01" value="{{ produit.prix_promo or '' }}" placeholder="Ex: 4000">
-                            <div class="hint">Laisser vide si pas de promotion</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="section-title">
-                    <i class="fa fa-palette"></i>
-                    Variantes
-                </div>
-
-                <div class="input-group">
-                    <label><i class="fa fa-ruler"></i> Tailles disponibles</label>
-                    <div class="input-field">
-                        <i class="fa fa-ruler prefix-icon"></i>
-                        <input type="text" id="tailles" name="tailles" value="{{ produit.tailles or '' }}" placeholder="Ex: S, M, L, XL">
-                    </div>
-                    <div class="hint">Séparez les tailles par des virgules ou cliquez sur les presets ci-dessous</div>
-                    
-                    <div class="size-presets" id="sizePresets">
-                        <!-- Les presets seront générés dynamiquement selon la catégorie -->
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label><i class="fa fa-circle"></i> Couleurs disponibles</label>
-                    <div class="input-field">
-                        <i class="fa fa-circle prefix-icon"></i>
-                        <input type="text" id="couleurs" name="couleurs" value="{{ produit.couleurs or '' }}" placeholder="Ex: Rouge, Bleu, Vert">
-                    </div>
-                    <div class="hint">Séparez les couleurs par des virgules</div>
-                </div>
-
-                <button type="submit" class="btn-submit">
-                    <i class="fa fa-save"></i> Enregistrer les modifications
-                </button>
-            </form>
-        </div>
+            <button type="submit" class="btn-submit">
+                <i class="fa fa-save"></i> Enregistrer les modifications
+            </button>
+        </form>
     </div>
+</div>
 
-    <script>
-        // Presets de tailles par catégorie
-        const sizePresets = {
-            'vêtements': ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'],
-            'chaussures': ['36', '37', '38', '39', '40', '41', '42', '43', '44', '45'],
-            'accessoires': ['Unique', 'S', 'M', 'L'],
-            'électronique': ['Unique'],
-            'maison': ['Unique', 'S', 'M', 'L', 'XL'],
-            'beauté': ['Unique'],
-            'sport': ['XS', 'S', 'M', 'L', 'XL', '2XL'],
-            'enfants': ['6M', '12M', '18M', '2A', '4A', '6A', '8A', '10A', '12A']
-        };
+<script>
+    // Presets de tailles par catégorie
+    const sizePresets = {
+        'vêtements': ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'],
+        'chaussures': ['36', '37', '38', '39', '40', '41', '42', '43', '44', '45'],
+        'accessoires': ['Unique', 'S', 'M', 'L'],
+        'électronique': ['Unique'],
+        'maison': ['Unique', 'S', 'M', 'L', 'XL'],
+        'beauté': ['Unique'],
+        'sport': ['XS', 'S', 'M', 'L', 'XL', '2XL'],
+        'enfants': ['6M', '12M', '18M', '2A', '4A', '6A', '8A', '10A', '12A']
+    };
 
-        // Tailles actuelles du produit
-        const currentSizes = "{{ produit.tailles or '' }}".split(',').map(s => s.trim()).filter(s => s);
+    // Tailles actuelles du produit
+    const currentSizes = "{{ produit.tailles or '' }}".split(',').map(s => s.trim()).filter(s => s);
 
-        function updateSizePresets() {
-            const categorySelect = document.getElementById('categorie_id');
-            const presetsContainer = document.getElementById('sizePresets');
-            const taillesInput = document.getElementById('tailles');
-            
-            const selectedOption = categorySelect.options[categorySelect.selectedIndex];
-            const categoryName = selectedOption.text.toLowerCase();
-            
-            presetsContainer.innerHTML = '';
-            
-            let sizes = null;
-            for (const [key, value] of Object.entries(sizePresets)) {
-                if (categoryName.includes(key)) {
-                    sizes = value;
-                    break;
+    function updateSizePresets() {
+        const categorySelect = document.getElementById('categorie_id');
+        const presetsContainer = document.getElementById('sizePresets');
+        const taillesInput = document.getElementById('tailles');
+        
+        const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+        const categoryName = selectedOption.text.toLowerCase();
+        
+        presetsContainer.innerHTML = '';
+        
+        let sizes = null;
+        for (const [key, value] of Object.entries(sizePresets)) {
+            if (categoryName.includes(key)) {
+                sizes = value;
+                break;
+            }
+        }
+        
+        if (sizes) {
+            sizes.forEach(size => {
+                const btn = document.createElement('span');
+                btn.className = 'size-preset';
+                btn.textContent = size;
+                
+                if (currentSizes.includes(size)) {
+                    btn.classList.add('active');
                 }
-            }
-            
-            if (sizes) {
-                sizes.forEach(size => {
-                    const btn = document.createElement('span');
-                    btn.className = 'size-preset';
-                    btn.textContent = size;
-                    
-                    if (currentSizes.includes(size)) {
-                        btn.classList.add('active');
-                    }
-                    
-                    btn.onclick = () => toggleSize(btn, taillesInput);
-                    presetsContainer.appendChild(btn);
-                });
-            }
-        }
-
-        function toggleSize(btn, input) {
-            btn.classList.toggle('active');
-            
-            const activeSizes = [];
-            document.querySelectorAll('.size-preset.active').forEach(el => {
-                activeSizes.push(el.textContent);
+                
+                btn.onclick = () => toggleSize(btn, taillesInput);
+                presetsContainer.appendChild(btn);
             });
-            
-            input.value = activeSizes.join(', ');
         }
+    }
 
-        function previewImage(input) {
-            if (input.files && input.files[0]) {
-                const fileName = input.files[0].name;
-                const uploadBox = input.previousElementSibling;
-                uploadBox.innerHTML = `<i class="fa fa-check-circle" style="color: var(--accent-blue);"></i><p>${fileName}</p>`;
-            }
+    function toggleSize(btn, input) {
+        btn.classList.toggle('active');
+        
+        const activeSizes = [];
+        document.querySelectorAll('.size-preset.active').forEach(el => {
+            activeSizes.push(el.textContent);
+        });
+        
+        input.value = activeSizes.join(', ');
+    }
+
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            const fileName = input.files[0].name;
+            const uploadBox = input.previousElementSibling;
+            uploadBox.innerHTML = '<i class="fa fa-check-circle" style="color: var(--accent2);"></i><p>' + fileName + '</p>';
         }
+    }
 
-        // Initialiser les presets au chargement
-        document.addEventListener('DOMContentLoaded', updateSizePresets);
-    </script>
+    // Initialiser les presets au chargement
+    document.addEventListener('DOMContentLoaded', updateSizePresets);
+</script>
 </body>
 </html>
