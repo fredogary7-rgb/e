@@ -4,36 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mes retraits - NectarPro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="/static/images/net.jpg" type="image/jpeg">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         
         :root {
-            --primary: #3b82f6;
-            --primary-dark: #2563eb;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --bg: #f1f5f9;
-            --card-bg: #ffffff;
-            --text: #1e293b;
-            --text-light: #64748b;
-            --border: #e2e8f0;
+            --bg: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 30%, #fbcfe8 60%, #fce7f3 100%);
+            --glass: rgba(255,255,255,0.72);
+            --accent: #db2777;
+            --accent2: #ec4899;
+            --muted: #6b7280;
+            --text: #0f172a;
+            --border: rgba(236,72,153,0.2);
+            --shadow: 0 8px 32px rgba(236,72,153,0.12);
             --radius: 12px;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --radius-lg: 24px;
         }
 
         body {
             background: var(--bg);
             min-height: 100vh;
             padding: 20px;
+            font-style: italic;
             color: var(--text);
+            position: relative;
+            overflow-x: hidden;
         }
+
+        .bg-particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+        .particle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,0.18),transparent 70%);animation:floatUp linear infinite}
+        .particle:nth-child(1){width:180px;height:180px;left:5%;top:70%;animation-duration:18s;animation-delay:0s}
+        .particle:nth-child(2){width:120px;height:120px;left:60%;top:80%;animation-duration:14s;animation-delay:3s}
+        .particle:nth-child(3){width:200px;height:200px;left:30%;top:75%;animation-duration:22s;animation-delay:6s}
+        .particle:nth-child(4){width:100px;height:100px;left:80%;top:85%;animation-duration:16s;animation-delay:9s}
+        .particle:nth-child(5){width:150px;height:150px;left:50%;top:90%;animation-duration:20s;animation-delay:2s}
+        .particle:nth-child(6){width:90px;height:90px;left:15%;top:50%;animation-duration:12s;animation-delay:5s}
+        .particle:nth-child(7){width:160px;height:160px;left:75%;top:60%;animation-duration:24s;animation-delay:8s}
+        @keyframes floatUp{0%{transform:translateY(0)scale(0.6);opacity:0}10%{opacity:0.7}90%{opacity:0.4}100%{transform:translateY(-110vh)scale(1.4);opacity:0}}
 
         .container {
             max-width: 800px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         /* Header */
@@ -45,19 +60,22 @@
 
         .page-header h1 {
             font-size: 24px;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 5px;
+            font-style: italic;
         }
 
         .page-header p {
-            color: var(--text-light);
+            color: var(--muted);
             font-size: 14px;
         }
 
         /* Cards */
         .card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
             padding: 24px;
             margin-bottom: 20px;
             box-shadow: var(--shadow);
@@ -80,7 +98,7 @@
         }
 
         .card-header-left i {
-            color: var(--primary);
+            color: var(--accent2);
             font-size: 20px;
         }
 
@@ -90,23 +108,24 @@
         }
 
         .btn-new {
-            padding: 8px 16px;
-            background: var(--primary);
+            padding: 8px 18px;
+            background: linear-gradient(135deg, #ec4899, #db2777);
             color: white;
             border: none;
-            border-radius: var(--radius);
+            border-radius: 50px;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            transition: all 0.2s;
+            transition: all 0.3s;
+            box-shadow: 0 4px 16px rgba(219,39,119,0.3);
         }
 
         .btn-new:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 22px rgba(219,39,119,0.45);
         }
 
         /* Back Link */
@@ -114,15 +133,22 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            color: var(--primary);
+            color: var(--accent2);
             text-decoration: none;
             font-size: 14px;
             margin-bottom: 16px;
-            font-weight: 500;
+            font-weight: 600;
+            padding: 8px 16px;
+            background: rgba(236,72,153,0.08);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
         }
 
         .back-link:hover {
-            text-decoration: underline;
+            background: rgba(236,72,153,0.16);
+            transform: translateY(-1px);
+            text-decoration: none;
         }
 
         /* Alerts */
@@ -162,7 +188,8 @@
 
         .empty-state i {
             font-size: 64px;
-            color: var(--border);
+            color: var(--accent2);
+            opacity: 0.3;
             margin-bottom: 20px;
         }
 
@@ -173,7 +200,7 @@
         }
 
         .empty-state p {
-            color: var(--text-light);
+            color: var(--muted);
             font-size: 14px;
             margin-bottom: 20px;
         }
@@ -186,16 +213,18 @@
         }
 
         .withdrawal-item {
-            background: #f8fafc;
+            background: rgba(255,255,255,0.55);
             border-radius: var(--radius);
             padding: 20px;
             border: 1px solid var(--border);
             transition: all 0.2s;
+            backdrop-filter: blur(10px);
         }
 
         .withdrawal-item:hover {
-            border-color: var(--primary);
-            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+            border-color: var(--accent2);
+            box-shadow: var(--shadow);
+            background: rgba(255,255,255,0.8);
         }
 
         .withdrawal-header {
@@ -208,7 +237,7 @@
         .withdrawal-amount {
             font-size: 22px;
             font-weight: 700;
-            color: var(--primary);
+            color: var(--accent2);
         }
 
         .withdrawal-status {
@@ -250,7 +279,7 @@
 
         .detail-label {
             font-size: 12px;
-            color: var(--text-light);
+            color: var(--muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -272,7 +301,7 @@
 
         .reference {
             font-size: 12px;
-            color: var(--text-light);
+            color: var(--muted);
             font-family: monospace;
         }
 
@@ -298,7 +327,9 @@
         }
 
         .stat-card {
-            background: var(--card-bg);
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-radius: var(--radius);
             padding: 20px;
             text-align: center;
@@ -308,14 +339,14 @@
 
         .stat-value {
             font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
+            font-weight: 800;
+            color: var(--accent2);
             margin-bottom: 4px;
         }
 
         .stat-label {
             font-size: 12px;
-            color: var(--text-light);
+            color: var(--muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -330,6 +361,13 @@
     </style>
 </head>
 <body>
+
+<div class="bg-particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div>
+</div>
+
     <div class="container">
         <!-- Back Link -->
         <a href="{{ url_for('dashboard_page') }}" class="back-link">
