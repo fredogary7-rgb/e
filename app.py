@@ -9,7 +9,7 @@ import socket
 from datetime import datetime, timedelta, timezone, date, UTC
 from functools import wraps
 from urllib.parse import urlencode
-
+import cloudinary
 # Timeout global pour les opérations S3 et uploads vidéo
 socket.setdefaulttimeout(300)  # 300 secondes (5 min) pour les uploads vidéo
 
@@ -380,6 +380,34 @@ class ClickTache(db.Model):
     clicks = db.Column(db.Integer, default=0)  # Nombre de clicks effectués
     points = db.Column(db.Integer, default=0)  # Points gagnés
 
+
+class DailyTask(db.Model):
+    __tablename__='daily_tasks'
+    id=db.Column(db.Integer,primary_key=True)
+    produit_id=db.Column(db.Integer,db.ForeignKey('produits.id'),nullable=True)
+    publicite_id=db.Column(db.Integer,db.ForeignKey('publicites.id'),nullable=True)
+    content_type=db.Column(db.String(20),default='produit')
+    date=db.Column(db.Date,nullable=False,index=True)
+    ordre=db.Column(db.Integer,default=0)
+    actif=db.Column(db.Boolean,default=True)
+    produit=db.relationship('Produit',backref='daily_tasks')
+    publicite=db.relationship('Publicite',backref='daily_tasks')
+
+class UserTask(db.Model):
+    __tablename__='user_tasks'
+    id=db.Column(db.Integer,primary_key=True)
+    user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
+    task_id=db.Column(db.Integer,db.ForeignKey('daily_tasks.id'),nullable=False)
+    shared=db.Column(db.Boolean,default=False)
+    shared_at=db.Column(db.DateTime)
+
+class TaskReward(db.Model):
+    __tablename__='task_rewards'
+    id=db.Column(db.Integer,primary_key=True)
+    user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
+    date=db.Column(db.Date,nullable=False,index=True)
+    montant=db.Column(db.Float,nullable=False)
+    created_at=db.Column(db.DateTime,default=datetime.utcnow)
 
 class ClickJeudiReponse(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -6235,6 +6263,30 @@ def serve_manifest():
     return send_from_directory('static', 'manifest.json',
         mimetype='application/manifest+json; charset=utf-8')
 
+@app.route('/taches')
+def taches_page():
+    """Route Tâches - import lazy pour éviter l'import circulaire"""
+    from tasks import taches_page as _taches_page
+    return _taches_page()
+
+@app.route('/api/share-task', methods=['POST'])
+def api_share_task_route():
+    """API share task - import lazy pour éviter l'import circulaire"""
+    from tasks import api_share_task
+    return api_share_task()
+
+@app.route('/api/claim-task-reward', methods=['POST'])
+def api_claim_task_reward_route():
+    """API claim task reward - import lazy pour éviter l'import circulaire"""
+    from tasks import api_claim_task_reward
+    return api_claim_task_reward()
+
+@app.route('/admin/taches', methods=['GET', 'POST'])
+def admin_taches_route():
+    """Admin tâches - import lazy pour éviter l'import circulaire"""
+    from tasks import admin_taches
+    return admin_taches()
+
 @app.route('/videos')
 @login_required
 def videos_nectarpro():
@@ -6257,6 +6309,3 @@ def videos_nectarpro():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))  # Render fournit le PORT
     app.run(host="0.0.0.0", port=port, debug=False)
-
-
-import tasks
