@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notre Chaîne - NectarPro</title>
+    <link rel="icon" href="/static/images/net.jpg" type="image/jpeg">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
@@ -11,43 +12,52 @@
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
         
         :root {
-            --bg-primary: #f8fafc;
-            --bg-secondary: rgba(255, 255, 255, 0.8);
-            --bg-card: rgba(255, 255, 255, 0.7);
-            --accent-blue: #38bdf8;
-            --accent-blue-light: #7dd3fc;
-            --accent-green: #86efac;
-            --accent-pink: #f9a8d4;
-            --accent-purple: #a78bfa;
-            --text-primary: #334155;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
-            --border-color: rgba(148, 163, 184, 0.2);
-            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
-            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
-            --gradient-purple: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 100%);
-            --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
-            --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
-            --radius-lg: 16px;
+            --bg: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 30%, #fbcfe8 60%, #fce7f3 100%);
+            --glass: rgba(255,255,255,0.72);
+            --accent: #db2777;
+            --accent2: #ec4899;
+            --accent-light: #f9a8d4;
+            --text: #0f172a;
+            --text2: #1f2937;
+            --muted: #6b7280;
+            --border: rgba(236,72,153,0.2);
+            --shadow-sm: 0 2px 8px rgba(236,72,153,0.08);
+            --shadow: 0 8px 32px rgba(236,72,153,0.12);
+            --radius-sm: 12px;
+            --radius: 18px;
+            --radius-lg: 24px;
             --radius-xl: 20px;
             --radius-2xl: 24px;
-            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
         }
 
         body {
-            background: var(--gradient-bg);
+            background: var(--bg);
             min-height: 100vh;
             padding-bottom: 80px;
             font-style: italic;
-            color: var(--text-primary);
+            color: var(--text);
+            position: relative;
+            overflow-x: hidden;
         }
 
+        /* PARTICULES */
+        .bg-particles { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+        .particle { position:absolute; border-radius:50%; background:radial-gradient(circle,rgba(236,72,153,0.18),transparent 70%); animation:floatUp linear infinite; }
+        .particle:nth-child(1) { width:180px; height:180px; left:5%; top:70%; animation-duration:18s; animation-delay:0s; }
+        .particle:nth-child(2) { width:120px; height:120px; left:60%; top:80%; animation-duration:14s; animation-delay:3s; }
+        .particle:nth-child(3) { width:200px; height:200px; left:30%; top:75%; animation-duration:22s; animation-delay:6s; }
+        .particle:nth-child(4) { width:100px; height:100px; left:80%; top:85%; animation-duration:16s; animation-delay:9s; }
+        .particle:nth-child(5) { width:150px; height:150px; left:50%; top:90%; animation-duration:20s; animation-delay:2s; }
+        .particle:nth-child(6) { width:90px; height:90px; left:15%; top:50%; animation-duration:12s; animation-delay:5s; }
+        .particle:nth-child(7) { width:160px; height:160px; left:75%; top:60%; animation-duration:24s; animation-delay:8s; }
+        @keyframes floatUp { 0% { transform:translateY(0)scale(0.6); opacity:0; } 10% { opacity:0.7; } 90% { opacity:0.4; } 100% { transform:translateY(-110vh)scale(1.4); opacity:0; } }
+
         .header {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: var(--glass);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             padding: 20px;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -65,31 +75,33 @@
             font-style: italic;
             font-size: 24px;
             font-weight: 800;
-            color: var(--text-primary);
+            color: var(--text);
         }
 
         .back-btn {
             width: 40px;
             height: 40px;
-            background: rgba(56, 189, 248, 0.1);
-            border-radius: var(--radius-lg);
+            background: rgba(236,72,153,0.1);
+            border-radius: var(--radius);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--accent-blue);
+            color: var(--accent2);
             text-decoration: none;
             font-size: 16px;
             transition: all 0.2s;
         }
 
         .back-btn:hover {
-            background: rgba(56, 189, 248, 0.2);
+            background: rgba(236,72,153,0.2);
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            position: relative;
+            z-index: 1;
         }
 
         .stats-bar {
@@ -99,13 +111,13 @@
         }
 
         .stat-badge {
-            background: var(--bg-card);
+            background: var(--glass);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border);
             padding: 15px 25px;
             border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-medium);
+            box-shadow: var(--shadow);
             display: flex;
             align-items: center;
             gap: 12px;
@@ -113,31 +125,31 @@
 
         .stat-badge i {
             font-size: 24px;
-            color: var(--accent-blue);
+            color: var(--accent2);
         }
 
         .stat-badge .stat-number {
             font-style: italic;
             font-size: 20px;
             font-weight: 900;
-            color: var(--text-primary);
+            color: var(--text);
         }
 
         .stat-badge .stat-label {
             font-style: italic;
             font-size: 12px;
-            color: var(--text-muted);
+            color: var(--muted);
         }
 
         .card {
-            background: var(--bg-card);
+            background: var(--glass);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border);
             border-radius: var(--radius-2xl);
             padding: 24px;
             margin-bottom: 20px;
-            box-shadow: var(--shadow-medium);
+            box-shadow: var(--shadow);
         }
 
         .card-header {
@@ -151,14 +163,14 @@
             font-style: italic;
             font-size: 18px;
             font-weight: 700;
-            color: var(--text-primary);
+            color: var(--text);
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
         .card-title i {
-            color: var(--accent-blue);
+            color: var(--accent2);
         }
 
         .message-list {
@@ -169,16 +181,16 @@
 
         .message-item {
             padding: 20px;
-            background: rgba(56, 189, 248, 0.05);
+            background: rgba(236,72,153,0.05);
             border-radius: var(--radius-xl);
-            border-left: 4px solid var(--accent-blue);
+            border-left: 4px solid var(--accent2);
             transition: all 0.2s;
         }
 
         .message-item:hover {
             transform: translateX(5px);
-            box-shadow: var(--shadow-medium);
-            background: rgba(56, 189, 248, 0.08);
+            box-shadow: var(--shadow);
+            background: rgba(236,72,153,0.08);
         }
 
         .message-header {
@@ -191,19 +203,19 @@
         .message-time {
             font-style: italic;
             font-size: 12px;
-            color: var(--text-muted);
+            color: var(--muted);
         }
 
         .message-content {
             font-style: italic;
             font-size: 14px;
-            color: var(--text-primary);
+            color: var(--text);
             line-height: 1.6;
         }
 
         .message-media {
             margin-top: 12px;
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius);
             overflow: hidden;
         }
 
@@ -221,7 +233,7 @@
 
         .reaction-btn {
             padding: 6px 12px;
-            background: rgba(56, 189, 248, 0.1);
+            background: rgba(236,72,153,0.1);
             border: none;
             border-radius: 20px;
             font-size: 13px;
@@ -231,11 +243,11 @@
             align-items: center;
             gap: 5px;
             font-style: italic;
-            color: var(--accent-blue);
+            color: var(--accent2);
         }
 
         .reaction-btn:hover {
-            background: rgba(56, 189, 248, 0.2);
+            background: rgba(236,72,153,0.2);
         }
 
         .join-section {
@@ -245,7 +257,7 @@
 
         .join-section i {
             font-size: 60px;
-            color: var(--accent-blue);
+            color: var(--accent2);
             margin-bottom: 20px;
         }
 
@@ -253,14 +265,14 @@
             font-style: italic;
             font-size: 22px;
             font-weight: 800;
-            color: var(--text-primary);
+            color: var(--text);
             margin-bottom: 10px;
         }
 
         .join-section p {
             font-style: italic;
             font-size: 14px;
-            color: var(--text-secondary);
+            color: var(--text2);
             margin-bottom: 25px;
         }
 
@@ -270,7 +282,7 @@
             justify-content: center;
             gap: 8px;
             padding: 14px 28px;
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius);
             font-style: italic;
             font-weight: 700;
             font-size: 14px;
@@ -281,24 +293,24 @@
         }
 
         .btn-primary {
-            background: var(--gradient-blue);
+            background: linear-gradient(135deg, #ec4899, #db2777);
             color: white;
-            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
+            box-shadow: 0 6px 20px rgba(219,39,119,0.3);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
+            box-shadow: 0 8px 25px rgba(219,39,119,0.4);
         }
 
         .btn-outline {
-            background: rgba(56, 189, 248, 0.05);
-            color: var(--accent-blue);
-            border: 2px solid var(--accent-blue);
+            background: rgba(236,72,153,0.08);
+            color: var(--accent2);
+            border: 1px solid var(--border);
         }
 
         .btn-outline:hover {
-            background: rgba(56, 189, 248, 0.1);
+            background: rgba(236,72,153,0.16);
         }
 
         @media (max-width: 768px) {
@@ -307,6 +319,13 @@
     </style>
 </head>
 <body>
+
+<div class="bg-particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div>
+</div>
+
     <div class="header">
         <div class="header-content">
             <a href="{{ url_for('dashboard_page') }}" class="back-btn">
@@ -340,7 +359,7 @@
                 {% for message in messages %}
                 <div class="message-item">
                     <div class="message-header">
-                        <span style="font-weight: 600; color: var(--accent-blue);">NectarPro Official</span>
+                        <span style="font-weight: 600; color: var(--accent2);">NectarPro Official</span>
                         <span class="message-time">{{ message.timestamp.strftime('%d/%m %H:%M') }}</span>
                     </div>
                     
@@ -375,8 +394,8 @@
                     </div>
                 </div>
                 {% else %}
-                <div style="text-align: center; padding: 40px; color: var(--text-muted);">
-                    <i class="fa fa-inbox" style="font-size: 40px; margin-bottom: 15px; color: var(--accent-blue); opacity: 0.3;"></i>
+                <div style="text-align: center; padding: 40px; color: var(--muted);">
+                    <i class="fa fa-inbox" style="font-size: 40px; margin-bottom: 15px; color: var(--accent2); opacity: 0.3;"></i>
                     <p>Aucun message pour le moment</p>
                 </div>
                 {% endfor %}
