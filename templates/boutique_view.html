@@ -1,513 +1,353 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ boutique.nom }} - NectarPro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        /* RESET & BASE */
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
-        
-        :root {
-            --bg-primary: #f8fafc;
-            --bg-secondary: rgba(255, 255, 255, 0.8);
-            --bg-card: rgba(255, 255, 255, 0.7);
-            --accent-blue: #38bdf8;
-            --accent-blue-light: #7dd3fc;
-            --accent-green: #86efac;
-            --accent-pink: #f9a8d4;
-            --accent-purple: #a78bfa;
-            --text-primary: #334155;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
-            --border-color: rgba(148, 163, 184, 0.2);
-            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
-            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
-            --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
-            --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
-            --radius-lg: 16px;
-            --radius-xl: 20px;
-            --radius-2xl: 24px;
-            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ boutique.nom }} - NectarPro</title>
+<link rel="icon" href="/static/images/net.jpg" type="image/jpeg">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+:root{
+    --bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);
+    --glass:rgba(255,255,255,0.72);
+    --glass-hover:rgba(255,255,255,0.88);
+    --accent:#db2777;
+    --accent2:#ec4899;
+    --accent-light:#f9a8d4;
+    --text:#000;
+    --text2:#1f2937;
+    --muted:#6b7280;
+    --border:rgba(236,72,153,0.2);
+    --shadow-sm:0 2px 8px rgba(236,72,153,0.08);
+    --shadow:0 8px 32px rgba(236,72,153,0.12);
+    --shadow-lg:0 16px 48px rgba(236,72,153,0.18);
+    --radius-sm:12px;
+    --radius:18px;
+    --radius-lg:24px;
+}
+body{background:var(--bg);min-height:100vh;color:var(--text);font-style:italic;overflow-x:hidden;position:relative;padding-bottom:80px}
 
-        body {
-            background: var(--gradient-bg);
-            min-height: 100vh;
-            padding: 20px;
-            font-style: italic;
-            color: var(--text-primary);
-        }
+/* PARTICULES */
+.bg-particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.particle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,0.18),transparent 70%);animation:floatUp linear infinite}
+.particle:nth-child(1){width:180px;height:180px;left:5%;top:70%;animation-duration:18s;animation-delay:0s}
+.particle:nth-child(2){width:120px;height:120px;left:60%;top:80%;animation-duration:14s;animation-delay:3s}
+.particle:nth-child(3){width:200px;height:200px;left:30%;top:75%;animation-duration:22s;animation-delay:6s}
+.particle:nth-child(4){width:100px;height:100px;left:80%;top:85%;animation-duration:16s;animation-delay:9s}
+.particle:nth-child(5){width:150px;height:150px;left:50%;top:90%;animation-duration:20s;animation-delay:2s}
+.particle:nth-child(6){width:90px;height:90px;left:15%;top:50%;animation-duration:12s;animation-delay:5s}
+.particle:nth-child(7){width:160px;height:160px;left:75%;top:60%;animation-duration:24s;animation-delay:8s}
+@keyframes floatUp{0%{transform:translateY(0)scale(0.6);opacity:0}10%{opacity:0.7}90%{opacity:0.4}100%{transform:translateY(-110vh)scale(1.4);opacity:0}}
 
-        .page-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+/* TOPBAR */
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:rgba(255,255,255,0.7);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000}
+.topbar-logo{display:flex;align-items:center;gap:8px;position:absolute;left:50%;transform:translateX(-50%)}
+.topbar-logo img{width:32px;height:32px;border-radius:10px;box-shadow:0 2px 8px rgba(236,72,153,0.2)}
+.topbar-logo span{font-size:18px;font-weight:900}
+.topbar-logo .brand-n{color:var(--accent2)}
+.topbar-logo .brand-p{color:var(--accent)}
+.menu-toggle{font-size:20px;cursor:pointer;color:var(--accent2);width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);background:rgba(236,72,153,0.08);transition:all .3s}
+.menu-toggle:hover{background:rgba(236,72,153,0.16);transform:scale(1.05)}
+.user-pill{display:flex;align-items:center;gap:8px;cursor:pointer;position:relative;background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;padding:7px 18px;border-radius:50px;font-weight:700;font-size:13px;box-shadow:0 4px 16px rgba(219,39,119,0.35);transition:all .3s}
+.user-pill:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(219,39,119,0.5)}
 
-        .header-page {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-2xl);
-            padding: 30px;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            box-shadow: var(--shadow-medium);
-        }
+/* DROPDOWN USER */
+.user-dropdown{position:absolute;top:50px;right:0;width:300px;background:rgba(255,255,255,0.96);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow-lg);opacity:0;visibility:hidden;transform:translateY(-8px)scale(0.96);transition:all .25s cubic-bezier(.4,0,.2,1);z-index:2000;color:var(--text)}
+.user-dropdown.active{opacity:1;visibility:visible;transform:translateY(0)scale(1)}
+.user-dd-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.user-dd-avatar{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;text-transform:uppercase}
+.user-dd-name{font-weight:700;font-size:16px;color:var(--text)}
+.user-dd-role{font-size:11px;color:var(--muted);margin-top:2px}
+.user-dd-info{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.user-dd-item{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text2)}
+.user-dd-item i{width:18px;text-align:center;color:var(--accent2);font-size:13px}
+.user-dd-item span{color:var(--text);font-weight:600}
+.user-dd-logout{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;border:none;border-radius:14px;background:rgba(219,39,119,0.08);color:var(--accent);font-weight:700;font-size:13px;text-decoration:none;transition:all .3s}
+.user-dd-logout:hover{background:rgba(219,39,119,0.18);transform:translateY(-1px)}
 
-        .header-page .header-icon {
-            width: 70px;
-            height: 70px;
-            background: var(--gradient-blue);
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            color: white;
-            flex-shrink: 0;
-        }
+/* SIDEBAR */
+.sidebar{position:fixed;left:-340px;top:0;width:340px;height:100%;background:rgba(255,255,255,0.92);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);transition:.4s cubic-bezier(.4,0,.2,1);z-index:1100;overflow-y:auto;border-right:1px solid var(--border)}
+.sidebar.active{left:0}
+.sidebar-header{padding:30px 24px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(236,72,153,0.1) 0%,rgba(249,168,212,0.06) 100%);border-bottom:1px solid var(--border)}
+.sidebar-header img{width:44px;height:44px;border-radius:14px;background:#fff;padding:4px;box-shadow:var(--shadow-sm)}
+.brand-name{font-size:24px;font-weight:900}
+.brand-n{color:var(--accent2)}
+.brand-p{color:var(--accent)}
+.sidebar a{display:flex;align-items:center;padding:12px 22px;font-size:13px;color:var(--text);font-weight:600;text-decoration:none;transition:all .2s;border-left:3px solid transparent;gap:10px;background:linear-gradient(135deg,rgba(249,168,212,0.04),rgba(244,114,182,0.02));margin:3px 12px;border-radius:var(--radius-sm);border:1px solid rgba(249,168,212,0.08)}
+.sidebar a:hover{background:linear-gradient(135deg,rgba(249,168,212,0.16),rgba(244,114,182,0.08));border-left-color:var(--accent2);transform:translateX(4px)}
+.sidebar a.active{background:linear-gradient(90deg,rgba(236,72,153,0.12) 0%,transparent 100%);border-left-color:var(--accent);color:var(--accent);font-weight:700}
+.sidebar a i{width:20px;text-align:center;font-size:14px;color:var(--accent2)}
+.sidebar a.active i{color:var(--accent)}
+.sub-menu{display:none;background:rgba(236,72,153,0.02)}
+.sub-menu a{padding-left:50px;font-size:12px;font-weight:500}
+.rotate{transform:rotate(180deg)}
+.badge-new{background:rgba(236,72,153,0.18);padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.18);opacity:0;visibility:hidden;transition:.3s;z-index:1050}
+.overlay.active{opacity:1;visibility:visible}
 
-        .header-page h1 {
-            font-style: italic;
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--text-primary);
-            margin-bottom: 5px;
-        }
+/* MAIN */
+.main{padding:20px;max-width:1200px;margin:0 auto;position:relative;z-index:1}
 
-        .header-page .stats {
-            font-style: italic;
-            font-size: 14px;
-            color: var(--text-secondary);
-            display: flex;
-            gap: 20px;
-        }
+/* HEADER PAGE */
+.header-page{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:30px;margin-bottom:25px;display:flex;align-items:center;gap:20px;box-shadow:var(--shadow-sm)}
+.header-icon{width:70px;height:70px;background:linear-gradient(135deg,#ec4899,#db2777);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff;flex-shrink:0;box-shadow:0 6px 20px rgba(219,39,119,0.3)}
+.header-page h1{font-size:28px;font-weight:800;color:var(--text);margin-bottom:5px}
+.header-page .stats{font-size:14px;color:var(--muted);display:flex;gap:20px}
+.header-page .stats i{color:var(--accent2)}
 
-        .header-page .stats i {
-            color: var(--accent-blue);
-        }
+/* GLASS CARD */
+.glass-card{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:20px;box-shadow:var(--shadow-sm);transition:all .3s}
+.glass-card:hover{box-shadow:var(--shadow);border-color:var(--accent2)}
 
-        .modern-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-2xl);
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow-medium);
-        }
+/* Section */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.section-title{font-size:20px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:12px}
+.section-title i{color:var(--accent2);background:rgba(236,72,153,0.1);padding:10px;border-radius:var(--radius-sm);font-size:18px}
 
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
+/* Badge */
+.badge{display:inline-flex;align-items:center;padding:8px 16px;border-radius:20px;font-weight:600;font-size:13px}
+.badge.pink{background:rgba(236,72,153,0.1);color:var(--accent2)}
 
-        .section-title {
-            font-style: italic;
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+/* Rating */
+.rating{display:inline-flex;align-items:center;gap:8px;background:rgba(251,191,36,0.1);padding:10px 20px;border-radius:24px;font-weight:600;font-size:15px;color:#d97706;border:1px solid rgba(251,191,36,0.2)}
+.rating i{color:#fbbf24}
 
-        .section-title i {
-            color: var(--accent-blue);
-            background: rgba(56, 189, 248, 0.1);
-            padding: 10px;
-            border-radius: var(--radius-lg);
-            font-size: 18px;
-        }
+/* Products Grid */
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+.product-card{background:rgba(255,255,255,0.6);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all .3s}
+.product-card:hover{transform:translateY(-5px);box-shadow:var(--shadow);border-color:var(--accent2)}
+.product-image{width:100%;height:180px;background:rgba(236,72,153,0.05);display:flex;align-items:center;justify-content:center;position:relative}
+.product-image img{width:100%;height:100%;object-fit:cover}
+.product-image .placeholder-icon{font-size:56px;color:var(--accent-light);opacity:.5}
+.product-info{padding:15px}
+.product-name{font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px}
+.product-price{font-size:20px;font-weight:900;color:var(--accent2)}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:15px}
 
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-style: italic;
-            font-weight: 600;
-            font-size: 13px;
-        }
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 24px;border-radius:var(--radius-sm);font-weight:700;font-size:14px;text-decoration:none;transition:all .2s;border:none;cursor:pointer}
+.btn-primary{background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;box-shadow:0 6px 20px rgba(219,39,119,0.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(219,39,119,0.4)}
+.btn-pink{background:linear-gradient(135deg,#f9a8d4,#ec4899);color:#fff;box-shadow:0 6px 20px rgba(249,168,212,0.3)}
+.btn-pink:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(249,168,212,0.4)}
+.btn-success{background:linear-gradient(135deg,#ec4899,#f9a8d4);color:#fff;box-shadow:0 6px 20px rgba(236,72,153,0.3)}
+.btn-success:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(236,72,153,0.4)}
+.btn-ghost{background:rgba(236,72,153,0.08);color:var(--accent2)}
+.btn-ghost:hover{background:rgba(236,72,153,0.16)}
+.btn-danger{background:linear-gradient(135deg,#f9a8d4,#f472b6);color:#fff}
+.btn-danger:hover{transform:translateY(-2px)}
 
-        .badge.blue {
-            background: rgba(56, 189, 248, 0.1);
-            color: var(--accent-blue);
-        }
+/* Empty State */
+.empty-state{text-align:center;padding:60px 20px}
+.empty-state .icon{width:120px;height:120px;background:rgba(236,72,153,0.1);border-radius:30px;display:flex;align-items:center;justify-content:center;margin:0 auto 25px;font-size:56px;color:var(--accent2)}
+.empty-state h3{font-size:20px;font-weight:700;color:var(--text);margin-bottom:10px}
+.empty-state p{font-size:14px;color:var(--muted);margin-bottom:25px}
 
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
-        }
+/* Alert */
+.alert{padding:16px 20px;border-radius:var(--radius-sm);margin-bottom:15px;font-size:14px}
+.alert.success{background:rgba(16,185,129,0.12);color:#166534;border:1px solid rgba(16,185,129,0.3)}
+.alert.danger{background:rgba(249,168,212,0.15);color:#9d174d;border:1px solid rgba(249,168,212,0.3)}
 
-        .product-card {
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-xl);
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-medium);
-            border-color: var(--accent-blue);
-        }
-
-        .product-image {
-            width: 100%;
-            height: 180px;
-            background: rgba(56, 189, 248, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .product-info {
-            padding: 15px;
-        }
-
-        .product-name {
-            font-style: italic;
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-        }
-
-        .product-price {
-            font-style: italic;
-            font-size: 20px;
-            font-weight: 900;
-            color: var(--accent-blue);
-        }
-
-        .actions {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 15px;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 14px 24px;
-            border-radius: var(--radius-lg);
-            font-style: italic;
-            font-weight: 700;
-            font-size: 14px;
-            text-decoration: none;
-            transition: all 0.2s;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            background: var(--gradient-blue);
-            color: white;
-            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
-        }
-
-        .btn-pink {
-            background: var(--gradient-pink);
-            color: white;
-            box-shadow: 0 6px 20px rgba(249, 168, 212, 0.3);
-        }
-
-        .btn-pink:hover:not(:disabled) {
-            box-shadow: 0 8px 25px rgba(249, 168, 212, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .btn-green {
-            background: var(--gradient-green);
-            color: white;
-            box-shadow: 0 6px 20px rgba(134, 239, 172, 0.3);
-        }
-
-        .btn-green:hover:not(:disabled) {
-            box-shadow: 0 8px 25px rgba(134, 239, 172, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .btn-ghost {
-            background: rgba(56, 189, 248, 0.1);
-            color: var(--accent-blue);
-        }
-
-        .btn-ghost:hover {
-            background: rgba(56, 189, 248, 0.2);
-        }
-
-        .btn-danger {
-            background: var(--gradient-pink);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            transform: translateY(-2px);
-        }
-
-        .rating {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(251, 191, 36, 0.1);
-            padding: 10px 20px;
-            border-radius: 24px;
-            font-style: italic;
-            font-weight: 600;
-            font-size: 15px;
-            color: #d97706;
-            border: 1px solid rgba(251, 191, 36, 0.2);
-        }
-
-        .rating i { color: #fbbf24; }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-        }
-
-        .empty-state .icon {
-            width: 120px;
-            height: 120px;
-            background: rgba(56, 189, 248, 0.1);
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 25px;
-            font-size: 56px;
-            color: var(--accent-blue);
-        }
-
-        .empty-state h3 {
-            font-style: italic;
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 10px;
-        }
-
-        .empty-state p {
-            font-style: italic;
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 25px;
-        }
-
-        .alert {
-            padding: 16px 20px;
-            border-radius: var(--radius-lg);
-            margin-bottom: 15px;
-            font-style: italic;
-            font-size: 14px;
-        }
-
-        .alert.success {
-            background: rgba(134, 239, 172, 0.15);
-            color: #166534;
-            border: 1px solid rgba(134, 239, 172, 0.3);
-        }
-
-        .alert.danger {
-            background: rgba(249, 168, 212, 0.15);
-            color: #9d174d;
-            border: 1px solid rgba(249, 168, 212, 0.3);
-        }
-
-        @media (max-width: 768px) {
-            .header-page { flex-direction: column; text-align: center; }
-            .products-grid { grid-template-columns: 1fr; }
-            .actions { flex-direction: column; }
-            .btn { justify-content: center; }
-        }
-    </style>
+body,.main *,.sidebar a,.topbar *,.user-dropdown *,.glass-card *{font-style:italic!important}
+@media(max-width:768px){.header-page{flex-direction:column;text-align:center}.products-grid{grid-template-columns:1fr}.actions{flex-direction:column}.btn{justify-content:center}.sidebar{width:300px}}
+</style>
 </head>
 <body>
-    <div class="page-container">
-        <div class="header-page">
-            <div class="header-icon">
-                <i class="fa fa-store"></i>
+
+<div class="bg-particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <img src="/static/images/net.jpg" alt="Logo">
+        <span class="brand-name"><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></span>
+    </div>
+    <a href="/dashboard"><i class="fa fa-home"></i> Tableau de bord</a>
+    <a href="/revenus"><i class="fa fa-wallet"></i> Revenus</a>
+    <a href="/boutique/creer" class="active"><i class="fa fa-store"></i> Ma Boutique <span class="badge-new">&#10024;</span></a>
+    <a href="/publicites"><i class="fa fa-video"></i> Publicites <span class="badge-new">&#127916;</span></a>
+    <a href="/videos"><i class="fa fa-play"></i> Videos NectarPro <span class="badge-new">&#127909;</span></a>
+    <a href="javascript:void(0);" id="channelsToggle"><i class="fa fa-tv"></i> Nos Chaines <i class="fa fa-chevron-down" style="float:right;"></i></a>
+    <div class="sub-menu" id="subChannels"><a href="/chaine"><i class="fa fa-bullhorn"></i> Canal Officiel</a></div>
+    <a href="javascript:void(0);" id="formationToggle"><i class="fa fa-graduation-cap"></i> Formation <i class="fa fa-chevron-down" style="float:right;"></i></a>
+    <div class="sub-menu" id="subFormation"><a href="/trade"><i class="fa fa-chart-line"></i> Trading</a><a href="/ecom"><i class="fa fa-store"></i> E-commerce</a></div>
+    <a href="javascript:void(0);" id="tasksToggle"><i class="fa fa-tasks"></i> Taches <i class="fa fa-chevron-down" style="float:right;"></i></a>
+    <div class="sub-menu" id="subTasks"><a href="/taches"><i class="fa fa-share-alt"></i> Partages remuneres</a></div>
+    <a href="javascript:void(0);" id="retraitsToggle"><i class="fa fa-money-bill"></i> Retraits <i class="fa fa-chevron-down" style="float:right;"></i></a>
+    <div class="sub-menu" id="subRetraits"><a href="/retrait"><i class="fa fa-wallet"></i> Solde retrait</a><a href="/mes-retraits"><i class="fa fa-history"></i> Mes retraits</a></div>
+    <a href="javascript:void(0);" id="moiToggle"><i class="fa fa-user"></i> Moi <i class="fa fa-chevron-down" style="float:right;"></i></a>
+    <div class="sub-menu" id="subMoi"><a href="/profile"><i class="fa fa-user"></i> Mon profile</a><a href="/team"><i class="fa fa-users"></i> Mon equipes</a></div>
+    <a href="/market"><i class="fa fa-store"></i> Market</a>
+    <a href="/download/contact"><i class="fa fa-address-book"></i> Contacts vcf</a>
+    <a href="/academy/tiktok"><i class="fab fa-tiktok"></i> Formation Tiktok</a>
+    <a href="/academy/affiliation"><i class="fa fa-info-circle"></i> Presentation</a>
+    <a href="/academy/design"><i class="fa fa-palette"></i> Design Graphique</a>
+    <a href="/apk"><i class="fa fa-th"></i> Apk Premium</a>
+    <a href="/apk-canal"><i class="fa fa-tv"></i> Telecharger Canal+</a>
+    <a href="/netflix-view"><i class="fa fa-play-circle"></i> Netflix Direct</a>
+    <a href="/about"><i class="fa fa-info-circle"></i> A propos</a>
+    <a href="/politique"><i class="fa fa-file-contract"></i> Politique</a>
+    <a href="/logout" style="color:#db2777;"><i class="fa fa-sign-out"></i> Deconnexion</a>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+    <div class="menu-toggle" id="menuToggle"><i class="fa fa-bars"></i></div>
+    <div class="topbar-logo">
+        <img src="/static/images/net.jpg" alt="NectarPro">
+        <span class="brand-name"><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></span>
+    </div>
+    <div class="user-pill" id="userToggle">
+        <i class="fa fa-user-circle"></i> {{ user.username }}
+        <div class="user-dropdown" id="userDropdown">
+            <div class="user-dd-header">
+                <div class="user-dd-avatar">{{ user.username[0] }}</div>
+                <div><div class="user-dd-name">{{ user.username }}</div><div class="user-dd-role">Utilisateur NectarPro</div></div>
             </div>
-            <div>
-                <h1>{{ boutique.nom }}</h1>
-                <div class="stats">
-                    <span><i class="fa fa-box"></i> {{ produits|length }} produit{{ 's' if produits|length > 1 else '' }}</span>
-                    <span><i class="fa fa-star"></i> {% if note_moyenne > 0 %}{{ "%.1f"|format(note_moyenne) }}/5{% else %}Nouvelle{% endif %}</span>
-                </div>
+            <div class="user-dd-info">
+                <div class="user-dd-item"><i class="fa fa-envelope"></i><div>Email<br><span>{{ user.email or 'Non defini' }}</span></div></div>
+                <div class="user-dd-item"><i class="fa fa-phone"></i><div>Telephone<br><span>{{ user.phone or 'Non defini' }}</span></div></div>
+                <div class="user-dd-item"><i class="fa fa-calendar"></i><div>Inscrit le<br><span>{{ user.date_creation.strftime('%d/%m/%Y') if user.date_creation else '--' }}</span></div></div>
+                <div class="user-dd-item"><i class="fa fa-user-plus"></i><div>Parrain<br><span>{{ user.parrain or 'Aucun' }}</span></div></div>
             </div>
-        </div>
-
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert {{ 'success' if category == 'success' else 'danger' }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        <div class="modern-card">
-            {% if boutique.description %}
-                <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 15px;">{{ boutique.description }}</p>
-            {% endif %}
-
-            <div class="rating">
-                <i class="fa fa-star"></i>
-                {% if note_moyenne > 0 %}
-                    {{ "%.1f"|format(note_moyenne) }}/5 ({{ nb_avis }} avis)
-                {% else %}
-                    Pas encore d'avis
-                {% endif %}
-            </div>
-
-            <div class="actions">
-                {% if user and boutique.user_id == user.id %}
-                    <a href="{{ url_for('configurer_boutique', boutique_id=boutique.id) }}" class="btn btn-primary">
-                        <i class="fa fa-cog"></i> Configurer
-                    </a>
-                    <a href="{{ url_for('ajouter_produit', boutique_id=boutique.id) }}" class="btn btn-pink">
-                        <i class="fa fa-plus"></i> Nouveau produit
-                    </a>
-                    <a href="{{ url_for('boutique_publique', username=boutique.proprietaire.username) }}" class="btn btn-green" target="_blank">
-                        <i class="fa fa-eye"></i> Voir publique
-                    </a>
-                    <a href="{{ url_for('supprimer_boutique', boutique_id=boutique.id) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr ?')">
-                        <i class="fa fa-trash"></i> Supprimer
-                    </a>
-                {% endif %}
-                <a href="{{ url_for('dashboard_page') }}" class="btn btn-ghost">
-                    <i class="fa fa-arrow-left"></i> Retour
-                </a>
-            </div>
-        </div>
-
-        <!-- GESTION DES COMMANDES -->
-        {% if user and boutique.user_id == user.id %}
-        <div class="modern-card" style="margin-top: 20px;">
-            <div class="section-header">
-                <div class="section-title">
-                    <i class="fa fa-chart-line"></i>
-                    Gestion des commandes
-                </div>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-                <!-- Commandes en attente -->
-                <a href="{{ url_for('voir_commandes_boutique', boutique_id=boutique.id) }}" style="text-decoration: none;">
-                    <div class="commande-box" style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.08) 0%, rgba(245, 158, 11, 0.05) 100%); border: 2px solid rgba(251, 191, 36, 0.2); border-radius: var(--radius-xl); padding: 24px; transition: all 0.3s ease;">
-                        <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <div>
-                                <h3 style="font-style: italic; font-size: 18px; font-weight: 700; color: #d97706; margin-bottom: 8px;">
-                                    <i class="fa fa-clock" style="margin-right: 8px;"></i>Commandes en attente
-                                </h3>
-                                <p style="font-style: italic; font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
-                                    {% if nb_commandes_en_attente > 0 %}
-                                        {{ nb_commandes_en_attente }} commande{{ 's' if nb_commandes_en_attente > 1 else '' }} à traiter
-                                    {% else %}
-                                        Aucune commande en attente
-                                    {% endif %}
-                                </p>
-                            </div>
-                            <div style="width: 60px; height: 60px; background: rgba(251, 191, 36, 0.1); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; font-size: 24px; color: #d97706;">
-                                <i class="fa fa-inbox"></i>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Ventes confirmées -->
-                <a href="{{ url_for('voir_ventes_boutique', boutique_id=boutique.id) }}" style="text-decoration: none;">
-                    <div class="commande-box" style="background: linear-gradient(135deg, rgba(134, 239, 172, 0.08) 0%, rgba(110, 231, 183, 0.05) 100%); border: 2px solid rgba(134, 239, 172, 0.2); border-radius: var(--radius-xl); padding: 24px; transition: all 0.3s ease;">
-                        <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <div>
-                                <h3 style="font-style: italic; font-size: 18px; font-weight: 700; color: #16a34a; margin-bottom: 8px;">
-                                    <i class="fa fa-check-circle" style="margin-right: 8px;"></i>Ventes confirmées
-                                </h3>
-                                <p style="font-style: italic; font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
-                                    {% if nb_ventes > 0 %}
-                                        {{ nb_ventes }} vente{{ 's' if nb_ventes > 1 else '' }} réalisée{{ 's' if nb_ventes > 1 else '' }}
-                                    {% else %}
-                                        Aucune vente pour le moment
-                                    {% endif %}
-                                </p>
-                            </div>
-                            <div style="width: 60px; height: 60px; background: rgba(134, 239, 172, 0.1); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; font-size: 24px; color: #16a34a;">
-                                <i class="fa fa-shopping-bag"></i>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
-        {% endif %}
-
-        <div class="modern-card" style="margin-top: 20px;">
-            <div class="section-header">
-                <div class="section-title">
-                    <i class="fa fa-shopping-bag"></i>
-                    Produits
-                </div>
-                <span class="badge blue">{{ produits|length }} article{{ 's' if produits|length > 1 else '' }}</span>
-            </div>
-
-            {% if produits %}
-                <div class="products-grid">
-                    {% for produit in produits %}
-                        <div class="product-card">
-                            <div class="product-image">
-                                <img src="{{ produit.image_principale }}" alt="{{ produit.nom }}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-                                {% if produit.est_en_promo %}
-                                    <span class="badge" style="position: absolute; top: 12px; right: 12px; background: var(--gradient-pink); color: white;">PROMO</span>
-                                {% endif %}
-                            </div>
-                            <div class="product-info">
-                                <div class="product-name">{{ produit.nom }}</div>
-                                {% if produit.description %}
-                                    <div style="font-style: italic; font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;">{{ produit.description[:80] }}...</div>
-                                {% endif %}
-                                <div class="product-footer" style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div class="product-price">{{ "%.0f"|format(produit.prix) }} <small style="font-size: 12px; color: var(--text-secondary);">{{ produit.devise or 'XOF' }}</small></div>
-                                    <a href="{{ url_for('voir_produit_public', slug=produit.slug) if produit.slug else url_for('voir_produit', produit_id=produit.id) }}" class="btn btn-primary" style="padding: 10px 20px; font-size: 13px;">
-                                        Voir
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="empty-state">
-                    <div class="icon"><i class="fa fa-store-alt"></i></div>
-                    <h3>Aucun produit</h3>
-                    <p>Cette boutique n'a pas encore de produits disponibles.</p>
-                    {% if user and boutique.user_id == user.id %}
-                        <a href="{{ url_for('ajouter_produit', boutique_id=boutique.id) }}" class="btn btn-pink">
-                            <i class="fa fa-plus"></i> Ajouter le premier produit
-                        </a>
-                    {% endif %}
-                </div>
-            {% endif %}
+            <a href="/logout" class="user-dd-logout"><i class="fa fa-sign-out"></i> Deconnexion</a>
         </div>
     </div>
+</div>
+
+<div class="main">
+    <div class="header-page">
+        <div class="header-icon"><i class="fa fa-store"></i></div>
+        <div>
+            <h1>{{ boutique.nom }}</h1>
+            <div class="stats">
+                <span><i class="fa fa-box"></i> {{ produits|length }} produit{{ 's' if produits|length > 1 else '' }}</span>
+                <span><i class="fa fa-star"></i> {% if note_moyenne > 0 %}{{ "%.1f"|format(note_moyenne) }}/5{% else %}Nouvelle{% endif %}</span>
+            </div>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert {{ 'success' if category == 'success' else 'danger' }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="glass-card">
+        {% if boutique.description %}
+            <p style="color:var(--muted);line-height:1.6;margin-bottom:15px">{{ boutique.description }}</p>
+        {% endif %}
+
+        <div class="rating">
+            <i class="fa fa-star"></i>
+            {% if note_moyenne > 0 %}
+                {{ "%.1f"|format(note_moyenne) }}/5 ({{ nb_avis }} avis)
+            {% else %}
+                Pas encore d'avis
+            {% endif %}
+        </div>
+
+        <div class="actions">
+            {% if user and boutique.user_id == user.id %}
+                <a href="{{ url_for('configurer_boutique', boutique_id=boutique.id) }}" class="btn btn-primary">
+                    <i class="fa fa-cog"></i> Configurer
+                </a>
+                <a href="{{ url_for('ajouter_produit', boutique_id=boutique.id) }}" class="btn btn-pink">
+                    <i class="fa fa-plus"></i> Nouveau produit
+                </a>
+                <a href="{{ url_for('boutique_publique', username=boutique.proprietaire.username) }}" class="btn btn-success" target="_blank">
+                    <i class="fa fa-eye"></i> Voir publique
+                </a>
+                <a href="{{ url_for('supprimer_boutique', boutique_id=boutique.id) }}" class="btn btn-danger" onclick="return confirm('Etes-vous sur ?')">
+                    <i class="fa fa-trash"></i> Supprimer
+                </a>
+            {% endif %}
+            <a href="{{ url_for('dashboard_page') }}" class="btn btn-ghost">
+                <i class="fa fa-arrow-left"></i> Retour
+            </a>
+        </div>
+    </div>
+
+    <div class="glass-card">
+        <div class="section-header">
+            <div class="section-title">
+                <i class="fa fa-box-open"></i> Produits ({{ produits|length }})
+            </div>
+            {% if user and boutique.user_id == user.id %}
+                <a href="{{ url_for('ajouter_produit', boutique_id=boutique.id) }}" class="btn btn-primary">
+                    <i class="fa fa-plus"></i> Ajouter
+                </a>
+            {% endif %}
+        </div>
+
+        {% if produits and produits|length > 0 %}
+        <div class="products-grid">
+            {% for produit in produits %}
+            <div class="product-card">
+                <div class="product-image">
+                    {% if produit.image_url %}
+                        <img src="{{ produit.image_url }}" alt="{{ produit.nom }}">
+                    {% else %}
+                        <i class="fa fa-box placeholder-icon"></i>
+                    {% endif %}
+                </div>
+                <div class="product-info">
+                    <div class="product-name">{{ produit.nom }}</div>
+                    <div class="product-price">{{ "%.0f"|format(produit.prix) }} {{ produit.devise or 'XOF' }}</div>
+                    <div class="actions">
+                        <a href="/product/{{ produit.id }}" class="btn btn-primary" style="font-size:12px;padding:10px 16px">
+                            <i class="fa fa-eye"></i> Voir
+                        </a>
+                        {% if user and boutique.user_id == user.id %}
+                        <a href="{{ url_for('supprimer_produit', produit_id=produit.id) }}" class="btn btn-danger" style="font-size:12px;padding:10px 16px" onclick="return confirm('Supprimer ce produit ?')">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="icon"><i class="fa fa-box-open"></i></div>
+            <h3>Aucun produit</h3>
+            <p>Ajoutez des produits pour attirer des clients.</p>
+            {% if user and boutique.user_id == user.id %}
+                <a href="{{ url_for('ajouter_produit', boutique_id=boutique.id) }}" class="btn btn-primary">
+                    <i class="fa fa-plus"></i> Ajouter un produit
+                </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+// SIDEBAR
+const sidebar=document.getElementById("sidebar"),overlayEl=document.getElementById("overlay"),mt=document.getElementById("menuToggle");
+mt.onclick=()=>{sidebar.classList.add("active");overlayEl.classList.add("active")};
+overlayEl.onclick=()=>{sidebar.classList.remove("active");overlayEl.classList.remove("active")};
+
+// SIDEBAR TOGGLES
+function setupToggle(t,m){let a=document.getElementById(t),b=document.getElementById(m);a&&b&&(a.onclick=e=>{e.preventDefault();let h=b.style.display==="none"||b.style.display==="";b.style.display=h?"block":"none";a.querySelector(".fa-chevron-down").classList.toggle("rotate",h)})}
+setupToggle("channelsToggle","subChannels");setupToggle("formationToggle","subFormation");setupToggle("tasksToggle","subTasks");setupToggle("retraitsToggle","subRetraits");
+let moiT=document.getElementById("moiToggle"),subM=document.getElementById("subMoi");
+moiT.onclick=e=>{e.preventDefault();subM.style.display==="none"?(subM.style.display="block",moiT.querySelector(".fa-chevron-down").classList.add("rotate")):(subM.style.display="none",moiT.querySelector(".fa-chevron-down").classList.remove("rotate"))};
+
+// USER DROPDOWN
+(function(){let u=document.querySelector('.topbar .user-pill');if(!u)return;u.addEventListener('click',e=>{e.stopPropagation();document.getElementById('userDropdown').classList.toggle('active')});document.addEventListener('click',e=>{let dd=document.getElementById('userDropdown');if(dd&&!u.contains(e.target))dd.classList.remove('active')})})();
+</script>
+
 </body>
 </html>
