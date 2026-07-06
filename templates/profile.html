@@ -1,417 +1,188 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Profil - NectarPro</title>
-<link rel="icon" href="/static/images/net.jpg" type="image/jpeg">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
-html { scroll-behavior:smooth; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil - NectarPro</title>
+    <link rel="icon" href="/static/images/net.jpg" type="image/jpeg">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
 
-:root {
-    --bg-primary: #f8fafc;
-    --bg-secondary: rgba(255, 255, 255, 0.8);
-    --bg-card: rgba(255, 255, 255, 0.7);
-    --bg-card-hover: rgba(255, 255, 255, 0.9);
-    --border-color: rgba(148, 163, 184, 0.2);
-    --border-glow: rgba(56, 189, 248, 0.3);
-    --text-primary: #0f172a;
-    --text-secondary: #64748b;
-    --text-muted: #94a3b8;
-    --accent-blue: #38bdf8;
-    --accent-blue-light: #7dd3fc;
-    --accent-green: #86efac;
-    --accent-green-light: #bbf7d0;
-    --accent-pink: #f9a8d4;
-    --accent-pink-light: #fbcfe8;
-    --accent-purple: #c084fc;
-    --accent-indigo: #4f46e5;
-    --accent-gold: #fbbf24;
-    --danger: #ef4444;
-    --success: #22c55e;
-    --warning: #f59e0b;
-    --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
-    --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
-    --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
-    --gradient-purple: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%);
-    --gradient-indigo: linear-gradient(135deg, #818cf8 0%, #4f46e5 100%);
-    --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
-    --radius-sm: 10px;
-    --radius-lg: 16px;
-    --radius-xl: 20px;
-    --radius-2xl: 24px;
-    --shadow-soft: 0 4px 6px rgba(56, 189, 248, 0.08);
-    --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
-    --shadow-glow: 0 0 40px rgba(56, 189, 248, 0.15);
-    --shadow-large: 0 12px 32px rgba(56, 189, 248, 0.15);
-}
+        :root{
+            --bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);
+            --glass:rgba(255,255,255,0.72);
+            --glass-hover:rgba(255,255,255,0.88);
+            --accent:#db2777;
+            --accent2:#ec4899;
+            --accent-light:#f9a8d4;
+            --gold:#f59e0b;
+            --gold-light:#fef3c7;
+            --emerald:#10b981;
+            --emerald-light:#d1fae5;
+            --violet:#8b5cf6;
+            --violet-light:#ede9fe;
+            --sky:#0ea5e9;
+            --sky-light:#e0f2fe;
+            --text:#000;
+            --text2:#1f2937;
+            --muted:#6b7280;
+            --border:rgba(236,72,153,0.2);
+            --shadow-sm:0 2px 8px rgba(236,72,153,0.08);
+            --shadow:0 8px 32px rgba(236,72,153,0.12);
+            --shadow-lg:0 16px 48px rgba(236,72,153,0.18);
+            --radius-sm:12px;
+            --radius:18px;
+            --radius-lg:24px;
+            --radius-xl:32px;
+        }
 
-body {
-    font-family: 'Poppins', sans-serif;
-    font-style: italic;
-    font-weight: 400;
-    color: var(--text-primary);
-    background: var(--gradient-bg);
-    line-height: 1.6;
-    overflow-x: hidden;
-    min-height: 100vh;
-    position: relative;
-}
+        body{
+            background:var(--bg);
+            min-height:100vh;min-height:100dvh;
+            color:var(--text);
+            font-style:italic;
+            overflow-x:hidden;
+            position:relative;
+        }
 
-/* ═══════════ FOND COSMIQUE ═══════════ */
-.cosmic-bg {
-    position: fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;
-}
-.cosmic-orb {
-    position: absolute; border-radius: 50%;
-    filter: blur(80px); opacity: 0.3;
-    animation: cosmicOrbit linear infinite;
-}
-.cosmic-orb:nth-child(1) { width:40vw; height:40vw; background:radial-gradient(circle,rgba(56,189,248,0.4),transparent 70%); top:-10%; left:-10%; animation-duration:25s; }
-.cosmic-orb:nth-child(2) { width:30vw; height:30vw; background:radial-gradient(circle,rgba(134,239,172,0.35),transparent 70%); bottom:-8%; right:-5%; animation-duration:30s; animation-delay:-8s; }
-.cosmic-orb:nth-child(3) { width:28vw; height:28vw; background:radial-gradient(circle,rgba(249,168,212,0.3),transparent 70%); top:35%; left:45%; animation-duration:35s; animation-delay:-15s; }
-.cosmic-orb:nth-child(4) { width:22vw; height:22vw; background:radial-gradient(circle,rgba(192,132,252,0.25),transparent 70%); top:5%; right:8%; animation-duration:28s; animation-delay:-5s; }
-@keyframes cosmicOrbit {
-    0% { transform:translate(0,0) scale(1); }
-    25% { transform:translate(70px,-35px) scale(1.25); }
-    50% { transform:translate(-35px,50px) scale(0.85); }
-    75% { transform:translate(-55px,-25px) scale(1.15); }
-    100% { transform:translate(0,0) scale(1); }
-}
+        .bg-particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+        .particle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,0.18),transparent 70%);animation:floatUp linear infinite;}
+        .particle:nth-child(1){width:180px;height:180px;left:5%;top:70%;animation-duration:18s;animation-delay:0s}
+        .particle:nth-child(2){width:120px;height:120px;left:60%;top:80%;animation-duration:14s;animation-delay:3s}
+        .particle:nth-child(3){width:200px;height:200px;left:30%;top:75%;animation-duration:22s;animation-delay:6s}
+        .particle:nth-child(4){width:100px;height:100px;left:80%;top:85%;animation-duration:16s;animation-delay:9s}
+        .particle:nth-child(5){width:150px;height:150px;left:50%;top:90%;animation-duration:20s;animation-delay:2s}
+        .particle:nth-child(6){width:90px;height:90px;left:15%;top:50%;animation-duration:12s;animation-delay:5s}
+        .particle:nth-child(7){width:160px;height:160px;left:75%;top:60%;animation-duration:24s;animation-delay:8s}
+        @keyframes floatUp{
+            0%{transform:translateY(0)scale(0.6);opacity:0}
+            10%{opacity:0.7}
+            90%{opacity:0.4}
+            100%{transform:translateY(-110vh)scale(1.4);opacity:0}
+        }
 
-/* ═══════════ NAVBAR ═══════════ */
-.navbar {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 14px 28px;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-    border-bottom: 1px solid var(--border-color);
-    position: sticky; top: 0; z-index: 1000;
-}
-.nav-brand {
-    font-size: 24px; font-weight: 900; font-style: italic;
-    background: var(--gradient-blue);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text; text-decoration: none;
-    display: flex; align-items: center; gap: 8px;
-}
-.nav-brand img { width: 32px; height: 32px; border-radius: 8px; }
-.nav-links { display: flex; gap: 24px; list-style: none; align-items: center; }
-.nav-links a {
-    color: var(--text-secondary); text-decoration: none;
-    font-weight: 500; font-size: 14px; transition: all 0.3s;
-    position: relative; padding: 4px 0;
-}
-.nav-links a:hover, .nav-links a.active { color: var(--accent-blue); }
-.nav-links a::after {
-    content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
-    background: var(--gradient-blue); border-radius: 2px; transition: width 0.3s;
-}
-.nav-links a:hover::after { width: 100%; }
+        .topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:rgba(255,255,255,0.7);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000;}
+        .topbar-logo{display:flex;align-items:center;gap:8px;position:absolute;left:50%;transform:translateX(-50%);text-decoration:none;}
+        .topbar-logo img{width:32px;height:32px;border-radius:10px;box-shadow:0 2px 8px rgba(236,72,153,0.2)}
+        .topbar-logo span{font-size:18px;font-weight:900}
+        .topbar-logo .brand-n{color:var(--accent2)}
+        .topbar-logo .brand-p{color:var(--accent)}
 
-/* ═══════════ CONTAINER ═══════════ */
-.container {
-    max-width: 520px; margin: 0 auto; padding: 28px 20px 80px;
-    position: relative; z-index: 1;
-}
+        .header-nav{display:flex;gap:10px;flex-wrap:wrap;}
+        .header-nav a{color:var(--text2);text-decoration:none;font-weight:700;font-size:12px;padding:9px 16px;background:rgba(236,72,153,0.06);border:1px solid var(--border);border-radius:30px;transition:all .3s;display:flex;align-items:center;gap:6px;}
+        .header-nav a:hover{background:rgba(236,72,153,0.14);color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow-sm);}
+        .header-nav a.active{background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;border-color:transparent;box-shadow:0 4px 16px rgba(219,39,119,0.35);}
 
-/* ═══════════ BACK LINK ═══════════ */
-.back-link {
-    display: inline-flex; align-items: center; gap: 8px;
-    color: var(--accent-blue); text-decoration: none;
-    font-size: 14px; margin-bottom: 20px; font-weight: 600; font-style: italic;
-    transition: all 0.2s; padding: 8px 12px;
-    border-radius: var(--radius-sm);
-    background: rgba(56,189,248,0.06);
-}
-.back-link:hover {
-    background: rgba(56,189,248,0.12);
-    color: var(--accent-indigo);
-    transform: translateX(-3px);
-}
+        .main{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:24px 20px 80px;}
 
-/* ═══════════ PROFILE HEADER ═══════════ */
-.profile-header {
-    text-align: center; margin-bottom: 28px;
-}
-.profile-avatar {
-    width: 96px; height: 96px; border-radius: 50%;
-    background: var(--gradient-blue);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 40px; color: white; font-weight: 800;
-    margin: 0 auto 14px;
-    box-shadow: 0 8px 32px rgba(56, 189, 248, 0.35);
-    overflow: hidden; position: relative;
-    border: 3px solid rgba(255,255,255,0.6);
-}
-.profile-avatar img {
-    width: 100%; height: 100%; object-fit: cover;
-}
-.profile-name {
-    font-style: italic; font-size: 22px; font-weight: 800;
-    color: var(--text-primary); margin-bottom: 2px;
-    text-transform: capitalize;
-}
-.profile-username {
-    font-size: 13px; color: var(--text-muted); font-style: italic;
-}
+        .page-header{text-align:center;margin-bottom:24px;}
+        .page-header h1{font-weight:900;font-size:28px;margin-bottom:4px;background:linear-gradient(135deg,#ec4899,#db2777);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+        .page-header p{font-weight:600;font-size:13px;color:var(--text2);opacity:.8;}
 
-/* ═══════════ STATS GRID ═══════════ */
-.stats-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 28px;
-}
-.stat-card {
-    background: var(--bg-card); backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--border-color); border-radius: var(--radius-xl);
-    padding: 18px 8px; text-align: center;
-    box-shadow: var(--shadow-medium); transition: all 0.3s;
-    position: relative; overflow: hidden;
-}
-.stat-card:hover {
-    transform: translateY(-3px); box-shadow: var(--shadow-large); border-color: var(--border-glow);
-}
-.stat-card::before {
-    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
-}
-.stat-card:nth-child(1)::before { background: var(--gradient-blue); }
-.stat-card:nth-child(2)::before { background: var(--gradient-green); }
-.stat-card:nth-child(3)::before { background: var(--gradient-purple); }
-.stat-card:nth-child(4)::before { background: var(--gradient-pink); }
-.stat-value {
-    font-size: 22px; font-weight: 800; font-style: italic;
-    margin-bottom: 2px;
-    background: var(--gradient-blue);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-.stat-card:nth-child(2) .stat-value {
-    background: var(--gradient-green);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-.stat-card:nth-child(3) .stat-value {
-    background: var(--gradient-purple);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-.stat-card:nth-child(4) .stat-value {
-    background: var(--gradient-pink);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-.stat-label {
-    font-size: 10px; color: var(--text-muted); font-style: italic;
-    text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;
-}
+        .profile-header{text-align:center;margin-bottom:24px;}
+        .profile-avatar{width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,#f9a8d4,#ec4899,#db2777);display:flex;align-items:center;justify-content:center;font-size:40px;color:#fff;font-weight:800;margin:0 auto 14px;box-shadow:0 8px 32px rgba(219,39,119,0.35);overflow:hidden;border:3px solid rgba(255,255,255,0.6);}
+        .profile-avatar img{width:100%;height:100%;object-fit:cover;}
+        .profile-name{font-weight:800;font-size:22px;color:var(--text);text-transform:capitalize;margin-bottom:2px;}
+        .profile-username{font-size:13px;color:var(--muted);}
 
-/* ═══════════ ALERTS ═══════════ */
-.alert {
-    padding: 14px 18px; border-radius: var(--radius-lg);
-    font-size: 14px; margin-bottom: 20px; font-style: italic;
-    display: flex; align-items: center; gap: 10px;
-    animation: slideDown 0.4s ease;
-    backdrop-filter: blur(10px);
-}
-@keyframes slideDown {
-    from { opacity:0; transform:translateY(-12px); }
-    to { opacity:1; transform:translateY(0); }
-}
-.alert.success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
-.alert.danger { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-.alert.warning { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
-.alert.info { background: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
+        .alert{padding:14px 18px;border-radius:var(--radius-sm);font-size:14px;margin-bottom:20px;font-style:italic;display:flex;align-items:center;gap:10px;animation:slideDown 0.4s ease;}
+        @keyframes slideDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+        .alert.success{background:var(--emerald-light);color:#065f46;border:1px solid rgba(16,185,129,0.3);}
+        .alert.danger{background:#fee2e2;color:#991b1b;border:1px solid #fecaca;}
+        .alert.warning{background:var(--gold-light);color:#92400e;border:1px solid rgba(245,158,11,0.3);}
+        .alert.info{background:var(--sky-light);color:#075985;border:1px solid rgba(14,165,233,0.3);}
 
-/* ═══════════ SECTION CARD ═══════════ */
-.section {
-    background: var(--bg-card); backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: var(--radius-2xl); padding: 24px;
-    margin-bottom: 22px;
-    box-shadow: var(--shadow-medium);
-    border: 1px solid var(--border-color);
-    transition: all 0.3s;
-}
-.section:hover { border-color: var(--border-glow); }
+        .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px;}
+        .stat-card{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius);padding:18px 8px;text-align:center;box-shadow:var(--shadow-sm);transition:all .3s;position:relative;overflow:hidden;}
+        .stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--accent2);}
+        .stat-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:var(--accent2);}
+        .stat-card:nth-child(2)::before{background:var(--emerald);}
+        .stat-card:nth-child(3)::before{background:var(--violet);}
+        .stat-card:nth-child(4)::before{background:var(--gold);}
+        .stat-value{font-size:22px;font-weight:800;font-style:italic;margin-bottom:2px;color:var(--accent);}
+        .stat-card:nth-child(2) .stat-value{color:var(--emerald);}
+        .stat-card:nth-child(3) .stat-value{color:var(--violet);}
+        .stat-card:nth-child(4) .stat-value{color:var(--gold);}
+        .stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:600;}
 
-.section-title {
-    font-style: italic; font-size: 17px; font-weight: 700;
-    color: var(--text-primary); margin-bottom: 18px;
-    display: flex; align-items: center; gap: 10px;
-    padding-bottom: 14px; border-bottom: 1px solid var(--border-color);
-}
-.section-title .icon-circle {
-    width: 38px; height: 38px; border-radius: 10px;
-    background: linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(56,189,248,0.05) 100%);
-    display: flex; align-items: center; justify-content: center; font-size: 16px;
-}
-.section-title .icon-circle i {
-    background: var(--gradient-blue);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
+        .section{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:var(--radius-lg);padding:24px;margin-bottom:20px;box-shadow:var(--shadow-sm);border:1px solid var(--border);transition:all .3s;}
+        .section:hover{box-shadow:var(--shadow);border-color:var(--accent2);}
+        .section-title{font-weight:700;font-size:17px;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+        .section-title i{color:var(--accent2);font-size:18px;}
 
-/* ═══════════ FORM ELEMENTS ═══════════ */
-.input-group { margin-bottom: 18px; }
-.input-group label {
-    display: flex; align-items: center; gap: 8px; font-size: 13px;
-    font-weight: 600; font-style: italic; margin-bottom: 8px;
-    color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;
-}
-.input-group label i {
-    font-size: 14px;
-    background: var(--gradient-blue);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-.input-group input {
-    width: 100%; padding: 14px 18px;
-    border: 1.5px solid var(--border-color); border-radius: var(--radius-lg);
-    font-size: 15px; font-style: italic; outline: none; transition: all 0.25s;
-    background: rgba(255,255,255,0.6); color: var(--text-primary);
-}
-.input-group input:hover { border-color: rgba(56,189,248,0.3); }
-.input-group input:focus {
-    border-color: var(--accent-blue);
-    box-shadow: 0 0 0 4px rgba(56,189,248,0.08);
-    background: rgba(255,255,255,0.9);
-}
-.input-group input::placeholder { color: var(--text-muted); font-size: 14px; }
-.input-group input[readonly] {
-    background: rgba(148,163,184,0.08); cursor: default; border-style: dashed;
-}
+        .input-group{margin-bottom:18px;}
+        .input-group label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;font-style:italic;margin-bottom:8px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;}
+        .input-group label i{color:var(--accent2);}
+        .input-group input{width:100%;padding:14px 18px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:15px;font-style:italic;outline:none;transition:all .25s;background:rgba(255,255,255,0.6);color:var(--text);}
+        .input-group input:focus{border-color:var(--accent2);box-shadow:0 0 0 4px rgba(236,72,153,0.1);background:rgba(255,255,255,0.9);}
+        .input-group input::placeholder{color:var(--muted);}
+        .input-group input[readonly]{background:rgba(236,72,153,0.04);cursor:default;border-style:dashed;}
 
-/* ═══════════ BUTTONS ═══════════ */
-.btn {
-    width: 100%; padding: 14px 20px; border: none;
-    border-radius: var(--radius-lg); font-size: 15px; font-weight: 700; font-style: italic;
-    cursor: pointer; transition: all 0.3s ease;
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    position: relative; overflow: hidden;
-}
-.btn::after {
-    content: ''; position: absolute; top: 50%; left: 50%;
-    width: 0; height: 0; border-radius: 50%;
-    background: rgba(255,255,255,0.3); transform: translate(-50%, -50%);
-    transition: width 0.3s, height 0.3s;
-}
-.btn:active::after { width: 300px; height: 300px; }
-.btn-primary {
-    background: var(--gradient-blue); color: white;
-    box-shadow: 0 6px 24px rgba(56, 189, 248, 0.35);
-}
-.btn-primary:hover:not(:disabled) {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 32px rgba(56, 189, 248, 0.5);
-}
-.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-.btn-secondary {
-    background: rgba(56,189,248,0.08); color: var(--accent-blue);
-    border: 1px solid rgba(56,189,248,0.2);
-}
-.btn-secondary:hover {
-    background: rgba(56,189,248,0.16); transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(56,189,248,0.15);
-}
-.btn-inline { width: auto; padding: 10px 20px; font-size: 13px; }
+        .btn{width:100%;padding:15px 20px;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;font-style:italic;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:10px;}
+        .btn-primary{background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;box-shadow:0 6px 20px rgba(219,39,119,0.3);}
+        .btn-primary:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 10px 30px rgba(219,39,119,0.45);}
+        .btn-primary:disabled{opacity:0.5;cursor:not-allowed;}
+        .btn-secondary{background:rgba(236,72,153,0.06);color:var(--accent);border:1px solid var(--border);}
+        .btn-secondary:hover{background:rgba(236,72,153,0.14);transform:translateY(-2px);}
+        .btn-inline{width:auto;padding:10px 20px;font-size:13px;}
 
-/* ═══════════ AVATAR UPLOAD ═══════════ */
-.avatar-upload {
-    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-}
-.avatar-upload input[type="file"] { display: none; }
+        .info-box{background:rgba(236,72,153,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;margin-top:16px;font-size:13px;font-style:italic;color:var(--text2);display:flex;align-items:center;gap:10px;}
+        .info-box i{color:var(--accent2);flex-shrink:0;}
 
-/* ═══════════ INFO BOX ═══════════ */
-.info-box {
-    background: rgba(56,189,248,0.04); border: 1px solid rgba(56,189,248,0.12);
-    border-radius: var(--radius-lg); padding: 14px 18px; margin-top: 16px;
-    font-size: 13px; font-style: italic; color: var(--text-secondary);
-    display: flex; align-items: center; gap: 10px;
-    backdrop-filter: blur(10px);
-}
-.info-box i { color: var(--accent-blue); flex-shrink: 0; font-size: 15px; }
+        .biometric-device{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;margin-bottom:10px;background:rgba(236,72,153,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);transition:all .2s;}
+        .biometric-device:hover{background:rgba(236,72,153,0.08);border-color:var(--accent2);}
+        .device-info{display:flex;align-items:center;gap:12px;}
+        .device-icon{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,rgba(139,92,246,0.15),rgba(139,92,246,0.05));display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--violet);}
+        .device-name{font-weight:600;font-size:14px;color:var(--text);}
+        .device-date{font-size:11px;color:var(--muted);}
+        .btn-delete{background:none;border:none;color:#ef4444;cursor:pointer;font-size:16px;padding:8px;border-radius:8px;transition:all .2s;}
+        .btn-delete:hover{background:rgba(239,68,68,0.08);}
 
-/* ═══════════ BIOMETRIC DEVICES ═══════════ */
-.biometric-device {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 14px 16px; background: rgba(56,189,248,0.04);
-    border-radius: var(--radius-lg); margin-bottom: 10px;
-    border: 1px solid rgba(56,189,248,0.1); transition: all 0.2s;
-}
-.biometric-device:hover {
-    background: rgba(56,189,248,0.08); border-color: rgba(56,189,248,0.2);
-}
-.biometric-device .device-info {
-    display: flex; align-items: center; gap: 12px;
-}
-.biometric-device .device-icon {
-    width: 40px; height: 40px; border-radius: 10px;
-    background: linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(99,102,241,0.05) 100%);
-    display: flex; align-items: center; justify-content: center; font-size: 18px;
-}
-.biometric-device .device-icon i {
-    background: var(--gradient-indigo);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-.device-name { font-weight: 600; font-size: 14px; color: var(--text-primary); }
-.device-date { font-size: 11px; color: var(--text-muted); }
-.btn-delete {
-    background: none; border: none; color: var(--danger);
-    cursor: pointer; font-size: 16px; padding: 8px;
-    border-radius: 8px; transition: all 0.2s;
-}
-.btn-delete:hover { background: rgba(239,68,68,0.08); }
+        .footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
+        .footer span{font-weight:700;color:var(--accent);}
 
-/* ═══════════ FOOTER ═══════════ */
-.footer {
-    margin-top: 32px; text-align: center; padding: 24px;
-    color: var(--text-muted); font-size: 12px; font-style: italic;
-    position: relative; z-index: 1;
-}
-.footer span { font-weight: 700; background: var(--gradient-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-
-/* ═══════════ RESPONSIVE ═══════════ */
-@media (max-width: 480px) {
-    .container { padding: 20px 16px 60px; }
-    .navbar { padding: 10px 16px; }
-    .nav-links { display: none; }
-    .section { padding: 20px 16px; }
-    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .stat-card { padding: 14px 8px; }
-    .stat-value { font-size: 18px; }
-    .profile-avatar { width: 80px; height: 80px; font-size: 32px; }
-    .profile-name { font-size: 20px; }
-}
-</style>
+        @media (max-width:480px){
+            .main{padding:20px 16px 60px;}
+            .topbar{padding:10px 16px;}
+            .header-nav{gap:6px;}
+            .header-nav a{font-size:10px;padding:7px 12px;}
+            .section{padding:18px 14px;}
+            .stats-grid{grid-template-columns:repeat(2,1fr);gap:8px;}
+            .stat-card{padding:14px 8px;}
+            .stat-value{font-size:18px;}
+            .profile-avatar{width:80px;height:80px;font-size:32px;}
+        }
+    </style>
 </head>
 <body>
 
-<!-- Fond cosmique -->
-<div class="cosmic-bg">
-    <div class="cosmic-orb"></div>
-    <div class="cosmic-orb"></div>
-    <div class="cosmic-orb"></div>
-    <div class="cosmic-orb"></div>
+<div class="bg-particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div>
 </div>
 
-<!-- Navbar -->
-<nav class="navbar">
-    <a href="/dashboard" class="nav-brand">
+<div class="topbar">
+    <a href="/dashboard" class="topbar-logo">
         <img src="/static/images/net.jpg" alt="Logo">
-        NectarPro
+        <span><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></span>
     </a>
-    <ul class="nav-links">
-        <li><a href="/dashboard"><i class="fa fa-home"></i> Dashboard</a></li>
-        <li><a href="/taches"><i class="fa fa-tasks"></i> Tâches</a></li>
-        <li><a href="/profile" class="active"><i class="fa fa-user"></i> Profil</a></li>
-    </ul>
-</nav>
+    <div class="header-nav">
+        <a href="/dashboard"><i class="fa fa-home"></i> Dashboard</a>
+        <a href="/revenus"><i class="fa fa-coins"></i> Revenus</a>
+        <a href="/team"><i class="fa fa-users"></i> Equipe</a>
+        <a href="/mes_retraits"><i class="fa fa-paper-plane"></i> Retrait</a>
+    </div>
+</div>
 
-<div class="container">
-    <!-- Back Link -->
-    <a href="{{ url_for('dashboard_page') }}" class="back-link">
-        <i class="fa fa-arrow-left"></i>
-        <span>Retour au dashboard</span>
-    </a>
+<div class="main">
+    <div class="page-header">
+        <h1><i class="fa fa-user"></i> Profil</h1>
+        <p>Gerez vos informations personnelles et votre securite</p>
+    </div>
 
-    <!-- Profile Header -->
     <div class="profile-header">
         <div class="profile-avatar">
             {% if user.profile_image and user.profile_image != 'default.png' %}
@@ -421,14 +192,13 @@ body {
             {% endif %}
         </div>
         <h1 class="profile-name">{{ user.username }}</h1>
-        <p class="profile-username"><i class="fa fa-at"></i> @{{ user.username }}</p>
+        <p class="profile-username">@{{ user.username }}</p>
     </div>
 
-    <!-- Stats Grid -->
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-value">{{ team_total }}</div>
-            <div class="stat-label">Équipe</div>
+            <div class="stat-label">Equipe</div>
         </div>
         <div class="stat-card">
             <div class="stat-value">{{ user.solde_parrainage|default(0)|int }}</div>
@@ -440,11 +210,10 @@ body {
         </div>
         <div class="stat-card">
             <div class="stat-value">{{ user.total_retrait|default(0)|int }}</div>
-            <div class="stat-label">Retiré</div>
+            <div class="stat-label">Retire</div>
         </div>
     </div>
 
-    <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         {% for category, message in messages %}
@@ -456,307 +225,153 @@ body {
       {% endif %}
     {% endwith %}
 
-    <!-- Personal Info -->
     <div class="section">
-        <h2 class="section-title">
-            <span class="icon-circle"><i class="fa fa-user"></i></span>
-            Informations personnelles
-        </h2>
+        <h2 class="section-title"><i class="fa fa-address-card"></i> Informations personnelles</h2>
         <div class="input-group">
             <label><i class="fa fa-envelope"></i> Email</label>
             <input type="email" value="{{ user.email }}" readonly>
         </div>
         <div class="input-group">
-            <label><i class="fa fa-phone"></i> Téléphone</label>
+            <label><i class="fa fa-phone"></i> Telephone</label>
             <input type="tel" value="{{ user.phone }}" readonly>
         </div>
     </div>
 
-    <!-- Profile Photo -->
     <div class="section">
-        <h2 class="section-title">
-            <span class="icon-circle"><i class="fa fa-camera"></i></span>
-            Photo de profil
-        </h2>
-        <div class="avatar-upload">
-            <form method="POST" enctype="multipart/form-data" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; width: 100%;">
-                <input type="file" name="profile_photo" id="profilePhoto" accept="image/*">
-                <button type="button" class="btn btn-secondary btn-inline" onclick="document.getElementById('profilePhoto').click()">
-                    <i class="fa fa-upload"></i> Choisir une photo
-                </button>
-                <button type="submit" class="btn btn-primary btn-inline">
-                    <i class="fa fa-save"></i> Enregistrer
-                </button>
-            </form>
-        </div>
+        <h2 class="section-title"><i class="fa fa-camera"></i> Photo de profil</h2>
+        <form method="POST" enctype="multipart/form-data" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;width:100%;">
+            <input type="file" name="profile_photo" id="profilePhoto" accept="image/*" style="display:none;">
+            <button type="button" class="btn btn-secondary btn-inline" onclick="document.getElementById('profilePhoto').click()">
+                <i class="fa fa-upload"></i> Choisir
+            </button>
+            <button type="submit" class="btn btn-primary btn-inline">
+                <i class="fa fa-save"></i> Enregistrer
+            </button>
+        </form>
     </div>
 
-    <!-- PIN Security -->
     <div class="section">
-        <h2 class="section-title">
-            <span class="icon-circle"><i class="fa fa-lock"></i></span>
-            Code PIN de sécurité
-        </h2>
+        <h2 class="section-title"><i class="fa fa-lock"></i> Code PIN de securite</h2>
         <form method="POST">
             <div class="input-group">
                 <label><i class="fa fa-key"></i> Nouveau code PIN (6 chiffres)</label>
-                <input type="password"
-                       id="pin"
-                       name="pin"
-                       placeholder="••••••"
-                       maxlength="6"
-                       pattern="[0-9]{6}"
-                       inputmode="numeric"
-                       autocomplete="off"
-                       required>
+                <input type="password" id="pin" name="pin" placeholder="......" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" autocomplete="off" required>
             </div>
-
             <div class="input-group">
                 <label><i class="fa fa-key"></i> Confirmer le code PIN</label>
-                <input type="password"
-                       id="confirm_pin"
-                       name="confirm_pin"
-                       placeholder="••••••"
-                       maxlength="6"
-                       pattern="[0-9]{6}"
-                       inputmode="numeric"
-                       autocomplete="off"
-                       required>
+                <input type="password" id="confirm_pin" name="confirm_pin" placeholder="......" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" autocomplete="off" required>
             </div>
-
             <input type="hidden" name="update_pin" value="1">
-
             <button type="submit" class="btn btn-primary">
-                <i class="fa fa-shield-halved"></i> Mettre à jour le PIN
+                <i class="fa fa-shield-halved"></i> Mettre a jour le PIN
             </button>
         </form>
-
         <div class="info-box">
             <i class="fa fa-info-circle"></i>
-            <span>Votre code PIN sécurise vos retraits et la réinitialisation de votre mot de passe. 6 chiffres requis.</span>
+            <span>Votre code PIN securise vos retraits et la reinitialisation de votre mot de passe. 6 chiffres requis.</span>
         </div>
     </div>
 
-    <!-- Biometric Authentication -->
     <div class="section" id="biometric-section">
-        <h2 class="section-title">
-            <span class="icon-circle"><i class="fa fa-fingerprint"></i></span>
-            Authentification biométrique
-        </h2>
-        <p style="font-size:13px; color:var(--text-secondary); margin-bottom:18px; font-style:italic; line-height:1.7;">
+        <h2 class="section-title"><i class="fa fa-fingerprint"></i> Authentification biometrique</h2>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:18px;font-style:italic;line-height:1.7;">
             Activez Face ID, Touch ID ou Windows Hello pour valider vos retraits et changements de mot de passe sans saisir votre PIN.
         </p>
-
-        <div id="biometric-status">
-            <!-- Chargé dynamiquement -->
-        </div>
-
-        <div id="biometric-devices" style="margin-top: 16px;">
-            <!-- Chargé dynamiquement -->
-        </div>
-
-        <button id="btn-register-biometric" class="btn btn-secondary" style="margin-top: 18px;" onclick="registerBiometric()">
-            <i class="fa fa-fingerprint"></i> <span id="btn-biometric-text">Activer l'authentification biométrique</span>
+        <div id="biometric-status"></div>
+        <div id="biometric-devices" style="margin-top:16px;"></div>
+        <button id="btn-register-biometric" class="btn btn-secondary" style="margin-top:18px;" onclick="registerBiometric()">
+            <i class="fa fa-fingerprint"></i> <span id="btn-biometric-text">Activer biometrie</span>
         </button>
     </div>
 
-    <!-- Footer -->
     <div class="footer">
-        &copy; 2026 <span>NectarPro</span> — Profil sécurisé. Tous droits réservés.
+        &copy; 2026 <span>NectarPro</span> — Profil securise. Tous droits reserves.
     </div>
 </div>
 
 <script>
-// ==================== PIN INPUT ====================
-document.getElementById('pin').addEventListener('input', function(e) {
-    this.value = this.value.replace(/\D/g, '').slice(0, 6);
-});
+document.getElementById('pin').addEventListener('input',function(e){this.value=this.value.replace(/\D/g,'').slice(0,6);});
+document.getElementById('confirm_pin').addEventListener('input',function(e){this.value=this.value.replace(/\D/g,'').slice(0,6);});
 
-document.getElementById('confirm_pin').addEventListener('input', function(e) {
-    this.value = this.value.replace(/\D/g, '').slice(0, 6);
-});
-
-// ==================== WEBAUTHN / BIOMÉTRIE ====================
-function isWebAuthnSupported() {
-    return window.PublicKeyCredential !== undefined && typeof window.PublicKeyCredential === 'function';
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    if (!isWebAuthnSupported()) {
-        document.getElementById('biometric-status').innerHTML = `
-            <div class="alert danger">
-                <i class="fa fa-exclamation-triangle"></i>
-                L'authentification biométrique n'est pas supportée par votre navigateur.
-            </div>
-        `;
-        document.getElementById('btn-register-biometric').style.display = 'none';
+function isWebAuthnSupported(){return window.PublicKeyCredential!==undefined&&typeof window.PublicKeyCredential==='function';}
+document.addEventListener('DOMContentLoaded',function(){
+    if(!isWebAuthnSupported()){
+        document.getElementById('biometric-status').innerHTML='<div class="alert danger"><i class="fa fa-exclamation-triangle"></i> Non supporte par votre navigateur.</div>';
+        document.getElementById('btn-register-biometric').style.display='none';
         return;
     }
     loadBiometricDevices();
 });
 
-function loadBiometricDevices() {
+function loadBiometricDevices(){
     fetch('/api/webauthn/credentials')
-        .then(response => response.json())
-        .then(devices => {
-            const statusDiv = document.getElementById('biometric-status');
-            const devicesDiv = document.getElementById('biometric-devices');
-            const btnText = document.getElementById('btn-biometric-text');
-
-            if (devices.length === 0) {
-                statusDiv.innerHTML = `
-                    <div class="alert info">
-                        <i class="fa fa-info-circle"></i>
-                        Aucune authentification biométrique enregistrée.
-                    </div>
-                `;
-                btnText.textContent = 'Activer l\'authentification biométrique';
-            } else {
-                statusDiv.innerHTML = `
-                    <div class="alert success">
-                        <i class="fa fa-check-circle"></i>
-                        Authentification biométrique activée (${devices.length} appareil${devices.length > 1 ? 's' : ''})
-                    </div>
-                `;
-                btnText.textContent = 'Ajouter un autre appareil';
-
-                let devicesHTML = '';
-                devices.forEach(device => {
-                    devicesHTML += `
-                        <div class="biometric-device">
-                            <div class="device-info">
-                                <div class="device-icon">
-                                    <i class="fa ${device.device_type === 'platform' ? 'fa-mobile-alt' : 'fa-key'}"></i>
-                                </div>
-                                <div>
-                                    <div class="device-name">${device.name}</div>
-                                    <div class="device-date">Ajouté le ${device.created_at} · Dernière utilisation: ${device.last_used_at}</div>
-                                </div>
-                            </div>
-                            <button class="btn-delete" onclick="deleteBiometricDevice(${device.id})" title="Supprimer">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </div>
-                    `;
+        .then(r=>r.json())
+        .then(devices=>{
+            const sd=document.getElementById('biometric-status');
+            const dd=document.getElementById('biometric-devices');
+            const bt=document.getElementById('btn-biometric-text');
+            if(devices.length===0){
+                sd.innerHTML='<div class="alert info"><i class="fa fa-info-circle"></i> Aucune biometrie enregistree.</div>';
+                bt.textContent='Activer biometrie';
+            }else{
+                sd.innerHTML='<div class="alert success"><i class="fa fa-check-circle"></i> Biometrie active ('+devices.length+' appareil(s))</div>';
+                bt.textContent='Ajouter un autre appareil';
+                let h='';
+                devices.forEach(d=>{
+                    h+='<div class="biometric-device"><div class="device-info"><div class="device-icon"><i class="fa fa-mobile-alt"></i></div><div><div class="device-name">'+d.name+'</div><div class="device-date">Ajoute le '+d.created_at+'</div></div></div><button class="btn-delete" onclick="deleteBiometricDevice('+d.id+')"><i class="fa fa-trash"></i></button></div>';
                 });
-                devicesDiv.innerHTML = devicesHTML;
-            }
-        })
-        .catch(error => {
-            console.error('Error loading biometric devices:', error);
-        });
-}
-
-function registerBiometric() {
-    if (!isWebAuthnSupported()) {
-        alert('Votre navigateur ne supporte pas WebAuthn');
-        return;
-    }
-
-    const deviceName = prompt('Donnez un nom à cet appareil (ex: iPhone de Jean, MacBook Pro):', 'Mon appareil');
-    if (!deviceName) return;
-
-    fetch('/api/webauthn/register/start', { method: 'POST' })
-        .then(response => response.json())
-        .then(options => {
-            if (!options.success && options.message) {
-                alert(options.message);
-                return;
-            }
-            return navigator.credentials.create({
-                publicKey: {
-                    challenge: base64urlToBuffer(options.challenge),
-                    rp: options.rp,
-                    user: {
-                        id: base64urlToBuffer(options.user.id),
-                        name: options.user.name,
-                        displayName: options.user.displayName
-                    },
-                    pubKeyCredParams: options.pubKeyCredParams,
-                    timeout: options.timeout,
-                    attestation: options.attestation,
-                    authenticatorSelection: options.authenticatorSelection
-                }
-            });
-        })
-        .then(credential => {
-            if (!credential) return;
-            const registrationData = {
-                id: credential.id,
-                response: {
-                    attestationObject: bufferToBase64url(new Uint8Array(credential.response.attestationObject)),
-                    clientDataJSON: bufferToBase64url(new Uint8Array(credential.response.clientDataJSON))
-                },
-                deviceName: deviceName
-            };
-            return fetch('/api/webauthn/register/complete', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(registrationData)
-            });
-        })
-        .then(response => response.json())
-        .then(result => {
-            if (result.success) {
-                alert('✅ ' + result.message);
-                loadBiometricDevices();
-            } else {
-                alert('❌ ' + result.message);
-            }
-        })
-        .catch(error => {
-            console.error('Registration error:', error);
-            if (error.name === 'NotAllowedError') {
-                alert('Enregistrement biométrique annulé.');
-            } else {
-                alert('Erreur lors de l\'enregistrement biométrique: ' + error.message);
+                dd.innerHTML=h;
             }
         });
 }
 
-function deleteBiometricDevice(deviceId) {
-    if (!confirm('Voulez-vous vraiment supprimer cet appareil biométrique ?')) return;
-
-    fetch(`/api/webauthn/credential/${deviceId}/delete`, { method: 'POST' })
-        .then(response => response.json())
-        .then(result => {
-            if (result.success) {
-                alert('Appareil supprimé avec succès');
-                loadBiometricDevices();
-            } else {
-                alert('Erreur: ' + result.message);
-            }
+function registerBiometric(){
+    if(!isWebAuthnSupported()){alert('Non supporte');return;}
+    const dn=prompt('Nom de l\'appareil:','Mon appareil');
+    if(!dn)return;
+    fetch('/api/webauthn/register/start',{method:'POST'})
+        .then(r=>r.json())
+        .then(opts=>{
+            if(!opts.success&&opts.message){alert(opts.message);return;}
+            return navigator.credentials.create({publicKey:{
+                challenge:base64urlToBuffer(opts.challenge),
+                rp:opts.rp,
+                user:{id:base64urlToBuffer(opts.user.id),name:opts.user.name,displayName:opts.user.displayName},
+                pubKeyCredParams:opts.pubKeyCredParams,
+                timeout:opts.timeout,
+                attestation:opts.attestation,
+                authenticatorSelection:opts.authenticatorSelection
+            }});
         })
-        .catch(error => {
-            console.error('Delete error:', error);
-            alert('Erreur lors de la suppression');
-        });
+        .then(cred=>{
+            if(!cred)return;
+            return fetch('/api/webauthn/register/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+                id:cred.id,
+                response:{attestationObject:bufferToBase64url(new Uint8Array(cred.response.attestationObject)),clientDataJSON:bufferToBase64url(new Uint8Array(cred.response.clientDataJSON))},
+                deviceName:dn
+            })});
+        })
+        .then(r=>r.json())
+        .then(res=>{alert(res.success?' OK '+res.message:' Erreur '+res.message);loadBiometricDevices();})
+        .catch(e=>{console.error(e);if(e.name==='NotAllowedError')alert('Annule');else alert('Erreur: '+e.message);});
 }
 
-// ==================== UTILITAIRES BASE64URL ====================
-function base64urlToBuffer(base64url) {
-    if (!base64url || typeof base64url !== 'string') {
-        throw new Error('Invalid base64url string');
-    }
-    let base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
-    const padding = base64.length % 4;
-    if (padding === 2) base64 += '==';
-    else if (padding === 3) base64 += '=';
-    const binaryStr = atob(base64);
-    const bytes = new Uint8Array(binaryStr.length);
-    for (let i = 0; i < binaryStr.length; i++) {
-        bytes[i] = binaryStr.charCodeAt(i);
-    }
-    return bytes.buffer;
+function deleteBiometricDevice(id){
+    if(!confirm('Supprimer cet appareil ?'))return;
+    fetch('/api/webauthn/credential/'+id+'/delete',{method:'POST'})
+        .then(r=>r.json())
+        .then(res=>{alert(res.success?'Supprime':'Erreur: '+res.message);loadBiometricDevices();});
 }
 
-function bufferToBase64url(buffer) {
-    const bytes = new Uint8Array(buffer);
-    let binary = '';
-    for (let i = 0; i < bytes.byteLength; i++) {
-        binary += String.fromCharCode(bytes[i]);
-    }
-    return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+function base64urlToBuffer(b){
+    let s=b.replace(/-/g,'+').replace(/_/g,'/');
+    const p=s.length%4;
+    if(p===2)s+='==';else if(p===3)s+='=';
+    const bs=new Uint8Array(atob(s).split('').map(c=>c.charCodeAt(0)));
+    return bs.buffer;
+}
+function bufferToBase64url(b){
+    return btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 }
 </script>
 

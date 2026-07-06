@@ -8,716 +8,415 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
-        html { scroll-behavior:smooth; }
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
 
-        :root {
-            --bg-primary: #f8fafc;
-            --bg-card: rgba(255, 255, 255, 0.7);
-            --border-color: rgba(148, 163, 184, 0.2);
-            --border-glow: rgba(56, 189, 248, 0.3);
-            --text-primary: #0f172a;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
-            --accent-blue: #38bdf8;
-            --accent-blue-light: #7dd3fc;
-            --accent-green: #86efac;
-            --accent-green-light: #bbf7d0;
-            --accent-pink: #f9a8d4;
-            --accent-pink-light: #fbcfe8;
-            --accent-purple: #c084fc;
-            --accent-indigo: #4f46e5;
-            --accent-gold: #fbbf24;
-            --danger: #ef4444;
-            --success: #22c55e;
-            --warning: #f59e0b;
-            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
-            --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
-            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
-            --gradient-purple: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%);
-            --gradient-indigo: linear-gradient(135deg, #818cf8 0%, #4f46e5 100%);
-            --gradient-gold: linear-gradient(135deg, #fde68a 0%, #fbbf24 100%);
-            --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
-            --radius-sm: 10px;
-            --radius-lg: 16px;
-            --radius-xl: 20px;
-            --radius-2xl: 24px;
-            --shadow-soft: 0 4px 6px rgba(56, 189, 248, 0.08);
-            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
-            --shadow-large: 0 12px 32px rgba(56, 189, 248, 0.15);
+        :root{
+            --bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);
+            --glass:rgba(255,255,255,0.72);
+            --glass-hover:rgba(255,255,255,0.88);
+            --accent:#db2777;
+            --accent2:#ec4899;
+            --accent-light:#f9a8d4;
+            --gold:#f59e0b;
+            --gold-light:#fef3c7;
+            --emerald:#10b981;
+            --emerald-light:#d1fae5;
+            --violet:#8b5cf6;
+            --violet-light:#ede9fe;
+            --sky:#0ea5e9;
+            --sky-light:#e0f2fe;
+            --text:#000;
+            --text2:#1f2937;
+            --muted:#6b7280;
+            --border:rgba(236,72,153,0.2);
+            --shadow-sm:0 2px 8px rgba(236,72,153,0.08);
+            --shadow:0 8px 32px rgba(236,72,153,0.12);
+            --shadow-lg:0 16px 48px rgba(236,72,153,0.18);
+            --radius-sm:12px;
+            --radius:18px;
+            --radius-lg:24px;
+            --radius-xl:32px;
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            font-style: italic;
-            font-weight: 400;
-            color: var(--text-primary);
-            background: var(--gradient-bg);
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
-            position: relative;
-            padding-bottom: 80px;
+        body{
+            background:var(--bg);
+            min-height:100vh;min-height:100dvh;
+            color:var(--text);
+            font-style:italic;
+            overflow-x:hidden;
+            position:relative;
         }
 
-        /* ═══════════ FOND COSMIQUE ═══════════ */
-        .cosmic-bg {
-            position: fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;
-        }
-        .cosmic-orb {
-            position: absolute; border-radius: 50%;
-            filter: blur(80px); opacity: 0.3;
-            animation: cosmicOrbit linear infinite;
-        }
-        .cosmic-orb:nth-child(1) { width:40vw; height:40vw; background:radial-gradient(circle,rgba(56,189,248,0.4),transparent 70%); top:-10%; left:-10%; animation-duration:25s; }
-        .cosmic-orb:nth-child(2) { width:30vw; height:30vw; background:radial-gradient(circle,rgba(134,239,172,0.35),transparent 70%); bottom:-8%; right:-5%; animation-duration:30s; animation-delay:-8s; }
-        .cosmic-orb:nth-child(3) { width:28vw; height:28vw; background:radial-gradient(circle,rgba(249,168,212,0.3),transparent 70%); top:35%; left:45%; animation-duration:35s; animation-delay:-15s; }
-        .cosmic-orb:nth-child(4) { width:22vw; height:22vw; background:radial-gradient(circle,rgba(192,132,252,0.25),transparent 70%); top:5%; right:8%; animation-duration:28s; animation-delay:-5s; }
-        @keyframes cosmicOrbit {
-            0% { transform:translate(0,0) scale(1); }
-            25% { transform:translate(70px,-35px) scale(1.25); }
-            50% { transform:translate(-35px,50px) scale(0.85); }
-            75% { transform:translate(-55px,-25px) scale(1.15); }
-            100% { transform:translate(0,0) scale(1); }
+        .bg-particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+        .particle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,0.18),transparent 70%);animation:floatUp linear infinite;}
+        .particle:nth-child(1){width:180px;height:180px;left:5%;top:70%;animation-duration:18s;animation-delay:0s}
+        .particle:nth-child(2){width:120px;height:120px;left:60%;top:80%;animation-duration:14s;animation-delay:3s}
+        .particle:nth-child(3){width:200px;height:200px;left:30%;top:75%;animation-duration:22s;animation-delay:6s}
+        .particle:nth-child(4){width:100px;height:100px;left:80%;top:85%;animation-duration:16s;animation-delay:9s}
+        .particle:nth-child(5){width:150px;height:150px;left:50%;top:90%;animation-duration:20s;animation-delay:2s}
+        .particle:nth-child(6){width:90px;height:90px;left:15%;top:50%;animation-duration:12s;animation-delay:5s}
+        .particle:nth-child(7){width:160px;height:160px;left:75%;top:60%;animation-duration:24s;animation-delay:8s}
+        @keyframes floatUp{
+            0%{transform:translateY(0)scale(0.6);opacity:0}
+            10%{opacity:0.7}
+            90%{opacity:0.4}
+            100%{transform:translateY(-110vh)scale(1.4);opacity:0}
         }
 
-        /* ═══════════ NAVBAR ═══════════ */
-        .navbar {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 14px 28px;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky; top: 0; z-index: 1000;
-        }
-        .nav-brand {
-            font-size: 24px; font-weight: 900; font-style: italic;
-            background: var(--gradient-blue);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text; text-decoration: none;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .nav-brand img { width: 32px; height: 32px; border-radius: 8px; }
-        .nav-links { display: flex; gap: 24px; list-style: none; align-items: center; }
-        .nav-links a {
-            color: var(--text-secondary); text-decoration: none;
-            font-weight: 500; font-size: 14px; transition: all 0.3s;
-            position: relative; padding: 4px 0;
-        }
-        .nav-links a:hover, .nav-links a.active { color: var(--accent-blue); }
-        .nav-links a::after {
-            content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
-            background: var(--gradient-blue); border-radius: 2px; transition: width 0.3s;
-        }
-        .nav-links a:hover::after { width: 100%; }
+        .topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:rgba(255,255,255,0.7);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000;}
+        .topbar-logo{display:flex;align-items:center;gap:8px;position:absolute;left:50%;transform:translateX(-50%);text-decoration:none;}
+        .topbar-logo img{width:32px;height:32px;border-radius:10px;box-shadow:0 2px 8px rgba(236,72,153,0.2)}
+        .topbar-logo span{font-size:18px;font-weight:900}
+        .topbar-logo .brand-n{color:var(--accent2)}
+        .topbar-logo .brand-p{color:var(--accent)}
 
-        /* ═══════════ MAIN CONTAINER ═══════════ */
-        .main {
-            max-width: 560px; margin: 0 auto; padding: 28px 20px;
-            position: relative; z-index: 1;
-        }
+        .header-nav{display:flex;gap:10px;flex-wrap:wrap;}
+        .header-nav a{color:var(--text2);text-decoration:none;font-weight:700;font-size:12px;padding:9px 16px;background:rgba(236,72,153,0.06);border:1px solid var(--border);border-radius:30px;transition:all .3s;display:flex;align-items:center;gap:6px;}
+        .header-nav a:hover{background:rgba(236,72,153,0.14);color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow-sm);}
+        .header-nav a.active{background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;border-color:transparent;box-shadow:0 4px 16px rgba(219,39,119,0.35);}
 
-        /* ═══════════ PAGE HEADER ═══════════ */
-        .page-header { text-align: center; margin-bottom: 28px; }
-        .page-header h1 {
-            font-style: italic; font-size: 32px; font-weight: 900;
-            margin-bottom: 6px;
-            background: var(--gradient-blue);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        .page-header p { font-style: italic; font-size: 14px; color: var(--text-secondary); }
+        .main{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:24px 20px 80px;}
 
-        /* ═══════════ REFERRAL CARD ═══════════ */
-        .referral-card {
-            background: var(--gradient-blue); color: white;
-            text-align: center; padding: 28px 24px; margin-bottom: 24px;
-            border-radius: var(--radius-2xl);
-            box-shadow: 0 12px 40px rgba(56, 189, 248, 0.3);
-            position: relative; overflow: hidden;
-        }
-        .referral-card::before {
-            content: ''; position: absolute; top: -50%; right: -50%;
-            width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 65%);
-            pointer-events: none; animation: shimmer 3s ease-in-out infinite;
-        }
-        @keyframes shimmer {
-            0%,100% { transform:translate(0,0); }
-            50% { transform:translate(-20px,-20px); }
-        }
-        .referral-card h3 {
-            font-size: 16px; font-weight: 700; font-style: italic;
-            margin-bottom: 14px; position: relative; z-index: 1;
-        }
-        .link-box {
-            background: rgba(255,255,255,0.18);
-            backdrop-filter: blur(10px);
-            border-radius: var(--radius-sm); padding: 14px 18px;
-            font-size: 13px; word-break: break-all;
-            margin-bottom: 14px; position: relative; z-index: 1;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        .btn-copy {
-            background: white; color: var(--accent-blue);
-            border: none; border-radius: var(--radius-sm);
-            padding: 12px 28px; font-weight: 700; font-style: italic;
-            cursor: pointer; transition: all 0.3s;
-            position: relative; z-index: 1; font-size: 14px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-        .btn-copy:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-        .btn-copy.copied {
-            background: var(--accent-green); color: white;
-        }
+        .page-header{text-align:center;margin-bottom:24px;}
+        .page-header h1{font-weight:900;font-size:28px;margin-bottom:4px;background:linear-gradient(135deg,#ec4899,#db2777);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+        .page-header p{font-weight:600;font-size:13px;color:var(--text2);opacity:.8;}
 
-        /* ═══════════ STATS GRID ═══════════ */
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 24px;
-        }
-        .stat-card {
-            background: var(--bg-card); backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color); border-radius: var(--radius-xl);
-            padding: 18px 8px; text-align: center;
-            box-shadow: var(--shadow-medium); transition: all 0.3s;
-            position: relative; overflow: hidden;
-        }
-        .stat-card:hover {
-            transform: translateY(-3px); box-shadow: var(--shadow-large); border-color: var(--border-glow);
-        }
-        .stat-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
-        }
-        .stat-card:nth-child(1)::before { background: var(--gradient-blue); }
-        .stat-card:nth-child(2)::before { background: var(--gradient-pink); }
-        .stat-card:nth-child(3)::before { background: var(--gradient-green); }
-        .stat-card:nth-child(4)::before { background: var(--gradient-gold); }
-        .stat-icon {
-            width: 40px; height: 40px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 10px; font-size: 18px; color: white;
-        }
-        .stat-card:nth-child(1) .stat-icon { background: var(--gradient-blue); }
-        .stat-card:nth-child(2) .stat-icon { background: var(--gradient-pink); }
-        .stat-card:nth-child(3) .stat-icon { background: var(--gradient-green); }
-        .stat-card:nth-child(4) .stat-icon { background: var(--gradient-gold); }
-        .stat-value {
-            font-size: 22px; font-weight: 800; font-style: italic;
-            margin-bottom: 2px; color: var(--text-primary);
-        }
-        .stat-label {
-            font-size: 10px; color: var(--text-muted); font-style: italic;
-            text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;
-        }
+        /* REFERRAL HERO */
+        .referral-hero{background:linear-gradient(135deg,rgba(236,72,153,0.08),rgba(219,39,119,0.04));backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px 24px;margin-bottom:24px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+        .referral-hero::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,0.15),transparent 70%);animation:heroGlow 3s ease-in-out infinite;}
+        @keyframes heroGlow{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.3);opacity:.9}}
+        .referral-hero h2{font-weight:800;font-size:18px;color:var(--text);margin-bottom:6px;position:relative;z-index:1;}
+        .referral-hero .link-code{font-size:15px;font-weight:800;color:var(--accent);margin-bottom:12px;position:relative;z-index:1;word-break:break-all;}
+        .referral-hero .ref-actions{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:1;}
+        .ref-btn{padding:12px 22px;border-radius:30px;font-weight:700;font-size:13px;font-style:italic;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:8px;border:none;}
+        .ref-btn.copy{background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;box-shadow:0 4px 16px rgba(219,39,119,0.35);}
+        .ref-btn.copy:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(219,39,119,0.5);}
+        .ref-btn.share{background:rgba(236,72,153,0.08);color:var(--accent);border:1px solid var(--border);}
+        .ref-btn.share:hover{background:rgba(236,72,153,0.16);}
 
-        /* ═══════════ SEARCH BAR ═══════════ */
-        .search-bar {
-            background: var(--bg-card); backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-2xl); padding: 4px;
-            display: flex; align-items: center; gap: 8px;
-            margin-bottom: 20px; box-shadow: var(--shadow-medium);
-        }
-        .search-bar input {
-            flex: 1; padding: 14px 18px; border: none; outline: none;
-            font-size: 14px; font-style: italic; color: var(--text-primary);
-            background: transparent; border-radius: var(--radius-2xl);
-        }
-        .search-bar input::placeholder { color: var(--text-muted); }
-        .search-bar .search-icon {
-            width: 44px; height: 44px; border-radius: 50%;
-            background: var(--gradient-blue); color: white;
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0; font-size: 16px;
-        }
-        .search-bar .btn-clear {
-            width: 36px; height: 36px; border-radius: 50%;
-            border: none; background: rgba(148,163,184,0.15);
-            color: var(--text-muted); cursor: pointer;
-            display: none; align-items: center; justify-content: center;
-            font-size: 12px; transition: all 0.2s; flex-shrink: 0;
-        }
-        .search-bar .btn-clear.visible { display: flex; }
-        .search-bar .btn-clear:hover { background: rgba(239,68,68,0.15); color: var(--danger); }
+        /* STATS */
+        .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px;}
+        .stat-card{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius);padding:18px 8px;text-align:center;box-shadow:var(--shadow-sm);transition:all .3s;position:relative;overflow:hidden;}
+        .stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--accent2);}
+        .stat-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:var(--accent2);}
+        .stat-card:nth-child(2)::before{background:var(--violet);}
+        .stat-card:nth-child(3)::before{background:var(--emerald);}
+        .stat-card:nth-child(4)::before{background:var(--gold);}
+        .stat-value{font-size:22px;font-weight:800;font-style:italic;margin-bottom:2px;color:var(--accent);}
+        .stat-card:nth-child(2) .stat-value{color:var(--violet);}
+        .stat-card:nth-child(3) .stat-value{color:var(--emerald);}
+        .stat-card:nth-child(4) .stat-value{color:var(--gold);}
+        .stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:600;}
 
-        /* ═══════════ RESULTS COUNT ═══════════ */
-        .results-count {
-            text-align: center; font-size: 12px; color: var(--text-muted); font-style: italic;
-            margin-bottom: 16px; display: none;
-        }
-        .results-count.visible { display: block; }
+        /* SEARCH */
+        .search-bar{position:relative;margin-bottom:20px;}
+        .search-bar input{width:100%;padding:14px 18px 14px 46px;border:2px solid var(--border);border-radius:var(--radius-lg);font-size:14px;font-style:italic;outline:none;transition:all .25s;background:var(--glass);color:var(--text);}
+        .search-bar input:focus{border-color:var(--accent2);box-shadow:0 0 0 4px rgba(236,72,153,0.1);background:var(--glass-hover);}
+        .search-bar i{position:absolute;left:18px;top:50%;transform:translateY(-50%);color:var(--muted);}
+        .search-bar .clear-btn{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;display:none;padding:4px;border-radius:50%;transition:all .2s;}
+        .search-bar .clear-btn:hover{color:var(--accent);background:rgba(236,72,153,0.1);}
+        .search-bar .clear-btn.visible{display:block;}
+        .search-shortcut{text-align:center;font-size:11px;color:var(--muted);margin-bottom:16px;}
+        .search-shortcut kbd{background:rgba(236,72,153,0.1);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:10px;color:var(--accent);}
 
-        /* ═══════════ SECTION ═══════════ */
-        .section {
-            background: var(--bg-card); backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: var(--radius-2xl); padding: 22px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow-medium);
-            border: 1px solid var(--border-color);
-            transition: all 0.3s;
-        }
-        .section:hover { border-color: var(--border-glow); }
+        /* LEVEL SECTION */
+        .section{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:var(--radius-lg);padding:24px;margin-bottom:20px;box-shadow:var(--shadow-sm);border:1px solid var(--border);transition:all .3s;}
+        .section:hover{box-shadow:var(--shadow);border-color:var(--accent2);}
+        .section-title{font-weight:700;font-size:17px;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+        .section-title i{color:var(--accent2);font-size:18px;}
+        .section-title .counter{font-size:12px;font-weight:600;color:var(--muted);margin-left:auto;}
+        .section-title .counter span{color:var(--accent);font-weight:800;}
 
-        .section-title {
-            font-style: italic; font-size: 17px; font-weight: 700;
-            color: var(--text-primary); margin-bottom: 16px;
-            display: flex; align-items: center; gap: 10px;
-            padding-bottom: 14px; border-bottom: 1px solid var(--border-color);
-        }
-        .section-title .icon-circle {
-            width: 38px; height: 38px; border-radius: 10px;
-            background: linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(56,189,248,0.05) 100%);
-            display: flex; align-items: center; justify-content: center; font-size: 16px;
-        }
-        .section-title .icon-circle i {
-            background: var(--gradient-blue);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        .section-count {
-            margin-left: auto; font-size: 12px; color: var(--text-muted);
-            background: rgba(56,189,248,0.06); padding: 4px 12px;
-            border-radius: 50px; font-weight: 600;
-        }
+        /* MEMBER CARD */
+        .member-card{display:flex;align-items:center;gap:14px;padding:12px 16px;margin-bottom:8px;background:rgba(255,255,255,0.5);border-radius:var(--radius-sm);border:1px solid var(--border);transition:all .3s;}
+        .member-card:hover{background:var(--glass-hover);transform:translateX(4px);border-color:var(--accent2);}
+        .member-card:last-child{margin-bottom:0;}
+        .member-index{width:28px;height:28px;border-radius:50%;background:rgba(236,72,153,0.08);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);flex-shrink:0;}
+        .member-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#f9a8d4,#ec4899,#db2777);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;font-weight:700;flex-shrink:0;overflow:hidden;}
+        .member-avatar img{width:100%;height:100%;object-fit:cover;}
+        .member-info{flex:1;min-width:0;}
+        .member-name{font-weight:600;font-size:14px;color:var(--text);text-transform:capitalize;}
+        .member-phone{font-size:11px;color:var(--muted);margin-top:2px;}
+        .member-status{font-size:10px;font-weight:700;padding:4px 10px;border-radius:30px;flex-shrink:0;}
+        .member-status.active{background:var(--emerald-light);color:#065f46;}
+        .member-status.inactive{background:#fee2e2;color:#991b1b;}
+        .member-date{font-size:11px;color:var(--muted);flex-shrink:0;}
 
-        /* ═══════════ MEMBER LIST ═══════════ */
-        .member-list { display: flex; flex-direction: column; gap: 10px; }
-        .member-card {
-            display: flex; align-items: center; gap: 12px;
-            padding: 14px 16px;
-            background: rgba(255,255,255,0.5);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-        }
-        .member-card:hover {
-            background: rgba(255,255,255,0.8);
-            transform: translateX(4px);
-            border-color: var(--border-glow);
-            box-shadow: var(--shadow-soft);
-        }
-        .member-index {
-            width: 28px; height: 28px; border-radius: 8px;
-            background: rgba(56,189,248,0.1); color: var(--accent-blue);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 11px; font-weight: 800; flex-shrink: 0;
-        }
-        .member-avatar {
-            width: 42px; height: 42px; border-radius: 12px;
-            background: var(--gradient-blue); display: flex;
-            align-items: center; justify-content: center;
-            font-size: 18px; color: white; font-weight: 700; flex-shrink: 0;
-        }
-        .member-info { flex: 1; min-width: 0; }
-        .member-info .member-name {
-            font-style: italic; font-weight: 600; font-size: 14px;
-            color: var(--text-primary); text-transform: capitalize;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-        .member-info .member-phone {
-            font-size: 11px; color: var(--text-secondary); font-style: italic;
-        }
-        .member-info .member-date {
-            font-size: 10px; color: var(--text-muted); font-style: italic; margin-top: 2px;
-        }
-        .member-badge {
-            padding: 5px 12px; border-radius: 50px;
-            font-size: 10px; font-weight: 700; font-style: italic;
-            flex-shrink: 0; letter-spacing: 0.3px;
-        }
-        .member-badge.active {
-            background: rgba(134,239,172,0.18); color: #15803d;
-            border: 1px solid rgba(134,239,172,0.3);
-        }
-        .member-badge.inactive {
-            background: rgba(148,163,184,0.12); color: var(--text-muted);
-            border: 1px solid rgba(148,163,184,0.15);
-        }
-        .member-badge.verified {
-            background: rgba(56,189,248,0.15); color: var(--accent-blue);
-            border: 1px solid rgba(56,189,248,0.25);
-        }
+        .empty-state{text-align:center;padding:40px 20px;color:var(--muted);}
+        .empty-state i{font-size:40px;color:var(--accent-light);margin-bottom:12px;display:block;}
+        .empty-state h3{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;}
+        .empty-state p{font-size:13px;}
 
-        /* ═══════════ EMPTY STATE ═══════════ */
-        .empty-state {
-            text-align: center; padding: 50px 20px;
-            background: var(--bg-card); backdrop-filter: blur(20px);
-            border-radius: var(--radius-2xl);
-            border: 1px solid var(--border-color);
-            margin-bottom: 20px; box-shadow: var(--shadow-medium);
-        }
-        .empty-state .empty-icon {
-            width: 72px; height: 72px; border-radius: 50%;
-            background: linear-gradient(135deg, rgba(56,189,248,0.1) 0%, rgba(56,189,248,0.03) 100%);
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 18px; font-size: 32px;
-        }
-        .empty-state .empty-icon i {
-            background: var(--gradient-blue);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        .empty-state h2 {
-            font-style: italic; font-size: 17px; font-weight: 700;
-            color: var(--text-primary); margin-bottom: 6px;
-        }
-        .empty-state p {
-            font-style: italic; font-size: 13px; color: var(--text-secondary);
-        }
-        .no-results {
-            display: none; text-align: center; padding: 30px;
-            font-style: italic; color: var(--text-muted); font-size: 14px;
-        }
-        .no-results.show { display: block; }
+        .footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
+        .footer span{font-weight:700;color:var(--accent);}
 
-        /* ═══════════ BOTTOM NAV ═══════════ */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            display: flex; justify-content: space-around;
-            padding: 10px 0; padding-bottom: max(10px, env(safe-area-inset-bottom));
-            z-index: 100; border-top: 1px solid var(--border-color);
-        }
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
-            color: var(--text-secondary); text-decoration: none;
-            font-size: 11px; padding: 5px 15px; font-style: italic;
-        }
-        .nav-item.active { color: var(--accent-blue); }
-        .nav-item i { font-size: 20px; }
+        .no-results{display:none;text-align:center;padding:30px;color:var(--muted);}
+        .no-results.visible{display:block;}
+        .no-results i{font-size:36px;display:block;margin-bottom:10px;color:var(--accent-light);}
+        .no-results p{font-size:14px;}
 
-        /* ═══════════ RESPONSIVE ═══════════ */
-        @media (max-width: 480px) {
-            .main { padding: 20px 16px 60px; }
-            .navbar { padding: 10px 16px; }
-            .nav-links { display: none; }
-            .section { padding: 18px 14px; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            .stat-card { padding: 14px 8px; }
-            .stat-value { font-size: 18px; }
-            .page-header h1 { font-size: 26px; }
-            .member-card { padding: 12px 14px; }
-            .referral-card { padding: 24px 18px; }
+        @media (max-width:480px){
+            .main{padding:20px 16px 60px;}
+            .topbar{padding:10px 16px;}
+            .header-nav{gap:6px;}
+            .header-nav a{font-size:10px;padding:7px 12px;}
+            .section{padding:18px 14px;}
+            .stats-grid{grid-template-columns:repeat(2,1fr);gap:8px;}
+            .stat-value{font-size:18px;}
+            .member-card{flex-wrap:wrap;}
+            .member-date{display:none;}
         }
     </style>
 </head>
 <body>
 
-    <!-- Fond cosmique -->
-    <div class="cosmic-bg">
-        <div class="cosmic-orb"></div>
-        <div class="cosmic-orb"></div>
-        <div class="cosmic-orb"></div>
-        <div class="cosmic-orb"></div>
+<div class="bg-particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div>
+</div>
+
+<div class="topbar">
+    <a href="/dashboard" class="topbar-logo">
+        <img src="/static/images/net.jpg" alt="Logo">
+        <span><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></span>
+    </a>
+    <div class="header-nav">
+        <a href="/dashboard"><i class="fa fa-home"></i> Dashboard</a>
+        <a href="/revenus"><i class="fa fa-coins"></i> Revenus</a>
+        <a href="/mes_retraits"><i class="fa fa-paper-plane"></i> Retrait</a>
+        <a href="/profile"><i class="fa fa-user"></i> Profil</a>
+    </div>
+</div>
+
+<div class="main">
+    <div class="page-header">
+        <h1><i class="fa fa-users"></i> Mon Equipe</h1>
+        <p>Suivez vos filleuls sur 3 niveaux et partagez votre lien</p>
     </div>
 
-    <!-- Navbar -->
-    <nav class="navbar">
-        <a href="/dashboard" class="nav-brand">
-            <img src="/static/images/net.jpg" alt="Logo">
-            NectarPro
-        </a>
-        <ul class="nav-links">
-            <li><a href="/dashboard"><i class="fa fa-home"></i> Dashboard</a></li>
-            <li><a href="/team" class="active"><i class="fa fa-users"></i> Équipe</a></li>
-            <li><a href="/profile"><i class="fa fa-user"></i> Profil</a></li>
-        </ul>
-    </nav>
-
-    <div class="main">
-        <!-- Page Header -->
-        <div class="page-header">
-            <h1>Mon Équipe</h1>
-            <p>Gérez vos filleuls et développez votre réseau d'affiliation</p>
-        </div>
-
-        <!-- Referral Card -->
-        <div class="referral-card">
-            <h3>🔗 Votre lien de parrainage</h3>
-            <div class="link-box" id="linkBox">{{ referral_link }}</div>
-            <button class="btn-copy" id="btnCopy" onclick="copyLink()">
+    <!-- Referral Hero -->
+    <div class="referral-hero">
+        <h2>Votre lien de parrainage</h2>
+        <div class="link-code" id="refLink">{{ lien }}</div>
+        <div class="ref-actions">
+            <button class="ref-btn copy" onclick="copyRef()">
                 <i class="fa fa-copy"></i> Copier le lien
             </button>
+            <button class="ref-btn share" id="shareBtn" onclick="shareRef()">
+                <i class="fa fa-share-nodes"></i> Partager
+            </button>
         </div>
+    </div>
 
-        <!-- Stats Grid -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fa fa-users"></i></div>
-                <div class="stat-value">{{ stats.level1 }}</div>
-                <div class="stat-label">Niveau 1</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fa fa-user-friends"></i></div>
-                <div class="stat-value">{{ stats.level2 }}</div>
-                <div class="stat-label">Niveau 2</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fa fa-sitemap"></i></div>
-                <div class="stat-value">{{ stats.level3 }}</div>
-                <div class="stat-label">Niveau 3</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fa fa-coins"></i></div>
-                <div class="stat-value">{{ "{:,.0f}".format(stats.commissions_total) }}</div>
-                <div class="stat-label">Commissions</div>
-            </div>
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{ niveau1|length }}</div>
+            <div class="stat-label">Niveau 1</div>
         </div>
-
-        <!-- Search Bar -->
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Rechercher un membre par nom, téléphone..." oninput="filterMembers()">
-            <div class="search-icon"><i class="fa fa-search"></i></div>
-            <button class="btn-clear" id="btnClear" onclick="clearSearch()"><i class="fa fa-times"></i></button>
+        <div class="stat-card">
+            <div class="stat-value">{{ niveau2|length }}</div>
+            <div class="stat-label">Niveau 2</div>
         </div>
-
-        <!-- Results Count -->
-        <div class="results-count" id="resultsCount">
-            <span id="resultsText"></span>
+        <div class="stat-card">
+            <div class="stat-value">{{ niveau3|length }}</div>
+            <div class="stat-label">Niveau 3</div>
         </div>
-
-        <!-- No Results -->
-        <div class="no-results" id="noResults">
-            <i class="fa fa-search"></i>&nbsp; Aucun membre trouvé pour cette recherche.
+        <div class="stat-card">
+            <div class="stat-value">{{ "%.0f"|format(total_commission) }}</div>
+            <div class="stat-label">Commissions</div>
         </div>
+    </div>
 
-        <!-- Niveau 1 -->
-        <div class="section" id="section-level1">
-            <h2 class="section-title">
-                <span class="icon-circle"><i class="fa fa-user-plus"></i></span>
-                Filleuls directs
-                <span class="section-count" id="count-level1">{{ stats.level1 }}</span>
-            </h2>
-            {% if level1_users %}
-            <div class="member-list" id="list-level1">
-                {% for member in level1_users %}
-                <div class="member-card" data-name="{{ member.username|lower }}" data-phone="{{ member.phone }}">
+    <!-- Search -->
+    <div class="search-bar">
+        <i class="fa fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Rechercher par nom ou telephone..." autocomplete="off">
+        <button class="clear-btn" id="clearBtn" onclick="clearSearch()"><i class="fa fa-times"></i></button>
+    </div>
+    <div class="search-shortcut">Appuyez sur <kbd>Ctrl</kbd> + <kbd>F</kbd> pour rechercher</div>
+    <div class="no-results" id="noResults">
+        <i class="fa fa-search"></i>
+        <p>Aucun membre trouve</p>
+    </div>
+
+    <!-- Level 1 -->
+    <div class="section" id="level1-section">
+        <h2 class="section-title">
+            <i class="fa fa-star"></i> Niveau 1
+            <span class="counter"><span id="n1-count">{{ niveau1|length }}</span> / {{ niveau1|length }}</span>
+        </h2>
+        <div class="level-members" id="level1-members">
+            {% if niveau1 %}
+                {% for m in niveau1 %}
+                <div class="member-card" data-search="{{ m.username|lower }} {{ m.phone or '' }}">
                     <div class="member-index">{{ loop.index }}</div>
-                    <div class="member-avatar">{{ member.username[0]|upper }}</div>
-                    <div class="member-info">
-                        <div class="member-name">{{ member.username }}</div>
-                        <div class="member-phone">{{ member.phone }}</div>
-                        {% if member.date_creation %}
-                        <div class="member-date">Depuis le {{ member.date_creation.strftime('%d/%m/%Y') }}</div>
+                    <div class="member-avatar">
+                        {% if m.profile_image and m.profile_image != 'default.png' %}
+                        <img src="{{ url_for('static', filename='uploads/profiles/' + m.profile_image) }}" alt="{{ m.username }}">
+                        {% else %}
+                        {{ m.username[0]|upper }}
                         {% endif %}
                     </div>
-                    <span class="member-badge {% if member.premier_depot %}active{% else %}inactive{% endif %}">
-                        {% if member.premier_depot %}<i class="fa fa-check-circle"></i> Actif{% else %}Inactif{% endif %}
-                    </span>
+                    <div class="member-info">
+                        <div class="member-name">{{ m.username }}</div>
+                        <div class="member-phone">{{ m.phone or '--' }}</div>
+                    </div>
+                    <span class="member-status {{ 'active' if m.active else 'inactive' }}">{{ 'Actif' if m.active else 'Inactif' }}</span>
                 </div>
                 {% endfor %}
-            </div>
             {% else %}
             <div class="empty-state">
-                <div class="empty-icon"><i class="fa fa-users"></i></div>
-                <h2>Aucun filleul pour le moment</h2>
-                <p>Partagez votre lien de parrainage pour développer votre équipe !</p>
+                <i class="fa fa-user-plus"></i>
+                <h3>Aucun filleul niveau 1</h3>
+                <p>Partagez votre lien pour commencer</p>
             </div>
             {% endif %}
         </div>
-
-        <!-- Niveau 2 -->
-        {% if level2_users %}
-        <div class="section" id="section-level2">
-            <h2 class="section-title">
-                <span class="icon-circle" style="background:linear-gradient(135deg,rgba(192,132,252,0.15) 0%,rgba(192,132,252,0.05) 100%);">
-                    <i class="fa fa-user-friends" style="background:var(--gradient-purple);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"></i>
-                </span>
-                Niveau 2
-                <span class="section-count" id="count-level2">{{ stats.level2 }}</span>
-            </h2>
-            <div class="member-list" id="list-level2">
-                {% for member in level2_users %}
-                <div class="member-card" data-name="{{ member.username|lower }}" data-phone="{{ member.phone }}">
-                    <div class="member-index" style="background:rgba(192,132,252,0.12);color:var(--accent-purple);">{{ loop.index }}</div>
-                    <div class="member-avatar" style="background:var(--gradient-purple);">{{ member.username[0]|upper }}</div>
-                    <div class="member-info">
-                        <div class="member-name">{{ member.username }}</div>
-                        <div class="member-phone">{{ member.phone }}</div>
-                        {% if member.date_creation %}
-                        <div class="member-date">Depuis le {{ member.date_creation.strftime('%d/%m/%Y') }}</div>
-                        {% endif %}
-                    </div>
-                    <span class="member-badge {% if member.premier_depot %}active{% else %}inactive{% endif %}">
-                        {% if member.premier_depot %}<i class="fa fa-check-circle"></i> Actif{% else %}Inactif{% endif %}
-                    </span>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-        <!-- Niveau 3 -->
-        {% if level3_users %}
-        <div class="section" id="section-level3">
-            <h2 class="section-title">
-                <span class="icon-circle" style="background:linear-gradient(135deg,rgba(134,239,172,0.15) 0%,rgba(134,239,172,0.05) 100%);">
-                    <i class="fa fa-sitemap" style="background:var(--gradient-green);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"></i>
-                </span>
-                Niveau 3
-                <span class="section-count" id="count-level3">{{ stats.level3 }}</span>
-            </h2>
-            <div class="member-list" id="list-level3">
-                {% for member in level3_users %}
-                <div class="member-card" data-name="{{ member.username|lower }}" data-phone="{{ member.phone }}">
-                    <div class="member-index" style="background:rgba(134,239,172,0.12);color:var(--accent-green);">{{ loop.index }}</div>
-                    <div class="member-avatar" style="background:var(--gradient-green);">{{ member.username[0]|upper }}</div>
-                    <div class="member-info">
-                        <div class="member-name">{{ member.username }}</div>
-                        <div class="member-phone">{{ member.phone }}</div>
-                        {% if member.date_creation %}
-                        <div class="member-date">Depuis le {{ member.date_creation.strftime('%d/%m/%Y') }}</div>
-                        {% endif %}
-                    </div>
-                    <span class="member-badge {% if member.premier_depot %}active{% else %}inactive{% endif %}">
-                        {% if member.premier_depot %}<i class="fa fa-check-circle"></i> Actif{% else %}Inactif{% endif %}
-                    </span>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
     </div>
 
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-        <a href="{{ url_for('dashboard_page') }}" class="nav-item">
-            <i class="fa fa-home"></i>
-            <span>Accueil</span>
-        </a>
-        <a href="{{ url_for('revenus_page') }}" class="nav-item">
-            <i class="fa fa-coins"></i>
-            <span>Revenus</span>
-        </a>
-        <a href="{{ url_for('team_page') }}" class="nav-item active">
-            <i class="fa fa-users"></i>
-            <span>Équipe</span>
-        </a>
-        <a href="{{ url_for('profile_page') }}" class="nav-item">
-            <i class="fa fa-user"></i>
-            <span>Profil</span>
-        </a>
-    </nav>
+    <!-- Level 2 -->
+    <div class="section" id="level2-section">
+        <h2 class="section-title">
+            <i class="fa fa-star-half-alt"></i> Niveau 2
+            <span class="counter"><span id="n2-count">{{ niveau2|length }}</span> / {{ niveau2|length }}</span>
+        </h2>
+        <div class="level-members" id="level2-members">
+            {% if niveau2 %}
+                {% for m in niveau2 %}
+                <div class="member-card" data-search="{{ m.username|lower }} {{ m.phone or '' }}">
+                    <div class="member-index">{{ loop.index }}</div>
+                    <div class="member-avatar">
+                        {% if m.profile_image and m.profile_image != 'default.png' %}
+                        <img src="{{ url_for('static', filename='uploads/profiles/' + m.profile_image) }}" alt="{{ m.username }}">
+                        {% else %}
+                        {{ m.username[0]|upper }}
+                        {% endif %}
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">{{ m.username }}</div>
+                        <div class="member-phone">{{ m.phone or '--' }}</div>
+                    </div>
+                    <span class="member-status {{ 'active' if m.active else 'inactive' }}">{{ 'Actif' if m.active else 'Inactif' }}</span>
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <i class="fa fa-user-plus"></i>
+                <h3>Aucun filleul niveau 2</h3>
+                <p>Vos filleuls doivent parrainer a leur tour</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 
-    <script>
-    // ==================== COPY LINK ====================
-    function copyLink() {
-        const linkBox = document.getElementById('linkBox');
-        const btn = document.getElementById('btnCopy');
-        const text = linkBox.textContent;
+    <!-- Level 3 -->
+    <div class="section" id="level3-section">
+        <h2 class="section-title">
+            <i class="fa fa-star"></i> Niveau 3
+            <span class="counter"><span id="n3-count">{{ niveau3|length }}</span> / {{ niveau3|length }}</span>
+        </h2>
+        <div class="level-members" id="level3-members">
+            {% if niveau3 %}
+                {% for m in niveau3 %}
+                <div class="member-card" data-search="{{ m.username|lower }} {{ m.phone or '' }}">
+                    <div class="member-index">{{ loop.index }}</div>
+                    <div class="member-avatar">
+                        {% if m.profile_image and m.profile_image != 'default.png' %}
+                        <img src="{{ url_for('static', filename='uploads/profiles/' + m.profile_image) }}" alt="{{ m.username }}">
+                        {% else %}
+                        {{ m.username[0]|upper }}
+                        {% endif %}
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">{{ m.username }}</div>
+                        <div class="member-phone">{{ m.phone or '--' }}</div>
+                    </div>
+                    <span class="member-status {{ 'active' if m.active else 'inactive' }}">{{ 'Actif' if m.active else 'Inactif' }}</span>
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <i class="fa fa-user-plus"></i>
+                <h3>Aucun filleul niveau 3</h3>
+                <p>Continuez a developper votre equipe</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 
-        navigator.clipboard.writeText(text).then(() => {
-            btn.classList.add('copied');
-            btn.innerHTML = '<i class="fa fa-check"></i> Copié !';
-            setTimeout(() => {
-                btn.classList.remove('copied');
-                btn.innerHTML = '<i class="fa fa-copy"></i> Copier le lien';
-            }, 2000);
-        });
-    }
+    <div class="footer">
+        &copy; 2026 <span>NectarPro</span> — Votre equipe, votre force. Tous droits reserves.
+    </div>
+</div>
 
-    // ==================== RECHERCHE ====================
-    function filterMembers() {
-        const query = document.getElementById('searchInput').value.toLowerCase().trim();
-        const btnClear = document.getElementById('btnClear');
-        const resultsCount = document.getElementById('resultsCount');
-        const resultsText = document.getElementById('resultsText');
-        const noResults = document.getElementById('noResults');
+<script>
+// COPY
+function copyRef(){
+    const el=document.getElementById('refLink');
+    navigator.clipboard.writeText(el.textContent).then(()=>{
+        const btn=document.querySelector('.ref-btn.copy');
+        const orig=btn.innerHTML;
+        btn.innerHTML='<i class="fa fa-check"></i> Copie !';
+        setTimeout(()=>btn.innerHTML=orig,2000);
+    }).catch(()=>alert('Erreur lors de la copie'));
+}
 
-        // Gérer le bouton clear
-        if (query.length > 0) {
-            btnClear.classList.add('visible');
-        } else {
-            btnClear.classList.remove('visible');
-        }
+// SHARE
+function shareRef(){
+    const url=document.getElementById('refLink').textContent;
+    if(navigator.share){navigator.share({title:'Rejoins NectarPro',url:url});}
+    else{copyRef();}
+}
 
-        let totalVisible = 0;
-        let totalMembers = 0;
+// SEARCH
+const searchInput=document.getElementById('searchInput');
+const clearBtn=document.getElementById('clearBtn');
+const noResults=document.getElementById('noResults');
+const sections=document.querySelectorAll('.section');
 
-        // Parcourir les 3 niveaux
-        for (let level = 1; level <= 3; level++) {
-            const list = document.getElementById('list-level' + level);
-            const countEl = document.getElementById('count-level' + level);
-            if (!list) continue;
+function filterMembers(){
+    const q=searchInput.value.toLowerCase().trim();
+    let anyVisible=false;
+    const l1M=document.getElementById('level1-members');
+    const l2M=document.getElementById('level2-members');
+    const l3M=document.getElementById('level3-members');
 
-            const cards = list.querySelectorAll('.member-card');
-            let visibleCount = 0;
-
-            cards.forEach(card => {
-                totalMembers++;
-                const name = card.getAttribute('data-name') || '';
-                const phone = card.getAttribute('data-phone') || '';
-                const matches = !query || name.includes(query) || phone.includes(query);
-
-                if (matches) {
-                    card.style.display = '';
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-
-            totalVisible += visibleCount;
-
-            // Mettre à jour le compteur de la section
-            if (countEl) {
-                countEl.textContent = query ? visibleCount + ' / ' + cards.length : cards.length;
-            }
-        }
-
-        // Afficher/masquer le message "aucun résultat"
-        if (query && totalVisible === 0) {
-            noResults.classList.add('show');
-            resultsCount.classList.remove('visible');
-        } else {
-            noResults.classList.remove('show');
-        }
-
-        // Afficher le compteur de résultats
-        if (query) {
-            resultsCount.classList.add('visible');
-            resultsText.innerHTML = '<i class="fa fa-filter"></i> ' + totalVisible + ' membre(s) trouvé(s) sur ' + totalMembers;
-        } else {
-            resultsCount.classList.remove('visible');
-        }
-    }
-
-    function clearSearch() {
-        document.getElementById('searchInput').value = '';
-        document.getElementById('btnClear').classList.remove('visible');
-        document.getElementById('resultsCount').classList.remove('visible');
-        document.getElementById('noResults').classList.remove('show');
-
-        // Réafficher tous les membres et réinitialiser les compteurs
-        for (let level = 1; level <= 3; level++) {
-            const list = document.getElementById('list-level' + level);
-            const countEl = document.getElementById('count-level' + level);
-            if (!list) continue;
-
-            const cards = list.querySelectorAll('.member-card');
-            cards.forEach(card => { card.style.display = ''; });
-            if (countEl) { countEl.textContent = cards.length; }
-        }
-
-        document.getElementById('searchInput').focus();
-    }
-
-    // ==================== RACCOURCI RECHERCHE ====================
-    document.addEventListener('keydown', function(e) {
-        // Ctrl+F ou Cmd+F dans le body -> focus la barre de recherche
-        if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
-            const active = document.activeElement;
-            if (active === document.body || active.tagName === 'BODY') {
-                e.preventDefault();
-                document.getElementById('searchInput').focus();
-            }
-        }
+    [l1M,l2M,l3M].forEach(container=>{
+        let cnt=0;
+        const cards=container.querySelectorAll('.member-card');
+        cards.forEach(c=>{const match=!q||c.dataset.search.includes(q);c.style.display=match?'flex':'none';if(match)cnt++;});
+        const empty=container.querySelector('.empty-state');
+        if(empty)empty.style.display=!q&&cnt===0?'block':'none';
+        anyVisible=anyVisible||cnt>0;
     });
-    </script>
+
+    sections.forEach(s=>{const sc=s.querySelector('.level-members');if(sc){const vis=sc.querySelectorAll('.member-card[style*="display: flex"], .member-card:not([style*="display"])').length>0||(!q&&sc.querySelector('.empty-state'));s.style.display=vis?'block':'none';}});
+
+    if(q&&!anyVisible)noResults.classList.add('visible');else noResults.classList.remove('visible');
+    if(q)clearBtn.classList.add('visible');else clearBtn.classList.remove('visible');
+
+    updateCounters();
+}
+
+function clearSearch(){searchInput.value='';filterMembers();searchInput.focus();}
+
+function updateCounters(){
+    ['1','2','3'].forEach(lvl=>{
+        const container=document.getElementById('level'+lvl+'-members');
+        const vis=container.querySelectorAll('.member-card[style*="display: flex"], .member-card:not([style*="display"])').length;
+        document.getElementById('n'+lvl+'-count').textContent=vis;
+    });
+}
+
+searchInput.addEventListener('input',filterMembers);
+
+// SHORTCUT: Ctrl+F
+document.addEventListener('keydown',function(e){
+    if((e.ctrlKey||e.metaKey)&&e.key==='f'){e.preventDefault();searchInput.focus();searchInput.select();}
+});
+</script>
 
 </body>
 </html>

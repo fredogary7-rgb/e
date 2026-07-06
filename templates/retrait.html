@@ -8,1166 +8,630 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
-        html { scroll-behavior:smooth; }
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
 
-        :root {
-            --bg-primary: #f8fafc;
-            --bg-secondary: rgba(255, 255, 255, 0.8);
-            --bg-card: rgba(255, 255, 255, 0.7);
-            --bg-card-hover: rgba(255, 255, 255, 0.9);
-            --border-color: rgba(148, 163, 184, 0.2);
-            --border-glow: rgba(56, 189, 248, 0.3);
-            --text-primary: #0f172a;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
-            --accent-blue: #38bdf8;
-            --accent-blue-light: #7dd3fc;
-            --accent-green: #86efac;
-            --accent-green-light: #bbf7d0;
-            --accent-pink: #f9a8d4;
-            --accent-pink-light: #fbcfe8;
-            --accent-purple: #c084fc;
-            --accent-indigo: #4f46e5;
-            --accent-gold: #fbbf24;
-            --danger: #ef4444;
-            --success: #22c55e;
-            --warning: #f59e0b;
-            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
-            --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
-            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
-            --gradient-purple: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%);
-            --gradient-indigo: linear-gradient(135deg, #818cf8 0%, #4f46e5 100%);
-            --gradient-gold: linear-gradient(135deg, #fde68a 0%, #fbbf24 100%);
-            --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
-            --radius-sm: 10px;
-            --radius-lg: 16px;
-            --radius-xl: 20px;
-            --radius-2xl: 24px;
-            --shadow-soft: 0 4px 6px rgba(56, 189, 248, 0.08);
-            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
-            --shadow-glow: 0 0 40px rgba(56, 189, 248, 0.15);
-            --shadow-large: 0 12px 32px rgba(56, 189, 248, 0.15);
+        :root{
+            --bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);
+            --glass:rgba(255,255,255,0.72);
+            --glass-hover:rgba(255,255,255,0.88);
+            --accent:#db2777;
+            --accent2:#ec4899;
+            --accent-light:#f9a8d4;
+            --gold:#f59e0b;
+            --gold-light:#fef3c7;
+            --emerald:#10b981;
+            --emerald-light:#d1fae5;
+            --violet:#8b5cf6;
+            --violet-light:#ede9fe;
+            --sky:#0ea5e9;
+            --sky-light:#e0f2fe;
+            --text:#000;
+            --text2:#1f2937;
+            --muted:#6b7280;
+            --border:rgba(236,72,153,0.2);
+            --shadow-sm:0 2px 8px rgba(236,72,153,0.08);
+            --shadow:0 8px 32px rgba(236,72,153,0.12);
+            --shadow-lg:0 16px 48px rgba(236,72,153,0.18);
+            --radius-sm:12px;
+            --radius:18px;
+            --radius-lg:24px;
+            --radius-xl:32px;
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            font-style: italic;
-            font-weight: 400;
-            color: var(--text-primary);
-            background: var(--gradient-bg);
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
-            position: relative;
+        body{
+            background:var(--bg);
+            min-height:100vh;min-height:100dvh;
+            color:var(--text);
+            font-style:italic;
+            overflow-x:hidden;
+            position:relative;
         }
 
-        /* ═══════════ FOND COSMIQUE ═══════════ */
-        .cosmic-bg {
-            position: fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;
-        }
-        .cosmic-orb {
-            position: absolute; border-radius: 50%;
-            filter: blur(80px); opacity: 0.3;
-            animation: cosmicOrbit linear infinite;
-        }
-        .cosmic-orb:nth-child(1) { width:40vw; height:40vw; background:radial-gradient(circle,rgba(56,189,248,0.4),transparent 70%); top:-10%; left:-10%; animation-duration:25s; }
-        .cosmic-orb:nth-child(2) { width:30vw; height:30vw; background:radial-gradient(circle,rgba(134,239,172,0.35),transparent 70%); bottom:-8%; right:-5%; animation-duration:30s; animation-delay:-8s; }
-        .cosmic-orb:nth-child(3) { width:28vw; height:28vw; background:radial-gradient(circle,rgba(249,168,212,0.3),transparent 70%); top:35%; left:45%; animation-duration:35s; animation-delay:-15s; }
-        .cosmic-orb:nth-child(4) { width:22vw; height:22vw; background:radial-gradient(circle,rgba(192,132,252,0.25),transparent 70%); top:5%; right:8%; animation-duration:28s; animation-delay:-5s; }
-        @keyframes cosmicOrbit {
-            0% { transform:translate(0,0) scale(1); }
-            25% { transform:translate(70px,-35px) scale(1.25); }
-            50% { transform:translate(-35px,50px) scale(0.85); }
-            75% { transform:translate(-55px,-25px) scale(1.15); }
-            100% { transform:translate(0,0) scale(1); }
+        /* FOND PARTICULES */
+        .bg-particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+        .particle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,0.18),transparent 70%);animation:floatUp linear infinite;}
+        .particle:nth-child(1){width:180px;height:180px;left:5%;top:70%;animation-duration:18s;animation-delay:0s}
+        .particle:nth-child(2){width:120px;height:120px;left:60%;top:80%;animation-duration:14s;animation-delay:3s}
+        .particle:nth-child(3){width:200px;height:200px;left:30%;top:75%;animation-duration:22s;animation-delay:6s}
+        .particle:nth-child(4){width:100px;height:100px;left:80%;top:85%;animation-duration:16s;animation-delay:9s}
+        .particle:nth-child(5){width:150px;height:150px;left:50%;top:90%;animation-duration:20s;animation-delay:2s}
+        .particle:nth-child(6){width:90px;height:90px;left:15%;top:50%;animation-duration:12s;animation-delay:5s}
+        .particle:nth-child(7){width:160px;height:160px;left:75%;top:60%;animation-duration:24s;animation-delay:8s}
+        @keyframes floatUp{
+            0%{transform:translateY(0)scale(0.6);opacity:0}
+            10%{opacity:0.7}
+            90%{opacity:0.4}
+            100%{transform:translateY(-110vh)scale(1.4);opacity:0}
         }
 
-        /* ═══════════ NAVBAR ═══════════ */
-        .navbar {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 14px 28px;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky; top: 0; z-index: 1000;
+        /* TOPBAR */
+        .topbar{
+            display:flex;justify-content:space-between;align-items:center;
+            padding:10px 20px;
+            background:rgba(255,255,255,0.7);
+            backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+            border-bottom:1px solid var(--border);
+            position:sticky;top:0;z-index:1000;
         }
-        .nav-brand {
-            font-size: 24px; font-weight: 900; font-style: italic;
-            background: var(--gradient-blue);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text; text-decoration: none;
-            display: flex; align-items: center; gap: 8px;
+        .topbar-logo{
+            display:flex;align-items:center;gap:8px;
+            position:absolute;left:50%;transform:translateX(-50%);
+            text-decoration:none;
         }
-        .nav-brand img { width: 32px; height: 32px; border-radius: 8px; }
-        .nav-links { display: flex; gap: 24px; list-style: none; align-items: center; }
-        .nav-links a {
-            color: var(--text-secondary); text-decoration: none;
-            font-weight: 500; font-size: 14px; transition: all 0.3s;
-            position: relative; padding: 4px 0;
-        }
-        .nav-links a:hover, .nav-links a.active { color: var(--accent-blue); }
-        .nav-links a::after {
-            content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
-            background: var(--gradient-blue); border-radius: 2px; transition: width 0.3s;
-        }
-        .nav-links a:hover::after { width: 100%; }
+        .topbar-logo img{width:32px;height:32px;border-radius:10px;box-shadow:0 2px 8px rgba(236,72,153,0.2)}
+        .topbar-logo span{font-size:18px;font-weight:900}
+        .topbar-logo .brand-n{color:var(--accent2)}
+        .topbar-logo .brand-p{color:var(--accent)}
 
-        /* ═══════════ CONTAINER ═══════════ */
-        .container {
-            max-width: 600px; margin: 0 auto; padding: 28px 20px 80px;
-            position: relative; z-index: 1;
+        .header-nav{display:flex;gap:10px;flex-wrap:wrap;}
+        .header-nav a{
+            color:var(--text2);text-decoration:none;
+            font-weight:700;font-size:12px;
+            padding:9px 16px;
+            background:rgba(236,72,153,0.06);
+            border:1px solid var(--border);
+            border-radius:30px;
+            transition:all .3s;
+            display:flex;align-items:center;gap:6px;
         }
-
-        /* ═══════════ BACK LINK ═══════════ */
-        .back-link {
-            display: inline-flex; align-items: center; gap: 8px;
-            color: var(--accent-blue); text-decoration: none;
-            font-size: 14px; margin-bottom: 20px; font-weight: 600; font-style: italic;
-            transition: all 0.2s; padding: 8px 12px;
-            border-radius: var(--radius-sm);
-            background: rgba(56,189,248,0.06);
+        .header-nav a:hover{
+            background:rgba(236,72,153,0.14);
+            color:var(--accent);
+            transform:translateY(-2px);
+            box-shadow:var(--shadow-sm);
         }
-        .back-link:hover {
-            background: rgba(56,189,248,0.12);
-            color: var(--accent-indigo);
-            transform: translateX(-3px);
+        .header-nav a.active{
+            background:linear-gradient(135deg,#ec4899,#db2777);
+            color:#fff;
+            border-color:transparent;
+            box-shadow:0 4px 16px rgba(219,39,119,0.35);
         }
 
-        /* ═══════════ PAGE HEADER ═══════════ */
-        .page-header { text-align: center; margin-bottom: 32px; }
-        .page-header h1 {
-            font-style: italic; font-size: 34px; font-weight: 900;
-            margin-bottom: 8px;
-            background: var(--gradient-blue);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        .page-header p { font-style: italic; font-size: 15px; color: var(--text-secondary); }
+        /* MAIN */
+        .main{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:24px 20px 80px;}
 
-        /* ═══════════ ALERTS ═══════════ */
-        .alert {
-            padding: 14px 18px; border-radius: var(--radius-lg);
-            font-size: 14px; margin-bottom: 20px; font-style: italic;
-            display: flex; align-items: center; gap: 10px;
-            animation: slideDown 0.4s ease;
-            backdrop-filter: blur(10px);
+        .page-header{text-align:center;margin-bottom:28px;}
+        .page-header h1{
+            font-weight:900;font-size:28px;margin-bottom:4px;
+            background:linear-gradient(135deg,#ec4899,#db2777);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
         }
-        @keyframes slideDown {
-            from { opacity:0; transform:translateY(-12px); }
-            to { opacity:1; transform:translateY(0); }
-        }
-        .alert.success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
-        .alert.danger { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-        .alert.warning { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
-        .alert.info { background: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
+        .page-header p{font-weight:600;font-size:13px;color:var(--text2);opacity:.8;}
 
-        /* ═══════════ BALANCE CARD ═══════════ */
-        .balance-card {
-            background: var(--gradient-blue); color: white;
-            text-align: center; padding: 40px 28px; margin-bottom: 24px;
-            border-radius: var(--radius-2xl);
-            box-shadow: 0 12px 40px rgba(56, 189, 248, 0.3);
-            position: relative; overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
+        /* ALERTS */
+        .alert{
+            padding:14px 18px;border-radius:var(--radius-sm);
+            font-size:14px;margin-bottom:20px;font-style:italic;
+            display:flex;align-items:center;gap:10px;
+            animation:slideDown 0.4s ease;
         }
-        .balance-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 16px 48px rgba(56, 189, 248, 0.4);
-        }
-        .balance-card::before {
-            content: ''; position: absolute; top: -50%; right: -50%;
-            width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 65%);
-            pointer-events: none; animation: shimmer 3s ease-in-out infinite;
-        }
-        @keyframes shimmer {
-            0%,100% { transform:translate(0,0); }
-            50% { transform:translate(-20px,-20px); }
-        }
-        .balance-icon {
-            width: 56px; height: 56px; border-radius: 16px;
-            background: rgba(255,255,255,0.2); display: flex;
-            align-items: center; justify-content: center; margin: 0 auto 16px;
-            font-size: 24px; position: relative; z-index: 1;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        .balance-label {
-            font-size: 14px; opacity: 0.85; margin-bottom: 6px;
-            font-style: italic; position: relative; z-index: 1;
-        }
-        .balance-value {
-            font-size: 40px; font-weight: 900; font-style: italic;
-            position: relative; z-index: 1; letter-spacing: -1px;
-        }
-        .balance-sub {
-            font-size: 12px; opacity: 0.7; margin-top: 4px;
-            font-style: italic; position: relative; z-index: 1;
-        }
+        @keyframes slideDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+        .alert.success{background:var(--emerald-light);color:#065f46;border:1px solid rgba(16,185,129,0.3);}
+        .alert.danger{background:#fee2e2;color:#991b1b;border:1px solid #fecaca;}
+        .alert.warning{background:var(--gold-light);color:#92400e;border:1px solid rgba(245,158,11,0.3);}
+        .alert.info{background:var(--sky-light);color:#075985;border:1px solid rgba(14,165,233,0.3);}
 
-        /* ═══════════ FORM CARD ═══════════ */
-        .card {
-            background: var(--bg-card); backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: var(--radius-2xl); padding: 28px;
-            margin-bottom: 24px;
-            box-shadow: var(--shadow-medium);
-            border: 1px solid var(--border-color);
-            transition: all 0.3s;
+        /* SECTION */
+        .section{
+            background:var(--glass);
+            backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+            border-radius:var(--radius-lg);padding:24px;margin-bottom:20px;
+            box-shadow:var(--shadow-sm);
+            border:1px solid var(--border);transition:all .3s;
         }
-        .card:hover { border-color: var(--border-glow); }
+        .section:hover{box-shadow:var(--shadow);border-color:var(--accent2);}
 
-        .card-header {
-            display: flex; align-items: center; gap: 12px;
-            margin-bottom: 24px; padding-bottom: 16px;
-            border-bottom: 1px solid var(--border-color);
+        .section-title{
+            font-weight:700;font-size:17px;
+            color:var(--text);margin-bottom:16px;
+            display:flex;align-items:center;gap:10px;
+            padding-bottom:14px;border-bottom:1px solid var(--border);
         }
-        .card-header .icon-circle {
-            width: 42px; height: 42px; border-radius: 12px;
-            background: linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(56,189,248,0.05) 100%);
-            display: flex; align-items: center; justify-content: center; font-size: 18px;
-        }
-        .card-header .icon-circle i {
-            background: var(--gradient-blue);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        .card-header h2 { font-size: 18px; font-weight: 700; font-style: italic; color: var(--text-primary); }
+        .section-title i{color:var(--accent2);font-size:18px;}
 
-        /* ═══════════ FORM ELEMENTS ═══════════ */
-        .form-group { margin-bottom: 22px; }
-        .form-group label {
-            display: flex; align-items: center; gap: 8px; font-size: 13px;
-            font-weight: 600; font-style: italic; margin-bottom: 8px;
-            color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;
+        /* INPUTS */
+        .input-group{margin-bottom:18px;}
+        .input-group label{
+            display:flex;align-items:center;gap:8px;font-size:13px;
+            font-weight:600;font-style:italic;margin-bottom:8px;
+            color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;
         }
-        .form-group label i {
-            font-size: 14px;
-            background: var(--gradient-blue);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        .input-group label i{color:var(--accent2);}
+        .input-group input{
+            width:100%;padding:14px 18px;
+            border:2px solid var(--border);border-radius:var(--radius-sm);
+            font-size:15px;font-style:italic;outline:none;transition:all .25s;
+            background:rgba(255,255,255,0.6);color:var(--text);
         }
-        .form-group input, .form-group select {
-            width: 100%; padding: 14px 18px;
-            border: 1.5px solid var(--border-color); border-radius: var(--radius-lg);
-            font-size: 15px; font-style: italic; outline: none; transition: all 0.25s;
-            background: rgba(255,255,255,0.6); color: var(--text-primary);
+        .input-group input:focus{
+            border-color:var(--accent2);
+            box-shadow:0 0 0 4px rgba(236,72,153,0.1);
+            background:rgba(255,255,255,0.9);
         }
-        .form-group input:hover, .form-group select:hover {
-            border-color: rgba(56,189,248,0.3);
-        }
-        .form-group input:focus, .form-group select:focus {
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 0 4px rgba(56,189,248,0.08);
-            background: rgba(255,255,255,0.9);
-        }
-        .form-group input::placeholder { color: var(--text-muted); font-size: 14px; }
+        .input-group input::placeholder{color:var(--muted);}
 
-        .input-with-icon {
-            position: relative;
+        /* BALANCE */
+        .balance-card{
+            text-align:center;padding:28px 20px;margin-bottom:20px;
+            background:var(--glass);
+            backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+            border-radius:var(--radius-lg);border:1px solid var(--border);
+            box-shadow:var(--shadow);
         }
-        .input-with-icon input {
-            padding-left: 46px;
+        .balance-label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+        .balance-value{
+            font-size:36px;font-weight:900;font-style:italic;
+            background:linear-gradient(135deg,#ec4899,#db2777);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+            margin-bottom:4px;
         }
-        .input-with-icon .input-icon {
-            position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
-            color: var(--text-muted); font-size: 16px; transition: color 0.25s;
-        }
-        .input-with-icon input:focus + .input-icon,
-        .input-with-icon input:focus ~ .input-icon { color: var(--accent-blue); }
+        .balance-sub{font-size:13px;color:var(--muted);}
 
-        /* ═══════════ AMOUNT PRESETS ═══════════ */
-        .amount-presets {
-            display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;
+        /* PRESET AMOUNTS */
+        .presets{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px;}
+        .preset-btn{
+            padding:14px 8px;text-align:center;font-weight:700;font-size:13px;font-style:italic;
+            border:2px solid var(--border);border-radius:var(--radius-sm);
+            background:rgba(255,255,255,0.5);color:var(--text2);
+            cursor:pointer;transition:all .3s;
         }
-        .amount-preset {
-            padding: 8px 18px; border-radius: 50px;
-            background: rgba(56,189,248,0.06); border: 1px solid var(--border-color);
-            font-size: 13px; font-weight: 600; font-style: italic; cursor: pointer;
-            color: var(--text-secondary); transition: all 0.2s;
-        }
-        .amount-preset:hover {
-            background: rgba(56,189,248,0.12); border-color: var(--accent-blue-light);
-            color: var(--accent-blue); transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(56,189,248,0.12);
-        }
-        .amount-preset.active {
-            background: var(--gradient-blue); color: white; border-color: transparent;
-            font-weight: 700;
+        .preset-btn:hover,.preset-btn.selected{
+            border-color:var(--accent2);color:var(--accent);
+            background:rgba(236,72,153,0.08);transform:translateY(-2px);
         }
 
-        /* ═══════════ SUMMARY BOX ═══════════ */
-        .summary-box {
-            background: rgba(56,189,248,0.04); border-radius: var(--radius-lg);
-            padding: 20px; margin-top: 20px;
-            border: 1px solid rgba(56,189,248,0.12);
-            backdrop-filter: blur(10px);
+        /* BUTTONS */
+        .btn{
+            width:100%;padding:15px 20px;border:none;
+            border-radius:var(--radius-sm);font-size:15px;font-weight:700;font-style:italic;
+            cursor:pointer;transition:all .3s;
+            display:flex;align-items:center;justify-content:center;gap:10px;
         }
-        .summary-title {
-            font-size: 12px; text-transform: uppercase; letter-spacing: 1px;
-            color: var(--text-muted); margin-bottom: 12px; font-weight: 600; font-style: italic;
+        .btn-primary{
+            background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;
+            box-shadow:0 6px 20px rgba(219,39,119,0.3);
         }
-        .summary-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 0; font-size: 14px; color: var(--text-secondary); font-style: italic;
+        .btn-primary:hover:not(:disabled){
+            transform:translateY(-3px);
+            box-shadow:0 10px 30px rgba(219,39,119,0.45);
         }
-        .summary-row.total {
-            border-top: 1px dashed var(--border-color); margin-top: 10px;
-            padding-top: 16px; font-weight: 700; font-size: 17px;
-            color: var(--text-primary);
+        .btn-primary:disabled{opacity:0.5;cursor:not-allowed;}
+        .btn-secondary{
+            background:rgba(236,72,153,0.06);color:var(--accent);
+            border:1px solid var(--border);
         }
-        .summary-row.total span:last-child {
-            background: var(--gradient-blue);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-            font-size: 18px;
+        .btn-secondary:hover{background:rgba(236,72,153,0.14);}
+
+        /* METHOD SELECT */
+        .method-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+        .method-card{
+            padding:16px;text-align:center;font-weight:700;font-size:13px;font-style:italic;
+            border:2px solid var(--border);border-radius:var(--radius-sm);
+            background:rgba(255,255,255,0.5);color:var(--text2);
+            cursor:pointer;transition:all .3s;
+            display:flex;flex-direction:column;align-items:center;gap:8px;
         }
-        .summary-divider {
-            height: 1px; background: repeating-linear-gradient(90deg, var(--border-color) 0, var(--border-color) 6px, transparent 6px, transparent 12px);
-            margin: 4px 0;
+        .method-card i{font-size:22px;color:var(--accent2);}
+        .method-card:hover,.method-card.selected{
+            border-color:var(--accent2);color:var(--accent);
+            background:rgba(236,72,153,0.08);
+            box-shadow:0 4px 16px rgba(219,39,119,0.12);
+            transform:translateY(-2px);
         }
 
-        /* ═══════════ INFO BOX ═══════════ */
-        .info-box {
-            background: rgba(56,189,248,0.05); border: 1px solid rgba(56,189,248,0.12);
-            border-radius: var(--radius-lg); padding: 14px 18px; margin-top: 18px;
-            font-size: 13px; font-style: italic; color: var(--text-secondary);
-            display: flex; align-items: center; gap: 10px;
-            backdrop-filter: blur(10px);
+        /* INFO BOX */
+        .info-box{
+            background:rgba(236,72,153,0.04);border:1px solid var(--border);
+            border-radius:var(--radius-sm);padding:14px 18px;margin-top:16px;
+            font-size:13px;font-style:italic;color:var(--text2);
+            display:flex;align-items:center;gap:10px;
         }
-        .info-box i { color: var(--accent-blue); flex-shrink: 0; font-size: 16px; }
+        .info-box i{color:var(--accent2);flex-shrink:0;}
 
-        /* ═══════════ BUTTONS ═══════════ */
-        .btn {
-            width: 100%; padding: 16px 24px; border: none;
-            border-radius: var(--radius-lg); font-size: 16px; font-weight: 700; font-style: italic;
-            cursor: pointer; transition: all 0.3s ease;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            position: relative; overflow: hidden;
+        /* RESUME BOX */
+        .resume-box{
+            background:rgba(236,72,153,0.04);border:1px solid var(--border);
+            border-radius:var(--radius-sm);padding:18px;margin-top:16px;
+            display:none;
         }
-        .btn::after {
-            content: ''; position: absolute; top: 50%; left: 50%;
-            width: 0; height: 0; border-radius: 50%;
-            background: rgba(255,255,255,0.3); transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s;
-        }
-        .btn:active::after { width: 300px; height: 300px; }
-        .btn-primary {
-            background: var(--gradient-blue); color: white;
-            box-shadow: 0 6px 24px rgba(56, 189, 248, 0.35);
-        }
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 32px rgba(56, 189, 248, 0.5);
-        }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; filter: grayscale(30%); }
-        .btn-cancel {
-            background: rgba(148,163,184,0.1); color: var(--text-secondary);
-        }
-        .btn-cancel:hover { background: rgba(148,163,184,0.18); }
+        .resume-box.show{display:block;animation:slideDown .3s ease;}
+        .resume-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;font-style:italic;color:var(--text2);}
+        .resume-row.total{border-top:1px solid var(--border);margin-top:8px;padding-top:12px;font-weight:800;font-size:15px;color:var(--accent);}
+        .resume-row.total span:last-child{font-size:17px;}
 
-        /* ═══════════ MODAL ═══════════ */
-        .modal-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(15,23,42,0.55); backdrop-filter: blur(6px);
-            z-index: 2000; justify-content: center; align-items: center; padding: 24px;
-            animation: fadeIn 0.25s ease;
+        /* HISTORY */
+        .history-item{
+            display:flex;align-items:center;gap:12px;
+            padding:14px 16px;margin-bottom:8px;
+            background:rgba(255,255,255,0.5);
+            border-radius:var(--radius-sm);
+            border:1px solid var(--border);
+            transition:all .3s;
         }
-        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-        .modal-overlay.active { display: flex; }
-        .modal {
-            background: rgba(255,255,255,0.95); backdrop-filter: blur(20px);
-            border-radius: var(--radius-2xl); padding: 36px 32px;
-            max-width: 440px; width: 100%;
-            box-shadow: 0 24px 64px rgba(0,0,0,0.2);
-            border: 1px solid rgba(255,255,255,0.5);
-            animation: modalIn 0.35s cubic-bezier(0.16,1,0.3,1);
+        .history-item:hover{background:var(--glass-hover);transform:translateX(4px);}
+        .history-icon{
+            width:42px;height:42px;border-radius:12px;
+            display:flex;align-items:center;justify-content:center;
+            font-size:18px;flex-shrink:0;color:#fff;
         }
-        @keyframes modalIn {
-            from { opacity:0; transform:translateY(30px) scale(0.95); }
-            to { opacity:1; transform:translateY(0) scale(1); }
-        }
-        .modal-title { text-align: center; margin-bottom: 28px; }
-        .modal-title .lock-icon {
-            width: 56px; height: 56px; border-radius: 16px;
-            background: linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(79,70,229,0.1) 100%);
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 16px; font-size: 24px;
-        }
-        .modal-title .lock-icon i {
-            background: var(--gradient-indigo);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        .modal-title h2 { font-size: 22px; font-weight: 700; font-style: italic; margin-bottom: 6px; color: var(--text-primary); }
-        .modal-title p { font-size: 13px; color: var(--text-secondary); font-style: italic; }
+        .history-icon.pending{background:linear-gradient(135deg,#fbbf24,#f59e0b);}
+        .history-icon.approved{background:linear-gradient(135deg,#86efac,#10b981);}
+        .history-icon.rejected{background:linear-gradient(135deg,#fca5a5,#ef4444);}
+        .history-info{flex:1;min-width:0;}
+        .history-info .history-title{font-weight:600;font-size:14px;color:var(--text);}
+        .history-info .history-date{font-size:11px;color:var(--muted);margin-top:2px;}
+        .history-amount{font-weight:800;font-size:16px;color:var(--accent);flex-shrink:0;}
+        .history-status{font-size:10px;font-weight:700;padding:4px 10px;border-radius:30px;flex-shrink:0;}
+        .history-status.pending{background:var(--gold-light);color:#92400e;}
+        .history-status.approved{background:var(--emerald-light);color:#065f46;}
+        .history-status.rejected{background:#fee2e2;color:#991b1b;}
 
-        /* ═══════════ PIN DOTS ═══════════ */
-        .pin-dots { display: flex; gap: 12px; justify-content: center; margin-bottom: 28px; }
-        .pin-dot {
-            width: 50px; height: 58px; border: 2px solid var(--border-color);
-            border-radius: var(--radius-sm); display: flex;
-            align-items: center; justify-content: center;
-            font-size: 26px; font-weight: 900; transition: all 0.2s;
-            background: rgba(248,250,252,0.8);
-        }
-        .pin-dot.filled {
-            border-color: var(--accent-blue); background: rgba(56,189,248,0.08);
-            color: var(--accent-blue); box-shadow: 0 0 0 4px rgba(56,189,248,0.1);
-        }
-        .pin-dot.error {
-            border-color: var(--danger); background: rgba(239,68,68,0.08);
-            color: var(--danger); animation: dotShake 0.35s ease;
-        }
-        @keyframes dotShake {
-            0%,100% { transform:translateX(0); }
-            20% { transform:translateX(-6px); }
-            40% { transform:translateX(6px); }
-            60% { transform:translateX(-4px); }
-            80% { transform:translateX(4px); }
-        }
-        .hidden-input { position: absolute; opacity: 0; width: 0; height: 0; }
+        .empty-state{text-align:center;padding:40px 20px;color:var(--muted);}
+        .empty-state i{font-size:48px;color:var(--accent-light);margin-bottom:16px;display:block;}
+        .empty-state h3{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;}
 
-        /* ═══════════ ATTEMPTS & LOCKOUT ═══════════ */
-        .attempts-info {
-            text-align: center; font-size: 13px; font-style: italic;
-            color: var(--text-secondary); margin-bottom: 18px;
+        /* PIN MODAL */
+        .pin-overlay{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);align-items:center;justify-content:center;}
+        .pin-overlay.show{display:flex;}
+        .pin-modal{
+            background:#fff;border-radius:var(--radius-lg);padding:28px 24px;
+            width:90%;max-width:380px;text-align:center;
+            box-shadow:0 20px 60px rgba(0,0,0,0.3);
         }
-        .attempts-info .current { color: var(--accent-blue); font-weight: 700; }
-        .attempts-info .max { color: var(--danger); }
-        .lockout-timer {
-            display: none; text-align: center; padding: 14px 18px;
-            background: #fef2f2; border-radius: var(--radius-lg); border: 1px solid #fecaca;
-            margin: 18px 0; color: var(--danger); font-weight: 600; font-size: 14px; font-style: italic;
+        .pin-modal h3{font-weight:800;font-size:18px;margin-bottom:6px;color:var(--text);}
+        .pin-modal p{font-size:13px;color:var(--muted);margin-bottom:20px;}
+        .pin-dots{display:flex;justify-content:center;gap:12px;margin-bottom:24px;}
+        .pin-dot{
+            width:16px;height:16px;border-radius:50%;
+            border:2px solid var(--border);background:transparent;
+            transition:all .2s;
         }
-        .lockout-timer.active { display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .pin-dot.filled{background:var(--accent2);border-color:var(--accent2);}
+        .pin-input{position:absolute;opacity:0;pointer-events:none;}
+        .pin-keyboard{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+        .pin-key{
+            padding:16px;font-size:20px;font-weight:800;font-style:italic;
+            border:2px solid var(--border);border-radius:var(--radius-sm);
+            background:rgba(255,255,255,0.8);cursor:pointer;transition:all .2s;
+            color:var(--text);
+        }
+        .pin-key:hover{background:rgba(236,72,153,0.1);border-color:var(--accent2);}
+        .pin-key:active{transform:scale(0.95);}
+        .pin-key.delete{font-size:14px;color:var(--accent);}
+        .pin-actions{display:flex;gap:10px;}
+        .pin-actions .btn{flex:1;font-size:14px;padding:12px;}
 
-        /* ═══════════ ERROR MESSAGE ═══════════ */
-        .error-msg {
-            background: #fef2f2; color: var(--danger);
-            padding: 12px 18px; border-radius: var(--radius-lg);
-            font-size: 13px; margin-bottom: 18px; display: none;
-            text-align: center; font-style: italic; border: 1px solid #fecaca;
-        }
-        .error-msg.show { display: block; animation: slideDown 0.3s ease; }
+        /* FOOTER */
+        .footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;margin-top:20px;}
+        .footer span{font-weight:700;color:var(--accent);}
 
-        /* ═══════════ BIOMETRIC ═══════════ */
-        .biometric-divider {
-            display: none; align-items: center; gap: 14px;
-            margin: 22px 0; color: var(--text-muted); font-size: 13px; font-style: italic;
-        }
-        .biometric-divider::before, .biometric-divider::after {
-            content: ''; flex: 1; height: 1px;
-            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
-        }
-        .biometric-option { display: none; }
-        .btn-biometric {
-            width: 100%; padding: 14px;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            color: white; border: none; border-radius: var(--radius-lg);
-            font-size: 15px; font-weight: 600; font-style: italic; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            transition: all 0.25s; box-shadow: 0 4px 16px rgba(99,102,241,0.3);
-        }
-        .btn-biometric:hover:not(:disabled) {
-            transform: translateY(-2px); box-shadow: 0 8px 24px rgba(99,102,241,0.45);
-        }
-        .btn-biometric:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-biometric.loading .btn-text { display: none; }
-        .btn-biometric .spinner {
-            display: none; width: 20px; height: 20px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: white; border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        .btn-biometric.loading .spinner { display: inline-block; }
-        @keyframes spin { to { transform:rotate(360deg); } }
-
-        /* ═══════════ MODAL ACTIONS ═══════════ */
-        .modal-actions { display: flex; gap: 12px; margin-top: 24px; }
-        .modal-actions .btn { flex: 1; }
-
-        /* ═══════════ LOADER ═══════════ */
-        .loader {
-            display: none; width: 18px; height: 18px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-bottom-color: transparent; border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        /* ═══════════ SUCCESS ANIMATION ═══════════ */
-        .success-check {
-            display: none; text-align: center; padding: 20px;
-        }
-        .success-check .check-circle {
-            width: 64px; height: 64px; border-radius: 50%;
-            background: var(--gradient-green);
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 16px; font-size: 28px; color: white;
-            animation: popIn 0.4s cubic-bezier(0.16,1,0.3,1);
-        }
-        @keyframes popIn {
-            from { transform:scale(0); opacity:0; }
-            to { transform:scale(1); opacity:1; }
-        }
-
-        /* ═══════════ SECURITY INFO ═══════════ */
-        .security-badge {
-            display: flex; align-items: center; gap: 8px;
-            justify-content: center; margin-top: 24px;
-            font-size: 12px; color: var(--text-muted); font-style: italic;
-        }
-        .security-badge i { color: var(--accent-green); }
-
-        /* ═══════════ FOOTER ═══════════ */
-        .footer {
-            margin-top: 32px; text-align: center; padding: 24px;
-            color: var(--text-muted); font-size: 12px; font-style: italic;
-            position: relative; z-index: 1;
-        }
-        .footer span { font-weight: 700; background: var(--gradient-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-
-        /* ═══════════ RESPONSIVE ═══════════ */
-        @media (max-width: 480px) {
-            .container { padding: 20px 16px 60px; }
-            .navbar { padding: 10px 16px; }
-            .nav-links { display: none; }
-            .card { padding: 22px 18px; }
-            .balance-card { padding: 32px 20px; }
-            .balance-value { font-size: 32px; }
-            .page-header h1 { font-size: 26px; }
-            .modal { padding: 28px 20px; }
-            .pin-dot { width: 42px; height: 50px; font-size: 22px; }
-            .amount-presets { gap: 8px; }
-            .amount-preset { padding: 6px 14px; font-size: 12px; }
+        @media (max-width:480px){
+            .main{padding:20px 16px 60px;}
+            .topbar{padding:10px 16px;}
+            .header-nav{gap:6px;}
+            .header-nav a{font-size:10px;padding:7px 12px;}
+            .section{padding:18px 14px;}
+            .presets{grid-template-columns:repeat(2,1fr);}
+            .balance-value{font-size:30px;}
+            .method-grid{grid-template-columns:1fr;}
         }
     </style>
 </head>
 <body>
 
-    <!-- Fond cosmique -->
-    <div class="cosmic-bg">
-        <div class="cosmic-orb"></div>
-        <div class="cosmic-orb"></div>
-        <div class="cosmic-orb"></div>
-        <div class="cosmic-orb"></div>
+<div class="bg-particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div>
+</div>
+
+<div class="topbar">
+    <a href="/dashboard" class="topbar-logo">
+        <img src="/static/images/net.jpg" alt="Logo">
+        <span><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></span>
+    </a>
+    <div class="header-nav">
+        <a href="/dashboard"><i class="fa fa-home"></i> Dashboard</a>
+        <a href="/revenus"><i class="fa fa-coins"></i> Revenus</a>
+        <a href="/team"><i class="fa fa-users"></i> Équipe</a>
+        <a href="/profile"><i class="fa fa-user"></i> Profil</a>
+    </div>
+</div>
+
+<div class="main">
+    <div class="page-header">
+        <h1><i class="fa fa-paper-plane"></i> Retrait</h1>
+        <p>Retirez vos gains en toute sécurité</p>
     </div>
 
-    <!-- Navbar -->
-    <nav class="navbar">
-        <a href="/dashboard" class="nav-brand">
-            <img src="/static/images/net.jpg" alt="Logo">
-            NectarPro
-        </a>
-        <ul class="nav-links">
-            <li><a href="/dashboard"><i class="fa fa-home"></i> Dashboard</a></li>
-            <li><a href="/mes-retraits" class="active"><i class="fa fa-wallet"></i> Retraits</a></li>
-            <li><a href="/team"><i class="fa fa-users"></i> Équipe</a></li>
-        </ul>
-    </nav>
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert {{ category }}">
+            <i class="fa {% if category == 'success' %}fa-check-circle{% elif category == 'danger' %}fa-exclamation-circle{% elif category == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
-    <div class="container">
-        <!-- Back Link -->
-        <a href="{{ url_for('mes_retraits') }}" class="back-link">
-            <i class="fa fa-arrow-left"></i>
-            <span>Historique des retraits</span>
-        </a>
+    <!-- Balance Card -->
+    <div class="balance-card">
+        <div class="balance-label"><i class="fa fa-wallet"></i> Solde disponible</div>
+        <div class="balance-value">{{ "%.0f"|format(user.solde_parrainage or 0) }} XOF</div>
+        <div class="balance-sub">Minimum de retrait : 10 000 XOF</div>
+    </div>
 
-        <!-- Page Header -->
-        <div class="page-header">
-            <h1>Retrait de fonds</h1>
-            <p>Transférez vos gains vers votre portefeuille mobile en toute sécurité</p>
+    <!-- Main Form -->
+    <form method="POST" id="retraitForm">
+        <!-- Method Selection -->
+        <div class="section">
+            <h2 class="section-title"><i class="fa fa-building-columns"></i> Méthode de retrait</h2>
+            <div class="method-grid">
+                <div class="method-card selected" data-method="wave">
+                    <i class="fab fa-waze"></i> Wave
+                </div>
+                <div class="method-card" data-method="orange">
+                    <i class="fa fa-mobile-alt"></i> Orange Money
+                </div>
+            </div>
+            <input type="hidden" name="method" id="methodInput" value="wave">
         </div>
 
-        <!-- Flash Messages -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, message in messages %}
-              <div class="alert {{ category }}">
-                <i class="fa {% if category == 'success' %}fa-check-circle{% elif category == 'danger' %}fa-exclamation-circle{% elif category == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
-                {{ message }}
-              </div>
+        <!-- Amount -->
+        <div class="section">
+            <h2 class="section-title"><i class="fa fa-coins"></i> Montant</h2>
+            <div class="presets">
+                <button type="button" class="preset-btn" data-amount="10000">10 000</button>
+                <button type="button" class="preset-btn" data-amount="25000">25 000</button>
+                <button type="button" class="preset-btn" data-amount="50000">50 000</button>
+                <button type="button" class="preset-btn" data-amount="100000">100 000</button>
+            </div>
+            <div class="input-group">
+                <label><i class="fa fa-money-bill"></i> Ou saisir le montant (XOF)</label>
+                <input type="number" name="montant" id="montantInput" placeholder="Ex: 15 000" min="10000" step="1000" required>
+            </div>
+            <div class="resume-box" id="resumeBox">
+                <div class="resume-row"><span>Montant brut</span><span id="resumeBrut">-</span></div>
+                <div class="resume-row"><span>Frais (1%)</span><span id="resumeFrais">-</span></div>
+                <div class="resume-row total"><span>Vous recevez</span><span id="resumeNet">-</span></div>
+            </div>
+        </div>
+
+        <!-- Phone Number -->
+        <div class="section">
+            <h2 class="section-title"><i class="fa fa-phone"></i> Numéro de retrait</h2>
+            <div class="input-group">
+                <label><i class="fa fa-mobile"></i> Numéro de téléphone</label>
+                <input type="tel" name="numero" placeholder="01 XX XX XX XX" value="{{ user.phone }}" required>
+            </div>
+
+            <input type="hidden" name="retirer" value="1">
+
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+                <i class="fa fa-paper-plane"></i> Demander le retrait
+            </button>
+
+            <div class="info-box">
+                <i class="fa fa-info-circle"></i>
+                <span>Le retrait sera traité sous 24 à 48 heures. Un minimum de 10 000 XOF est requis.</span>
+            </div>
+        </div>
+    </form>
+
+    <!-- History -->
+    <div class="section">
+        <h2 class="section-title"><i class="fa fa-clock-rotate-left"></i> Historique des retraits</h2>
+        {% if retraits %}
+            {% for r in retraits %}
+            <div class="history-item">
+                <div class="history-icon {{ r.statut }}">
+                    {% if r.statut == 'valide' %}<i class="fa fa-check"></i>
+                    {% elif r.statut == 'refuse' %}<i class="fa fa-times"></i>
+                    {% else %}<i class="fa fa-clock"></i>{% endif %}
+                </div>
+                <div class="history-info">
+                    <div class="history-title">
+                        {% if r.statut == 'valide' %}Retrait validé
+                        {% elif r.statut == 'refuse' %}Retrait refusé
+                        {% else %}En attente{% endif %}
+                    </div>
+                    <div class="history-date">{{ r.date }}</div>
+                </div>
+                <div class="history-amount">{{ "%.0f"|format(r.montant) }} XOF</div>
+                <span class="history-status {{ r.statut }}">
+                    {% if r.statut == 'valide' %}Validé
+                    {% elif r.statut == 'refuse' %}Refusé
+                    {% else %}En attente{% endif %}
+                </span>
+            </div>
             {% endfor %}
-          {% endif %}
-        {% endwith %}
-
-        <!-- Balance Card -->
-        <div class="balance-card">
-            <div class="balance-icon">
-                <i class="fa fa-coins"></i>
-            </div>
-            <div class="balance-label">Solde disponible</div>
-            <div class="balance-value">{{ "{:,.0f}".format(stats.commissions_total) }} XOF</div>
-            <div class="balance-sub">Frais de traitement : 0 XOF</div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fa fa-receipt"></i>
+            <h3>Aucun retrait pour le moment</h3>
+            <p>Votre historique de retraits apparaîtra ici.</p>
         </div>
-
-        <!-- Withdrawal Form -->
-        <div class="card">
-            <div class="card-header">
-                <div class="icon-circle">
-                    <i class="fa fa-paper-plane"></i>
-                </div>
-                <h2>Effectuer un retrait</h2>
-            </div>
-
-            <form method="POST" id="retraitForm">
-                <!-- Hidden field for PIN (set after verification) -->
-                <input type="hidden" name="pin" id="hidden-pin" value="">
-                <!-- Hidden field for biometric verification -->
-                <input type="hidden" name="biometric_verified" id="hidden-biometric" value="">
-
-                <!-- Amount -->
-                <div class="form-group">
-                    <label for="montant">
-                        <i class="fa fa-tag"></i> Montant du retrait (XOF)
-                    </label>
-                    <div class="input-with-icon">
-                        <input type="number"
-                               id="montant"
-                               name="montant"
-                               placeholder="Entrez le montant souhaité"
-                               min="500"
-                               max="{{ stats.commissions_total | int }}"
-                               required>
-                        <i class="fa fa-xof input-icon" style="font-style:normal;font-weight:700;">F</i>
-                    </div>
-                    <div class="amount-presets" id="amountPresets">
-                        <button type="button" class="amount-preset" data-amount="1000">1 000 XOF</button>
-                        <button type="button" class="amount-preset" data-amount="5000">5 000 XOF</button>
-                        <button type="button" class="amount-preset" data-amount="10000">10 000 XOF</button>
-                        <button type="button" class="amount-preset" data-amount="25000">25 000 XOF</button>
-                    </div>
-                </div>
-
-                <!-- Payment Method -->
-                <div class="form-group">
-                    <label for="payment_method">
-                        <i class="fa fa-building-columns"></i> Méthode de paiement
-                    </label>
-                    <select id="payment_method" name="payment_method" required>
-                        <option value="">Sélectionnez votre opérateur</option>
-                        {% for service in services %}
-                        <option value="{{ service.id }}">{{ service.name }} — {{ service.description }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <!-- Phone Number -->
-                <div class="form-group">
-                    <label for="phone">
-                        <i class="fa fa-mobile-screen"></i> Numéro de téléphone
-                    </label>
-                    <div class="input-with-icon">
-                        <input type="tel"
-                               id="phone"
-                               name="phone"
-                               placeholder="Ex: 07 07 07 07 07"
-                               required>
-                        <i class="fa fa-phone input-icon"></i>
-                    </div>
-                </div>
-
-                <!-- Summary -->
-                <div class="summary-box">
-                    <div class="summary-title">Résumé du retrait</div>
-                    <div class="summary-row">
-                        <span>Montant du retrait</span>
-                        <span id="summary-montant">0 XOF</span>
-                    </div>
-                    <div class="summary-divider"></div>
-                    <div class="summary-row">
-                        <span>Frais de traitement</span>
-                        <span id="summary-frais">0 XOF</span>
-                    </div>
-                    <div class="summary-divider"></div>
-                    <div class="summary-row total">
-                        <span>Total à débiter</span>
-                        <span id="summary-total">0 XOF</span>
-                    </div>
-                </div>
-
-                <!-- Info -->
-                <div class="info-box">
-                    <i class="fa fa-info-circle"></i>
-                    <span>Minimum : 500 XOF &nbsp;|&nbsp; Maximum : 50 000 XOF &nbsp;|&nbsp; Frais : 0 XOF</span>
-                </div>
-
-                <!-- Submit Button -->
-                <button type="button" class="btn btn-primary" onclick="showPinModal()" style="margin-top: 24px;">
-                    <i class="fa fa-paper-plane"></i>
-                    <span>Initier le retrait</span>
-                </button>
-            </form>
-        </div>
-
-        <!-- PIN / Biometric Modal -->
-        <div class="modal-overlay" id="pinModal">
-            <div class="modal">
-                <div class="modal-title">
-                    <div class="lock-icon">
-                        <i class="fa fa-lock"></i>
-                    </div>
-                    <h2>Confirmation requise</h2>
-                    <p>Entrez votre code PIN à 6 chiffres pour valider le retrait</p>
-                </div>
-
-                <!-- Error Message -->
-                <div class="error-msg" id="errorMessage"></div>
-
-                <!-- PIN Form -->
-                <form id="pinForm">
-                    <!-- Hidden fields to preserve form data -->
-                    <input type="hidden" name="montant" id="hidden-montant">
-                    <input type="hidden" name="payment_method" id="hidden-payment">
-                    <input type="hidden" name="phone" id="hidden-phone">
-
-                    <!-- PIN Dots -->
-                    <div class="pin-dots" id="pinDots">
-                        <div class="pin-dot" data-index="0"></div>
-                        <div class="pin-dot" data-index="1"></div>
-                        <div class="pin-dot" data-index="2"></div>
-                        <div class="pin-dot" data-index="3"></div>
-                        <div class="pin-dot" data-index="4"></div>
-                        <div class="pin-dot" data-index="5"></div>
-                    </div>
-                    <input type="password" class="hidden-input" id="pin" maxlength="6" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
-
-                    <!-- Attempts Info -->
-                    <div class="attempts-info" id="attemptsInfo">
-                        <i class="fa fa-shield-halved"></i>
-                        &nbsp;Tentative <span class="current" id="currentAttempt">1</span> / <span class="max">3</span>
-                    </div>
-
-                    <!-- Lockout Timer -->
-                    <div class="lockout-timer" id="lockoutTimer">
-                        <i class="fa fa-lock"></i>
-                        Trop de tentatives. Réessayez dans <span id="timer-countdown">5:00</span>
-                    </div>
-
-                    <!-- Modal Actions -->
-                    <div class="modal-actions">
-                        <button type="button" class="btn btn-cancel" onclick="closePinModal()">
-                            <i class="fa fa-times"></i>
-                            Annuler
-                        </button>
-                        <button type="submit" class="btn btn-primary" id="confirmBtn" disabled>
-                            <span>Confirmer</span>
-                            <div class="loader" id="pin-loader"></div>
-                        </button>
-                    </div>
-
-                    <!-- Biometric Option -->
-                    <div class="biometric-divider" id="biometricDivider">
-                        <span>ou</span>
-                    </div>
-
-                    <div class="biometric-option" id="biometricOption">
-                        <button type="button" class="btn-biometric" id="btnBiometric" onclick="authenticateBiometric()">
-                            <i class="fa fa-fingerprint"></i>
-                            <span class="btn-text">Utiliser Face ID / Empreinte digitale</span>
-                            <span class="spinner"></span>
-                        </button>
-                    </div>
-                </form>
-
-                <!-- Security Info -->
-                <div class="security-badge">
-                    <i class="fa fa-shield-halved"></i>
-                    <span>Protégé par chiffrement — Après 3 échecs, verrouillage 5 minutes</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            &copy; 2026 <span>NectarPro</span> — Transactions sécurisées. Tous droits réservés.
-        </div>
+        {% endif %}
     </div>
 
-    <script>
-        // ==================== VARIABLES GLOBALES ====================
-        let pinValue = '';
-        let attemptCount = 1;
-        let isLockedOut = false;
-        let hasBiometric = false;
-        let lockoutInterval = null;
-        const FRAIS = 0;
+    <div class="footer">
+        &copy; 2026 <span>NectarPro</span> — Retraits sécurisés. Tous droits réservés.
+    </div>
+</div>
 
-        // ==================== SYSTÈME DE MONTANTS PRÉDÉFINIS ====================
-        const montantInput = document.getElementById('montant');
-        const summaryMontant = document.getElementById('summary-montant');
-        const summaryFrais = document.getElementById('summary-frais');
-        const summaryTotal = document.getElementById('summary-total');
+<!-- PIN Modal -->
+<div class="pin-overlay" id="pinModal">
+    <div class="pin-modal">
+        <h3>Code PIN de sécurité</h3>
+        <p>Saisissez votre code PIN à 6 chiffres</p>
+        <div class="pin-dots" id="pinDots">
+            <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+            <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+        </div>
+        <input type="text" class="pin-input" id="pinHiddenInput" maxlength="6" inputmode="numeric" pattern="[0-9]{6}">
+        <div class="pin-keyboard">
+            <button class="pin-key" onclick="addPinDigit('1')">1</button>
+            <button class="pin-key" onclick="addPinDigit('2')">2</button>
+            <button class="pin-key" onclick="addPinDigit('3')">3</button>
+            <button class="pin-key" onclick="addPinDigit('4')">4</button>
+            <button class="pin-key" onclick="addPinDigit('5')">5</button>
+            <button class="pin-key" onclick="addPinDigit('6')">6</button>
+            <button class="pin-key" onclick="addPinDigit('7')">7</button>
+            <button class="pin-key" onclick="addPinDigit('8')">8</button>
+            <button class="pin-key" onclick="addPinDigit('9')">9</button>
+            <button class="pin-key" onclick="addPinDigit('0')">0</button>
+            <button class="pin-key delete" onclick="removePinDigit()"><i class="fa fa-delete-left"></i></button>
+        </div>
+        <div class="pin-actions">
+            <button class="btn btn-secondary" onclick="closePinModal()">Annuler</button>
+            <button class="btn btn-primary" id="validatePinBtn" disabled onclick="validatePin()">Confirmer</button>
+        </div>
+    </div>
+</div>
 
-        // Initialiser l'affichage des frais
-        summaryFrais.textContent = FRAIS.toLocaleString() + ' XOF';
+<script>
+let pinValue = '';
 
-        // Mise à jour du résumé en temps réel
-        montantInput.addEventListener('input', function() {
-            updateSummary();
-            updatePresetHighlight();
-        });
+// ========== METHOD SELECT ==========
+document.querySelectorAll('.method-card').forEach(card => {
+    card.addEventListener('click', function(){
+        document.querySelectorAll('.method-card').forEach(c => c.classList.remove('selected'));
+        this.classList.add('selected');
+        document.getElementById('methodInput').value = this.dataset.method;
+    });
+});
 
-        function updateSummary() {
-            const montant = parseInt(montantInput.value) || 0;
-            const total = montant + FRAIS;
-            summaryMontant.textContent = montant.toLocaleString() + ' XOF';
-            summaryTotal.textContent = total.toLocaleString() + ' XOF';
-        }
+// ========== PRESET AMOUNTS ==========
+document.querySelectorAll('.preset-btn').forEach(btn => {
+    btn.addEventListener('click', function(){
+        document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('selected'));
+        this.classList.add('selected');
+        document.getElementById('montantInput').value = this.dataset.amount;
+        updateResume();
+    });
+});
 
-        // Gestion des boutons de montants prédéfinis
-        document.getElementById('amountPresets').addEventListener('click', function(e) {
-            if (e.target.classList.contains('amount-preset')) {
-                const amount = parseInt(e.target.dataset.amount);
-                montantInput.value = amount;
-                updateSummary();
-                updatePresetHighlight();
-                // Trigger l'événement input
-                montantInput.dispatchEvent(new Event('input'));
-            }
-        });
+// ========== AMOUNT INPUT ==========
+document.getElementById('montantInput').addEventListener('input', function(){
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('selected'));
+    updateResume();
+});
 
-        function updatePresetHighlight() {
-            const currentAmount = parseInt(montantInput.value) || 0;
-            document.querySelectorAll('.amount-preset').forEach(preset => {
-                const presetAmount = parseInt(preset.dataset.amount);
-                if (presetAmount === currentAmount) {
-                    preset.classList.add('active');
-                } else {
-                    preset.classList.remove('active');
-                }
-            });
-        }
+function updateResume(){
+    const val = parseFloat(document.getElementById('montantInput').value) || 0;
+    const box = document.getElementById('resumeBox');
+    if(val >= 10000){
+        box.classList.add('show');
+        const frais = Math.round(val * 0.01);
+        document.getElementById('resumeBrut').textContent = val.toLocaleString() + ' XOF';
+        document.getElementById('resumeFrais').textContent = frais.toLocaleString() + ' XOF';
+        document.getElementById('resumeNet').textContent = (val - frais).toLocaleString() + ' XOF';
+    } else {
+        box.classList.remove('show');
+    }
+}
 
-        // ==================== BIOMÉTRIE ====================
-        function checkBiometricAvailability() {
-            if (window.PublicKeyCredential) {
-                fetch('/api/webauthn/credentials')
-                    .then(response => response.json())
-                    .then(devices => {
-                        if (devices.length > 0) {
-                            hasBiometric = true;
-                            document.getElementById('biometricOption').style.display = 'block';
-                            document.getElementById('biometricDivider').style.display = 'flex';
-                        }
-                    })
-                    .catch(() => {});
-            }
-        }
+// ========== SUBMIT WITH PIN ==========
+document.getElementById('retraitForm').addEventListener('submit', function(e){
+    e.preventDefault();
 
-        // ==================== MODAL PIN ====================
-        function showPinModal() {
-            const montant = document.getElementById('montant').value;
-            const payment = document.getElementById('payment_method').value;
-            const phone = document.getElementById('phone').value;
+    const montant = parseInt(document.getElementById('montantInput').value);
+    const max = parseInt('{{ user.solde_parrainage or 0 }}');
 
-            // Validation
-            if (!montant || parseInt(montant) < 500) {
-                showToast('Veuillez entrer un montant valide (min. 500 XOF)', 'warning');
-                return;
-            }
-            if (!payment) {
-                showToast('Veuillez sélectionner une méthode de paiement', 'warning');
-                return;
-            }
-            if (!phone) {
-                showToast('Veuillez entrer votre numéro de téléphone', 'warning');
-                return;
-            }
+    if(!montant || montant < 10000){
+        alert('Le montant minimum est de 10 000 XOF');
+        return;
+    }
+    if(montant > max){
+        alert('Solde insuffisant !');
+        return;
+    }
 
-            // Sauvegarder les valeurs dans les champs cachés
-            document.getElementById('hidden-montant').value = montant;
-            document.getElementById('hidden-payment').value = payment;
-            document.getElementById('hidden-phone').value = phone;
+    document.getElementById('pinModal').classList.add('show');
+    pinValue = '';
+    updatePinDots();
+    document.getElementById('validatePinBtn').disabled = true;
+});
 
-            // Réinitialiser le PIN
-            resetPinState();
-            document.getElementById('errorMessage').classList.remove('show');
+function addPinDigit(d){
+    if(pinValue.length >= 6) return;
+    pinValue += d;
+    updatePinDots();
+    if(pinValue.length === 6) document.getElementById('validatePinBtn').disabled = false;
+}
 
-            // Gérer le lockout
-            if (!isLockedOut) {
-                document.getElementById('attemptsInfo').style.display = 'block';
-                document.getElementById('lockoutTimer').classList.remove('active');
-                document.getElementById('currentAttempt').textContent = attemptCount;
-            }
+function removePinDigit(){
+    pinValue = pinValue.slice(0, -1);
+    updatePinDots();
+    document.getElementById('validatePinBtn').disabled = true;
+}
 
-            // Afficher le modal
-            document.getElementById('pinModal').classList.add('active');
-            setTimeout(() => document.getElementById('pin').focus(), 350);
+function updatePinDots(){
+    const dots = document.querySelectorAll('#pinDots .pin-dot');
+    dots.forEach((dot, i) => {
+        dot.classList.toggle('filled', i < pinValue.length);
+    });
+}
 
-            // Vérifier la biométrie
-            checkBiometricAvailability();
-        }
+function closePinModal(){
+    document.getElementById('pinModal').classList.remove('show');
+    pinValue = '';
+    updatePinDots();
+}
 
-        function closePinModal() {
-            document.getElementById('pinModal').classList.remove('active');
-            resetPinState();
-        }
+function validatePin(){
+    if(pinValue.length !== 6) return;
 
-        function resetPinState() {
+    fetch('/api/verify_pin', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({pin:pinValue})
+    })
+    .then(r => r.json())
+    .then(data => {
+        if(data.success){
+            const pinField = document.createElement('input');
+            pinField.type = 'hidden';
+            pinField.name = 'pin';
+            pinField.value = pinValue;
+            document.getElementById('retraitForm').appendChild(pinField);
+            closePinModal();
+            document.getElementById('retraitForm').submit();
+        } else {
+            alert(data.message || 'PIN incorrect');
             pinValue = '';
             updatePinDots();
-            document.getElementById('pin').value = '';
-            document.getElementById('confirmBtn').disabled = true;
+            document.getElementById('validatePinBtn').disabled = true;
         }
+    })
+    .catch(() => {
+        alert('Erreur de connexion');
+        closePinModal();
+    });
+}
+</script>
 
-        function updatePinDots() {
-            const dots = document.querySelectorAll('.pin-dot');
-            dots.forEach((dot, index) => {
-                dot.classList.remove('error');
-                if (index < pinValue.length) {
-                    dot.classList.add('filled');
-                    dot.textContent = '•';
-                } else {
-                    dot.classList.remove('filled');
-                    dot.textContent = '';
-                }
-            });
-            document.getElementById('confirmBtn').disabled = pinValue.length !== 6;
-        }
-
-        // Gestion de la saisie du PIN
-        const pinInput = document.getElementById('pin');
-        pinInput.addEventListener('input', function(e) {
-            pinValue = this.value.replace(/\D/g, '').slice(0, 6);
-            updatePinDots();
-            document.getElementById('errorMessage').classList.remove('show');
-        });
-
-        pinInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Backspace' && pinValue.length === 0) {
-                // Déjà vide, rien à faire
-            }
-        });
-
-        // Afficher une erreur
-        function showError(message) {
-            const errorEl = document.getElementById('errorMessage');
-            errorEl.textContent = message;
-            errorEl.classList.add('show');
-            // Secouer les dots
-            document.querySelectorAll('.pin-dot').forEach(dot => {
-                dot.classList.add('error');
-                setTimeout(() => dot.classList.remove('error'), 400);
-            });
-        }
-
-        // Toast notification
-        function showToast(message, type) {
-            // Simple alert pour l'instant
-            alert(message);
-        }
-
-        // ==================== SOUMISSION PIN ====================
-        document.getElementById('pinForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            if (pinValue.length !== 6) {
-                showError('Le code PIN doit contenir exactement 6 chiffres');
-                return;
-            }
-
-            if (isLockedOut) {
-                showError('Compte temporairement verrouillé. Veuillez patienter.');
-                return;
-            }
-
-            const btnConfirm = document.getElementById('confirmBtn');
-            btnConfirm.disabled = true;
-            const btnSpan = btnConfirm.querySelector('span');
-            const originalText = btnSpan.textContent;
-            btnSpan.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Vérification...';
-
-            // Appel API pour vérifier le PIN
-            fetch('/api/verify-pin', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ pin: pinValue })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // PIN correct - remplir le champ caché et soumettre le formulaire
-                    document.getElementById('hidden-pin').value = pinValue;
-                    closePinModal();
-                    document.getElementById('retraitForm').submit();
-                } else {
-                    // PIN incorrect
-                    showError(data.message || 'Code PIN incorrect. Veuillez réessayer.');
-                    pinValue = '';
-                    updatePinDots();
-                    pinInput.focus();
-
-                    // Incrémenter le compteur
-                    attemptCount++;
-                    if (attemptCount > 3) {
-                        isLockedOut = true;
-                        document.getElementById('lockoutTimer').classList.add('active');
-                        document.getElementById('attemptsInfo').style.display = 'none';
-                        startLockoutTimer();
-                    } else {
-                        document.getElementById('currentAttempt').textContent = attemptCount;
-                    }
-                }
-            })
-            .catch(error => {
-                showError('Erreur de connexion. Vérifiez votre réseau et réessayez.');
-                pinValue = '';
-                updatePinDots();
-            })
-            .finally(() => {
-                btnConfirm.disabled = pinValue.length !== 6 && !isLockedOut;
-                btnSpan.textContent = originalText;
-            });
-        });
-
-        // ==================== AUTHENTIFICATION BIOMÉTRIQUE ====================
-        async function authenticateBiometric() {
-            const btn = document.getElementById('btnBiometric');
-            btn.classList.add('loading');
-            btn.disabled = true;
-
-            document.getElementById('errorMessage').classList.remove('show');
-
-            try {
-                // Démarrer l'authentification
-                const response = await fetch('/api/webauthn/authenticate/start', { method: 'POST' });
-                const options = await response.json();
-
-                if (!options.challenge) {
-                    throw new Error('Erreur: pas de challenge reçu');
-                }
-
-                // Convertir le challenge en ArrayBuffer
-                const challengeBuffer = base64urlToBuffer(options.challenge);
-
-                // Options pour navigator.credentials.get()
-                const publicKey = {
-                    challenge: challengeBuffer,
-                    timeout: 60000,
-                    rpId: window.location.hostname,
-                    userVerification: 'required',
-                    allowCredentials: options.allowCredentials.map(cred => ({
-                        type: 'public-key',
-                        id: base64urlToBuffer(cred.id)
-                    }))
-                };
-
-                // Appel à l'API WebAuthn du navigateur
-                const credential = await navigator.credentials.get({ publicKey });
-
-                if (!credential) {
-                    throw new Error('Authentification annulée');
-                }
-
-                // Envoyer la réponse au serveur
-                const completeResponse = await fetch('/api/webauthn/authenticate/complete', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        id: credential.id,
-                        response: {
-                            authenticatorData: bufferToBase64url(new Uint8Array(credential.response.authenticatorData)),
-                            clientDataJSON: bufferToBase64url(new Uint8Array(credential.response.clientDataJSON)),
-                            signature: bufferToBase64url(new Uint8Array(credential.response.signature)),
-                            userHandle: credential.response.userHandle ?
-                                bufferToBase64url(new Uint8Array(credential.response.userHandle)) : null
-                        }
-                    })
-                });
-
-                const result = await completeResponse.json();
-
-                if (result.success) {
-                    // Authentification réussie - soumettre directement le formulaire
-                    document.getElementById('hidden-biometric').value = '1';
-                    closePinModal();
-                    document.getElementById('retraitForm').submit();
-                } else {
-                    showError(result.message || 'Échec de l\'authentification biométrique');
-                }
-            } catch (error) {
-                if (error.name === 'NotAllowedError') {
-                    showError('Authentification biométrique annulée.');
-                } else {
-                    showError('Erreur biométrique: ' + error.message);
-                }
-            } finally {
-                btn.classList.remove('loading');
-                btn.disabled = false;
-            }
-        }
-
-        // ==================== UTILITAIRES BASE64URL ====================
-        function base64urlToBuffer(base64url) {
-            let base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
-            const padding = base64.length % 4;
-            if (padding === 2) base64 += '==';
-            else if (padding === 3) base64 += '=';
-            const binaryStr = atob(base64);
-            const bytes = new Uint8Array(binaryStr.length);
-            for (let i = 0; i < binaryStr.length; i++) {
-                bytes[i] = binaryStr.charCodeAt(i);
-            }
-            return bytes.buffer;
-        }
-
-        function bufferToBase64url(buffer) {
-            const bytes = new Uint8Array(buffer);
-            let binary = '';
-            for (let i = 0; i < bytes.byteLength; i++) {
-                binary += String.fromCharCode(bytes[i]);
-            }
-            return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-        }
-
-        // ==================== TIMER DE VERROUILLAGE ====================
-        function startLockoutTimer() {
-            let seconds = 300; // 5 minutes
-            const timerEl = document.getElementById('timer-countdown');
-
-            if (lockoutInterval) clearInterval(lockoutInterval);
-
-            lockoutInterval = setInterval(() => {
-                seconds--;
-                const minutes = Math.floor(seconds / 60);
-                const secs = seconds % 60;
-                timerEl.textContent = `${minutes}:${secs.toString().padStart(2, '0')}`;
-
-                if (seconds <= 0) {
-                    clearInterval(lockoutInterval);
-                    isLockedOut = false;
-                    attemptCount = 1;
-                    document.getElementById('lockoutTimer').classList.remove('active');
-                    document.getElementById('attemptsInfo').style.display = 'block';
-                    document.getElementById('currentAttempt').textContent = attemptCount;
-                    document.getElementById('errorMessage').classList.remove('show');
-                    document.getElementById('confirmBtn').disabled = pinValue.length !== 6;
-                }
-            }, 1000);
-        }
-
-        // ==================== FERMER LE MODAL EN CLIQUANT DEHORS ====================
-        document.getElementById('pinModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closePinModal();
-            }
-        });
-
-        // Fermer le modal avec la touche Escape
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && document.getElementById('pinModal').classList.contains('active')) {
-                closePinModal();
-            }
-        });
-
-        // ==================== INITIALISATION ====================
-        document.addEventListener('DOMContentLoaded', function() {
-            updateSummary();
-            checkBiometricAvailability();
-
-            // Focus automatique sur le premier champ après chargement
-            setTimeout(() => {
-                if (document.activeElement === document.body) {
-                    montantInput.focus();
-                }
-            }, 600);
-        });
-    </script>
 </body>
 </html>
