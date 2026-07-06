@@ -3,61 +3,104 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Politique d'utilisation - NectarPro</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-:root{--blue:#38bdf8;--green:#86efac;--pink:#f9a8d4;--yellow:#fde68a;--text:#1e293b;--text2:#475569;--card:rgba(255,255,255,.9);--shadow:0 4px 20px rgba(0,0,0,.06)}
-body{background:linear-gradient(135deg,#eff6ff,#f0fdf4,#fdf2f8,#fefce8);background-size:400% 400%;animation:bg 15s ease infinite;min-height:100vh;color:var(--text);font-weight:600}
-@keyframes bg{0%{background-position:0 0}50%{background-position:100% 100%}100%{background-position:0 0}}
-.topnav{background:rgba(255,255,255,.8);backdrop-filter:blur(20px);border-bottom:1px solid rgba(148,163,184,.15);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
-.topnav a{color:var(--blue);text-decoration:none;font-weight:700;display:flex;align-items:center;gap:8px;font-size:13px;font-style:italic}
-.topnav .brand{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px}
-.topnav .brand span{color:#e50914}
-.version{background:rgba(56,189,248,.1);color:var(--blue);padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;font-style:italic}
-.hero{text-align:center;padding:40px 20px 10px}
-.hero .icon{font-size:52px;margin-bottom:8px;animation:float 3s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.hero h1{font-family:'Bebas Neue',sans-serif;font-size:46px;letter-spacing:3px;margin-bottom:4px}
-.hero h1 span{color:#e50914}
+:root{
+    --bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);
+    --glass:rgba(255,255,255,0.72);
+    --accent:#db2777;
+    --accent2:#ec4899;
+    --accent-light:#f9a8d4;
+    --gold:#f59e0b;
+    --gold-light:#fef3c7;
+    --emerald:#10b981;
+    --emerald-light:#d1fae5;
+    --violet:#8b5cf6;
+    --sky:#0ea5e9;
+    --text:#0f172a;
+    --text2:#1e293b;
+    --muted:#64748b;
+    --border:rgba(236,72,153,0.2);
+    --shadow-sm:0 2px 8px rgba(236,72,153,0.08);
+    --shadow:0 8px 32px rgba(236,72,153,0.12);
+    --shadow-lg:0 16px 48px rgba(236,72,153,0.18);
+    --radius-sm:12px;
+    --radius:18px;
+    --radius-lg:24px;
+    --radius-xl:32px;
+}
+body{background:var(--bg);min-height:100vh;min-height:100dvh;color:var(--text);font-weight:600;font-style:italic;position:relative;overflow-x:hidden}
+
+/* PARTICULES */
+.bg-particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.particle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,0.18),transparent 70%);animation:floatUp linear infinite}
+.particle:nth-child(1){width:180px;height:180px;left:5%;top:70%;animation-duration:18s;animation-delay:0s}
+.particle:nth-child(2){width:120px;height:120px;left:60%;top:80%;animation-duration:14s;animation-delay:3s}
+.particle:nth-child(3){width:200px;height:200px;left:30%;top:75%;animation-duration:22s;animation-delay:6s}
+.particle:nth-child(4){width:100px;height:100px;left:80%;top:85%;animation-duration:16s;animation-delay:9s}
+.particle:nth-child(5){width:150px;height:150px;left:50%;top:90%;animation-duration:20s;animation-delay:2s}
+.particle:nth-child(6){width:90px;height:90px;left:15%;top:50%;animation-duration:12s;animation-delay:5s}
+.particle:nth-child(7){width:160px;height:160px;left:75%;top:60%;animation-duration:24s;animation-delay:8s}
+@keyframes floatUp{0%{transform:translateY(0)scale(0.6);opacity:0}10%{opacity:0.7}90%{opacity:0.4}100%{transform:translateY(-110vh)scale(1.4);opacity:0}}
+
+.topnav{background:rgba(255,255,255,0.7);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.topnav a{color:var(--accent);text-decoration:none;font-weight:700;display:flex;align-items:center;gap:8px;font-size:13px;font-style:italic}
+.topnav .brand{font-size:22px;font-weight:900;letter-spacing:1px}
+.topnav .brand .brand-n{color:var(--accent2)}
+.topnav .brand .brand-p{color:var(--accent)}
+.version{background:rgba(236,72,153,0.1);color:var(--accent2);padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;font-style:italic}
+.hero{text-align:center;padding:40px 20px 10px;position:relative;z-index:1}
+.hero .icon{font-size:52px;margin-bottom:8px;animation:floaticon 3s ease-in-out infinite}
+@keyframes floaticon{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.hero h1{font-weight:900;font-size:42px;letter-spacing:2px;margin-bottom:4px;background:linear-gradient(135deg,#ec4899,#db2777);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero h1 span{background:linear-gradient(135deg,#f9a8d4,#db2777);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hero .sub{font-size:13px;color:var(--text2);font-style:italic}
-.hero .date{font-size:11px;color:#94a3b8;margin-top:6px;font-style:italic}
-.container{max-width:850px;margin:0 auto;padding:0 20px 40px}
+.hero .date{font-size:11px;color:var(--muted);margin-top:6px;font-style:italic}
+.container{max-width:850px;margin:0 auto;padding:0 20px 40px;position:relative;z-index:1}
 .offers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
-.offer-card{background:var(--card);border-radius:16px;padding:22px 16px;text-align:center;transition:all .3s ease;cursor:default;border-top:3px solid transparent}
-.offer-card:hover{transform:translateY(-5px);box-shadow:0 12px 30px rgba(0,0,0,.1)}
+.offer-card{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:var(--radius);padding:22px 16px;text-align:center;transition:all .3s ease;cursor:default;border:1px solid var(--border);border-top:3px solid transparent}
+.offer-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);border-color:var(--accent2)}
 .offer-card i{font-size:30px;margin-bottom:10px;display:block}
 .offer-card span{font-size:11px;font-weight:700;font-style:italic}
-.o1 i{color:#38bdf8}.o1{border-color:#38bdf8}
-.o2 i{color:#86efac}.o2{border-color:#86efac}
-.o3 i{color:#f9a8d4}.o3{border-color:#f9a8d4}
-.o4 i{color:#fde68a}.o4{border-color:#fde68a}
-.o5 i{color:#a78bfa}.o5{border-color:#a78bfa}
-.o6 i{color:#f472b6}.o6{border-color:#f472b6}
-.section{background:var(--card);border:1px solid rgba(148,163,184,.12);border-radius:18px;padding:26px;margin-bottom:14px;box-shadow:var(--shadow);transition:all .3s}
-.section:hover{box-shadow:0 8px 30px rgba(0,0,0,.1)}
+.o1 i{color:var(--accent2)}.o1{border-top-color:var(--accent2)}
+.o2 i{color:var(--emerald)}.o2{border-top-color:var(--emerald)}
+.o3 i{color:var(--accent)}.o3{border-top-color:var(--accent)}
+.o4 i{color:var(--gold)}.o4{border-top-color:var(--gold)}
+.o5 i{color:var(--violet)}.o5{border-top-color:var(--violet)}
+.o6 i{color:var(--sky)}.o6{border-top-color:var(--sky)}
+.section{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px;margin-bottom:14px;box-shadow:var(--shadow-sm);transition:all .3s}
+.section:hover{box-shadow:var(--shadow-lg);border-color:var(--accent2)}
 .section-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.section-num{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;flex-shrink:0}
+.section-num{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#ec4899,#db2777)}
 .section h2{font-size:17px;font-weight:800}
-.section p,.section li{font-size:13px;color:var(--text2);line-height:1.9}
+.section p,.section li{font-size:13px;color:var(--text2);line-height:1.9;font-weight:600}
 .section ul{margin:8px 0 0 20px}.section li{margin-bottom:5px}
-.section li i{font-size:10px;margin-right:6px;color:var(--green)}
-.warn{background:rgba(249,168,212,.06);border-color:rgba(249,168,212,.2);border-left:4px solid #f472b6}
-.warn .section-num{background:#f472b6}
-.accept{background:rgba(56,189,248,.06);border:2px solid var(--blue);text-align:center}
-.accept .section-num{background:var(--blue)}
-.footer{text-align:center;padding:30px;color:#94a3b8;font-size:11px;font-style:italic}
-@media(max-width:600px){.hero h1{font-size:32px}.offers-grid{grid-template-columns:repeat(2,1fr)}.section{padding:18px}}
+.section li i{font-size:10px;margin-right:6px;color:var(--emerald)}
+.warn{background:rgba(236,72,153,0.04);border-color:var(--border);border-left:4px solid var(--accent)}
+.warn .section-num{background:linear-gradient(135deg,#f43f5e,#db2777)}
+.accept{background:rgba(236,72,153,0.06);border:2px solid var(--accent2);text-align:center}
+.accept .section-num{background:linear-gradient(135deg,#ec4899,#db2777);box-shadow:0 4px 16px rgba(219,39,119,0.3)}
+.footer{text-align:center;padding:30px;color:var(--muted);font-size:11px;font-style:italic;position:relative;z-index:1}
+@media(max-width:600px){.hero h1{font-size:28px}.offers-grid{grid-template-columns:repeat(2,1fr)}.section{padding:18px}}
 </style>
 </head>
 <body>
-<div class="topnav"><a href="/dashboard"><i class="fa fa-arrow-left"></i> Tableau de bord</a><div class="brand"><span>Nectar</span>Pro</div><div class="version">v2.0 · 29/06/2026</div></div>
+
+<div class="bg-particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div>
+</div>
+
+<div class="topnav"><a href="/dashboard"><i class="fa fa-arrow-left"></i> Tableau de bord</a><div class="brand"><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></div><div class="version">v2.0 · 29/06/2026</div></div>
 <div class="hero"><div class="icon">📜</div><h1>POLITIQUE <span>D'UTILISATION</span></h1><div class="sub">Règles et conditions générales de la plateforme</div><div class="date"><i class="fa fa-calendar"></i> Dernière mise à jour : 29 juin 2026</div></div>
 
-<div class="section"><div class="section-header"><div class="section-num" style="background:#38bdf8">1</div><h2>Création de compte</h2></div><p>Chaque utilisateur est autorisé à posséder <strong>un seul compte</strong>. Il est interdit de créer plusieurs comptes, d'utiliser une fausse identité, de partager ses identifiants ou d'utiliser le compte d'autrui. La plateforme peut suspendre ou supprimer tout compte frauduleux.</p></div>
-<div class="section"><div class="section-header"><div class="section-num" style="background:#86efac">2</div><h2>Activation du compte</h2></div><p>Certaines fonctionnalités nécessitent l'activation du compte. Une fois le paiement confirmé, l'activation devient effective et permet l'accès aux différents services proposés.</p></div>
-<div class="section"><div class="section-header"><div class="section-num" style="background:#f9a8d4">3</div><h2>Tâches rémunérées</h2></div><p>Les tâches sont disponibles uniquement pendant les périodes définies.</p><ul><li><i class="fa fa-check"></i> Une seule série de tâches par jour</li><li><i class="fa fa-check"></i> Une seule récompense quotidienne</li><li><i class="fa fa-check"></i> Toute manipulation entraîne l'annulation de la récompense</li></ul></div>
-<div class="section"><div class="section-header"><div class="section-num" style="background:#fde68a">4</div><h2>Publicités et partages</h2></div><p>Les utilisateurs doivent partager les publicités conformément aux instructions.</p><ul><li><i class="fa fa-check"></i> Interdiction de simuler des partages</li><li><i class="fa fa-check"></i> Interdiction d'utiliser des logiciels automatisés ou robots</li><li><i class="fa fa-check"></i> Interdiction de modifier les liens publicitaires</li></ul></div>
+<div class="section"><div class="section-header"><div class="section-num">1</div><h2>Création de compte</h2></div><p>Chaque utilisateur est autorisé à posséder <strong>un seul compte</strong>. Il est interdit de créer plusieurs comptes, d'utiliser une fausse identité, de partager ses identifiants ou d'utiliser le compte d'autrui. La plateforme peut suspendre ou supprimer tout compte frauduleux.</p></div>
+<div class="section"><div class="section-header"><div class="section-num">2</div><h2>Activation du compte</h2></div><p>Certaines fonctionnalités nécessitent l'activation du compte. Une fois le paiement confirmé, l'activation devient effective et permet l'accès aux différents services proposés.</p></div>
+<div class="section"><div class="section-header"><div class="section-num">3</div><h2>Tâches rémunérées</h2></div><p>Les tâches sont disponibles uniquement pendant les périodes définies.</p><ul><li><i class="fa fa-check"></i> Une seule série de tâches par jour</li><li><i class="fa fa-check"></i> Une seule récompense quotidienne</li><li><i class="fa fa-check"></i> Toute manipulation entraîne l'annulation de la récompense</li></ul></div>
+<div class="section"><div class="section-header"><div class="section-num">4</div><h2>Publicités et partages</h2></div><p>Les utilisateurs doivent partager les publicités conformément aux instructions.</p><ul><li><i class="fa fa-check"></i> Interdiction de simuler des partages</li><li><i class="fa fa-check"></i> Interdiction d'utiliser des logiciels automatisés ou robots</li><li><i class="fa fa-check"></i> Interdiction de modifier les liens publicitaires</li></ul></div>
 <div class="section warn"><div class="section-header"><div class="section-num">5</div><h2>Lutte contre la fraude</h2></div><p><strong>Toute fraude est strictement interdite.</strong> Sont considérés comme fraudes : création de plusieurs comptes, utilisation de faux numéros, faux partages, fausses captures, manipulation des récompenses, exploitation de bugs, modification de données, utilisation de VPN ou d'outils de contournement, usurpation d'identité, toute activité suspecte.</p><p style="margin-top:10px"><strong style="color:#db2777">⚠️ La plateforme se réserve le droit de bloquer immédiatement tout compte suspect sans préavis.</strong></p></div>
 
 <div class="container">
@@ -72,9 +115,9 @@ body{background:linear-gradient(135deg,#eff6ff,#f0fdf4,#fdf2f8,#fefce8);backgrou
 
 
 <div class="section warn"><div class="section-header"><div class="section-num">6</div><h2>Sanctions</h2></div><p>En cas de fraude, la plateforme peut appliquer : suspension temporaire, blocage définitif, suppression des récompenses, annulation des retraits, suppression des gains, interdiction définitive.</p></div>
-<div class="section"><div class="section-header"><div class="section-num" style="background:#38bdf8">7</div><h2>Paiements et retraits</h2></div><p>Les retraits sont soumis à vérification. La plateforme peut retarder ou annuler un retrait en cas d'activité suspecte.</p></div>
-<div class="section"><div class="section-header"><div class="section-num" style="background:#86efac">8</div><h2>Vendeurs & Communauté</h2></div><p>Les vendeurs sont responsables de leurs produits. Comportement respectueux exigé : pas d'insultes, harcèlement, contenus illégaux.</p></div>
-<div class="section"><div class="section-header"><div class="section-num" style="background:#a78bfa">9</div><h2>Données & Modifications</h2></div><p>Données protégées. Les conditions peuvent être modifiées pour améliorer les services.</p></div>
+<div class="section"><div class="section-header"><div class="section-num">7</div><h2>Paiements et retraits</h2></div><p>Les retraits sont soumis à vérification. La plateforme peut retarder ou annuler un retrait en cas d'activité suspecte.</p></div>
+<div class="section"><div class="section-header"><div class="section-num">8</div><h2>Vendeurs & Communauté</h2></div><p>Les vendeurs sont responsables de leurs produits. Comportement respectueux exigé : pas d'insultes, harcèlement, contenus illégaux.</p></div>
+<div class="section"><div class="section-header"><div class="section-num">9</div><h2>Données & Modifications</h2></div><p>Données protégées. Les conditions peuvent être modifiées pour améliorer les services.</p></div>
 <div class="section accept"><div class="section-header" style="justify-content:center"><div class="section-num">10</div><h2>Acceptation</h2></div><p style="font-size:14px;font-weight:700">En utilisant cette plateforme, vous acceptez l'ensemble de cette politique. Le non-respect entraîne la suppression définitive du compte.</p></div>
 <div class="footer">© 2026 NectarPro — <i class="fa fa-shield"></i> Sécurité · Transparence · Équité</div>
 </div>
