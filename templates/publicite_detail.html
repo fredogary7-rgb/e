@@ -4,556 +4,403 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ publicite.titre }} - NectarPro</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+<link rel="icon" href="/static/images/net.jpg" type="image/jpeg">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
-
-:root {
-    --bg-primary: #f8fafc;
-    --bg-secondary: rgba(255, 255, 255, 0.9);
-    --bg-card: rgba(255, 255, 255, 0.7);
-    --border-color: rgba(148, 163, 184, 0.2);
-    --text-primary: #334155;
-    --text-secondary: #64748b;
-    --accent-blue: #38bdf8;
-    --accent-pink: #f9a8d4;
-    --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
-    --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
-    --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
-    --shadow-soft: 0 4px 6px rgba(56, 189, 248, 0.08);
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+:root{
+    --bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);
+    --glass:rgba(255,255,255,0.72);
+    --glass-hover:rgba(255,255,255,0.88);
+    --accent:#db2777;
+    --accent2:#ec4899;
+    --accent-light:#f9a8d4;
+    --emerald:#10b981;
+    --emerald-light:#d1fae5;
+    --text:#000;
+    --text2:#1f2937;
+    --muted:#6b7280;
+    --border:rgba(236,72,153,0.2);
+    --shadow-sm:0 2px 8px rgba(236,72,153,0.08);
+    --shadow:0 8px 32px rgba(236,72,153,0.12);
+    --shadow-lg:0 16px 48px rgba(236,72,153,0.18);
+    --radius-sm:12px;
+    --radius:18px;
+    --radius-lg:24px;
 }
+body{background:var(--bg);min-height:100vh;color:var(--text);font-style:italic;overflow-x:hidden;position:relative;padding-bottom:80px}
 
-body {
-    background: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
-    min-height: 100vh;
-    color: var(--text-primary);
-    padding-bottom: 80px;
-}
+/* PARTICULES */
+.bg-particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.particle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,0.18),transparent 70%);animation:floatUp linear infinite}
+.particle:nth-child(1){width:180px;height:180px;left:5%;top:70%;animation-duration:18s;animation-delay:0s}
+.particle:nth-child(2){width:120px;height:120px;left:60%;top:80%;animation-duration:14s;animation-delay:3s}
+.particle:nth-child(3){width:200px;height:200px;left:30%;top:75%;animation-duration:22s;animation-delay:6s}
+.particle:nth-child(4){width:100px;height:100px;left:80%;top:85%;animation-duration:16s;animation-delay:9s}
+.particle:nth-child(5){width:150px;height:150px;left:50%;top:90%;animation-duration:20s;animation-delay:2s}
+.particle:nth-child(6){width:90px;height:90px;left:15%;top:50%;animation-duration:12s;animation-delay:5s}
+.particle:nth-child(7){width:160px;height:160px;left:75%;top:60%;animation-duration:24s;animation-delay:8s}
+@keyframes floatUp{0%{transform:translateY(0)scale(0.6);opacity:0}10%{opacity:0.7}90%{opacity:0.4}100%{transform:translateY(-110vh)scale(1.4);opacity:0}}
 
-.topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 24px;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border-color);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
+/* TOPBAR */
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:rgba(255,255,255,0.7);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000}
+.topbar-logo{display:flex;align-items:center;gap:8px;position:absolute;left:50%;transform:translateX(-50%)}
+.topbar-logo img{width:32px;height:32px;border-radius:10px;box-shadow:0 2px 8px rgba(236,72,153,0.2)}
+.topbar-logo span{font-size:18px;font-weight:900}
+.topbar-logo .brand-n{color:var(--accent2)}
+.topbar-logo .brand-p{color:var(--accent)}
+.menu-toggle{font-size:20px;cursor:pointer;color:var(--accent2);width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);background:rgba(236,72,153,0.08);transition:all .3s}
+.menu-toggle:hover{background:rgba(236,72,153,0.16);transform:scale(1.05)}
+.back-btn{font-size:18px;cursor:pointer;color:var(--accent2);width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);background:rgba(236,72,153,0.08);transition:all .3s;text-decoration:none}
+.back-btn:hover{background:rgba(236,72,153,0.16);transform:scale(1.05)}
+.user-pill{display:flex;align-items:center;gap:8px;cursor:pointer;position:relative;background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;padding:7px 18px;border-radius:50px;font-weight:700;font-size:13px;box-shadow:0 4px 16px rgba(219,39,119,0.35);transition:all .3s}
+.user-pill:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(219,39,119,0.5)}
 
-.back-btn {
-    width: 42px;
-    height: 42px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-    background: rgba(56, 189, 248, 0.1);
-    color: var(--accent-blue);
-    text-decoration: none;
-    font-size: 18px;
-}
+/* DROPDOWN USER */
+.user-dropdown{position:absolute;top:50px;right:0;width:300px;background:rgba(255,255,255,0.96);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow-lg);opacity:0;visibility:hidden;transform:translateY(-8px)scale(0.96);transition:all .25s cubic-bezier(.4,0,.2,1);z-index:2000;color:var(--text)}
+.user-dropdown.active{opacity:1;visibility:visible;transform:translateY(0)scale(1)}
+.user-dd-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.user-dd-avatar{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;text-transform:uppercase}
+.user-dd-name{font-weight:700;font-size:16px;color:var(--text)}
+.user-dd-role{font-size:11px;color:var(--muted);margin-top:2px}
+.user-dd-info{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.user-dd-item{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text2)}
+.user-dd-item i{width:18px;text-align:center;color:var(--accent2);font-size:13px}
+.user-dd-item span{color:var(--text);font-weight:600}
+.user-dd-logout{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;border:none;border-radius:14px;background:rgba(219,39,119,0.08);color:var(--accent);font-weight:700;font-size:13px;text-decoration:none;transition:all .3s}
+.user-dd-logout:hover{background:rgba(219,39,119,0.18);transform:translateY(-1px)}
 
-.user-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(56, 189, 248, 0.1);
-    padding: 8px 18px;
-    border-radius: 50px;
-    border: 1px solid rgba(56, 189, 248, 0.2);
-}
+/* SIDEBAR */
+.sidebar{position:fixed;left:-340px;top:0;width:340px;height:100%;background:rgba(255,255,255,0.92);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);transition:.4s cubic-bezier(.4,0,.2,1);z-index:1100;overflow-y:auto;border-right:1px solid var(--border)}
+.sidebar.active{left:0}
+.sidebar-header{padding:30px 24px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(236,72,153,0.1) 0%,rgba(249,168,212,0.06) 100%);border-bottom:1px solid var(--border)}
+.sidebar-header img{width:44px;height:44px;border-radius:14px;background:#fff;padding:4px;box-shadow:var(--shadow-sm)}
+.brand-name{font-size:24px;font-weight:900}
+.brand-n{color:var(--accent2)}
+.brand-p{color:var(--accent)}
+.sidebar a{display:flex;align-items:center;padding:12px 22px;font-size:13px;color:var(--text);font-weight:600;text-decoration:none;transition:all .2s;border-left:3px solid transparent;gap:10px;background:linear-gradient(135deg,rgba(249,168,212,0.04),rgba(244,114,182,0.02));margin:3px 12px;border-radius:var(--radius-sm);border:1px solid rgba(249,168,212,0.08)}
+.sidebar a:hover{background:linear-gradient(135deg,rgba(249,168,212,0.16),rgba(244,114,182,0.08));border-left-color:var(--accent2);transform:translateX(4px)}
+.sidebar a.active{background:linear-gradient(90deg,rgba(236,72,153,0.12) 0%,transparent 100%);border-left-color:var(--accent);color:var(--accent);font-weight:700}
+.sidebar a i{width:20px;text-align:center;font-size:14px;color:var(--accent2)}
+.sidebar a.active i{color:var(--accent)}
+.sub-menu{display:none;background:rgba(236,72,153,0.02)}
+.sub-menu a{padding-left:50px;font-size:12px;font-weight:500}
+.rotate{transform:rotate(180deg)}
+.badge-new{background:rgba(236,72,153,0.18);padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.18);opacity:0;visibility:hidden;transition:.3s;z-index:1050}
+.overlay.active{opacity:1;visibility:visible}
 
-.user-icon { font-size: 18px; color: var(--accent-blue); }
-.user { font-style: italic; font-weight: 600; font-size: 14px; text-transform: capitalize; }
+/* MAIN */
+.main{padding:20px;max-width:480px;margin:0 auto;position:relative;z-index:1}
 
-.main { padding: 20px; max-width: 480px; margin: 0 auto; }
+/* VIDEO */
+.video-container{width:100%;border-radius:16px;overflow:hidden;background:#000;margin-bottom:16px;box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+.video-container video{width:100%;display:block}
 
-.video-container {
-    width: 100%;
-    border-radius: 16px;
-    overflow: hidden;
-    background: #000;
-    margin-bottom: 20px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-}
+.video-stats{display:flex;gap:16px;padding:12px 16px;background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:12px;margin-bottom:16px;border:1px solid var(--border)}
+.stat-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.stat-item i{color:var(--accent2)}
 
-.video-container video {
-    width: 100%;
-    display: block;
-}
+/* CARDS */
+.glass-card{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;box-shadow:var(--shadow-sm);transition:all .3s}
+.glass-card:hover{box-shadow:var(--shadow);border-color:var(--accent2)}
 
-.video-stats {
-    display: flex;
-    gap: 20px;
-    padding: 12px 16px;
-    background: var(--bg-card);
-    backdrop-filter: blur(20px);
-    border-radius: 12px;
-    margin-bottom: 16px;
-}
+.video-title{font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px}
+.video-description{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px}
+.video-price{display:inline-block;background:linear-gradient(135deg,#fbcfe8,#f9a8d4);padding:8px 20px;border-radius:20px;font-size:16px;font-weight:700;color:#fff}
+.video-price.gradient{background:linear-gradient(135deg,#f9a8d4,#ec4899)}
 
-.stat-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: var(--text-secondary);
-}
+/* Action Buttons */
+.action-buttons{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.btn-action{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 20px;border-radius:var(--radius-sm);border:none;font-size:14px;font-weight:600;cursor:pointer;transition:all .3s}
+.btn-primary{background:linear-gradient(135deg,#ec4899,#db2777);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(219,39,119,0.3)}
+.btn-secondary{background:var(--glass);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--glass-hover)}
+.btn-danger{background:linear-gradient(135deg,#fecaca,#f87171);color:#fff}
+.btn-danger:hover{transform:translateY(-2px)}
 
-.stat-item i { color: var(--accent-blue); }
+/* Seller */
+.seller-section{display:flex;align-items:center;gap:12px;background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:16px}
+.seller-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#ec4899,#db2777);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:20px}
+.seller-info{flex:1}
+.seller-name{font-size:14px;font-weight:600;color:var(--text)}
+.seller-boutique{font-size:12px;color:var(--muted)}
 
-.video-info-card {
-    background: var(--bg-card);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 16px;
-}
+/* Comments */
+.comments-section{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px}
+.comments-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.comments-title{font-size:16px;font-weight:700;color:var(--text)}
+.comment-item{display:flex;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.comment-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.comment-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#f9a8d4,#ec4899);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;flex-shrink:0}
+.comment-body{flex:1}
+.comment-author{font-size:13px;font-weight:600;color:var(--text)}
+.comment-text{font-size:13px;color:var(--muted);margin-top:2px}
+.comment-date{font-size:10px;color:var(--muted);opacity:.7;margin-top:4px}
+.comment-input-wrapper{display:flex;gap:10px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+.comment-input{flex:1;padding:12px 16px;background:rgba(255,255,255,0.6);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;outline:none;transition:border-color .2s}
+.comment-input:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(236,72,153,0.1)}
+.comment-input::placeholder{color:var(--muted);opacity:.7}
+.btn-send{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border:none;border-radius:12px;background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;cursor:pointer;font-size:16px;transition:all .3s}
+.btn-send:hover{transform:scale(1.05)}
 
-.video-title {
-    font-style: italic;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 8px;
-}
+/* Bottom Nav */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;justify-content:space-around;padding:10px 0;padding-bottom:max(10px,env(safe-area-inset-bottom));z-index:100;border-top:1px solid var(--border)}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);text-decoration:none;font-size:11px;padding:5px 15px;font-weight:600}
+.nav-item.active,.nav-item:hover{color:var(--accent2)}
+.nav-item i{font-size:20px}
 
-.video-description {
-    font-size: 13px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    margin-bottom: 16px;
-}
+body,.main *,.sidebar a,.topbar *,.user-dropdown *,.glass-card *,.bottom-nav *{font-style:italic!important}
 
-.video-price {
-    display: inline-block;
-    background: var(--gradient-pink);
-    padding: 8px 20px;
-    border-radius: 20px;
-    font-size: 16px;
-    font-weight: 700;
-    font-style: italic;
-    color: white;
-    margin-bottom: 16px;
-}
-
-.action-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.btn-action {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 14px 20px;
-    border-radius: 14px;
-    border: none;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    font-style: italic;
-    transition: all 0.3s ease;
-}
-
-.btn-primary {
-    background: var(--gradient-blue);
-    color: white;
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
-}
-
-.btn-secondary {
-    background: var(--bg-card);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-}
-
-.btn-danger {
-    background: linear-gradient(135deg, #fecaca 0%, #f87171 100%);
-    color: white;
-}
-
-.seller-section {
-    background: var(--bg-card);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.seller-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: var(--gradient-blue);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 700;
-    font-size: 20px;
-}
-
-.seller-info { flex: 1; }
-
-.seller-name {
-    font-size: 14px;
-    font-weight: 600;
-    font-style: italic;
-    color: var(--text-primary);
-}
-
-.seller-boutique {
-    font-size: 12px;
-    color: var(--text-secondary);
-}
-
-.comments-section {
-    background: var(--bg-card);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 16px;
-}
-
-.comments-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-}
-
-.comments-title {
-    font-style: italic;
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-.comment-item {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 16px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.comment-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-
-.comment-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--gradient-pink);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 700;
-    font-size: 14px;
-    flex-shrink: 0;
-}
-
-.comment-body { flex: 1; }
-
-.comment-author {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-primary);
-    font-style: italic;
-}
-
-.comment-text {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin-top: 2px;
-}
-
-.comment-date {
-    font-size: 10px;
-    color: var(--text-secondary);
-    opacity: 0.7;
-    margin-top: 4px;
-}
-
-.comment-input-wrapper {
-    display: flex;
-    gap: 10px;
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border-color);
-}
-
-.comment-input {
-    flex: 1;
-    padding: 10px 16px;
-    border: 1px solid var(--border-color);
-    border-radius: 24px;
-    outline: none;
-    font-size: 13px;
-    background: rgba(255,255,255,0.5);
-    color: var(--text-primary);
-}
-
-.comment-send-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--gradient-blue);
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 14px;
-}
-
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-    padding-bottom: max(10px, env(safe-area-inset-bottom));
-    z-index: 100;
-    border-top: 1px solid var(--border-color);
-}
-
-.nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 11px;
-    padding: 5px 15px;
-    font-style: italic;
-}
-
-.nav-item.active { color: var(--accent-blue); }
-.nav-item i { font-size: 20px; }
-
-.empty-comments {
-    text-align: center;
-    padding: 20px;
-    color: var(--text-secondary);
-    font-size: 13px;
-    font-style: italic;
-}
+@media(max-width:768px){.main{padding:14px}.sidebar{width:300px}.action-buttons{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
+<div class="bg-particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <img src="/static/images/net.jpg" alt="Logo">
+        <span class="brand-name"><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></span>
+    </div>
+    <a href="/dashboard"><i class="fa fa-home"></i> Tableau de bord</a>
+    <a href="/revenus"><i class="fa fa-wallet"></i> Revenus</a>
+    <a href="/boutique/creer"><i class="fa fa-store"></i> Ma Boutique <span class="badge-new">&#10024;</span></a>
+    <a href="/publicites"><i class="fa fa-video"></i> Publicites <span class="badge-new">&#127916;</span></a>
+    <a href="/videos"><i class="fa fa-play"></i> Videos NectarPro <span class="badge-new">&#127909;</span></a>
+    <a href="javascript:void(0);" id="channelsToggle"><i class="fa fa-tv"></i> Nos Chaines <i class="fa fa-chevron-down" style="float:right;"></i></a>
+    <div class="sub-menu" id="subChannels"><a href="/chaine"><i class="fa fa-bullhorn"></i> Canal Officiel</a></div>
+    <a href="javascript:void(0);" id="formationToggle"><i class="fa fa-graduation-cap"></i> Formation <i class="fa fa-chevron-down" style="float:right;"></i></a>
+    <div class="sub-menu" id="subFormation"><a href="/trade"><i class="fa fa-chart-line"></i> Trading</a><a href="/ecom"><i class="fa fa-store"></i> E-commerce</a></div>
+    <a href="javascript:void(0);" id="tasksToggle"><i class="fa fa-tasks"></i> Taches <i class="fa fa-chevron-down" style="float:right;"></i></a>
+    <div class="sub-menu" id="subTasks"><a href="/taches"><i class="fa fa-share-alt"></i> Partages remuneres</a></div>
+    <a href="javascript:void(0);" id="retraitsToggle"><i class="fa fa-money-bill"></i> Retraits <i class="fa fa-chevron-down" style="float:right;"></i></a>
+    <div class="sub-menu" id="subRetraits"><a href="/retrait"><i class="fa fa-wallet"></i> Solde retrait</a><a href="/mes-retraits"><i class="fa fa-history"></i> Mes retraits</a></div>
+    <a href="javascript:void(0);" id="moiToggle"><i class="fa fa-user"></i> Moi <i class="fa fa-chevron-down" style="float:right;"></i></a>
+    <div class="sub-menu" id="subMoi"><a href="/profile"><i class="fa fa-user"></i> Mon profile</a><a href="/team"><i class="fa fa-users"></i> Mon equipes</a></div>
+    <a href="/market"><i class="fa fa-store"></i> Market</a>
+    <a href="/download/contact"><i class="fa fa-address-book"></i> Contacts vcf</a>
+    <a href="/academy/tiktok"><i class="fab fa-tiktok"></i> Formation Tiktok</a>
+    <a href="/academy/affiliation"><i class="fa fa-info-circle"></i> Presentation</a>
+    <a href="/academy/design"><i class="fa fa-palette"></i> Design Graphique</a>
+    <a href="/apk"><i class="fa fa-th"></i> Apk Premium</a>
+    <a href="/apk-canal"><i class="fa fa-tv"></i> Telecharger Canal+</a>
+    <a href="/netflix-view"><i class="fa fa-play-circle"></i> Netflix Direct</a>
+    <a href="/about"><i class="fa fa-info-circle"></i> A propos</a>
+    <a href="/politique"><i class="fa fa-file-contract"></i> Politique</a>
+    <a href="/logout" style="color:#db2777;"><i class="fa fa-sign-out"></i> Deconnexion</a>
+</div>
+
+<!-- TOPBAR -->
 <div class="topbar">
-    <a href="/publicite/profil" class="back-btn"><i class="fa fa-arrow-left"></i></a>
-    <div class="user-container">
-        <i class="fa fa-user user-icon"></i>
-        <div class="user">{{ user.username if user else 'Invité' }}</div>
+    <div class="menu-toggle" id="menuToggle"><i class="fa fa-bars"></i></div>
+    <a href="/publicites" class="back-btn"><i class="fa fa-arrow-left"></i></a>
+    <div class="topbar-logo">
+        <img src="/static/images/net.jpg" alt="NectarPro">
+        <span class="brand-name"><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></span>
+    </div>
+    <div class="user-pill" id="userToggle">
+        <i class="fa fa-user-circle"></i> {{ user.username }}
+        <div class="user-dropdown" id="userDropdown">
+            <div class="user-dd-header">
+                <div class="user-dd-avatar">{{ user.username[0] }}</div>
+                <div><div class="user-dd-name">{{ user.username }}</div><div class="user-dd-role">Utilisateur NectarPro</div></div>
+            </div>
+            <div class="user-dd-info">
+                <div class="user-dd-item"><i class="fa fa-envelope"></i><div>Email<br><span>{{ user.email or 'Non defini' }}</span></div></div>
+                <div class="user-dd-item"><i class="fa fa-phone"></i><div>Telephone<br><span>{{ user.phone or 'Non defini' }}</span></div></div>
+                <div class="user-dd-item"><i class="fa fa-calendar"></i><div>Inscrit le<br><span>{{ user.date_creation.strftime('%d/%m/%Y') if user.date_creation else '--' }}</span></div></div>
+                <div class="user-dd-item"><i class="fa fa-user-plus"></i><div>Parrain<br><span>{{ user.parrain or 'Aucun' }}</span></div></div>
+            </div>
+            <a href="/logout" class="user-dd-logout"><i class="fa fa-sign-out"></i> Deconnexion</a>
+        </div>
     </div>
 </div>
 
 <div class="main">
-    <!-- Vidéo -->
+    <!-- Video -->
     <div class="video-container">
-        <video controls autoplay muted loop>
+        <video controls autoplay muted loop poster="{{ publicite.thumbnail or '' }}">
             <source src="{{ publicite.video_url }}" type="video/mp4">
+            Votre navigateur ne supporte pas la lecture de videos.
         </video>
     </div>
 
-    <!-- Statistiques -->
+    <!-- Video Stats -->
     <div class="video-stats">
         <div class="stat-item">
-            <i class="fa fa-eye"></i>
-            <span>{{ publicite.vues or 0 }} vues</span>
+            <i class="fa fa-heart"></i> <span id="likesCount">{{ publicite.likes or 0 }}</span>
         </div>
         <div class="stat-item">
-            <i class="fa fa-heart" style="color: {% if has_liked %}#f9a8d4{% else %}var(--accent-blue){% endif %};"></i>
-            <span>{{ publicite.likes or 0 }} likes</span>
+            <i class="fa fa-comment"></i> <span id="commentsCount">{{ commentaires|length }}</span>
         </div>
         <div class="stat-item">
-            <i class="fa fa-comment"></i>
-            <span>{{ publicite.commentaires_count or 0 }}</span>
+            <i class="fa fa-eye"></i> <span>{{ publicite.vues or 0 }}</span>
         </div>
     </div>
 
-    <!-- Informations -->
-    <div class="video-info-card">
-        <h1 class="video-title">{{ publicite.titre }}</h1>
-        <p class="video-description">{{ publicite.description or 'Aucune description' }}</p>
-        <div class="video-price">{{ "{:,}".format(publicite.prix|int) if publicite.prix else '' }} {{ publicite.devise or 'XOF' }}</div>
+    <!-- Video Info -->
+    <div class="glass-card">
+        <div class="video-title">{{ publicite.titre }}</div>
+        {% if publicite.description %}
+        <div class="video-description">{{ publicite.description }}</div>
+        {% endif %}
+        {% if publicite.prix %}
+        <div class="video-price gradient">{{ "%.0f"|format(publicite.prix) }} {{ publicite.devise or 'XOF' }}</div>
+        {% endif %}
     </div>
 
-    <!-- Boutons d'action -->
+    <!-- Action Buttons -->
     <div class="action-buttons">
-        <button class="btn-action btn-primary" onclick="commanderProduit({{ publicite.id }})">
-            <i class="fa fa-shopping-cart"></i> Commander
+        <button class="btn-action btn-primary" id="likeBtn" onclick="toggleLike()">
+            <i class="fa fa-heart"></i> <span id="likeText">Liker</span>
         </button>
-        <button class="btn-action btn-secondary" onclick="toggleLike({{ publicite.id }})">
-            <i class="fa fa-heart"></i> {% if has_liked %}Aimé{% else %}Liker{% endif %}
+        {% if user.id == publicite.user_id %}
+        <button class="btn-action btn-danger" onclick="deletePublicite()">
+            <i class="fa fa-trash"></i> Supprimer
         </button>
+        {% else %}
+        <button class="btn-action btn-secondary" onclick="scrollToComments()">
+            <i class="fa fa-comment"></i> Commenter
+        </button>
+        {% endif %}
     </div>
 
-    <!-- Section vendeur -->
+    <!-- Seller -->
+    {% if publicite.vendeur %}
     <div class="seller-section">
-        <div class="seller-avatar">
-            {{ publicite.boutique.proprietaire.username[0].upper() if publicite.boutique and publicite.boutique.proprietaire else '?' }}
-        </div>
+        <div class="seller-avatar">{{ publicite.vendeur.username[0]|upper if publicite.vendeur.username else '?' }}</div>
         <div class="seller-info">
-            <div class="seller-name">{{ publicite.boutique.proprietaire.username if publicite.boutique and publicite.boutique.proprietaire else 'Vendeur' }}</div>
-            <div class="seller-boutique">{{ publicite.boutique.nom if publicite.boutique else '' }}</div>
+            <div class="seller-name">{{ publicite.vendeur.username }}</div>
+            <div class="seller-boutique">Vendeur NectarPro</div>
         </div>
-    </div>
-
-    <!-- Bouton supprimer (propriétaire uniquement) -->
-    {% if is_owner %}
-    <div class="action-buttons">
-        <button class="btn-action btn-danger" onclick="supprimerPublicite({{ publicite.id }})" style="grid-column: span 2;">
-            <i class="fa fa-trash"></i> Supprimer la publicité
-        </button>
     </div>
     {% endif %}
 
-    <!-- Commentaires -->
-    <div class="comments-section">
+    <!-- Comments -->
+    <div class="comments-section" id="commentsSection">
         <div class="comments-header">
-            <h2 class="comments-title">💬 Commentaires ({{ publicite.commentaires_count or 0 }})</h2>
+            <div class="comments-title"><i class="fa fa-comments"></i> Commentaires</div>
         </div>
-
         <div id="commentsList">
-            {% if commentaires %}
-                {% for com in commentaires %}
-                <div class="comment-item">
-                    <div class="comment-avatar">{{ com.user.username[0].upper() }}</div>
-                    <div class="comment-body">
-                        <div class="comment-author">{{ com.user.username }}</div>
-                        <div class="comment-text">{{ com.texte }}</div>
-                        <div class="comment-date">{{ com.date_creation.strftime('%d/%m/%Y %H:%M') if com.date_creation else '' }}</div>
-                    </div>
+            {% for commentaire in commentaires %}
+            <div class="comment-item">
+                <div class="comment-avatar">{{ commentaire.auteur.username[0]|upper if commentaire.auteur.username else '?' }}</div>
+                <div class="comment-body">
+                    <div class="comment-author">{{ commentaire.auteur.username }}</div>
+                    <div class="comment-text">{{ commentaire.contenu }}</div>
+                    <div class="comment-date">{{ commentaire.date.strftime('%d/%m/%Y %H:%M') if commentaire.date else '' }}</div>
                 </div>
-                {% endfor %}
-            {% else %}
-                <div class="empty-comments">Aucun commentaire pour le moment. Soyez le premier !</div>
-            {% endif %}
+            </div>
+            {% endfor %}
         </div>
-
-        {% if user %}
         <div class="comment-input-wrapper">
-            <input type="text" class="comment-input" id="commentInput" placeholder="Écrire un commentaire...">
-            <button class="comment-send-btn" onclick="sendComment()"><i class="fa fa-paper-plane"></i></button>
+            <input type="text" class="comment-input" id="commentInput" placeholder="Ajouter un commentaire..." maxlength="300">
+            <button class="btn-send" onclick="addComment()"><i class="fa fa-paper-plane"></i></button>
         </div>
-        {% endif %}
     </div>
 </div>
 
+<!-- Bottom Nav -->
 <nav class="bottom-nav">
-    <a href="/publicites" class="nav-item">
+    <a href="/publicites" class="nav-item active">
         <i class="fa fa-video"></i>
-        <span>Publicité</span>
+        <span>Publicite</span>
     </a>
     <a href="/publicite/creer" class="nav-item">
-        <i class="fa fa-plus-circle" style="font-size: 28px; color: var(--accent-blue);"></i>
-        <span>Créer</span>
+        <i class="fa fa-plus-circle"></i>
+        <span>Creer</span>
     </a>
     <a href="/publicite/activite" class="nav-item">
         <i class="fa fa-heart"></i>
-        <span>Activités</span>
+        <span>Activites</span>
     </a>
-    <a href="/publicite/profil" class="nav-item active">
+    <a href="/publicite/profil" class="nav-item">
         <i class="fa fa-user"></i>
         <span>Profil</span>
     </a>
 </nav>
 
 <script>
-const publiciteId = {{ publicite.id }};
+// SIDEBAR
+const sidebar=document.getElementById("sidebar"),overlayEl=document.getElementById("overlay"),mt=document.getElementById("menuToggle");
+mt.onclick=()=>{sidebar.classList.add("active");overlayEl.classList.add("active")};
+overlayEl.onclick=()=>{sidebar.classList.remove("active");overlayEl.classList.remove("active")};
 
-// Commander produit
-function commanderProduit(pubId) {
-    // Rediriger vers la page du produit (slug) associé à la publicité
-    {% if publicite.produit %}
-    window.location.href = "{{ url_for('voir_produit_public', slug=publicite.produit.slug) }}";
-    {% elif publicite.lien_produit %}
-    window.location.href = "{{ publicite.lien_produit }}";
-    {% else %}
-    alert("Aucun produit lié à cette publicité.");
-    {% endif %}
-}
+// SIDEBAR TOGGLES
+function setupToggle(t,m){let a=document.getElementById(t),b=document.getElementById(m);a&&b&&(a.onclick=e=>{e.preventDefault();let h=b.style.display==="none"||b.style.display==="";b.style.display=h?"block":"none";a.querySelector(".fa-chevron-down").classList.toggle("rotate",h)})}
+setupToggle("channelsToggle","subChannels");setupToggle("formationToggle","subFormation");setupToggle("tasksToggle","subTasks");setupToggle("retraitsToggle","subRetraits");
+let moiT=document.getElementById("moiToggle"),subM=document.getElementById("subMoi");
+moiT.onclick=e=>{e.preventDefault();subM.style.display==="none"?(subM.style.display="block",moiT.querySelector(".fa-chevron-down").classList.add("rotate")):(subM.style.display="none",moiT.querySelector(".fa-chevron-down").classList.remove("rotate"))};
 
-// Toggle like
-function toggleLike(pubId) {
-    fetch('/api/publicite/' + pubId + '/like', { method: 'POST' })
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
-            if (data.success) {
-                location.reload();
-            }
-        });
-}
+// USER DROPDOWN
+(function(){let u=document.querySelector('.topbar .user-pill');if(!u)return;u.addEventListener('click',e=>{e.stopPropagation();document.getElementById('userDropdown').classList.toggle('active')});document.addEventListener('click',e=>{let dd=document.getElementById('userDropdown');if(dd&&!u.contains(e.target))dd.classList.remove('active')})})();
 
-// Supprimer publicité
-function supprimerPublicite(pubId) {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cette publicité ?')) return;
-    
-    fetch('/api/publicite/' + pubId + '/supprimer', { method: 'POST' })
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
-            if (data.success) {
-                window.location.href = '/publicite/profil';
-            } else {
-                alert(data.message || 'Erreur lors de la suppression');
-            }
-        });
-}
+// SCROLL TO COMMENTS
+function scrollToComments(){document.getElementById('commentsSection').scrollIntoView({behavior:'smooth'})}
 
-// Envoyer commentaire
-function sendComment() {
-    var input = document.getElementById('commentInput');
-    var text = input.value.trim();
-    
-    if (!text) return;
-    
-    fetch('/api/publicite/' + publiciteId + '/commentaire', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ texte: text })
-    })
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
-        if (data.success) {
-            location.reload();
+// TOGGLE LIKE
+let liked={{ 'true' if liked else 'false' }};
+function toggleLike(){
+    fetch('/api/publicite/{{ publicite.id }}/like',{method:'POST',headers:{'Content-Type':'application/json'}})
+    .then(r=>r.json())
+    .then(data=>{
+        if(data.success){
+            liked=!liked;
+            document.getElementById('likesCount').textContent=data.likes;
+            document.getElementById('likeText').textContent=liked?'Aime':'Liker';
+            document.getElementById('likeBtn').classList.toggle('btn-primary',!liked);
+            document.getElementById('likeBtn').classList.toggle('btn-secondary',liked);
         }
-    });
+    })
+    .catch(err=>console.error('Erreur:',err));
 }
 
-// Enter key for comments
-document.getElementById('commentInput').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        sendComment();
-    }
-});
+// ADD COMMENT
+function addComment(){
+    const input=document.getElementById('commentInput');
+    const contenu=input.value.trim();
+    if(!contenu)return;
+    fetch('/api/publicite/{{ publicite.id }}/commentaire',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({contenu:contenu})
+    })
+    .then(r=>r.json())
+    .then(data=>{
+        if(data.success){
+            const list=document.getElementById('commentsList');
+            const div=document.createElement('div');
+            div.className='comment-item';
+            div.innerHTML='<div class="comment-avatar">{{ user.username[0]|upper }}</div><div class="comment-body"><div class="comment-author">{{ user.username }}</div><div class="comment-text">'+contenu+'</div><div class="comment-date">A l\'instant</div></div>';
+            list.appendChild(div);
+            input.value='';
+            document.getElementById('commentsCount').textContent=parseInt(document.getElementById('commentsCount').textContent)+1;
+        }else{
+            alert(data.message||'Erreur lors de l\'ajout du commentaire.');
+        }
+    })
+    .catch(err=>{console.error('Erreur:',err);alert('Erreur reseau.');});
+}
+
+// DELETE PUBLICITE
+function deletePublicite(){
+    if(!confirm('Etes-vous sur de vouloir supprimer cette publicite ?'))return;
+    fetch('/api/publicite/{{ publicite.id }}/supprimer',{method:'DELETE'})
+    .then(r=>r.json())
+    .then(data=>{if(data.success){window.location.href='/publicites'}else{alert(data.message||'Erreur lors de la suppression.')}})
+    .catch(err=>{console.error('Erreur:',err);alert('Erreur reseau.');});
+}
 </script>
 
 </body>
