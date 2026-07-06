@@ -305,11 +305,11 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.glass-card *{font-style:ital
                     <div class="product-name">{{ produit.nom }}</div>
                     <div class="product-price">{{ "%.0f"|format(produit.prix) }} {{ produit.devise or 'XOF' }}</div>
                     <div class="actions">
-                        <a href="/product/{{ produit.id }}" class="btn btn-primary" style="font-size:12px;padding:10px 16px">
+                        <a href="/product/{{ produit.slug }}" class="btn btn-primary" style="font-size:12px;padding:10px 16px">
                             <i class="fa fa-eye"></i> Voir
                         </a>
                         {% if user and boutique.user_id == user.id %}
-                        <a href="{{ url_for('supprimer_produit', produit_id=produit.id) }}" class="btn btn-danger" style="font-size:12px;padding:10px 16px" onclick="return confirm('Supprimer ce produit ?')">
+                        <a href="{{ url_for('supprimer_produit', boutique_id=boutique.id, produit_id=produit.id) }}" class="btn btn-danger" style="font-size:12px;padding:10px 16px" onclick="return confirm('Supprimer ce produit ?')">
                             <i class="fa fa-trash"></i>
                         </a>
                         {% endif %}
