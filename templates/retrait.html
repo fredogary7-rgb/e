@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+        html { scroll-behavior:smooth; }
 
         :root {
             --bg-primary: #f8fafc;
@@ -17,8 +18,9 @@
             --bg-card-hover: rgba(255, 255, 255, 0.9);
             --border-color: rgba(148, 163, 184, 0.2);
             --border-glow: rgba(56, 189, 248, 0.3);
-            --text-primary: #334155;
+            --text-primary: #0f172a;
             --text-secondary: #64748b;
+            --text-muted: #94a3b8;
             --accent-blue: #38bdf8;
             --accent-blue-light: #7dd3fc;
             --accent-green: #86efac;
@@ -27,13 +29,17 @@
             --accent-pink-light: #fbcfe8;
             --accent-purple: #c084fc;
             --accent-indigo: #4f46e5;
+            --accent-gold: #fbbf24;
             --danger: #ef4444;
             --success: #22c55e;
+            --warning: #f59e0b;
             --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
             --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
             --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
             --gradient-purple: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%);
             --gradient-indigo: linear-gradient(135deg, #818cf8 0%, #4f46e5 100%);
+            --gradient-gold: linear-gradient(135deg, #fde68a 0%, #fbbf24 100%);
+            --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
             --radius-sm: 10px;
             --radius-lg: 16px;
             --radius-xl: 20px;
@@ -49,21 +55,40 @@
             font-style: italic;
             font-weight: 400;
             color: var(--text-primary);
-            background: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
+            background: var(--gradient-bg);
             line-height: 1.6;
             overflow-x: hidden;
             min-height: 100vh;
-            padding: 20px;
+            position: relative;
         }
 
-        .container { max-width: 600px; margin: 0 auto; }
+        /* ═══════════ FOND COSMIQUE ═══════════ */
+        .cosmic-bg {
+            position: fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;
+        }
+        .cosmic-orb {
+            position: absolute; border-radius: 50%;
+            filter: blur(80px); opacity: 0.3;
+            animation: cosmicOrbit linear infinite;
+        }
+        .cosmic-orb:nth-child(1) { width:40vw; height:40vw; background:radial-gradient(circle,rgba(56,189,248,0.4),transparent 70%); top:-10%; left:-10%; animation-duration:25s; }
+        .cosmic-orb:nth-child(2) { width:30vw; height:30vw; background:radial-gradient(circle,rgba(134,239,172,0.35),transparent 70%); bottom:-8%; right:-5%; animation-duration:30s; animation-delay:-8s; }
+        .cosmic-orb:nth-child(3) { width:28vw; height:28vw; background:radial-gradient(circle,rgba(249,168,212,0.3),transparent 70%); top:35%; left:45%; animation-duration:35s; animation-delay:-15s; }
+        .cosmic-orb:nth-child(4) { width:22vw; height:22vw; background:radial-gradient(circle,rgba(192,132,252,0.25),transparent 70%); top:5%; right:8%; animation-duration:28s; animation-delay:-5s; }
+        @keyframes cosmicOrbit {
+            0% { transform:translate(0,0) scale(1); }
+            25% { transform:translate(70px,-35px) scale(1.25); }
+            50% { transform:translate(-35px,50px) scale(0.85); }
+            75% { transform:translate(-55px,-25px) scale(1.15); }
+            100% { transform:translate(0,0) scale(1); }
+        }
 
-        /* NAVBAR */
+        /* ═══════════ NAVBAR ═══════════ */
         .navbar {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 24px; margin: -20px -20px 30px -20px;
+            padding: 14px 28px;
             background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
             border-bottom: 1px solid var(--border-color);
             position: sticky; top: 0; z-index: 1000;
         }
@@ -72,214 +97,363 @@
             background: var(--gradient-blue);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text; text-decoration: none;
+            display: flex; align-items: center; gap: 8px;
         }
-        .nav-links { display: flex; gap: 20px; list-style: none; }
+        .nav-brand img { width: 32px; height: 32px; border-radius: 8px; }
+        .nav-links { display: flex; gap: 24px; list-style: none; align-items: center; }
         .nav-links a {
             color: var(--text-secondary); text-decoration: none;
-            font-weight: 500; font-size: 14px; transition: color 0.3s;
+            font-weight: 500; font-size: 14px; transition: all 0.3s;
+            position: relative; padding: 4px 0;
         }
-        .nav-links a:hover { color: var(--accent-blue); }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent-blue); }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
+            background: var(--gradient-blue); border-radius: 2px; transition: width 0.3s;
+        }
+        .nav-links a:hover::after { width: 100%; }
 
-        /* Page Header */
-        .page-header {
-            text-align: center; margin-bottom: 30px; padding: 20px;
+        /* ═══════════ CONTAINER ═══════════ */
+        .container {
+            max-width: 600px; margin: 0 auto; padding: 28px 20px 80px;
+            position: relative; z-index: 1;
         }
+
+        /* ═══════════ BACK LINK ═══════════ */
+        .back-link {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--accent-blue); text-decoration: none;
+            font-size: 14px; margin-bottom: 20px; font-weight: 600; font-style: italic;
+            transition: all 0.2s; padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            background: rgba(56,189,248,0.06);
+        }
+        .back-link:hover {
+            background: rgba(56,189,248,0.12);
+            color: var(--accent-indigo);
+            transform: translateX(-3px);
+        }
+
+        /* ═══════════ PAGE HEADER ═══════════ */
+        .page-header { text-align: center; margin-bottom: 32px; }
         .page-header h1 {
-            font-style: italic; font-size: 32px; font-weight: 900;
+            font-style: italic; font-size: 34px; font-weight: 900;
             margin-bottom: 8px;
             background: var(--gradient-blue);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
         .page-header p { font-style: italic; font-size: 15px; color: var(--text-secondary); }
 
-        /* Cards */
-        .card {
-            background: var(--bg-card); backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: var(--radius-xl); padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow-medium);
-            border: 1px solid var(--border-color);
-            transition: all 0.3s;
+        /* ═══════════ ALERTS ═══════════ */
+        .alert {
+            padding: 14px 18px; border-radius: var(--radius-lg);
+            font-size: 14px; margin-bottom: 20px; font-style: italic;
+            display: flex; align-items: center; gap: 10px;
+            animation: slideDown 0.4s ease;
+            backdrop-filter: blur(10px);
         }
-        .card:hover { border-color: rgba(56,189,248,0.3); }
+        @keyframes slideDown {
+            from { opacity:0; transform:translateY(-12px); }
+            to { opacity:1; transform:translateY(0); }
+        }
+        .alert.success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+        .alert.danger { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .alert.warning { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .alert.info { background: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
 
-        .card-header {
-            display: flex; align-items: center; gap: 12px;
-            margin-bottom: 20px; padding-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .card-header i {
-            background: var(--gradient-blue);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-            font-size: 20px;
-        }
-        .card-header h2 { font-size: 18px; font-weight: 700; font-style: italic; color: var(--text-primary); }
-
-        /* Balance Card */
+        /* ═══════════ BALANCE CARD ═══════════ */
         .balance-card {
             background: var(--gradient-blue); color: white;
-            text-align: center; padding: 36px 24px;
-            border-radius: var(--radius-2xl); box-shadow: var(--shadow-large);
+            text-align: center; padding: 40px 28px; margin-bottom: 24px;
+            border-radius: var(--radius-2xl);
+            box-shadow: 0 12px 40px rgba(56, 189, 248, 0.3);
             position: relative; overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .balance-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 48px rgba(56, 189, 248, 0.4);
         }
         .balance-card::before {
             content: ''; position: absolute; top: -50%; right: -50%;
             width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            pointer-events: none;
+            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 65%);
+            pointer-events: none; animation: shimmer 3s ease-in-out infinite;
         }
-        .balance-label { font-size: 14px; opacity: 0.9; margin-bottom: 8px; font-style: italic; }
+        @keyframes shimmer {
+            0%,100% { transform:translate(0,0); }
+            50% { transform:translate(-20px,-20px); }
+        }
+        .balance-icon {
+            width: 56px; height: 56px; border-radius: 16px;
+            background: rgba(255,255,255,0.2); display: flex;
+            align-items: center; justify-content: center; margin: 0 auto 16px;
+            font-size: 24px; position: relative; z-index: 1;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .balance-label {
+            font-size: 14px; opacity: 0.85; margin-bottom: 6px;
+            font-style: italic; position: relative; z-index: 1;
+        }
         .balance-value {
-            font-size: 36px; font-weight: 900; font-style: italic; position: relative; z-index: 1;
+            font-size: 40px; font-weight: 900; font-style: italic;
+            position: relative; z-index: 1; letter-spacing: -1px;
+        }
+        .balance-sub {
+            font-size: 12px; opacity: 0.7; margin-top: 4px;
+            font-style: italic; position: relative; z-index: 1;
         }
 
-        /* Form */
-        .form-group { margin-bottom: 20px; }
+        /* ═══════════ FORM CARD ═══════════ */
+        .card {
+            background: var(--bg-card); backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--radius-2xl); padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+        .card:hover { border-color: var(--border-glow); }
+
+        .card-header {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 24px; padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .card-header .icon-circle {
+            width: 42px; height: 42px; border-radius: 12px;
+            background: linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(56,189,248,0.05) 100%);
+            display: flex; align-items: center; justify-content: center; font-size: 18px;
+        }
+        .card-header .icon-circle i {
+            background: var(--gradient-blue);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .card-header h2 { font-size: 18px; font-weight: 700; font-style: italic; color: var(--text-primary); }
+
+        /* ═══════════ FORM ELEMENTS ═══════════ */
+        .form-group { margin-bottom: 22px; }
         .form-group label {
-            display: block; font-size: 14px; font-weight: 600; font-style: italic;
-            margin-bottom: 8px; color: var(--text-primary);
+            display: flex; align-items: center; gap: 8px; font-size: 13px;
+            font-weight: 600; font-style: italic; margin-bottom: 8px;
+            color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .form-group label i {
+            font-size: 14px;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
         .form-group input, .form-group select {
             width: 100%; padding: 14px 18px;
-            border: 1px solid var(--border-color); border-radius: var(--radius-lg);
-            font-size: 15px; font-style: italic; outline: none; transition: all 0.2s;
+            border: 1.5px solid var(--border-color); border-radius: var(--radius-lg);
+            font-size: 15px; font-style: italic; outline: none; transition: all 0.25s;
             background: rgba(255,255,255,0.6); color: var(--text-primary);
         }
-        .form-group input:focus, .form-group select:focus {
-            border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(56,189,248,0.1);
+        .form-group input:hover, .form-group select:hover {
+            border-color: rgba(56,189,248,0.3);
         }
-        .form-group input::placeholder { color: var(--text-secondary); }
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 4px rgba(56,189,248,0.08);
+            background: rgba(255,255,255,0.9);
+        }
+        .form-group input::placeholder { color: var(--text-muted); font-size: 14px; }
 
-        /* Summary */
+        .input-with-icon {
+            position: relative;
+        }
+        .input-with-icon input {
+            padding-left: 46px;
+        }
+        .input-with-icon .input-icon {
+            position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); font-size: 16px; transition: color 0.25s;
+        }
+        .input-with-icon input:focus + .input-icon,
+        .input-with-icon input:focus ~ .input-icon { color: var(--accent-blue); }
+
+        /* ═══════════ AMOUNT PRESETS ═══════════ */
+        .amount-presets {
+            display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;
+        }
+        .amount-preset {
+            padding: 8px 18px; border-radius: 50px;
+            background: rgba(56,189,248,0.06); border: 1px solid var(--border-color);
+            font-size: 13px; font-weight: 600; font-style: italic; cursor: pointer;
+            color: var(--text-secondary); transition: all 0.2s;
+        }
+        .amount-preset:hover {
+            background: rgba(56,189,248,0.12); border-color: var(--accent-blue-light);
+            color: var(--accent-blue); transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(56,189,248,0.12);
+        }
+        .amount-preset.active {
+            background: var(--gradient-blue); color: white; border-color: transparent;
+            font-weight: 700;
+        }
+
+        /* ═══════════ SUMMARY BOX ═══════════ */
         .summary-box {
-            background: rgba(56,189,248,0.05); border-radius: var(--radius-lg);
-            padding: 18px; margin-top: 16px; border: 1px solid rgba(56,189,248,0.15);
+            background: rgba(56,189,248,0.04); border-radius: var(--radius-lg);
+            padding: 20px; margin-top: 20px;
+            border: 1px solid rgba(56,189,248,0.12);
+            backdrop-filter: blur(10px);
+        }
+        .summary-title {
+            font-size: 12px; text-transform: uppercase; letter-spacing: 1px;
+            color: var(--text-muted); margin-bottom: 12px; font-weight: 600; font-style: italic;
         }
         .summary-row {
-            display: flex; justify-content: space-between;
-            padding: 8px 0; font-size: 14px; color: var(--text-secondary);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; font-size: 14px; color: var(--text-secondary); font-style: italic;
         }
         .summary-row.total {
-            border-top: 1px solid var(--border-color); margin-top: 8px;
-            padding-top: 14px; font-weight: 700; font-style: italic;
-            font-size: 16px; color: var(--text-primary);
+            border-top: 1px dashed var(--border-color); margin-top: 10px;
+            padding-top: 16px; font-weight: 700; font-size: 17px;
+            color: var(--text-primary);
         }
         .summary-row.total span:last-child {
             background: var(--gradient-blue);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            font-size: 18px;
+        }
+        .summary-divider {
+            height: 1px; background: repeating-linear-gradient(90deg, var(--border-color) 0, var(--border-color) 6px, transparent 6px, transparent 12px);
+            margin: 4px 0;
         }
 
-        /* Info Box */
+        /* ═══════════ INFO BOX ═══════════ */
         .info-box {
-            background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.15);
-            border-radius: var(--radius-lg); padding: 14px 18px; margin-top: 16px;
+            background: rgba(56,189,248,0.05); border: 1px solid rgba(56,189,248,0.12);
+            border-radius: var(--radius-lg); padding: 14px 18px; margin-top: 18px;
             font-size: 13px; font-style: italic; color: var(--text-secondary);
             display: flex; align-items: center; gap: 10px;
+            backdrop-filter: blur(10px);
         }
         .info-box i { color: var(--accent-blue); flex-shrink: 0; font-size: 16px; }
 
-        /* Buttons */
+        /* ═══════════ BUTTONS ═══════════ */
         .btn {
             width: 100%; padding: 16px 24px; border: none;
             border-radius: var(--radius-lg); font-size: 16px; font-weight: 700; font-style: italic;
             cursor: pointer; transition: all 0.3s ease;
             display: flex; align-items: center; justify-content: center; gap: 10px;
+            position: relative; overflow: hidden;
         }
+        .btn::after {
+            content: ''; position: absolute; top: 50%; left: 50%;
+            width: 0; height: 0; border-radius: 50%;
+            background: rgba(255,255,255,0.3); transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+        .btn:active::after { width: 300px; height: 300px; }
         .btn-primary {
             background: var(--gradient-blue); color: white;
-            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.35);
+            box-shadow: 0 6px 24px rgba(56, 189, 248, 0.35);
         }
         .btn-primary:hover:not(:disabled) {
-            transform: translateY(-3px); box-shadow: 0 10px 30px rgba(56, 189, 248, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 32px rgba(56, 189, 248, 0.5);
         }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; filter: grayscale(30%); }
         .btn-cancel {
             background: rgba(148,163,184,0.1); color: var(--text-secondary);
         }
-        .btn-cancel:hover { background: rgba(148,163,184,0.2); }
+        .btn-cancel:hover { background: rgba(148,163,184,0.18); }
 
-        /* Alerts */
-        .alert {
-            padding: 14px 18px; border-radius: var(--radius-lg);
-            font-size: 14px; margin-bottom: 16px;
-            display: flex; align-items: center; gap: 10px; font-style: italic;
-        }
-        .alert.success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
-        .alert.danger { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-        .alert.warning { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
-
-        /* Back Link */
-        .back-link {
-            display: inline-flex; align-items: center; gap: 8px;
-            color: var(--accent-blue); text-decoration: none;
-            font-size: 14px; margin-bottom: 16px; font-weight: 600; font-style: italic;
-            transition: all 0.2s;
-        }
-        .back-link:hover { color: var(--accent-indigo); }
-
-        /* Modal */
+        /* ═══════════ MODAL ═══════════ */
         .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%; background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px); z-index: 2000;
-            justify-content: center; align-items: center; padding: 20px;
+            display: none; position: fixed; inset: 0;
+            background: rgba(15,23,42,0.55); backdrop-filter: blur(6px);
+            z-index: 2000; justify-content: center; align-items: center; padding: 24px;
+            animation: fadeIn 0.25s ease;
         }
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
         .modal-overlay.active { display: flex; }
         .modal {
-            background: white; border-radius: var(--radius-2xl);
-            padding: 32px; max-width: 420px; width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(20px);
+            border-radius: var(--radius-2xl); padding: 36px 32px;
+            max-width: 440px; width: 100%;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.5);
+            animation: modalIn 0.35s cubic-bezier(0.16,1,0.3,1);
         }
-        .modal-title { text-align: center; margin-bottom: 24px; }
-        .modal-title h2 { font-size: 20px; font-weight: 700; font-style: italic; margin-bottom: 6px; }
+        @keyframes modalIn {
+            from { opacity:0; transform:translateY(30px) scale(0.95); }
+            to { opacity:1; transform:translateY(0) scale(1); }
+        }
+        .modal-title { text-align: center; margin-bottom: 28px; }
+        .modal-title .lock-icon {
+            width: 56px; height: 56px; border-radius: 16px;
+            background: linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(79,70,229,0.1) 100%);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px; font-size: 24px;
+        }
+        .modal-title .lock-icon i {
+            background: var(--gradient-indigo);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .modal-title h2 { font-size: 22px; font-weight: 700; font-style: italic; margin-bottom: 6px; color: var(--text-primary); }
         .modal-title p { font-size: 13px; color: var(--text-secondary); font-style: italic; }
 
-        /* PIN Dots */
-        .pin-dots { display: flex; gap: 12px; justify-content: center; margin-bottom: 24px; }
+        /* ═══════════ PIN DOTS ═══════════ */
+        .pin-dots { display: flex; gap: 12px; justify-content: center; margin-bottom: 28px; }
         .pin-dot {
-            width: 48px; height: 56px; border: 2px solid var(--border-color);
+            width: 50px; height: 58px; border: 2px solid var(--border-color);
             border-radius: var(--radius-sm); display: flex;
             align-items: center; justify-content: center;
-            font-size: 24px; font-weight: 900; transition: all 0.2s;
+            font-size: 26px; font-weight: 900; transition: all 0.2s;
             background: rgba(248,250,252,0.8);
         }
         .pin-dot.filled {
             border-color: var(--accent-blue); background: rgba(56,189,248,0.08);
-            color: var(--accent-blue);
+            color: var(--accent-blue); box-shadow: 0 0 0 4px rgba(56,189,248,0.1);
         }
         .pin-dot.error {
             border-color: var(--danger); background: rgba(239,68,68,0.08);
-            color: var(--danger); animation: shake 0.3s ease;
+            color: var(--danger); animation: dotShake 0.35s ease;
         }
-        @keyframes shake {
-            0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}
+        @keyframes dotShake {
+            0%,100% { transform:translateX(0); }
+            20% { transform:translateX(-6px); }
+            40% { transform:translateX(6px); }
+            60% { transform:translateX(-4px); }
+            80% { transform:translateX(4px); }
         }
         .hidden-input { position: absolute; opacity: 0; width: 0; height: 0; }
 
-        /* Attempts Info */
+        /* ═══════════ ATTEMPTS & LOCKOUT ═══════════ */
         .attempts-info {
             text-align: center; font-size: 13px; font-style: italic;
-            color: var(--text-secondary); margin-bottom: 16px;
+            color: var(--text-secondary); margin-bottom: 18px;
         }
         .attempts-info .current { color: var(--accent-blue); font-weight: 700; }
         .attempts-info .max { color: var(--danger); }
-
-        /* Lockout Timer */
         .lockout-timer {
-            display: none; text-align: center; padding: 14px;
-            background: #fef2f2; border-radius: var(--radius-lg);
-            margin: 16px 0; color: var(--danger); font-weight: 600; font-size: 14px; font-style: italic;
+            display: none; text-align: center; padding: 14px 18px;
+            background: #fef2f2; border-radius: var(--radius-lg); border: 1px solid #fecaca;
+            margin: 18px 0; color: var(--danger); font-weight: 600; font-size: 14px; font-style: italic;
         }
-        .lockout-timer.active { display: block; }
+        .lockout-timer.active { display: flex; align-items: center; justify-content: center; gap: 8px; }
 
-        /* Biometric */
+        /* ═══════════ ERROR MESSAGE ═══════════ */
+        .error-msg {
+            background: #fef2f2; color: var(--danger);
+            padding: 12px 18px; border-radius: var(--radius-lg);
+            font-size: 13px; margin-bottom: 18px; display: none;
+            text-align: center; font-style: italic; border: 1px solid #fecaca;
+        }
+        .error-msg.show { display: block; animation: slideDown 0.3s ease; }
+
+        /* ═══════════ BIOMETRIC ═══════════ */
         .biometric-divider {
-            display: flex; align-items: center; gap: 12px;
-            margin: 20px 0; color: var(--text-secondary); font-size: 13px; font-style: italic;
+            display: none; align-items: center; gap: 14px;
+            margin: 22px 0; color: var(--text-muted); font-size: 13px; font-style: italic;
         }
         .biometric-divider::before, .biometric-divider::after {
-            content: ''; flex: 1; height: 1px; background: var(--border-color);
+            content: ''; flex: 1; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
         }
         .biometric-option { display: none; }
         .btn-biometric {
@@ -288,10 +462,10 @@
             color: white; border: none; border-radius: var(--radius-lg);
             font-size: 15px; font-weight: 600; font-style: italic; cursor: pointer;
             display: flex; align-items: center; justify-content: center; gap: 10px;
-            transition: all 0.2s;
+            transition: all 0.25s; box-shadow: 0 4px 16px rgba(99,102,241,0.3);
         }
         .btn-biometric:hover:not(:disabled) {
-            transform: translateY(-2px); box-shadow: 0 6px 20px rgba(99,102,241,0.4);
+            transform: translateY(-2px); box-shadow: 0 8px 24px rgba(99,102,241,0.45);
         }
         .btn-biometric:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-biometric.loading .btn-text { display: none; }
@@ -302,22 +476,13 @@
             animation: spin 0.8s linear infinite;
         }
         .btn-biometric.loading .spinner { display: inline-block; }
-        @keyframes spin { to{transform:rotate(360deg)} }
+        @keyframes spin { to { transform:rotate(360deg); } }
 
-        /* Modal Actions */
-        .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+        /* ═══════════ MODAL ACTIONS ═══════════ */
+        .modal-actions { display: flex; gap: 12px; margin-top: 24px; }
         .modal-actions .btn { flex: 1; }
 
-        /* Error Message */
-        .error-msg {
-            background: #fef2f2; color: var(--danger);
-            padding: 12px 16px; border-radius: var(--radius-lg);
-            font-size: 13px; margin-bottom: 16px; display: none;
-            text-align: center; font-style: italic;
-        }
-        .error-msg.show { display: block; }
-
-        /* Loader */
+        /* ═══════════ LOADER ═══════════ */
         .loader {
             display: none; width: 18px; height: 18px;
             border: 2px solid rgba(255,255,255,0.3);
@@ -325,33 +490,74 @@
             animation: spin 0.8s linear infinite;
         }
 
-        /* FOOTER */
-        .footer {
-            margin-top: 40px; text-align: center; padding: 24px;
-            color: var(--text-secondary); font-size: 13px; font-style: italic;
+        /* ═══════════ SUCCESS ANIMATION ═══════════ */
+        .success-check {
+            display: none; text-align: center; padding: 20px;
         }
-        .footer span { font-weight: 700; color: var(--accent-blue); }
+        .success-check .check-circle {
+            width: 64px; height: 64px; border-radius: 50%;
+            background: var(--gradient-green);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px; font-size: 28px; color: white;
+            animation: popIn 0.4s cubic-bezier(0.16,1,0.3,1);
+        }
+        @keyframes popIn {
+            from { transform:scale(0); opacity:0; }
+            to { transform:scale(1); opacity:1; }
+        }
 
+        /* ═══════════ SECURITY INFO ═══════════ */
+        .security-badge {
+            display: flex; align-items: center; gap: 8px;
+            justify-content: center; margin-top: 24px;
+            font-size: 12px; color: var(--text-muted); font-style: italic;
+        }
+        .security-badge i { color: var(--accent-green); }
+
+        /* ═══════════ FOOTER ═══════════ */
+        .footer {
+            margin-top: 32px; text-align: center; padding: 24px;
+            color: var(--text-muted); font-size: 12px; font-style: italic;
+            position: relative; z-index: 1;
+        }
+        .footer span { font-weight: 700; background: var(--gradient-blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+        /* ═══════════ RESPONSIVE ═══════════ */
         @media (max-width: 480px) {
-            body { padding: 16px; }
-            .navbar { margin: -16px -16px 24px -16px; padding: 10px 16px; }
+            .container { padding: 20px 16px 60px; }
+            .navbar { padding: 10px 16px; }
             .nav-links { display: none; }
-            .card { padding: 20px; }
-            .balance-value { font-size: 28px; }
-            .page-header h1 { font-size: 24px; }
-            .modal { padding: 24px; }
-            .pin-dot { width: 40px; height: 48px; font-size: 20px; }
+            .card { padding: 22px 18px; }
+            .balance-card { padding: 32px 20px; }
+            .balance-value { font-size: 32px; }
+            .page-header h1 { font-size: 26px; }
+            .modal { padding: 28px 20px; }
+            .pin-dot { width: 42px; height: 50px; font-size: 22px; }
+            .amount-presets { gap: 8px; }
+            .amount-preset { padding: 6px 14px; font-size: 12px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Fond cosmique -->
+    <div class="cosmic-bg">
+        <div class="cosmic-orb"></div>
+        <div class="cosmic-orb"></div>
+        <div class="cosmic-orb"></div>
+        <div class="cosmic-orb"></div>
+    </div>
+
+    <!-- Navbar -->
     <nav class="navbar">
-        <a href="/dashboard" class="nav-brand">NectarPro</a>
+        <a href="/dashboard" class="nav-brand">
+            <img src="/static/images/net.jpg" alt="Logo">
+            NectarPro
+        </a>
         <ul class="nav-links">
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/mes_retraits">Retraits</a></li>
-            <li><a href="/team">Équipe</a></li>
+            <li><a href="/dashboard"><i class="fa fa-home"></i> Dashboard</a></li>
+            <li><a href="/mes-retraits" class="active"><i class="fa fa-wallet"></i> Retraits</a></li>
+            <li><a href="/team"><i class="fa fa-users"></i> Équipe</a></li>
         </ul>
     </nav>
 
@@ -359,13 +565,13 @@
         <!-- Back Link -->
         <a href="{{ url_for('mes_retraits') }}" class="back-link">
             <i class="fa fa-arrow-left"></i>
-            Mes retraits
+            <span>Historique des retraits</span>
         </a>
 
         <!-- Page Header -->
         <div class="page-header">
             <h1>Retrait de fonds</h1>
-            <p>Transférez vos gains vers votre portefeuille mobile</p>
+            <p>Transférez vos gains vers votre portefeuille mobile en toute sécurité</p>
         </div>
 
         <!-- Flash Messages -->
@@ -373,7 +579,7 @@
           {% if messages %}
             {% for category, message in messages %}
               <div class="alert {{ category }}">
-                <i class="fa {% if category == 'success' %}fa-check-circle{% elif category == 'danger' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+                <i class="fa {% if category == 'success' %}fa-check-circle{% elif category == 'danger' %}fa-exclamation-circle{% elif category == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
                 {{ message }}
               </div>
             {% endfor %}
@@ -381,67 +587,94 @@
         {% endwith %}
 
         <!-- Balance Card -->
-        <div class="card balance-card">
+        <div class="balance-card">
+            <div class="balance-icon">
+                <i class="fa fa-coins"></i>
+            </div>
             <div class="balance-label">Solde disponible</div>
             <div class="balance-value">{{ "{:,.0f}".format(stats.commissions_total) }} XOF</div>
+            <div class="balance-sub">Frais de traitement : 0 XOF</div>
         </div>
 
         <!-- Withdrawal Form -->
         <div class="card">
             <div class="card-header">
-                <i class="fa fa-wallet"></i>
+                <div class="icon-circle">
+                    <i class="fa fa-paper-plane"></i>
+                </div>
                 <h2>Effectuer un retrait</h2>
             </div>
-            
+
             <form method="POST" id="retraitForm">
                 <!-- Hidden field for PIN (set after verification) -->
                 <input type="hidden" name="pin" id="hidden-pin" value="">
                 <!-- Hidden field for biometric verification -->
                 <input type="hidden" name="biometric_verified" id="hidden-biometric" value="">
-                
+
                 <!-- Amount -->
                 <div class="form-group">
-                    <label for="montant">Montant du retrait (XOF)</label>
-                    <input type="number" 
-                           id="montant" 
-                           name="montant" 
-                           placeholder="Ex: 10000" 
-                           min="100" 
-                           max="{{ stats.commissions_total | int }}" 
-                           required>
+                    <label for="montant">
+                        <i class="fa fa-tag"></i> Montant du retrait (XOF)
+                    </label>
+                    <div class="input-with-icon">
+                        <input type="number"
+                               id="montant"
+                               name="montant"
+                               placeholder="Entrez le montant souhaité"
+                               min="500"
+                               max="{{ stats.commissions_total | int }}"
+                               required>
+                        <i class="fa fa-xof input-icon" style="font-style:normal;font-weight:700;">F</i>
+                    </div>
+                    <div class="amount-presets" id="amountPresets">
+                        <button type="button" class="amount-preset" data-amount="1000">1 000 XOF</button>
+                        <button type="button" class="amount-preset" data-amount="5000">5 000 XOF</button>
+                        <button type="button" class="amount-preset" data-amount="10000">10 000 XOF</button>
+                        <button type="button" class="amount-preset" data-amount="25000">25 000 XOF</button>
+                    </div>
                 </div>
 
                 <!-- Payment Method -->
                 <div class="form-group">
-                    <label for="payment_method">Méthode de paiement</label>
+                    <label for="payment_method">
+                        <i class="fa fa-building-columns"></i> Méthode de paiement
+                    </label>
                     <select id="payment_method" name="payment_method" required>
-                        <option value="">Sélectionnez une option</option>
+                        <option value="">Sélectionnez votre opérateur</option>
                         {% for service in services %}
-                        <option value="{{ service.id }}">{{ service.name }} - {{ service.description }}</option>
+                        <option value="{{ service.id }}">{{ service.name }} — {{ service.description }}</option>
                         {% endfor %}
                     </select>
                 </div>
 
                 <!-- Phone Number -->
                 <div class="form-group">
-                    <label for="phone">Numéro de téléphone</label>
-                    <input type="tel" 
-                           id="phone" 
-                           name="phone" 
-                           placeholder="Ex: 0707070707" 
-                           required>
+                    <label for="phone">
+                        <i class="fa fa-mobile-screen"></i> Numéro de téléphone
+                    </label>
+                    <div class="input-with-icon">
+                        <input type="tel"
+                               id="phone"
+                               name="phone"
+                               placeholder="Ex: 07 07 07 07 07"
+                               required>
+                        <i class="fa fa-phone input-icon"></i>
+                    </div>
                 </div>
 
                 <!-- Summary -->
                 <div class="summary-box">
+                    <div class="summary-title">Résumé du retrait</div>
                     <div class="summary-row">
                         <span>Montant du retrait</span>
                         <span id="summary-montant">0 XOF</span>
                     </div>
+                    <div class="summary-divider"></div>
                     <div class="summary-row">
                         <span>Frais de traitement</span>
-                        <span>500 XOF</span>
+                        <span id="summary-frais">0 XOF</span>
                     </div>
+                    <div class="summary-divider"></div>
                     <div class="summary-row total">
                         <span>Total à débiter</span>
                         <span id="summary-total">0 XOF</span>
@@ -451,23 +684,26 @@
                 <!-- Info -->
                 <div class="info-box">
                     <i class="fa fa-info-circle"></i>
-                    <span>Minimum: 5,000 XOF | Maximum: 50,000 XOF | Frais: 500 XOF</span>
+                    <span>Minimum : 500 XOF &nbsp;|&nbsp; Maximum : 50 000 XOF &nbsp;|&nbsp; Frais : 0 XOF</span>
                 </div>
 
                 <!-- Submit Button -->
-                <button type="button" class="btn btn-primary" onclick="showPinModal()" style="margin-top: 20px;">
+                <button type="button" class="btn btn-primary" onclick="showPinModal()" style="margin-top: 24px;">
                     <i class="fa fa-paper-plane"></i>
-                    <span>Effectuer le retrait</span>
+                    <span>Initier le retrait</span>
                 </button>
             </form>
         </div>
 
-        <!-- PIN/Biometric Modal -->
+        <!-- PIN / Biometric Modal -->
         <div class="modal-overlay" id="pinModal">
             <div class="modal">
                 <div class="modal-title">
+                    <div class="lock-icon">
+                        <i class="fa fa-lock"></i>
+                    </div>
                     <h2>Confirmation requise</h2>
-                    <p>Entrez votre code PIN à 6 chiffres pour confirmer le retrait</p>
+                    <p>Entrez votre code PIN à 6 chiffres pour valider le retrait</p>
                 </div>
 
                 <!-- Error Message -->
@@ -479,7 +715,7 @@
                     <input type="hidden" name="montant" id="hidden-montant">
                     <input type="hidden" name="payment_method" id="hidden-payment">
                     <input type="hidden" name="phone" id="hidden-phone">
-                    
+
                     <!-- PIN Dots -->
                     <div class="pin-dots" id="pinDots">
                         <div class="pin-dot" data-index="0"></div>
@@ -489,11 +725,12 @@
                         <div class="pin-dot" data-index="4"></div>
                         <div class="pin-dot" data-index="5"></div>
                     </div>
-                    <input type="password" class="hidden-input" id="pin" maxlength="6" inputmode="numeric" pattern="[0-9]*">
+                    <input type="password" class="hidden-input" id="pin" maxlength="6" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
 
                     <!-- Attempts Info -->
                     <div class="attempts-info" id="attemptsInfo">
-                        Tentative <span class="current" id="currentAttempt">1</span> sur <span class="max">3</span>
+                        <i class="fa fa-shield-halved"></i>
+                        &nbsp;Tentative <span class="current" id="currentAttempt">1</span> / <span class="max">3</span>
                     </div>
 
                     <!-- Lockout Timer -->
@@ -505,6 +742,7 @@
                     <!-- Modal Actions -->
                     <div class="modal-actions">
                         <button type="button" class="btn btn-cancel" onclick="closePinModal()">
+                            <i class="fa fa-times"></i>
                             Annuler
                         </button>
                         <button type="submit" class="btn btn-primary" id="confirmBtn" disabled>
@@ -514,54 +752,89 @@
                     </div>
 
                     <!-- Biometric Option -->
-                    <div class="biometric-divider" id="biometricDivider" style="display:none;">
+                    <div class="biometric-divider" id="biometricDivider">
                         <span>ou</span>
                     </div>
 
                     <div class="biometric-option" id="biometricOption">
                         <button type="button" class="btn-biometric" id="btnBiometric" onclick="authenticateBiometric()">
                             <i class="fa fa-fingerprint"></i>
-                            <span class="btn-text">Utiliser Face ID / Touch ID</span>
+                            <span class="btn-text">Utiliser Face ID / Empreinte digitale</span>
                             <span class="spinner"></span>
                         </button>
                     </div>
                 </form>
 
                 <!-- Security Info -->
-                <div class="info-box" style="margin-top: 20px;">
-                    <i class="fa fa-shield-alt"></i>
-                    <span>Après 3 échecs, vous serez bloqué pendant 5 minutes.</span>
+                <div class="security-badge">
+                    <i class="fa fa-shield-halved"></i>
+                    <span>Protégé par chiffrement — Après 3 échecs, verrouillage 5 minutes</span>
                 </div>
             </div>
         </div>
 
+        <!-- Footer -->
         <div class="footer">
-            &copy; 2026 <span>NectarPro</span> — Tous droits réservés.
+            &copy; 2026 <span>NectarPro</span> — Transactions sécurisées. Tous droits réservés.
         </div>
     </div>
 
     <script>
-        // Variables globales
+        // ==================== VARIABLES GLOBALES ====================
         let pinValue = '';
         let attemptCount = 1;
         let isLockedOut = false;
         let hasBiometric = false;
         let lockoutInterval = null;
+        const FRAIS = 0;
 
-        // Calcul du résumé
+        // ==================== SYSTÈME DE MONTANTS PRÉDÉFINIS ====================
         const montantInput = document.getElementById('montant');
         const summaryMontant = document.getElementById('summary-montant');
+        const summaryFrais = document.getElementById('summary-frais');
         const summaryTotal = document.getElementById('summary-total');
-        const frais = 500;
 
+        // Initialiser l'affichage des frais
+        summaryFrais.textContent = FRAIS.toLocaleString() + ' XOF';
+
+        // Mise à jour du résumé en temps réel
         montantInput.addEventListener('input', function() {
-            const montant = parseInt(this.value) || 0;
-            const total = montant + frais;
-            summaryMontant.textContent = montant.toLocaleString() + ' XOF';
-            summaryTotal.textContent = total.toLocaleString() + ' XOF';
+            updateSummary();
+            updatePresetHighlight();
         });
 
-        // Vérifier la biométrie disponible
+        function updateSummary() {
+            const montant = parseInt(montantInput.value) || 0;
+            const total = montant + FRAIS;
+            summaryMontant.textContent = montant.toLocaleString() + ' XOF';
+            summaryTotal.textContent = total.toLocaleString() + ' XOF';
+        }
+
+        // Gestion des boutons de montants prédéfinis
+        document.getElementById('amountPresets').addEventListener('click', function(e) {
+            if (e.target.classList.contains('amount-preset')) {
+                const amount = parseInt(e.target.dataset.amount);
+                montantInput.value = amount;
+                updateSummary();
+                updatePresetHighlight();
+                // Trigger l'événement input
+                montantInput.dispatchEvent(new Event('input'));
+            }
+        });
+
+        function updatePresetHighlight() {
+            const currentAmount = parseInt(montantInput.value) || 0;
+            document.querySelectorAll('.amount-preset').forEach(preset => {
+                const presetAmount = parseInt(preset.dataset.amount);
+                if (presetAmount === currentAmount) {
+                    preset.classList.add('active');
+                } else {
+                    preset.classList.remove('active');
+                }
+            });
+        }
+
+        // ==================== BIOMÉTRIE ====================
         function checkBiometricAvailability() {
             if (window.PublicKeyCredential) {
                 fetch('/api/webauthn/credentials')
@@ -577,14 +850,23 @@
             }
         }
 
-        // Modal PIN
+        // ==================== MODAL PIN ====================
         function showPinModal() {
             const montant = document.getElementById('montant').value;
             const payment = document.getElementById('payment_method').value;
             const phone = document.getElementById('phone').value;
 
-            if (!montant || !payment || !phone) {
-                alert('Veuillez remplir tous les champs');
+            // Validation
+            if (!montant || parseInt(montant) < 500) {
+                showToast('Veuillez entrer un montant valide (min. 500 XOF)', 'warning');
+                return;
+            }
+            if (!payment) {
+                showToast('Veuillez sélectionner une méthode de paiement', 'warning');
+                return;
+            }
+            if (!phone) {
+                showToast('Veuillez entrer votre numéro de téléphone', 'warning');
                 return;
             }
 
@@ -594,16 +876,19 @@
             document.getElementById('hidden-phone').value = phone;
 
             // Réinitialiser le PIN
-            pinValue = '';
-            updatePinDots();
-            document.getElementById('confirmBtn').disabled = true;
+            resetPinState();
             document.getElementById('errorMessage').classList.remove('show');
-            document.getElementById('attemptsInfo').style.display = 'block';
-            document.getElementById('currentAttempt').textContent = attemptCount;
+
+            // Gérer le lockout
+            if (!isLockedOut) {
+                document.getElementById('attemptsInfo').style.display = 'block';
+                document.getElementById('lockoutTimer').classList.remove('active');
+                document.getElementById('currentAttempt').textContent = attemptCount;
+            }
 
             // Afficher le modal
             document.getElementById('pinModal').classList.add('active');
-            document.getElementById('pin').focus();
+            setTimeout(() => document.getElementById('pin').focus(), 350);
 
             // Vérifier la biométrie
             checkBiometricAvailability();
@@ -611,6 +896,10 @@
 
         function closePinModal() {
             document.getElementById('pinModal').classList.remove('active');
+            resetPinState();
+        }
+
+        function resetPinState() {
             pinValue = '';
             updatePinDots();
             document.getElementById('pin').value = '';
@@ -620,6 +909,7 @@
         function updatePinDots() {
             const dots = document.querySelectorAll('.pin-dot');
             dots.forEach((dot, index) => {
+                dot.classList.remove('error');
                 if (index < pinValue.length) {
                     dot.classList.add('filled');
                     dot.textContent = '•';
@@ -632,15 +922,16 @@
         }
 
         // Gestion de la saisie du PIN
-        document.getElementById('pin').addEventListener('input', function(e) {
+        const pinInput = document.getElementById('pin');
+        pinInput.addEventListener('input', function(e) {
             pinValue = this.value.replace(/\D/g, '').slice(0, 6);
             updatePinDots();
+            document.getElementById('errorMessage').classList.remove('show');
         });
 
-        document.getElementById('pin').addEventListener('keydown', function(e) {
-            if (e.key === 'Backspace') {
-                pinValue = pinValue.slice(0, -1);
-                updatePinDots();
+        pinInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' && pinValue.length === 0) {
+                // Déjà vide, rien à faire
             }
         });
 
@@ -649,30 +940,38 @@
             const errorEl = document.getElementById('errorMessage');
             errorEl.textContent = message;
             errorEl.classList.add('show');
+            // Secouer les dots
+            document.querySelectorAll('.pin-dot').forEach(dot => {
+                dot.classList.add('error');
+                setTimeout(() => dot.classList.remove('error'), 400);
+            });
         }
 
-        // Cacher l'erreur quand on commence à taper
-        document.getElementById('pin').addEventListener('input', function() {
-            document.getElementById('errorMessage').classList.remove('show');
-        });
+        // Toast notification
+        function showToast(message, type) {
+            // Simple alert pour l'instant
+            alert(message);
+        }
 
-        // Soumission du formulaire avec PIN
+        // ==================== SOUMISSION PIN ====================
         document.getElementById('pinForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             if (pinValue.length !== 6) {
                 showError('Le code PIN doit contenir exactement 6 chiffres');
                 return;
             }
 
             if (isLockedOut) {
-                showError('Compte temporairement verrouillé. Veuillez attendre.');
+                showError('Compte temporairement verrouillé. Veuillez patienter.');
                 return;
             }
 
             const btnConfirm = document.getElementById('confirmBtn');
             btnConfirm.disabled = true;
-            btnConfirm.querySelector('span').textContent = 'Vérification...';
+            const btnSpan = btnConfirm.querySelector('span');
+            const originalText = btnSpan.textContent;
+            btnSpan.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Vérification...';
 
             // Appel API pour vérifier le PIN
             fetch('/api/verify-pin', {
@@ -685,18 +984,14 @@
                 if (data.success) {
                     // PIN correct - remplir le champ caché et soumettre le formulaire
                     document.getElementById('hidden-pin').value = pinValue;
+                    closePinModal();
                     document.getElementById('retraitForm').submit();
                 } else {
                     // PIN incorrect
-                    showError(data.message || 'Code PIN incorrect');
+                    showError(data.message || 'Code PIN incorrect. Veuillez réessayer.');
                     pinValue = '';
                     updatePinDots();
-                    
-                    // Animation d'erreur
-                    document.querySelectorAll('.pin-dot').forEach(dot => {
-                        dot.classList.add('error');
-                        setTimeout(() => dot.classList.remove('error'), 300);
-                    });
+                    pinInput.focus();
 
                     // Incrémenter le compteur
                     attemptCount++;
@@ -711,23 +1006,22 @@
                 }
             })
             .catch(error => {
-                showError('Erreur de connexion. Réessayez.');
+                showError('Erreur de connexion. Vérifiez votre réseau et réessayez.');
                 pinValue = '';
                 updatePinDots();
             })
             .finally(() => {
-                btnConfirm.disabled = false;
-                btnConfirm.querySelector('span').textContent = 'Confirmer';
+                btnConfirm.disabled = pinValue.length !== 6 && !isLockedOut;
+                btnSpan.textContent = originalText;
             });
         });
 
-        // Authentification biométrique
+        // ==================== AUTHENTIFICATION BIOMÉTRIQUE ====================
         async function authenticateBiometric() {
             const btn = document.getElementById('btnBiometric');
             btn.classList.add('loading');
             btn.disabled = true;
-            
-            // Cacher tout message d'erreur précédent
+
             document.getElementById('errorMessage').classList.remove('show');
 
             try {
@@ -736,7 +1030,7 @@
                 const options = await response.json();
 
                 if (!options.challenge) {
-                    throw new Error('Erreur: pas de challenge');
+                    throw new Error('Erreur: pas de challenge reçu');
                 }
 
                 // Convertir le challenge en ArrayBuffer
@@ -771,7 +1065,7 @@
                             authenticatorData: bufferToBase64url(new Uint8Array(credential.response.authenticatorData)),
                             clientDataJSON: bufferToBase64url(new Uint8Array(credential.response.clientDataJSON)),
                             signature: bufferToBase64url(new Uint8Array(credential.response.signature)),
-                            userHandle: credential.response.userHandle ? 
+                            userHandle: credential.response.userHandle ?
                                 bufferToBase64url(new Uint8Array(credential.response.userHandle)) : null
                         }
                     })
@@ -781,20 +1075,25 @@
 
                 if (result.success) {
                     // Authentification réussie - soumettre directement le formulaire
+                    document.getElementById('hidden-biometric').value = '1';
+                    closePinModal();
                     document.getElementById('retraitForm').submit();
                 } else {
-                    // Échec de l'authentification - afficher l'erreur mais ne pas incrémenter le compteur PIN
                     showError(result.message || 'Échec de l\'authentification biométrique');
                 }
             } catch (error) {
-                showError('Erreur biométrique: ' + error.message);
+                if (error.name === 'NotAllowedError') {
+                    showError('Authentification biométrique annulée.');
+                } else {
+                    showError('Erreur biométrique: ' + error.message);
+                }
             } finally {
                 btn.classList.remove('loading');
                 btn.disabled = false;
             }
         }
 
-        // Fonctions utilitaires Base64URL
+        // ==================== UTILITAIRES BASE64URL ====================
         function base64urlToBuffer(base64url) {
             let base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
             const padding = base64.length % 4;
@@ -817,17 +1116,19 @@
             return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
         }
 
-        // Timer de verrouillage
+        // ==================== TIMER DE VERROUILLAGE ====================
         function startLockoutTimer() {
             let seconds = 300; // 5 minutes
             const timerEl = document.getElementById('timer-countdown');
-            
+
+            if (lockoutInterval) clearInterval(lockoutInterval);
+
             lockoutInterval = setInterval(() => {
                 seconds--;
                 const minutes = Math.floor(seconds / 60);
                 const secs = seconds % 60;
                 timerEl.textContent = `${minutes}:${secs.toString().padStart(2, '0')}`;
-                
+
                 if (seconds <= 0) {
                     clearInterval(lockoutInterval);
                     isLockedOut = false;
@@ -836,20 +1137,36 @@
                     document.getElementById('attemptsInfo').style.display = 'block';
                     document.getElementById('currentAttempt').textContent = attemptCount;
                     document.getElementById('errorMessage').classList.remove('show');
+                    document.getElementById('confirmBtn').disabled = pinValue.length !== 6;
                 }
             }, 1000);
         }
 
-        // Fermer le modal en cliquant dehors
+        // ==================== FERMER LE MODAL EN CLIQUANT DEHORS ====================
         document.getElementById('pinModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closePinModal();
             }
         });
 
-        // Initialisation
+        // Fermer le modal avec la touche Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('pinModal').classList.contains('active')) {
+                closePinModal();
+            }
+        });
+
+        // ==================== INITIALISATION ====================
         document.addEventListener('DOMContentLoaded', function() {
+            updateSummary();
             checkBiometricAvailability();
+
+            // Focus automatique sur le premier champ après chargement
+            setTimeout(() => {
+                if (document.activeElement === document.body) {
+                    montantInput.focus();
+                }
+            }, 600);
         });
     </script>
 </body>
