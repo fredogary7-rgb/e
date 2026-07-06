@@ -1,160 +1,184 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil - NectarPro</title>
-    <link rel="icon" href="/static/images/net.jpg" type="image/jpeg">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mon Profil - NectarPro</title>
+<link rel="icon" href="/static/images/net.jpg" type="image/jpeg">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+:root{
+    --bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);
+    --glass:rgba(255,255,255,0.72);
+    --glass-hover:rgba(255,255,255,0.88);
+    --accent:#db2777;
+    --accent2:#ec4899;
+    --accent-light:#f9a8d4;
+    --gold:#f59e0b;
+    --gold-light:#fef3c7;
+    --emerald:#10b981;
+    --emerald-light:#d1fae5;
+    --violet:#8b5cf6;
+    --violet-light:#ede9fe;
+    --sky:#0ea5e9;
+    --sky-light:#e0f2fe;
+    --text:#000;
+    --text2:#1f2937;
+    --muted:#6b7280;
+    --border:rgba(236,72,153,0.2);
+    --shadow-sm:0 2px 8px rgba(236,72,153,0.08);
+    --shadow:0 8px 32px rgba(236,72,153,0.12);
+    --shadow-lg:0 16px 48px rgba(236,72,153,0.18);
+    --radius-sm:12px;
+    --radius:18px;
+    --radius-lg:24px;
+    --radius-xl:32px;
+}
+body{background:var(--bg);min-height:100vh;min-height:100dvh;color:var(--text);font-style:italic;overflow-x:hidden;position:relative}
 
-        :root{
-            --bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);
-            --glass:rgba(255,255,255,0.72);
-            --glass-hover:rgba(255,255,255,0.88);
-            --accent:#db2777;
-            --accent2:#ec4899;
-            --accent-light:#f9a8d4;
-            --gold:#f59e0b;
-            --gold-light:#fef3c7;
-            --emerald:#10b981;
-            --emerald-light:#d1fae5;
-            --violet:#8b5cf6;
-            --violet-light:#ede9fe;
-            --sky:#0ea5e9;
-            --sky-light:#e0f2fe;
-            --text:#000;
-            --text2:#1f2937;
-            --muted:#6b7280;
-            --border:rgba(236,72,153,0.2);
-            --shadow-sm:0 2px 8px rgba(236,72,153,0.08);
-            --shadow:0 8px 32px rgba(236,72,153,0.12);
-            --shadow-lg:0 16px 48px rgba(236,72,153,0.18);
-            --radius-sm:12px;
-            --radius:18px;
-            --radius-lg:24px;
-            --radius-xl:32px;
-        }
+/* PARTICULES */
+.bg-particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.particle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,0.18),transparent 70%);animation:floatUp linear infinite}
+.particle:nth-child(1){width:180px;height:180px;left:5%;top:70%;animation-duration:18s;animation-delay:0s}
+.particle:nth-child(2){width:120px;height:120px;left:60%;top:80%;animation-duration:14s;animation-delay:3s}
+.particle:nth-child(3){width:200px;height:200px;left:30%;top:75%;animation-duration:22s;animation-delay:6s}
+.particle:nth-child(4){width:100px;height:100px;left:80%;top:85%;animation-duration:16s;animation-delay:9s}
+.particle:nth-child(5){width:150px;height:150px;left:50%;top:90%;animation-duration:20s;animation-delay:2s}
+.particle:nth-child(6){width:90px;height:90px;left:15%;top:50%;animation-duration:12s;animation-delay:5s}
+.particle:nth-child(7){width:160px;height:160px;left:75%;top:60%;animation-duration:24s;animation-delay:8s}
+@keyframes floatUp{0%{transform:translateY(0)scale(0.6);opacity:0}10%{opacity:0.7}90%{opacity:0.4}100%{transform:translateY(-110vh)scale(1.4);opacity:0}}
 
-        body{
-            background:var(--bg);
-            min-height:100vh;min-height:100dvh;
-            color:var(--text);
-            font-style:italic;
-            overflow-x:hidden;
-            position:relative;
-        }
+/* TOPBAR */
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:rgba(255,255,255,0.7);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000}
+.topbar-logo{display:flex;align-items:center;gap:8px;position:absolute;left:50%;transform:translateX(-50%)}
+.topbar-logo img{width:32px;height:32px;border-radius:10px;box-shadow:0 2px 8px rgba(236,72,153,0.2)}
+.topbar-logo span{font-size:18px;font-weight:900}
+.topbar-logo .brand-n{color:var(--accent2)}
+.topbar-logo .brand-p{color:var(--accent)}
+.menu-toggle{font-size:20px;cursor:pointer;color:var(--accent2);width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);background:rgba(236,72,153,0.08);transition:all .3s}
+.menu-toggle:hover{background:rgba(236,72,153,0.16);transform:scale(1.05)}
+.user-pill{display:flex;align-items:center;gap:8px;cursor:pointer;position:relative;background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;padding:7px 18px;border-radius:50px;font-weight:700;font-size:13px;box-shadow:0 4px 16px rgba(219,39,119,0.35);transition:all .3s}
+.user-pill:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(219,39,119,0.5)}
 
-        .bg-particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
-        .particle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,0.18),transparent 70%);animation:floatUp linear infinite;}
-        .particle:nth-child(1){width:180px;height:180px;left:5%;top:70%;animation-duration:18s;animation-delay:0s}
-        .particle:nth-child(2){width:120px;height:120px;left:60%;top:80%;animation-duration:14s;animation-delay:3s}
-        .particle:nth-child(3){width:200px;height:200px;left:30%;top:75%;animation-duration:22s;animation-delay:6s}
-        .particle:nth-child(4){width:100px;height:100px;left:80%;top:85%;animation-duration:16s;animation-delay:9s}
-        .particle:nth-child(5){width:150px;height:150px;left:50%;top:90%;animation-duration:20s;animation-delay:2s}
-        .particle:nth-child(6){width:90px;height:90px;left:15%;top:50%;animation-duration:12s;animation-delay:5s}
-        .particle:nth-child(7){width:160px;height:160px;left:75%;top:60%;animation-duration:24s;animation-delay:8s}
-        @keyframes floatUp{
-            0%{transform:translateY(0)scale(0.6);opacity:0}
-            10%{opacity:0.7}
-            90%{opacity:0.4}
-            100%{transform:translateY(-110vh)scale(1.4);opacity:0}
-        }
+/* DROPDOWN USER */
+.user-dropdown{position:absolute;top:50px;right:0;width:300px;background:rgba(255,255,255,0.96);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow-lg);opacity:0;visibility:hidden;transform:translateY(-8px)scale(0.96);transition:all .25s cubic-bezier(.4,0,.2,1);z-index:2000}
+.user-dropdown.active{opacity:1;visibility:visible;transform:translateY(0)scale(1)}
+.user-dd-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.user-dd-avatar{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;text-transform:uppercase}
+.user-dd-name{font-weight:700;font-size:16px;color:var(--text)}
+.user-dd-role{font-size:11px;color:var(--muted);margin-top:2px}
+.user-dd-info{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.user-dd-item{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text2)}
+.user-dd-item i{width:18px;text-align:center;color:var(--accent2);font-size:13px}
+.user-dd-item span{color:var(--text);font-weight:600}
+.user-dd-logout{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;border:none;border-radius:14px;background:rgba(219,39,119,0.08);color:var(--accent);font-weight:700;font-size:13px;text-decoration:none;transition:all .3s}
+.user-dd-logout:hover{background:rgba(219,39,119,0.18);transform:translateY(-1px)}
 
-        .topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:rgba(255,255,255,0.7);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000;}
-        .topbar-logo{display:flex;align-items:center;gap:8px;position:absolute;left:50%;transform:translateX(-50%);text-decoration:none;}
-        .topbar-logo img{width:32px;height:32px;border-radius:10px;box-shadow:0 2px 8px rgba(236,72,153,0.2)}
-        .topbar-logo span{font-size:18px;font-weight:900}
-        .topbar-logo .brand-n{color:var(--accent2)}
-        .topbar-logo .brand-p{color:var(--accent)}
+/* SIDEBAR */
+.sidebar{position:fixed;left:-340px;top:0;width:340px;height:100%;background:rgba(255,255,255,0.92);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);transition:.4s cubic-bezier(.4,0,.2,1);z-index:1100;overflow-y:auto;border-right:1px solid var(--border)}
+.sidebar.active{left:0}
+.sidebar-header{padding:30px 24px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(236,72,153,0.1) 0%,rgba(249,168,212,0.06) 100%);border-bottom:1px solid var(--border)}
+.sidebar-header img{width:44px;height:44px;border-radius:14px;background:#fff;padding:4px;box-shadow:var(--shadow-sm)}
+.brand-name{font-size:24px;font-weight:900}
+.brand-n{color:var(--accent2)}
+.brand-p{color:var(--accent)}
+.sidebar a{display:flex;align-items:center;padding:12px 22px;font-size:13px;color:var(--text);font-weight:600;text-decoration:none;transition:all .2s;border-left:3px solid transparent;gap:10px;background:linear-gradient(135deg,rgba(249,168,212,0.04),rgba(244,114,182,0.02));margin:3px 12px;border-radius:var(--radius-sm);border:1px solid rgba(249,168,212,0.08)}
+.sidebar a:hover{background:linear-gradient(135deg,rgba(249,168,212,0.16),rgba(244,114,182,0.08));border-left-color:var(--accent2);transform:translateX(4px)}
+.sidebar a.active{background:linear-gradient(90deg,rgba(236,72,153,0.12) 0%,transparent 100%);border-left-color:var(--accent);color:var(--accent);font-weight:700}
+.sidebar a i{width:20px;text-align:center;font-size:14px;color:var(--accent2)}
+.sidebar a.active i{color:var(--accent)}
+.sub-menu{display:none;background:rgba(236,72,153,0.02)}
+.sub-menu a{padding-left:50px;font-size:12px;font-weight:500}
+.rotate{transform:rotate(180deg)}
+.badge-new{background:rgba(236,72,153,0.18);padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.18);opacity:0;visibility:hidden;transition:.3s;z-index:1050}
+.overlay.active{opacity:1;visibility:visible}
 
-        .header-nav{display:flex;gap:10px;flex-wrap:wrap;}
-        .header-nav a{color:var(--text2);text-decoration:none;font-weight:700;font-size:12px;padding:9px 16px;background:rgba(236,72,153,0.06);border:1px solid var(--border);border-radius:30px;transition:all .3s;display:flex;align-items:center;gap:6px;}
-        .header-nav a:hover{background:rgba(236,72,153,0.14);color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow-sm);}
-        .header-nav a.active{background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;border-color:transparent;box-shadow:0 4px 16px rgba(219,39,119,0.35);}
+/* MAIN */
+.main{padding:20px;max-width:560px;margin:0 auto;position:relative;z-index:1}
 
-        .main{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:24px 20px 80px;}
+.page-header{text-align:center;margin-bottom:28px}
+.page-header h1{font-weight:900;font-size:28px;margin-bottom:4px;background:linear-gradient(135deg,#ec4899,#db2777);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.page-header p{font-weight:600;font-size:13px;color:var(--text2);opacity:.8}
 
-        .page-header{text-align:center;margin-bottom:24px;}
-        .page-header h1{font-weight:900;font-size:28px;margin-bottom:4px;background:linear-gradient(135deg,#ec4899,#db2777);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-        .page-header p{font-weight:600;font-size:13px;color:var(--text2);opacity:.8;}
+/* ALERTS */
+.alert{padding:14px 18px;border-radius:var(--radius-sm);font-size:14px;margin-bottom:20px;font-style:italic;display:flex;align-items:center;gap:10px;animation:slideDown .4s ease}
+@keyframes slideDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+.alert.success{background:var(--emerald-light);color:#065f46;border:1px solid rgba(16,185,129,0.3)}
+.alert.danger{background:#fee2e2;color:#991b1b;border:1px solid #fecaca}
+.alert.warning{background:var(--gold-light);color:#92400e;border:1px solid rgba(245,158,11,0.3)}
+.alert.info{background:var(--sky-light);color:#075985;border:1px solid rgba(14,165,233,0.3)}
 
-        .profile-header{text-align:center;margin-bottom:24px;}
-        .profile-avatar{width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,#f9a8d4,#ec4899,#db2777);display:flex;align-items:center;justify-content:center;font-size:40px;color:#fff;font-weight:800;margin:0 auto 14px;box-shadow:0 8px 32px rgba(219,39,119,0.35);overflow:hidden;border:3px solid rgba(255,255,255,0.6);}
-        .profile-avatar img{width:100%;height:100%;object-fit:cover;}
-        .profile-name{font-weight:800;font-size:22px;color:var(--text);text-transform:capitalize;margin-bottom:2px;}
-        .profile-username{font-size:13px;color:var(--muted);}
+/* AVATAR SECTION */
+.avatar-section{text-align:center;margin-bottom:28px}
+.avatar-wrapper{width:100px;height:100px;border-radius:50%;margin:0 auto 16px;position:relative;background:linear-gradient(135deg,#ec4899,#db2777,#be185d);padding:4px;box-shadow:0 12px 40px rgba(219,39,119,0.3)}
+.avatar-wrapper img{width:100%;height:100%;border-radius:50%;object-fit:cover;background:#fff}
+.avatar-placeholder{width:100%;height:100%;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:800;color:var(--accent);text-transform:uppercase}
+.avatar-upload-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;font-size:12px;font-weight:700;background:rgba(236,72,153,0.08);color:var(--accent);border:1px solid var(--border);border-radius:50px;cursor:pointer;transition:all .3s}
+.avatar-upload-btn:hover{background:rgba(236,72,153,0.16);transform:translateY(-1px)}
+.avatar-upload-btn i{font-size:14px}
 
-        .alert{padding:14px 18px;border-radius:var(--radius-sm);font-size:14px;margin-bottom:20px;font-style:italic;display:flex;align-items:center;gap:10px;animation:slideDown 0.4s ease;}
-        @keyframes slideDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
-        .alert.success{background:var(--emerald-light);color:#065f46;border:1px solid rgba(16,185,129,0.3);}
-        .alert.danger{background:#fee2e2;color:#991b1b;border:1px solid #fecaca;}
-        .alert.warning{background:var(--gold-light);color:#92400e;border:1px solid rgba(245,158,11,0.3);}
-        .alert.info{background:var(--sky-light);color:#075985;border:1px solid rgba(14,165,233,0.3);}
+/* SECTION */
+.section{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:var(--radius-lg);padding:24px;margin-bottom:20px;box-shadow:var(--shadow-sm);border:1px solid var(--border);transition:all .3s}
+.section:hover{box-shadow:var(--shadow);border-color:var(--accent2)}
+.section-title{font-weight:700;font-size:17px;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.section-title i{color:var(--accent2);font-size:18px}
 
-        .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px;}
-        .stat-card{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius);padding:18px 8px;text-align:center;box-shadow:var(--shadow-sm);transition:all .3s;position:relative;overflow:hidden;}
-        .stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--accent2);}
-        .stat-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:var(--accent2);}
-        .stat-card:nth-child(2)::before{background:var(--emerald);}
-        .stat-card:nth-child(3)::before{background:var(--violet);}
-        .stat-card:nth-child(4)::before{background:var(--gold);}
-        .stat-value{font-size:22px;font-weight:800;font-style:italic;margin-bottom:2px;color:var(--accent);}
-        .stat-card:nth-child(2) .stat-value{color:var(--emerald);}
-        .stat-card:nth-child(3) .stat-value{color:var(--violet);}
-        .stat-card:nth-child(4) .stat-value{color:var(--gold);}
-        .stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:600;}
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
+.stat-card{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius);padding:20px 10px;text-align:center;box-shadow:var(--shadow-sm);transition:all .3s}
+.stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--accent2)}
+.stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:16px}
+.stat-card:nth-child(1) .stat-icon{background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(16,185,129,0.05));color:var(--emerald)}
+.stat-card:nth-child(2) .stat-icon{background:linear-gradient(135deg,rgba(139,92,246,0.15),rgba(139,92,246,0.05));color:var(--violet)}
+.stat-card:nth-child(3) .stat-icon{background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(245,158,11,0.05));color:var(--gold)}
+.stat-value{font-size:22px;font-weight:800;margin-bottom:2px;color:var(--text)}
+.stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
 
-        .section{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:var(--radius-lg);padding:24px;margin-bottom:20px;box-shadow:var(--shadow-sm);border:1px solid var(--border);transition:all .3s;}
-        .section:hover{box-shadow:var(--shadow);border-color:var(--accent2);}
-        .section-title{font-weight:700;font-size:17px;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid var(--border);}
-        .section-title i{color:var(--accent2);font-size:18px;}
+/* INFO LIST */
+.info-list{display:flex;flex-direction:column;gap:14px}
+.info-row{display:flex;align-items:center;gap:14px;padding:14px 18px;background:rgba(255,255,255,0.5);border-radius:var(--radius-sm);border:1px solid var(--border);transition:all .3s}
+.info-row:hover{background:var(--glass-hover);transform:translateX(4px)}
+.info-row-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,#ec4899,#db2777)}
+.info-row-content{flex:1;min-width:0}
+.info-row-content .info-row-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.info-row-content .info-row-value{font-size:15px;font-weight:700;color:var(--text);margin-top:2px}
 
-        .input-group{margin-bottom:18px;}
-        .input-group label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;font-style:italic;margin-bottom:8px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;}
-        .input-group label i{color:var(--accent2);}
-        .input-group input{width:100%;padding:14px 18px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:15px;font-style:italic;outline:none;transition:all .25s;background:rgba(255,255,255,0.6);color:var(--text);}
-        .input-group input:focus{border-color:var(--accent2);box-shadow:0 0 0 4px rgba(236,72,153,0.1);background:rgba(255,255,255,0.9);}
-        .input-group input::placeholder{color:var(--muted);}
-        .input-group input[readonly]{background:rgba(236,72,153,0.04);cursor:default;border-style:dashed;}
+/* INPUTS */
+.input-group{margin-bottom:18px}
+.input-group label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;margin-bottom:8px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+.input-group label i{color:var(--accent2)}
+.input-group input{width:100%;padding:14px 18px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:15px;outline:none;transition:all .25s;background:rgba(255,255,255,0.6);color:var(--text)}
+.input-group input:focus{border-color:var(--accent2);box-shadow:0 0 0 4px rgba(236,72,153,0.1);background:rgba(255,255,255,0.9)}
 
-        .btn{width:100%;padding:15px 20px;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;font-style:italic;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:10px;}
-        .btn-primary{background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;box-shadow:0 6px 20px rgba(219,39,119,0.3);}
-        .btn-primary:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 10px 30px rgba(219,39,119,0.45);}
-        .btn-primary:disabled{opacity:0.5;cursor:not-allowed;}
-        .btn-secondary{background:rgba(236,72,153,0.06);color:var(--accent);border:1px solid var(--border);}
-        .btn-secondary:hover{background:rgba(236,72,153,0.14);transform:translateY(-2px);}
-        .btn-inline{width:auto;padding:10px 20px;font-size:13px;}
+/* TOGGLE */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:rgba(255,255,255,0.5);border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:14px}
+.toggle-row .toggle-label{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--text)}
+.toggle-row .toggle-label i{color:var(--accent2)}
+.toggle-switch{position:relative;width:50px;height:28px;background:#ddd;border-radius:50px;cursor:pointer;transition:.3s}
+.toggle-switch.active{background:linear-gradient(135deg,#ec4899,#db2777)}
+.toggle-switch::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,0.15)}
+.toggle-switch.active::after{left:25px}
 
-        .info-box{background:rgba(236,72,153,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;margin-top:16px;font-size:13px;font-style:italic;color:var(--text2);display:flex;align-items:center;gap:10px;}
-        .info-box i{color:var(--accent2);flex-shrink:0;}
+/* BUTTONS */
+.btn{width:100%;padding:15px 20px;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn-primary{background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;box-shadow:0 6px 20px rgba(219,39,119,0.3)}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(219,39,119,0.45)}
+.btn-secondary{background:rgba(236,72,153,0.08);color:var(--accent);border:1px solid rgba(236,72,153,0.2)}
+.btn-secondary:hover{background:rgba(236,72,153,0.16);transform:translateY(-2px)}
+.btn-danger{background:rgba(239,68,68,0.1);color:#dc2626;border:1px solid rgba(239,68,68,0.2)}
+.btn-danger:hover{background:rgba(239,68,68,0.2);transform:translateY(-2px)}
 
-        .biometric-device{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;margin-bottom:10px;background:rgba(236,72,153,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);transition:all .2s;}
-        .biometric-device:hover{background:rgba(236,72,153,0.08);border-color:var(--accent2);}
-        .device-info{display:flex;align-items:center;gap:12px;}
-        .device-icon{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,rgba(139,92,246,0.15),rgba(139,92,246,0.05));display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--violet);}
-        .device-name{font-weight:600;font-size:14px;color:var(--text);}
-        .device-date{font-size:11px;color:var(--muted);}
-        .btn-delete{background:none;border:none;color:#ef4444;cursor:pointer;font-size:16px;padding:8px;border-radius:8px;transition:all .2s;}
-        .btn-delete:hover{background:rgba(239,68,68,0.08);}
+/* FOOTER */
+footer{text-align:center;padding:22px;font-size:12px;color:var(--muted);font-weight:700}
 
-        .footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
-        .footer span{font-weight:700;color:var(--accent);}
+body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-style:italic!important}
 
-        @media (max-width:480px){
-            .main{padding:20px 16px 60px;}
-            .topbar{padding:10px 16px;}
-            .header-nav{gap:6px;}
-            .header-nav a{font-size:10px;padding:7px 12px;}
-            .section{padding:18px 14px;}
-            .stats-grid{grid-template-columns:repeat(2,1fr);gap:8px;}
-            .stat-card{padding:14px 8px;}
-            .stat-value{font-size:18px;}
-            .profile-avatar{width:80px;height:80px;font-size:32px;}
-        }
-    </style>
+@media(max-width:768px){.main{padding:12px 10px}.sidebar{width:300px}.stats-grid{grid-template-columns:repeat(3,1fr);gap:6px}}
+@media(max-width:420px){.stats-grid{grid-template-columns:repeat(3,1fr);gap:4px}.stat-card{padding:14px 6px}}
+</style>
 </head>
 <body>
 
@@ -164,215 +188,201 @@
     <div class="particle"></div>
 </div>
 
-<div class="topbar">
-    <a href="/dashboard" class="topbar-logo">
+<div class="overlay" id="overlay"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
         <img src="/static/images/net.jpg" alt="Logo">
-        <span><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></span>
-    </a>
-    <div class="header-nav">
-        <a href="/dashboard"><i class="fa fa-home"></i> Dashboard</a>
-        <a href="/revenus"><i class="fa fa-coins"></i> Revenus</a>
-        <a href="/team"><i class="fa fa-users"></i> Equipe</a>
-        <a href="/mes_retraits"><i class="fa fa-paper-plane"></i> Retrait</a>
+        <span class="brand-name"><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></span>
+    </div>
+    <a href="/dashboard"><i class="fa fa-home"></i> Tableau de bord</a>
+    <a href="/revenus"><i class="fa fa-wallet"></i> Revenus</a>
+    <a href="/boutique/creer"><i class="fa fa-store"></i> Ma Boutique <span class="badge-new">&#10024;</span></a>
+    <a href="/publicites"><i class="fa fa-video"></i> Publicites <span class="badge-new">&#127916;</span></a>
+    <a href="/videos"><i class="fa fa-play"></i> Videos NectarPro <span class="badge-new">&#127909;</span></a>
+    <a href="javascript:void(0);" id="channelsToggle"><i class="fa fa-tv"></i> Nos Chaines <i class="fa fa-chevron-down" style="float:right;"></i></a>
+    <div class="sub-menu" id="subChannels"><a href="/chaine"><i class="fa fa-bullhorn"></i> Canal Officiel</a></div>
+    <a href="javascript:void(0);" id="formationToggle"><i class="fa fa-graduation-cap"></i> Formation <i class="fa fa-chevron-down" style="float:right;"></i></a>
+    <div class="sub-menu" id="subFormation"><a href="/trade"><i class="fa fa-chart-line"></i> Trading</a><a href="/ecom"><i class="fa fa-store"></i> E-commerce</a></div>
+    <a href="javascript:void(0);" id="tasksToggle"><i class="fa fa-tasks"></i> Taches <i class="fa fa-chevron-down" style="float:right;"></i></a>
+    <div class="sub-menu" id="subTasks"><a href="/taches"><i class="fa fa-share-alt"></i> Partages remuneres</a></div>
+    <a href="javascript:void(0);" id="retraitsToggle"><i class="fa fa-money-bill"></i> Retraits <i class="fa fa-chevron-down" style="float:right;"></i></a>
+    <div class="sub-menu" id="subRetraits"><a href="/retrait"><i class="fa fa-wallet"></i> Solde retrait</a><a href="/mes-retraits"><i class="fa fa-history"></i> Mes retraits</a></div>
+    <a href="javascript:void(0);" id="moiToggle"><i class="fa fa-user"></i> Moi <i class="fa fa-chevron-down" style="float:right;"></i></a>
+    <div class="sub-menu" id="subMoi"><a href="/profile"><i class="fa fa-user"></i> Mon profile</a><a href="/team"><i class="fa fa-users"></i> Mon equipes</a></div>
+    <a href="/market"><i class="fa fa-store"></i> Market</a>
+    <a href="/download/contact"><i class="fa fa-address-book"></i> Contacts vcf</a>
+    <a href="/academy/tiktok"><i class="fab fa-tiktok"></i> Formation Tiktok</a>
+    <a href="/academy/affiliation"><i class="fa fa-info-circle"></i> Presentation</a>
+    <a href="/academy/design"><i class="fa fa-palette"></i> Design Graphique</a>
+    <a href="/apk"><i class="fa fa-th"></i> Apk Premium</a>
+    <a href="/apk-canal"><i class="fa fa-tv"></i> Telecharger Canal+</a>
+    <a href="/netflix-view"><i class="fa fa-play-circle"></i> Netflix Direct</a>
+    <a href="/about"><i class="fa fa-info-circle"></i> A propos</a>
+    <a href="/politique"><i class="fa fa-file-contract"></i> Politique</a>
+    <a href="/logout" style="color:#db2777;"><i class="fa fa-sign-out"></i> Deconnexion</a>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+    <div class="menu-toggle" id="menuToggle"><i class="fa fa-bars"></i></div>
+    <div class="topbar-logo">
+        <img src="/static/images/net.jpg" alt="NectarPro">
+        <span class="brand-name"><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></span>
+    </div>
+    <div class="user-pill" id="userToggle">
+        <i class="fa fa-user-circle"></i> {{ user.username }}
+        <div class="user-dropdown" id="userDropdown">
+            <div class="user-dd-header">
+                <div class="user-dd-avatar">{{ user.username[0] }}</div>
+                <div><div class="user-dd-name">{{ user.username }}</div><div class="user-dd-role">Utilisateur NectarPro</div></div>
+            </div>
+            <div class="user-dd-info">
+                <div class="user-dd-item"><i class="fa fa-envelope"></i><div>Email<br><span>{{ user.email or 'Non defini' }}</span></div></div>
+                <div class="user-dd-item"><i class="fa fa-phone"></i><div>Telephone<br><span>{{ user.phone or 'Non defini' }}</span></div></div>
+                <div class="user-dd-item"><i class="fa fa-calendar"></i><div>Inscrit le<br><span>{{ user.date_creation.strftime('%d/%m/%Y') if user.date_creation else '--' }}</span></div></div>
+                <div class="user-dd-item"><i class="fa fa-user-plus"></i><div>Parrain<br><span>{{ user.parrain or 'Aucun' }}</span></div></div>
+            </div>
+            <a href="/logout" class="user-dd-logout"><i class="fa fa-sign-out"></i> Deconnexion</a>
+        </div>
     </div>
 </div>
 
 <div class="main">
     <div class="page-header">
-        <h1><i class="fa fa-user"></i> Profil</h1>
-        <p>Gerez vos informations personnelles et votre securite</p>
-    </div>
-
-    <div class="profile-header">
-        <div class="profile-avatar">
-            {% if user.profile_image and user.profile_image != 'default.png' %}
-            <img src="{{ url_for('static', filename='uploads/profiles/' + user.profile_image) }}" alt="Avatar">
-            {% else %}
-            {{ user.username[0]|upper }}
-            {% endif %}
-        </div>
-        <h1 class="profile-name">{{ user.username }}</h1>
-        <p class="profile-username">@{{ user.username }}</p>
-    </div>
-
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-value">{{ team_total }}</div>
-            <div class="stat-label">Equipe</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value">{{ user.solde_parrainage|default(0)|int }}</div>
-            <div class="stat-label">Solde XOF</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value">{{ user.downlines.count() }}</div>
-            <div class="stat-label">Niveau 1</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value">{{ user.total_retrait|default(0)|int }}</div>
-            <div class="stat-label">Retire</div>
-        </div>
+        <h1><i class="fa fa-user"></i> Mon Profil</h1>
+        <p>Gerer vos informations personnelles et la securite de votre compte</p>
     </div>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         {% for category, message in messages %}
-          <div class="alert {{ category }}">
-            <i class="fa {% if category == 'success' %}fa-check-circle{% elif category == 'danger' %}fa-exclamation-circle{% elif category == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
-            {{ message }}
-          </div>
+          <div class="alert {{ category }}"><i class="fa {% if category == 'success' %}fa-check-circle{% elif category == 'danger' %}fa-exclamation-circle{% elif category == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i> {{ message }}</div>
         {% endfor %}
       {% endif %}
     {% endwith %}
 
-    <div class="section">
-        <h2 class="section-title"><i class="fa fa-address-card"></i> Informations personnelles</h2>
-        <div class="input-group">
-            <label><i class="fa fa-envelope"></i> Email</label>
-            <input type="email" value="{{ user.email }}" readonly>
+    <!-- Avatar -->
+    <div class="avatar-section">
+        <div class="avatar-wrapper">
+            {% if user.avatar %}
+            <img src="/{{ user.avatar }}" alt="Avatar">
+            {% else %}
+            <div class="avatar-placeholder">{{ user.username[0] }}</div>
+            {% endif %}
         </div>
-        <div class="input-group">
-            <label><i class="fa fa-phone"></i> Telephone</label>
-            <input type="tel" value="{{ user.phone }}" readonly>
-        </div>
+        <label class="avatar-upload-btn" for="avatarInput"><i class="fa fa-camera"></i> Changer la photo</label>
+        <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar(this)">
     </div>
 
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon"><i class="fa fa-coins"></i></div><div class="stat-value">{{ "%.0f"|format(user.solde_parrainage or 0) }} XOF</div><div class="stat-label">Solde</div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fa fa-users"></i></div><div class="stat-value">{{ user.downlines.count() if user.downlines else 0 }}</div><div class="stat-label">Filleuls</div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fa fa-star"></i></div><div class="stat-value">{{ ((user.solde_revenu or 0) // 5000 + 1)|int }}</div><div class="stat-label">Niveau</div></div>
+    </div>
+
+    <!-- Infos perso -->
     <div class="section">
-        <h2 class="section-title"><i class="fa fa-camera"></i> Photo de profil</h2>
-        <form method="POST" enctype="multipart/form-data" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;width:100%;">
-            <input type="file" name="profile_photo" id="profilePhoto" accept="image/*" style="display:none;">
-            <button type="button" class="btn btn-secondary btn-inline" onclick="document.getElementById('profilePhoto').click()">
-                <i class="fa fa-upload"></i> Choisir
-            </button>
-            <button type="submit" class="btn btn-primary btn-inline">
-                <i class="fa fa-save"></i> Enregistrer
-            </button>
+        <h2 class="section-title"><i class="fa fa-id-card"></i> Informations personnelles</h2>
+        <form method="POST" action="/update_profile">
+            <div class="input-group">
+                <label><i class="fa fa-user"></i> Nom d'utilisateur</label>
+                <input type="text" name="username" value="{{ user.username }}" readonly>
+            </div>
+            <div class="input-group">
+                <label><i class="fa fa-envelope"></i> Email</label>
+                <input type="email" name="email" value="{{ user.email }}" placeholder="Votre email" required>
+            </div>
+            <div class="input-group">
+                <label><i class="fa fa-phone"></i> Telephone</label>
+                <input type="tel" name="phone" value="{{ user.phone }}" placeholder="01 XX XX XX XX" required>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Enregistrer les modifications</button>
         </form>
     </div>
 
+    <!-- Infos compte -->
     <div class="section">
-        <h2 class="section-title"><i class="fa fa-lock"></i> Code PIN de securite</h2>
-        <form method="POST">
+        <h2 class="section-title"><i class="fa fa-shield-halved"></i> Details du compte</h2>
+        <div class="info-list">
+            <div class="info-row">
+                <div class="info-row-icon"><i class="fa fa-calendar"></i></div>
+                <div class="info-row-content"><div class="info-row-label">Date d'inscription</div><div class="info-row-value">{{ user.date_creation.strftime('%d/%m/%Y') if user.date_creation else '--' }}</div></div>
+            </div>
+            <div class="info-row">
+                <div class="info-row-icon"><i class="fa fa-user-plus"></i></div>
+                <div class="info-row-content"><div class="info-row-label">Parrain</div><div class="info-row-value">{{ user.parrain or 'Aucun' }}</div></div>
+            </div>
+            <div class="info-row">
+                <div class="info-row-icon"><i class="fa fa-link"></i></div>
+                <div class="info-row-content"><div class="info-row-label">Lien de parrainage</div><div class="info-row-value" style="font-size:12px;word-break:break-all;">{{ request.host_url }}inscription?ref={{ user.username }}</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Securite -->
+    <div class="section">
+        <h2 class="section-title"><i class="fa fa-lock"></i> Securite</h2>
+        <form method="POST" action="/change_pin_profile">
             <div class="input-group">
                 <label><i class="fa fa-key"></i> Nouveau code PIN (6 chiffres)</label>
-                <input type="password" id="pin" name="pin" placeholder="......" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" autocomplete="off" required>
+                <input type="password" name="nouveau_pin" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" placeholder="Nouveau PIN" required>
             </div>
             <div class="input-group">
-                <label><i class="fa fa-key"></i> Confirmer le code PIN</label>
-                <input type="password" id="confirm_pin" name="confirm_pin" placeholder="......" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" autocomplete="off" required>
+                <label><i class="fa fa-key"></i> Confirmer le nouveau code PIN</label>
+                <input type="password" name="confirmer_pin" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" placeholder="Confirmer le PIN" required>
             </div>
-            <input type="hidden" name="update_pin" value="1">
-            <button type="submit" class="btn btn-primary">
-                <i class="fa fa-shield-halved"></i> Mettre a jour le PIN
-            </button>
+            <div class="input-group">
+                <label><i class="fa fa-lock"></i> PIN actuel</label>
+                <input type="password" name="pin_actuel" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" placeholder="PIN actuel" required>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fa fa-shield"></i> Changer le code PIN</button>
         </form>
-        <div class="info-box">
-            <i class="fa fa-info-circle"></i>
-            <span>Votre code PIN securise vos retraits et la reinitialisation de votre mot de passe. 6 chiffres requis.</span>
-        </div>
     </div>
 
-    <div class="section" id="biometric-section">
+    <!-- Biometrie -->
+    <div class="section">
         <h2 class="section-title"><i class="fa fa-fingerprint"></i> Authentification biometrique</h2>
-        <p style="font-size:13px;color:var(--text2);margin-bottom:18px;font-style:italic;line-height:1.7;">
-            Activez Face ID, Touch ID ou Windows Hello pour valider vos retraits et changements de mot de passe sans saisir votre PIN.
-        </p>
-        <div id="biometric-status"></div>
-        <div id="biometric-devices" style="margin-top:16px;"></div>
-        <button id="btn-register-biometric" class="btn btn-secondary" style="margin-top:18px;" onclick="registerBiometric()">
-            <i class="fa fa-fingerprint"></i> <span id="btn-biometric-text">Activer biometrie</span>
-        </button>
+        <div class="toggle-row">
+            <div class="toggle-label"><i class="fa fa-fingerprint"></i> Activer la connexion par empreinte</div>
+            <div class="toggle-switch" id="biometricToggle" onclick="toggleBiometric()"></div>
+        </div>
+        <button class="btn btn-primary" onclick="registerBiometric()"><i class="fa fa-fingerprint"></i> Enregistrer l'empreinte</button>
     </div>
 
-    <div class="footer">
-        &copy; 2026 <span>NectarPro</span> — Profil securise. Tous droits reserves.
+    <!-- Danger zone -->
+    <div class="section" style="border-color:rgba(239,68,68,0.2)">
+        <h2 class="section-title" style="color:#dc2626"><i class="fa fa-triangle-exclamation" style="color:#dc2626!important"></i> Zone sensible</h2>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px">La suppression du compte est irreversible. Toutes vos donnees seront definitivement effacees.</p>
+        <button class="btn btn-danger" onclick="if(confirm('Etes-vous sur de vouloir supprimer votre compte ? Cette action est irreversible.')) location.href='/delete_account'"><i class="fa fa-trash"></i> Supprimer mon compte</button>
     </div>
+
+    <footer>2026 &copy; NectarPro by Nina Academy &#10024;</footer>
 </div>
 
 <script>
-document.getElementById('pin').addEventListener('input',function(e){this.value=this.value.replace(/\D/g,'').slice(0,6);});
-document.getElementById('confirm_pin').addEventListener('input',function(e){this.value=this.value.replace(/\D/g,'').slice(0,6);});
+// SIDEBAR
+const sidebar=document.getElementById("sidebar"),overlay=document.getElementById("overlay"),menuToggle=document.getElementById("menuToggle");
+menuToggle.onclick=()=>{sidebar.classList.add("active");overlay.classList.add("active")};
+overlay.onclick=()=>{sidebar.classList.remove("active");overlay.classList.remove("active")};
 
-function isWebAuthnSupported(){return window.PublicKeyCredential!==undefined&&typeof window.PublicKeyCredential==='function';}
-document.addEventListener('DOMContentLoaded',function(){
-    if(!isWebAuthnSupported()){
-        document.getElementById('biometric-status').innerHTML='<div class="alert danger"><i class="fa fa-exclamation-triangle"></i> Non supporte par votre navigateur.</div>';
-        document.getElementById('btn-register-biometric').style.display='none';
-        return;
-    }
-    loadBiometricDevices();
-});
+// SIDEBAR TOGGLES
+function setupToggle(t,m){let a=document.getElementById(t),b=document.getElementById(m);a&&b&&(a.onclick=e=>{e.preventDefault();let h=b.style.display==="none"||b.style.display==="";b.style.display=h?"block":"none";a.querySelector(".fa-chevron-down").classList.toggle("rotate",h)})}
+setupToggle("channelsToggle","subChannels");setupToggle("formationToggle","subFormation");setupToggle("tasksToggle","subTasks");setupToggle("retraitsToggle","subRetraits");
+let mt=document.getElementById("moiToggle"),sm=document.getElementById("subMoi");
+mt.onclick=e=>{e.preventDefault();sm.style.display==="none"?(sm.style.display="block",mt.querySelector(".fa-chevron-down").classList.add("rotate")):(sm.style.display="none",mt.querySelector(".fa-chevron-down").classList.remove("rotate"))};
 
-function loadBiometricDevices(){
-    fetch('/api/webauthn/credentials')
-        .then(r=>r.json())
-        .then(devices=>{
-            const sd=document.getElementById('biometric-status');
-            const dd=document.getElementById('biometric-devices');
-            const bt=document.getElementById('btn-biometric-text');
-            if(devices.length===0){
-                sd.innerHTML='<div class="alert info"><i class="fa fa-info-circle"></i> Aucune biometrie enregistree.</div>';
-                bt.textContent='Activer biometrie';
-            }else{
-                sd.innerHTML='<div class="alert success"><i class="fa fa-check-circle"></i> Biometrie active ('+devices.length+' appareil(s))</div>';
-                bt.textContent='Ajouter un autre appareil';
-                let h='';
-                devices.forEach(d=>{
-                    h+='<div class="biometric-device"><div class="device-info"><div class="device-icon"><i class="fa fa-mobile-alt"></i></div><div><div class="device-name">'+d.name+'</div><div class="device-date">Ajoute le '+d.created_at+'</div></div></div><button class="btn-delete" onclick="deleteBiometricDevice('+d.id+')"><i class="fa fa-trash"></i></button></div>';
-                });
-                dd.innerHTML=h;
-            }
-        });
-}
+// USER DROPDOWN
+(function(){let u=document.querySelector('.topbar .user-pill');if(!u)return;u.addEventListener('click',e=>{e.stopPropagation();document.getElementById('userDropdown').classList.toggle('active')});document.addEventListener('click',e=>{let dd=document.getElementById('userDropdown');if(dd&&!u.contains(e.target))dd.classList.remove('active')})})();
 
-function registerBiometric(){
-    if(!isWebAuthnSupported()){alert('Non supporte');return;}
-    const dn=prompt('Nom de l\'appareil:','Mon appareil');
-    if(!dn)return;
-    fetch('/api/webauthn/register/start',{method:'POST'})
-        .then(r=>r.json())
-        .then(opts=>{
-            if(!opts.success&&opts.message){alert(opts.message);return;}
-            return navigator.credentials.create({publicKey:{
-                challenge:base64urlToBuffer(opts.challenge),
-                rp:opts.rp,
-                user:{id:base64urlToBuffer(opts.user.id),name:opts.user.name,displayName:opts.user.displayName},
-                pubKeyCredParams:opts.pubKeyCredParams,
-                timeout:opts.timeout,
-                attestation:opts.attestation,
-                authenticatorSelection:opts.authenticatorSelection
-            }});
-        })
-        .then(cred=>{
-            if(!cred)return;
-            return fetch('/api/webauthn/register/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-                id:cred.id,
-                response:{attestationObject:bufferToBase64url(new Uint8Array(cred.response.attestationObject)),clientDataJSON:bufferToBase64url(new Uint8Array(cred.response.clientDataJSON))},
-                deviceName:dn
-            })});
-        })
-        .then(r=>r.json())
-        .then(res=>{alert(res.success?' OK '+res.message:' Erreur '+res.message);loadBiometricDevices();})
-        .catch(e=>{console.error(e);if(e.name==='NotAllowedError')alert('Annule');else alert('Erreur: '+e.message);});
-}
+// AVATAR UPLOAD
+function uploadAvatar(input){if(!input.files||!input.files[0])return;let fd=new FormData();fd.append('avatar',input.files[0]);fetch('/upload_avatar',{method:'POST',body:fd}).then(r=>r.json()).then(d=>{if(d.success)location.reload();else alert(d.message||'Erreur')}).catch(()=>alert('Erreur de connexion'))}
 
-function deleteBiometricDevice(id){
-    if(!confirm('Supprimer cet appareil ?'))return;
-    fetch('/api/webauthn/credential/'+id+'/delete',{method:'POST'})
-        .then(r=>r.json())
-        .then(res=>{alert(res.success?'Supprime':'Erreur: '+res.message);loadBiometricDevices();});
-}
-
-function base64urlToBuffer(b){
-    let s=b.replace(/-/g,'+').replace(/_/g,'/');
-    const p=s.length%4;
-    if(p===2)s+='==';else if(p===3)s+='=';
-    const bs=new Uint8Array(atob(s).split('').map(c=>c.charCodeAt(0)));
-    return bs.buffer;
-}
-function bufferToBase64url(b){
-    return btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-}
+// BIOMETRIC
+function toggleBiometric(){document.getElementById('biometricToggle').classList.toggle('active')}
+function registerBiometric(){alert('Fonctionnalite biometrique en cours de deploiement.')}
 </script>
 
 </body>
