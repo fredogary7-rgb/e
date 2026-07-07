@@ -3,1617 +3,891 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NectarPro - Gagnez de l'argent en apprenant, en vendant et en recommandant</title>
+    <title>NectarPro — Gagnez de l'argent en ligne</title>
     <meta name="description" content="Plateforme tout-en-un : formation, affiliation, vente et missions rémunérées.">
+    <link rel="icon" href="/static/images/net.jpg" type="image/jpeg">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="NectarPro - Gagnez de l'argent en apprenant, en vendant et en recommandant">
+    <meta property="og:title" content="NectarPro - Gagnez de l'argent en ligne">
     <meta property="og:description" content="Plateforme tout-en-un : formation, affiliation, vente et missions rémunérées.">
-    <meta property="og:site_name" content="NectarPro">
+    <meta property="og:image" content="https://nectarpro.cc/static/images/net.jpg">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://nectarpro.cc/">
-    <meta property="og:image" content="https://nectarpro.cc/static/images/net.jpg">
+    <meta property="og:site_name" content="NectarPro">
     <meta property="og:locale" content="fr_FR">
 
-    <!-- Google Site Name -->
-    <meta name="application-name" content="NectarPro">
-
-    <!-- Schema.org WebSite JSON-LD -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "NectarPro",
-      "url": "https://nectarpro.cc/",
-      "description": "Plateforme tout-en-un : formation, affiliation, vente et missions rémunérées."
-    }
-    </script>
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Icons -->
-    <link rel="icon" href="/static/images/net.jpg" type="image/jpeg">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/static/images/net.jpg">
-    <meta name="theme-color" content="#22c55e">
+    <meta name="theme-color" content="#db2777">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="NectarPro">
-    
+
     <style>
-        /* ============================================
-           DESIGN SYSTEM - IDENTIQUE AU SITE EXISTANT
-           ============================================ */
-        :root {
-            --bg-primary: #f8fafc;
-            --bg-secondary: rgba(255, 255, 255, 0.8);
-            --bg-card: rgba(255, 255, 255, 0.7);
-            --accent-blue: #38bdf8;
-            --accent-blue-light: #7dd3fc;
-            --accent-green: #86efac;
-            --accent-pink: #f9a8d4;
-            --text-primary: #334155;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
-            --border-color: rgba(148, 163, 184, 0.2);
-            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
-            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
-            --gradient-green: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
-            --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
-            --radius-sm: 10px;
-            --radius-lg: 16px;
-            --radius-xl: 20px;
-            --radius-2xl: 24px;
-            --shadow-sm: 0 4px 12px rgba(56, 189, 248, 0.08);
-            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
-            --shadow-large: 0 12px 32px rgba(56, 189, 248, 0.15);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        html { scroll-behavior: smooth; }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            font-style: italic;
-            font-weight: 400;
-            color: var(--text-primary);
-            background: var(--gradient-bg);
-            line-height: 1.6;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* ============================================
-           ARRIÈRE-PLAN ANIMÉ
-           ============================================ */
-        .bg-animated {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            overflow: hidden;
-            z-index: 0;
-            pointer-events: none;
-            background: linear-gradient(135deg, #e0f2fe, #dcfce7, #fce7f3, #fef9c3, #e0f2fe);
-            background-size: 400% 400%;
-            animation: bgShift 15s ease-in-out infinite;
-        }
-
-        @keyframes bgShift {
-            0% { background-position: 0 0; }
-            25% { background-position: 100% 0; }
-            50% { background-position: 100% 100%; }
-            75% { background-position: 0 100%; }
-            100% { background-position: 0 0; }
-        }
-
-        .bg-blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(60px);
-            opacity: 0.45;
-            animation-timing-function: ease-in-out;
-            animation-iteration-count: infinite;
-        }
-
-        .bg-blob-1 {
-            width: 350px; height: 350px;
-            background: radial-gradient(circle, rgba(56, 189, 248, 0.55), transparent 70%);
-            top: -5%; left: -5%;
-            animation: blob1 8s infinite;
-        }
-
-        .bg-blob-2 {
-            width: 280px; height: 280px;
-            background: radial-gradient(circle, rgba(134, 239, 172, 0.55), transparent 70%);
-            bottom: -5%; right: -5%;
-            animation: blob2 10s infinite;
-        }
-
-        .bg-blob-3 {
-            width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(249, 168, 212, 0.55), transparent 70%);
-            top: 40%; left: 50%;
-            animation: blob3 9s infinite;
-        }
-
-        .bg-blob-4 {
-            width: 250px; height: 250px;
-            background: radial-gradient(circle, rgba(253, 230, 138, 0.55), transparent 70%);
-            top: 10%; right: 10%;
-            animation: blob4 11s infinite;
-        }
-
-        @keyframes blob1 {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(80px, 40px) scale(1.3); }
-            66% { transform: translate(-30px, 80px) scale(0.8); }
-        }
-
-        @keyframes blob2 {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(-60px, -50px) scale(1.2); }
-            66% { transform: translate(40px, -80px) scale(0.9); }
-        }
-
-        @keyframes blob3 {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(-100px, -60px) scale(1.4); }
-        }
-
-        @keyframes blob4 {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(-50px, 60px) scale(1.1); }
-            66% { transform: translate(70px, -30px) scale(1.3); }
-        }
-
-        .bg-grid {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-image:
-                linear-gradient(rgba(56, 189, 248, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
-            background-size: 60px 60px;
-            animation: gridMove 20s linear infinite;
-        }
-
-        @keyframes gridMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(60px, 60px); }
-        }
-
-        /* NAVIGATION */
-        .navbar {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-color);
-            padding: 15px 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: all 0.3s ease;
-        }
-
-        .navbar.scrolled { box-shadow: var(--shadow-medium); }
-
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-
-        .navbar-brand .logo-icon {
-            width: 45px; height: 45px;
-            background: var(--gradient-blue);
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-            font-weight: 800;
-        }
-
-        .navbar-brand span {
-            font-style: italic;
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .navbar-menu {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            list-style: none;
-        }
-
-        .navbar-menu a {
-            font-style: italic;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-
-        .navbar-menu a:hover { color: var(--accent-blue); }
-
-        .navbar-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .btn-nav {
-            padding: 10px 24px;
-            border-radius: var(--radius-lg);
-            font-style: italic;
-            font-size: 14px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--accent-blue);
-            border: 2px solid var(--accent-blue);
-        }
-
-        .btn-outline:hover {
-            background: var(--accent-blue);
-            color: white;
-        }
-
-        .btn-filled {
-            background: var(--gradient-blue);
-            color: white;
-            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
-        }
-
-        .btn-filled:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
-        }
-
-        .mobile-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: var(--text-primary);
-            cursor: pointer;
-        }
-
-        /* HERO SECTION */
-        .hero {
-            position: relative;
-            z-index: 1;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            padding: 120px 30px 80px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .hero-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
-        }
-
-        .hero-text h1 {
-            font-style: italic;
-            font-size: 48px;
-            font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 20px;
-            background: var(--gradient-blue);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-text .subtitle {
-            font-style: italic;
-            font-size: 18px;
-            font-weight: 400;
-            color: var(--text-secondary);
-            margin-bottom: 35px;
-            line-height: 1.8;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .btn-hero {
-            padding: 16px 40px;
-            border-radius: var(--radius-xl);
-            font-style: italic;
-            font-size: 16px;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-hero-primary {
-            background: var(--gradient-blue);
-            color: white;
-            box-shadow: 0 6px 25px rgba(56, 189, 248, 0.4);
-        }
-
-        .btn-hero-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.5);
-        }
-
-        .btn-hero-secondary {
-            background: var(--bg-card);
-            color: var(--text-primary);
-            border: 2px solid var(--border-color);
-            backdrop-filter: blur(10px);
-        }
-
-        .btn-hero-secondary:hover {
-            border-color: var(--accent-blue);
-            color: var(--accent-blue);
-            transform: translateY(-3px);
-        }
-
-        .hero-visual {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .hero-illustration {
-            width: 100%;
-            max-width: 450px;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .hero-shapes {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            pointer-events: none;
-        }
-
-        .shape {
-            position: absolute;
-            border-radius: 50%;
-            opacity: 0.15;
-            animation: pulse 4s ease-in-out infinite;
-        }
-
-        .shape-1 {
-            width: 80px; height: 80px;
-            background: var(--accent-blue);
-            top: 10%; right: 10%;
-        }
-
-        .shape-2 {
-            width: 60px; height: 60px;
-            background: var(--accent-pink);
-            bottom: 20%; left: 5%;
-            animation-delay: 1s;
-        }
-
-        .shape-3 {
-            width: 40px; height: 40px;
-            background: var(--accent-green);
-            top: 50%; left: 20%;
-            animation-delay: 2s;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.15; }
-            50% { transform: scale(1.1); opacity: 0.25; }
-        }
-
-        /* SECTIONS */
-        .section {
-            position: relative;
-            z-index: 1;
-            padding: 100px 30px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .section-tag {
-            display: inline-block;
-            padding: 8px 24px;
-            background: rgba(56, 189, 248, 0.1);
-            border-radius: 30px;
-            font-style: italic;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--accent-blue);
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .section-header h2 {
-            font-style: italic;
-            font-size: 40px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 15px;
-        }
-
-        .section-header p {
-            font-style: italic;
-            font-size: 16px;
-            font-weight: 400;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* SERVICES GRID */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 30px;
-        }
-
-        .service-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-2xl);
-            padding: 40px 30px;
-            text-align: center;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .service-card:hover {
-            transform: translateY(-10px);
-            box-shadow: var(--shadow-large);
-            border-color: var(--accent-blue);
-        }
-
-        .service-icon {
-            width: 80px; height: 80px;
-            margin: 0 auto 25px;
-            border-radius: var(--radius-xl);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            transition: all 0.3s ease;
-        }
-
-        .service-card:nth-child(1) .service-icon { background: rgba(56, 189, 248, 0.15); color: var(--accent-blue); }
-        .service-card:nth-child(2) .service-icon { background: rgba(134, 239, 172, 0.15); color: var(--accent-green); }
-        .service-card:nth-child(3) .service-icon { background: rgba(249, 168, 212, 0.15); color: var(--accent-pink); }
-        .service-card:nth-child(4) .service-icon { background: rgba(251, 191, 36, 0.15); color: #f59e0b; }
-
-        .service-card:hover .service-icon { transform: scale(1.1) rotate(5deg); }
-
-        .service-card h3 {
-            font-style: italic;
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-        }
-
-        .service-card p {
-            font-style: italic;
-            font-size: 14px;
-            font-weight: 400;
-            color: var(--text-secondary);
-            line-height: 1.7;
-        }
-
-        /* STEPS */
-        .steps-container {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 30px;
-            position: relative;
-        }
-
-        .steps-container::before {
-            content: '';
-            position: absolute;
-            top: 50px; left: 10%; right: 10%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green), var(--accent-pink), #f59e0b);
-            border-radius: 3px;
-            z-index: 0;
-        }
-
-        .step-card {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-        }
-
-        .step-number {
-            width: 70px; height: 70px;
-            margin: 0 auto 25px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: 800;
-            color: white;
-            transition: all 0.3s ease;
-        }
-
-        .step-card:nth-child(1) .step-number { background: var(--gradient-blue); box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4); }
-        .step-card:nth-child(2) .step-number { background: var(--gradient-green); box-shadow: 0 6px 20px rgba(134, 239, 172, 0.4); }
-        .step-card:nth-child(3) .step-number { background: var(--gradient-pink); box-shadow: 0 6px 20px rgba(249, 168, 212, 0.4); }
-        .step-card:nth-child(4) .step-number { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4); }
-
-        .step-card:hover .step-number { transform: scale(1.15); }
-
-        .step-card h3 {
-            font-style: italic;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 10px;
-        }
-
-        .step-card p {
-            font-style: italic;
-            font-size: 13px;
-            font-weight: 400;
-            color: var(--text-secondary);
-        }
-
-        /* FEATURES */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 25px;
-        }
-
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-xl);
-            padding: 25px;
-            transition: all 0.3s ease;
-        }
-
-        .feature-item:hover {
-            transform: translateX(5px);
-            border-color: var(--accent-blue);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .feature-icon {
-            width: 50px; height: 50px;
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-
-        .feature-item:nth-child(odd) .feature-icon { background: rgba(56, 189, 248, 0.15); color: var(--accent-blue); }
-        .feature-item:nth-child(even) .feature-icon { background: rgba(134, 239, 172, 0.15); color: var(--accent-green); }
-
-        .feature-text h4 {
-            font-style: italic;
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-
-        .feature-text p {
-            font-style: italic;
-            font-size: 12px;
-            font-weight: 400;
-            color: var(--text-secondary);
-        }
-
-        /* STATS */
-        .stats-section {
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(134, 239, 172, 0.05) 100%);
-            border-radius: var(--radius-2xl);
-            padding: 60px;
-            margin: 40px 30px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 30px;
-        }
-
-        .stat-item { text-align: center; }
-
-        .stat-item .stat-number {
-            font-style: italic;
-            font-size: 36px;
-            font-weight: 800;
-            background: var(--gradient-blue);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 8px;
-        }
-
-        .stat-item .stat-label {
-            font-style: italic;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-
-        /* TESTIMONIALS */
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-        }
-
-        .testimonial-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-2xl);
-            padding: 35px;
-            transition: all 0.3s ease;
-        }
-
-        .testimonial-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-medium);
-        }
-
-        .testimonial-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .testimonial-avatar {
-            width: 60px; height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .testimonial-info h4 {
-            font-style: italic;
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 3px;
-        }
-
-        .testimonial-info .country {
-            font-style: italic;
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-
-        .testimonial-rating { margin-bottom: 15px; }
-        .testimonial-rating i { color: #fbbf24; font-size: 14px; }
-
-        .testimonial-text {
-            font-style: italic;
-            font-size: 14px;
-            font-weight: 400;
-            color: var(--text-secondary);
-            line-height: 1.8;
-        }
-
-        /* FAQ */
-        .faq-container { max-width: 800px; margin: 0 auto; }
-
-        .faq-item {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-xl);
-            margin-bottom: 15px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .faq-item:hover { border-color: var(--accent-blue); }
-
-        .faq-question {
-            padding: 25px 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .faq-question:hover { background: rgba(56, 189, 248, 0.05); }
-
-        .faq-question h3 {
-            font-style: italic;
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-primary);
-            flex: 1;
-            padding-right: 20px;
-        }
-
-        .faq-icon {
-            width: 35px; height: 35px;
-            border-radius: 50%;
-            background: rgba(56, 189, 248, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent-blue);
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-        }
-
-        .faq-item.active .faq-icon {
-            background: var(--accent-blue);
-            color: white;
-            transform: rotate(45deg);
-        }
-
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .faq-item.active .faq-answer { max-height: 300px; }
-
-        .faq-answer p {
-            padding: 0 30px 25px;
-            font-style: italic;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            line-height: 1.8;
-        }
-
-        /* CTA */
-        .cta-section {
-            position: relative;
-            z-index: 1;
-            background: var(--gradient-blue);
-            border-radius: var(--radius-2xl);
-            padding: 80px 60px;
-            text-align: center;
-            margin: 60px 30px;
-            overflow: hidden;
-        }
-
-        .cta-section::before {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-        }
-
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .cta-content { position: relative; z-index: 1; }
-
-        .cta-section h2 {
-            font-style: italic;
-            font-size: 42px;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 15px;
-        }
-
-        .cta-section p {
-            font-style: italic;
-            font-size: 18px;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 35px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn-cta {
-            padding: 18px 45px;
-            border-radius: var(--radius-xl);
-            font-style: italic;
-            font-size: 16px;
-            font-weight: 700;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-cta-white {
-            background: white;
-            color: var(--accent-blue);
-            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-cta-white:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .btn-cta-outline {
-            background: transparent;
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.5);
-        }
-
-        .btn-cta-outline:hover {
-            border-color: white;
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-3px);
-        }
-
-        /* FOOTER */
-        .footer {
-            position: relative;
-            z-index: 1;
-            background: var(--text-primary);
-            color: white;
-            padding: 80px 30px 40px;
-            margin-top: 60px;
-        }
-
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 60px;
-            margin-bottom: 60px;
-        }
-
-        .footer-brand .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .footer-brand .logo-icon {
-            width: 50px; height: 50px;
-            background: var(--gradient-blue);
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 22px;
-            font-weight: 800;
-        }
-
-        .footer-brand .logo span {
-            font-style: italic;
-            font-size: 24px;
-            font-weight: 700;
-        }
-
-        .footer-brand p {
-            font-style: italic;
-            font-size: 14px;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.8;
-            margin-bottom: 25px;
-        }
-
-        .footer-social {
-            display: flex;
-            gap: 15px;
-        }
-
-        .footer-social a {
-            width: 40px; height: 40px;
-            border-radius: var(--radius-sm);
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .footer-social a:hover {
-            background: var(--accent-blue);
-            transform: translateY(-3px);
-        }
-
-        .footer-links h4 {
-            font-style: italic;
-            font-size: 16px;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 25px;
-        }
-
-        .footer-links ul { list-style: none; }
-
-        .footer-links li { margin-bottom: 12px; }
-
-        .footer-links a {
-            font-style: italic;
-            font-size: 14px;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: all 0.2s ease;
-        }
-
-        .footer-links a:hover {
-            color: var(--accent-blue);
-            padding-left: 5px;
-        }
-
-        .footer-bottom {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding-top: 40px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .footer-bottom p {
-            font-style: italic;
-            font-size: 13px;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .footer-bottom-links {
-            display: flex;
-            gap: 25px;
-        }
-
-        .footer-bottom-links a {
-            font-style: italic;
-            font-size: 13px;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.5);
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-
-        .footer-bottom-links a:hover { color: var(--accent-blue); }
-
-        /* ANIMATIONS */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 1024px) {
-            .hero-content {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .hero-text h1 { font-size: 42px; }
-            .hero-buttons { justify-content: center; }
-            .hero-visual { display: none; }
-
-            .services-grid { grid-template-columns: repeat(2, 1fr); }
-            .steps-container { grid-template-columns: repeat(2, 1fr); }
-            .steps-container::before { display: none; }
-            .features-grid { grid-template-columns: repeat(2, 1fr); }
-            .stats-grid { grid-template-columns: repeat(3, 1fr); }
-            .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
-            .footer-content { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        @media (max-width: 768px) {
-            .navbar-menu {
-                display: none;
-                position: absolute;
-                top: 100%; left: 0; right: 0;
-                background: white;
-                flex-direction: column;
-                padding: 20px;
-                gap: 15px;
-                box-shadow: var(--shadow-medium);
-            }
-
-            .navbar-menu.active { display: flex; }
-            .mobile-toggle { display: block; }
-            .navbar-actions { display: none; }
-
-            .hero { padding: 100px 20px 60px; }
-            .hero-text h1 { font-size: 32px; }
-
-            .section { padding: 60px 20px; }
-            .section-header h2 { font-size: 30px; }
-
-            .services-grid, .steps-container, .features-grid { grid-template-columns: 1fr; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .testimonials-grid { grid-template-columns: 1fr; }
-
-            .cta-section { padding: 50px 30px; }
-            .cta-section h2 { font-size: 30px; }
-
-            .footer-content { grid-template-columns: 1fr; gap: 40px; }
-            .footer-bottom { flex-direction: column; text-align: center; }
-        }
-
-        @media (max-width: 480px) {
-            .hero-text h1 { font-size: 28px; }
-            .hero-buttons { flex-direction: column; }
-            .btn-hero { width: 100%; justify-content: center; }
-            .stats-grid { grid-template-columns: 1fr; }
-            .cta-buttons { flex-direction: column; }
-            .btn-cta { width: 100%; justify-content: center; }
+        /* ═══════════════════════════════════════════════════════════════════
+           NECTARPRO LANDING — DESIGN SPECTACULAIRE | UX IMMERSIVE
+           ═══════════════════════════════════════════════════════════════════ */
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+        html{scroll-behavior:smooth}
+
+        :root{
+            --bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);
+            --glass:rgba(255,255,255,0.72);
+            --glass-hover:rgba(255,255,255,0.88);
+            --accent:#db2777;
+            --accent2:#ec4899;
+            --accent-light:#f9a8d4;
+            --gold:#f59e0b;
+            --gold-light:#fef3c7;
+            --emerald:#10b981;
+            --violet:#8b5cf6;
+            --sky:#0ea5e9;
+            --text:#0f172a;
+            --text2:#1e293b;
+            --muted:#64748b;
+            --border:rgba(236,72,153,0.2);
+            --shadow-sm:0 2px 8px rgba(236,72,153,0.08);
+            --shadow:0 8px 32px rgba(236,72,153,0.12);
+            --shadow-lg:0 16px 48px rgba(236,72,153,0.18);
+            --shadow-xl:0 24px 64px rgba(236,72,153,0.25);
+            --radius-sm:12px;
+            --radius:18px;
+            --radius-lg:24px;
+            --radius-xl:32px;
+        }
+
+        body{
+            background:var(--bg);
+            min-height:100vh;min-height:100dvh;
+            color:var(--text);
+            font-style:italic;
+            overflow-x:hidden;
+            position:relative;
+        }
+
+        /* ═══════════ FOND COSMIQUE ═══════════ */
+        .cosmic-bg{
+            position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+        }
+        .cosmic-orb{
+            position:absolute;border-radius:50%;
+            filter:blur(80px);opacity:.35;
+            animation:cosmicOrbit linear infinite;
+        }
+        .cosmic-orb:nth-child(1){width:45vw;height:45vw;background:radial-gradient(circle,rgba(236,72,153,0.45),transparent 70%);top:-10%;left:-10%;animation-duration:25s}
+        .cosmic-orb:nth-child(2){width:35vw;height:35vw;background:radial-gradient(circle,rgba(139,92,246,0.35),transparent 70%);bottom:-10%;right:-8%;animation-duration:30s;animation-delay:-8s}
+        .cosmic-orb:nth-child(3){width:30vw;height:30vw;background:radial-gradient(circle,rgba(14,165,233,0.3),transparent 70%);top:40%;left:40%;animation-duration:35s;animation-delay:-15s}
+        .cosmic-orb:nth-child(4){width:25vw;height:25vw;background:radial-gradient(circle,rgba(245,158,11,0.3),transparent 70%);top:5%;right:10%;animation-duration:28s;animation-delay:-5s}
+        @keyframes cosmicOrbit{
+            0%{transform:translate(0,0)scale(1)}
+            25%{transform:translate(80px,-40px)scale(1.3)}
+            50%{transform:translate(-40px,60px)scale(.85)}
+            75%{transform:translate(-60px,-30px)scale(1.2)}
+            100%{transform:translate(0,0)scale(1)}
+        }
+
+        .grid-overlay{
+            position:absolute;inset:0;
+            background-image:radial-gradient(circle,rgba(236,72,153,0.04) 1px,transparent 1px);
+            background-size:40px 40px;
+            animation:gridPan 30s linear infinite;
+        }
+        @keyframes gridPan{0%{transform:translate(0,0)}100%{transform:translate(40px,40px)}}
+
+        .particle-storm{position:absolute;inset:0}
+        .storm-dot{
+            position:absolute;width:3px;height:3px;border-radius:50%;
+            background:var(--accent2);
+            animation:stormFloat linear infinite;
+        }
+        @keyframes stormFloat{
+            0%{transform:translateY(100vh)scale(0);opacity:0}
+            10%{opacity:.8}
+            90%{opacity:.2}
+            100%{transform:translateY(-10vh)scale(1);opacity:0}
+        }
+
+        /* ═══════════ NAVBAR ═══════════ */
+        .navbar{
+            position:fixed;inset:0 0 auto;z-index:1000;
+            background:rgba(255,255,255,0.55);
+            backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+            border-bottom:1px solid var(--border);
+            padding:12px clamp(16px,4vw,40px);
+            display:flex;justify-content:space-between;align-items:center;
+            transition:all .4s;
+        }
+        .navbar.scrolled{
+            background:rgba(255,255,255,0.8);
+            box-shadow:var(--shadow-lg);
+        }
+        .nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+        .nav-brand img{width:42px;height:42px;border-radius:12px;box-shadow:0 4px 16px rgba(236,72,153,0.3);transition:transform .3s}
+        .nav-brand:hover img{transform:rotate(-8deg)scale(1.05)}
+        .nav-brand-text{font-size:22px;font-weight:900}
+        .nav-n{color:var(--accent2)}.nav-p{color:var(--accent)}
+
+        .nav-links{display:flex;gap:8px;align-items:center;list-style:none}
+        .nav-links a{
+            font-weight:700;font-size:12px;color:var(--text2);text-decoration:none;
+            padding:9px 16px;border-radius:30px;
+            border:1px solid var(--border);
+            background:rgba(236,72,153,0.04);
+            transition:all .3s;
+        }
+        .nav-links a:hover{
+            background:rgba(236,72,153,0.12);color:var(--accent);
+            transform:translateY(-2px);box-shadow:var(--shadow-sm);
+        }
+        .nav-cta{
+            padding:10px 22px!important;
+            background:linear-gradient(135deg,#ec4899,#db2777)!important;
+            color:#fff!important;border:none!important;
+            box-shadow:0 4px 18px rgba(219,39,119,0.35)!important;
+            animation:ctaGlow 2s ease-in-out infinite;
+        }
+        @keyframes ctaGlow{0%,100%{box-shadow:0 4px 18px rgba(219,39,119,0.35)}50%{box-shadow:0 4px 28px rgba(219,39,119,0.6)}}
+        .nav-cta:hover{transform:translateY(-2px)!important;box-shadow:0 6px 28px rgba(219,39,119,0.5)!important}
+
+        .nav-toggle{display:none;background:none;border:none;font-size:24px;color:var(--text);cursor:pointer}
+
+        /* ═══════════ HERO ═══════════ */
+        .hero{
+            position:relative;z-index:1;
+            min-height:100vh;min-height:100dvh;
+            display:flex;align-items:center;justify-content:center;
+            padding:120px 20px 60px;
+        }
+        .hero-inner{
+            max-width:1300px;width:100%;
+            display:grid;grid-template-columns:1fr 1fr;
+            gap:60px;align-items:center;
+        }
+        .hero-text-wrap{position:relative;z-index:2}
+        .hero-badge{
+            display:inline-flex;align-items:center;gap:8px;
+            padding:8px 20px;margin-bottom:24px;
+            background:rgba(236,72,153,0.1);border:1px solid var(--border);
+            border-radius:30px;font-weight:700;font-size:13px;color:var(--accent);
+            animation:pulseBadge 2.5s ease-in-out infinite;
+        }
+        @keyframes pulseBadge{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+        .hero-badge .live-dot{
+            width:10px;height:10px;border-radius:50%;
+            background:#ef4444;
+            animation:livePulse 1.2s ease-in-out infinite;
+        }
+        @keyframes livePulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(239,68,68,.5)}50%{opacity:.6;box-shadow:0 0 0 12px rgba(239,68,68,0)}}
+
+        .hero-title{
+            font-weight:900;font-size:clamp(32px,5vw,58px);
+            line-height:1.1;margin-bottom:20px;
+        }
+        .hero-title .gradient-text{
+            background:linear-gradient(135deg,#ec4899 0%,#db2777 40%,#8b5cf6 70%,#ec4899 100%);
+            background-size:200% 200%;
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            background-clip:text;
+            animation:gradientFlow 4s ease infinite;
+        }
+        @keyframes gradientFlow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+        .hero-subtitle{font-weight:600;font-size:17px;color:var(--text2);line-height:1.7;margin-bottom:32px;max-width:500px}
+
+        .hero-cta-group{display:flex;gap:14px;flex-wrap:wrap}
+        .btn-hero{
+            display:inline-flex;align-items:center;gap:10px;
+            padding:16px 32px;border-radius:var(--radius-sm);
+            font-weight:700;font-size:15px;text-decoration:none;
+            transition:all .35s;border:none;cursor:pointer;
+        }
+        .btn-hero-primary{
+            background:linear-gradient(135deg,#ec4899,#db2777);
+            color:#fff;box-shadow:0 8px 30px rgba(219,39,119,0.4);
+            position:relative;overflow:hidden;
+        }
+        .btn-hero-primary::after{
+            content:'';position:absolute;inset:0;
+            background:linear-gradient(135deg,transparent,rgba(255,255,255,0.25),transparent);
+            transform:translateX(-100%);transition:transform .6s;
+        }
+        .btn-hero-primary:hover::after{transform:translateX(100%)}
+        .btn-hero-primary:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(219,39,119,0.55)}
+        .btn-hero-secondary{
+            background:var(--glass);color:var(--accent);
+            border:2px solid var(--accent2);
+            backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+        }
+        .btn-hero-secondary:hover{transform:translateY(-3px);background:var(--glass-hover);box-shadow:var(--shadow-lg)}
+
+        /* ═══════════ HERO VISUAL - FLOATING ORB & ICONS ═══════════ */
+        .hero-visual{
+            position:relative;display:flex;align-items:center;justify-content:center;
+            height:450px;
+        }
+        .hero-central-orb{
+            width:220px;height:220px;border-radius:50%;
+            background:linear-gradient(135deg,rgba(236,72,153,0.25),rgba(219,39,119,0.15));
+            box-shadow:0 0 120px rgba(236,72,153,0.3),inset 0 0 80px rgba(236,72,153,0.15);
+            animation:orbFloat 6s ease-in-out infinite;
+            position:relative;z-index:2;
+            display:flex;align-items:center;justify-content:center;
+        }
+        @keyframes orbFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+        .hero-central-orb .orb-icon{
+            font-size:72px;
+            background:linear-gradient(135deg,#fff,#fce7f3);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            background-clip:text;
+            animation:orbPulse 3s ease-in-out infinite;
+        }
+        @keyframes orbPulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.1);opacity:1}}
+
+        .hero-rings{position:absolute;inset:0;z-index:0}
+        .hero-ring{
+            position:absolute;border-radius:50%;border:2px solid rgba(236,72,153,0.15);
+            top:50%;left:50%;transform:translate(-50%,-50%);
+            animation:ringExpand 4s ease-in-out infinite;
+        }
+        .hero-ring:nth-child(1){width:300px;height:300px;animation-delay:0s}
+        .hero-ring:nth-child(2){width:380px;height:380px;animation-delay:1s}
+        .hero-ring:nth-child(3){width:460px;height:460px;animation-delay:2s}
+        @keyframes ringExpand{0%,100%{transform:translate(-50%,-50%)scale(1);opacity:.3}50%{transform:translate(-50%,-50%)scale(1.08);opacity:.6}}
+
+        .floating-icon{
+            position:absolute;z-index:3;
+            width:56px;height:56px;border-radius:var(--radius-sm);
+            background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+            border:1px solid var(--border);
+            display:flex;align-items:center;justify-content:center;
+            font-size:24px;color:var(--accent);
+            box-shadow:var(--shadow);
+            animation:iconOrbit 8s linear infinite;
+            transition:all .3s;
+        }
+        .floating-icon:hover{transform:translate(-50%,-50%)scale(1.15)!important;box-shadow:var(--shadow-lg);color:var(--accent2)}
+        .floating-icon:nth-child(3){animation-delay:-2s;font-size:22px}
+        .floating-icon:nth-child(4){animation-delay:-4s;font-size:20px}
+        .floating-icon:nth-child(5){animation-delay:-6s;font-size:26px}
+        .floating-icon:nth-child(6){animation-delay:-3.5s;font-size:21px}
+        .floating-icon:nth-child(7){animation-delay:-5.5s;font-size:23px}
+        @keyframes iconOrbit{
+            0%{transform:translate(-50%,-50%)rotate(0deg)translateX(180px)rotate(0deg)}
+            100%{transform:translate(-50%,-50%)rotate(360deg)translateX(180px)rotate(-360deg)}
+        }
+
+        /* ═══════════ SECTIONS ═══════════ */
+        .section{position:relative;z-index:1;padding:80px clamp(16px,4vw,40px);max-width:1300px;margin:0 auto}
+        .section-header{text-align:center;margin-bottom:56px}
+        .section-tag{
+            display:inline-flex;align-items:center;gap:6px;
+            padding:7px 20px;margin-bottom:18px;
+            background:rgba(236,72,153,0.08);border:1px solid var(--border);
+            border-radius:30px;font-weight:700;font-size:12px;color:var(--accent);
+            text-transform:uppercase;letter-spacing:.8px;
+        }
+        .section-header h2{
+            font-weight:900;font-size:clamp(28px,4vw,40px);
+            background:linear-gradient(135deg,#ec4899,#db2777);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            background-clip:text;margin-bottom:12px;
+        }
+        .section-header p{font-weight:600;font-size:15px;color:var(--muted);max-width:580px;margin:0 auto}
+
+        /* ═══════════ SERVICES ═══════════ */
+        .services-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+        .service-card{
+            background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+            border:1px solid var(--border);border-radius:var(--radius-lg);
+            padding:36px 24px;text-align:center;
+            box-shadow:var(--shadow-sm);transition:all .4s;
+            position:relative;overflow:hidden;
+        }
+        .service-card::before{
+            content:'';position:absolute;top:0;left:0;right:0;height:4px;
+            background:linear-gradient(90deg,#ec4899,#db2777,#8b5cf6);
+            transform:scaleX(0);transition:transform .4s;
+        }
+        .service-card:hover::before{transform:scaleX(1)}
+        .service-card:hover{transform:translateY(-10px);box-shadow:var(--shadow-xl);background:var(--glass-hover)}
+        .service-icon-wrap{
+            width:80px;height:80px;margin:0 auto 20px;border-radius:50%;
+            display:flex;align-items:center;justify-content:center;
+            font-size:34px;
+            background:linear-gradient(135deg,rgba(236,72,153,0.12),rgba(219,39,119,0.06));
+            transition:all .4s;
+            position:relative;
+        }
+        .service-icon-wrap::after{
+            content:'';position:absolute;inset:-4px;border-radius:50%;
+            border:2px dashed rgba(236,72,153,0.2);
+            animation:iconSpin 10s linear infinite;
+        }
+        @keyframes iconSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+        .service-card:hover .service-icon-wrap{
+            transform:scale(1.1);
+            box-shadow:0 8px 30px rgba(236,72,153,0.2);
+        }
+        .service-card:hover .service-icon-wrap::after{animation-duration:4s;border-color:rgba(236,72,153,0.4)}
+        .service-card h3{font-weight:800;font-size:18px;color:var(--text);margin-bottom:10px}
+        .service-card p{font-weight:600;font-size:13px;color:var(--muted);line-height:1.7}
+
+        /* ═══════════ STEPS ═══════════ */
+        .steps-container{
+            display:grid;grid-template-columns:repeat(4,1fr);gap:24px;
+            position:relative;
+        }
+        .steps-container::before{
+            content:'';position:absolute;top:50px;left:12%;right:12%;height:3px;
+            background:linear-gradient(90deg,#ec4899,#db2777,#8b5cf6,#f59e0b);
+            border-radius:6px;z-index:0;
+        }
+        .step-card{position:relative;z-index:1;text-align:center}
+        .step-num{
+            width:70px;height:70px;margin:0 auto 22px;border-radius:50%;
+            display:flex;align-items:center;justify-content:center;
+            font-weight:900;font-size:24px;color:#fff;
+            background:linear-gradient(135deg,#ec4899,#db2777);
+            box-shadow:0 8px 24px rgba(219,39,119,0.35);
+            transition:all .4s;
+            position:relative;
+        }
+        .step-num::before{
+            content:'';position:absolute;inset:-6px;border-radius:50%;
+            background:linear-gradient(135deg,rgba(236,72,153,0.3),transparent);
+            animation:stepGlow 2s ease-in-out infinite;
+        }
+        @keyframes stepGlow{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.2);opacity:.2}}
+        .step-card:hover .step-num{transform:scale(1.15);box-shadow:0 12px 32px rgba(219,39,119,0.5)}
+        .step-card h3{font-weight:800;font-size:17px;color:var(--text);margin-bottom:8px}
+        .step-card p{font-weight:600;font-size:13px;color:var(--muted)}
+
+        /* ═══════════ FEATURES ═══════════ */
+        .features-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+        .feature-item{
+            display:flex;align-items:center;gap:14px;
+            background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+            border:1px solid var(--border);border-radius:var(--radius);
+            padding:22px 20px;transition:all .35s;
+        }
+        .feature-item:hover{transform:translateX(6px);border-color:var(--accent2);box-shadow:var(--shadow)}
+        .feature-icon-sm{
+            width:48px;height:48px;border-radius:var(--radius-sm);
+            background:linear-gradient(135deg,rgba(236,72,153,0.12),rgba(219,39,119,0.05));
+            display:flex;align-items:center;justify-content:center;
+            font-size:20px;color:var(--accent);flex-shrink:0;
+            transition:all .3s;
+        }
+        .feature-item:hover .feature-icon-sm{transform:rotate(-5deg)scale(1.08)}
+        .feature-text h4{font-weight:700;font-size:14px;color:var(--text);margin-bottom:2px}
+        .feature-text p{font-weight:600;font-size:11px;color:var(--muted)}
+
+        /* ═══════════ STATS ═══════════ */
+        .stats-banner{
+            background:linear-gradient(135deg,rgba(236,72,153,0.08),rgba(219,39,119,0.04));
+            backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+            border:1px solid var(--border);border-radius:var(--radius-xl);
+            padding:50px 40px;margin:0 clamp(16px,4vw,40px);
+            max-width:1300px;margin-left:auto;margin-right:auto;
+            box-shadow:var(--shadow);
+        }
+        .stats-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:30px}
+        .stat-item{text-align:center}
+        .stat-num{
+            font-weight:900;font-size:clamp(28px,3vw,40px);
+            background:linear-gradient(135deg,#ec4899,#db2777);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            background-clip:text;margin-bottom:6px;
+        }
+        .stat-label{font-weight:700;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+
+        /* ═══════════ TESTIMONIALS ═══════════ */
+        .testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+        .testimonial-card{
+            background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+            border:1px solid var(--border);border-radius:var(--radius-lg);
+            padding:28px;transition:all .35s;
+            box-shadow:var(--shadow-sm);
+        }
+        .testimonial-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--accent2)}
+        .testi-header{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+        .testi-avatar{
+            width:52px;height:52px;border-radius:var(--radius-sm);
+            display:flex;align-items:center;justify-content:center;
+            color:#fff;font-weight:800;font-size:18px;
+        }
+        .testi-avatar.c1{background:linear-gradient(135deg,#ec4899,#db2777)}
+        .testi-avatar.c2{background:linear-gradient(135deg,#10b981,#059669)}
+        .testi-avatar.c3{background:linear-gradient(135deg,#8b5cf6,#7c3aed)}
+        .testi-info h4{font-weight:700;font-size:15px;color:var(--text);margin-bottom:2px}
+        .testi-info span{font-weight:600;font-size:11px;color:var(--muted)}
+        .testi-stars{color:#f59e0b;font-size:13px;margin-bottom:12px}
+        .testi-text{font-weight:600;font-size:13px;color:var(--text2);line-height:1.7}
+
+        /* ═══════════ FAQ ═══════════ */
+        .faq-container{max-width:800px;margin:0 auto}
+        .faq-item{
+            background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+            border:1px solid var(--border);border-radius:var(--radius);
+            margin-bottom:14px;overflow:hidden;
+            box-shadow:var(--shadow-sm);transition:all .3s;
+        }
+        .faq-item:hover{border-color:var(--accent2)}
+        .faq-item.active{border-color:var(--accent2);box-shadow:var(--shadow)}
+        .faq-question{
+            padding:22px 24px;cursor:pointer;
+            display:flex;align-items:center;justify-content:space-between;
+            gap:16px;transition:background .3s;
+        }
+        .faq-question:hover{background:rgba(236,72,153,0.04)}
+        .faq-question h3{font-weight:700;font-size:15px;color:var(--text);flex:1}
+        .faq-toggle{
+            width:32px;height:32px;border-radius:50%;
+            background:rgba(236,72,153,0.08);display:flex;
+            align-items:center;justify-content:center;
+            color:var(--accent);transition:all .3s;flex-shrink:0;
+        }
+        .faq-item.active .faq-toggle{background:var(--accent);color:#fff;transform:rotate(45deg)}
+        .faq-answer{max-height:0;overflow:hidden;transition:max-height .4s}
+        .faq-item.active .faq-answer{max-height:300px}
+        .faq-answer p{padding:0 24px 22px;font-weight:600;font-size:13px;color:var(--muted);line-height:1.8}
+
+        /* ═══════════ CTA ═══════════ */
+        .cta-mega{
+            position:relative;z-index:1;
+            margin:60px clamp(16px,4vw,40px);
+            max-width:1300px;margin-left:auto;margin-right:auto;
+            background:linear-gradient(135deg,#ec4899,#db2777,#8b5cf6);
+            background-size:200% 200%;
+            animation:ctaBgShift 6s ease infinite;
+            border-radius:var(--radius-xl);
+            padding:70px 40px;text-align:center;
+            overflow:hidden;
+            box-shadow:0 24px 64px rgba(219,39,119,0.35);
+        }
+        @keyframes ctaBgShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+        .cta-mega::before{
+            content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+            background:radial-gradient(circle,rgba(255,255,255,0.08) 0%,transparent 60%);
+            animation:ctaRotate 20s linear infinite;
+        }
+        @keyframes ctaRotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+        .cta-mega-content{position:relative;z-index:2}
+        .cta-mega h2{font-weight:900;font-size:clamp(28px,4vw,44px);color:#fff;margin-bottom:16px}
+        .cta-mega p{font-weight:600;font-size:16px;color:rgba(255,255,255,.85);margin-bottom:32px;max-width:550px;margin-left:auto;margin-right:auto}
+        .cta-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+        .btn-cta-white{
+            padding:16px 36px;border-radius:var(--radius-sm);
+            background:#fff;color:var(--accent);font-weight:700;font-size:15px;
+            text-decoration:none;display:inline-flex;align-items:center;gap:10px;
+            transition:all .3s;box-shadow:0 8px 30px rgba(0,0,0,.15);
+        }
+        .btn-cta-white:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,.25)}
+        .btn-cta-outline{
+            padding:16px 36px;border-radius:var(--radius-sm);
+            background:transparent;color:#fff;font-weight:700;font-size:15px;
+            text-decoration:none;display:inline-flex;align-items:center;gap:10px;
+            border:2px solid rgba(255,255,255,.5);transition:all .3s;
+        }
+        .btn-cta-outline:hover{background:rgba(255,255,255,.1);border-color:#fff;transform:translateY(-3px)}
+
+        /* ═══════════ FOOTER ═══════════ */
+        .footer{
+            position:relative;z-index:1;
+            background:linear-gradient(180deg,var(--text2),#0f172a);
+            color:#fff;padding:60px clamp(16px,4vw,40px) 30px;
+            margin-top:40px;
+        }
+        .footer-grid{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:50px;margin-bottom:50px}
+        .footer-brand h3{font-weight:900;font-size:22px;margin-bottom:14px}
+        .footer-brand h3 .f-n{color:var(--accent2)}.footer-brand h3 .f-p{color:var(--accent-light)}
+        .footer-brand p{font-weight:600;font-size:13px;color:rgba(255,255,255,.6);line-height:1.8;margin-bottom:20px}
+        .footer-social{display:flex;gap:12px}
+        .footer-social a{
+            width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.08);
+            display:flex;align-items:center;justify-content:center;
+            color:#fff;text-decoration:none;transition:all .3s;
+        }
+        .footer-social a:hover{background:var(--accent);transform:translateY(-3px)}
+        .footer-col h4{font-weight:800;font-size:14px;margin-bottom:20px;color:#fff}
+        .footer-col ul{list-style:none}
+        .footer-col li{margin-bottom:10px}
+        .footer-col a{font-weight:600;font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;transition:all .2s}
+        .footer-col a:hover{color:var(--accent2);padding-left:4px}
+        .footer-bottom{
+            max-width:1300px;margin:0 auto;padding-top:30px;
+            border-top:1px solid rgba(255,255,255,.08);
+            display:flex;justify-content:space-between;align-items:center;
+            flex-wrap:wrap;gap:16px;
+        }
+        .footer-bottom p{font-weight:600;font-size:12px;color:rgba(255,255,255,.35)}
+        .footer-bottom-links{display:flex;gap:20px}
+        .footer-bottom-links a{font-weight:600;font-size:12px;color:rgba(255,255,255,.35);text-decoration:none;transition:color .2s}
+        .footer-bottom-links a:hover{color:var(--accent2)}
+
+        /* ═══════════ SCROLL REVEAL ═══════════ */
+        .reveal{opacity:0;transform:translateY(40px);transition:all .8s cubic-bezier(.25,.46,.45,.94)}
+        .reveal.visible{opacity:1;transform:translateY(0)}
+
+        /* ═══════════ RESPONSIVE ═══════════ */
+        @media(max-width:1200px){
+            .hero-inner{gap:40px}
+            .services-grid{grid-template-columns:repeat(2,1fr)}
+            .features-grid{grid-template-columns:repeat(2,1fr)}
+            .stats-grid{grid-template-columns:repeat(3,1fr)}
+        }
+        @media(max-width:1024px){
+            .hero-inner{grid-template-columns:1fr;text-align:center}
+            .hero-subtitle{margin:0 auto 32px}
+            .hero-cta-group{justify-content:center}
+            .hero-visual{height:350px}
+            .steps-container::before{display:none}
+            .steps-container{grid-template-columns:repeat(2,1fr)}
+            .testimonials-grid{grid-template-columns:repeat(2,1fr)}
+            .footer-grid{grid-template-columns:1fr 1fr}
+        }
+        @media(max-width:768px){
+            .nav-links{display:none;position:absolute;top:100%;left:0;right:0;
+                background:rgba(255,255,255,.95);flex-direction:column;padding:16px;gap:8px;
+                box-shadow:var(--shadow-lg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+            .nav-links.active{display:flex}
+            .nav-toggle{display:block}
+            .hero{min-height:auto;padding:110px 16px 50px}
+            .section{padding:50px 16px}
+            .services-grid{grid-template-columns:1fr}
+            .features-grid{grid-template-columns:1fr}
+            .steps-container{grid-template-columns:1fr}
+            .stats-grid{grid-template-columns:repeat(2,1fr)}
+            .testimonials-grid{grid-template-columns:1fr}
+            .footer-grid{grid-template-columns:1fr;gap:30px}
+            .footer-bottom{flex-direction:column;text-align:center}
+            .hero-visual{height:280px}
+            .hero-central-orb{width:160px;height:160px}
+            .floating-icon{width:42px;height:42px;font-size:18px}
+            @keyframes iconOrbit{0%{transform:translate(-50%,-50%)rotate(0deg)translateX(120px)rotate(0deg)}100%{transform:translate(-50%,-50%)rotate(360deg)translateX(120px)rotate(-360deg)}}
+        }
+        @media(max-width:480px){
+            .hero-title{font-size:26px}
+            .stats-grid{grid-template-columns:1fr 1fr}
+            .btn-hero{width:100%;justify-content:center}
+            .cta-btns{flex-direction:column}
+            .btn-cta-white,.btn-cta-outline{justify-content:center}
         }
     </style>
 </head>
 <body>
-    <!-- Arrière-plan animé -->
-    <div class="bg-animated">
-        <div class="bg-blob bg-blob-1"></div>
-        <div class="bg-blob bg-blob-2"></div>
-        <div class="bg-blob bg-blob-3"></div>
-        <div class="bg-blob bg-blob-4"></div>
-        <div class="bg-grid"></div>
+
+    <!-- ═══════════ FOND COSMIQUE ═══════════ -->
+    <div class="cosmic-bg">
+        <div class="cosmic-orb"></div><div class="cosmic-orb"></div><div class="cosmic-orb"></div><div class="cosmic-orb"></div>
+        <div class="grid-overlay"></div>
+        <div class="particle-storm" id="particleStorm"></div>
     </div>
 
-    <!-- Navigation -->
+    <!-- ═══════════ NAVBAR ═══════════ -->
     <nav class="navbar" id="navbar">
-        <a href="/" class="navbar-brand">
-            <div class="logo-icon">NT</div>
-            <span>NectarPro</span>
+        <a href="/" class="nav-brand">
+            <img src="/static/images/net.jpg" alt="NectarPro">
+            <span class="nav-brand-text"><span class="nav-n">Nectar</span><span class="nav-p">Pro</span></span>
         </a>
-        <ul class="navbar-menu" id="navbarMenu">
+        <ul class="nav-links" id="navMenu">
             <li><a href="#services">Services</a></li>
             <li><a href="#comment-ca-marche">Comment ça marche</a></li>
             <li><a href="#temoignages">Témoignages</a></li>
             <li><a href="#faq">FAQ</a></li>
+            <li><a href="{{ url_for('connexion_page') }}">Se connecter</a></li>
+            <li><a href="{{ url_for('inscription_page') }}" class="nav-cta">🚀 Commencer</a></li>
         </ul>
-        <div class="navbar-actions">
-            <a href="{{ url_for('connexion_page') }}" class="btn-nav btn-outline">Se connecter</a>
-            <a href="{{ url_for('inscription_page') }}" class="btn-nav btn-filled">Commencer</a>
-        </div>
-        <button class="mobile-toggle" id="mobileToggle">
-            <i class="fas fa-bars"></i>
-        </button>
+        <button class="nav-toggle" id="navToggle"><i class="fas fa-bars"></i></button>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- ═══════════ HERO ═══════════ -->
     <section class="hero">
-        <div class="hero-content">
-            <div class="hero-text">
-                <h1>Gagnez de l'argent en apprenant, en vendant et en recommandant</h1>
-                <p class="subtitle">Une plateforme tout-en-un qui réunit la formation, le marketing d'affiliation, la vente de produits numériques et physiques, ainsi que des missions rémunérées.</p>
-                <div class="hero-buttons">
+        <div class="hero-inner">
+            <div class="hero-text-wrap">
+                <div class="hero-badge reveal">
+                    <span class="live-dot"></span> +500 utilisateurs actifs cette semaine
+                </div>
+                <h1 class="hero-title reveal">
+                    Gagnez de l'argent en ligne avec <span class="gradient-text">NectarPro</span>
+                </h1>
+                <p class="hero-subtitle reveal">
+                    La plateforme tout-en-un qui vous forme, vous fait vendre,
+                    recommander et accomplir des missions rémunérées.
+                    <strong>Votre succès commence ici.</strong>
+                </p>
+                <div class="hero-cta-group reveal">
                     <a href="{{ url_for('inscription_page') }}" class="btn-hero btn-hero-primary">
-                        <i class="fas fa-rocket"></i>
-                        Commencer gratuitement
+                        <i class="fas fa-rocket"></i> Commencer gratuitement
                     </a>
                     <a href="{{ url_for('connexion_page') }}" class="btn-hero btn-hero-secondary">
-                        <i class="fas fa-sign-in-alt"></i>
-                        Se connecter
+                        <i class="fas fa-sign-in-alt"></i> Se connecter
                     </a>
                 </div>
             </div>
-            <div class="hero-visual">
-                <div class="hero-shapes">
-                    <div class="shape shape-1"></div>
-                    <div class="shape shape-2"></div>
-                    <div class="shape shape-3"></div>
+            <div class="hero-visual reveal">
+                <div class="hero-rings">
+                    <div class="hero-ring"></div><div class="hero-ring"></div><div class="hero-ring"></div>
                 </div>
-                <svg class="hero-illustration" viewBox="0 0 400 350" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="200" cy="175" r="150" fill="url(#grad1)" opacity="0.1"/>
-                    <rect x="60" y="80" width="120" height="160" rx="15" fill="url(#grad1)" opacity="0.9"/>
-                    <rect x="220" y="60" width="140" height="180" rx="15" fill="url(#grad2)" opacity="0.9"/>
-                    <rect x="75" y="100" width="90" height="70" rx="8" fill="white" opacity="0.9"/>
-                    <rect x="235" y="80" width="110" height="90" rx="8" fill="white" opacity="0.9"/>
-                    <circle cx="50" cy="80" r="20" fill="url(#grad3)" opacity="0.8"/>
-                    <circle cx="370" cy="120" r="16" fill="url(#grad2)" opacity="0.8"/>
-                    <circle cx="350" cy="280" r="24" fill="url(#grad1)" opacity="0.8"/>
-                    <circle cx="70" cy="310" r="14" fill="url(#grad3)" opacity="0.8"/>
-                    <text x="110" y="145" font-size="24" fill="white" text-anchor="middle">📚</text>
-                    <text x="290" y="135" font-size="24" fill="white" text-anchor="middle">🛒</text>
-                    <text x="50" y="85" font-size="14" fill="white" text-anchor="middle">💰</text>
-                    <text x="370" y="125" font-size="12" fill="white" text-anchor="middle">📈</text>
-                    <defs>
-                        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#7dd3fc"/>
-                            <stop offset="100%" style="stop-color:#38bdf8"/>
-                        </linearGradient>
-                        <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#fbcfe8"/>
-                            <stop offset="100%" style="stop-color:#f9a8d4"/>
-                        </linearGradient>
-                        <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#bbf7d0"/>
-                            <stop offset="100%" style="stop-color:#86efac"/>
-                        </linearGradient>
-                    </defs>
-                </svg>
+                <div class="hero-central-orb">
+                    <span class="orb-icon">💎</span>
+                </div>
+                <div class="floating-icon" style="top:50%;left:50%;"><i class="fas fa-graduation-cap"></i></div>
+                <div class="floating-icon" style="top:50%;left:50%;"><i class="fas fa-handshake"></i></div>
+                <div class="floating-icon" style="top:50%;left:50%;"><i class="fas fa-store"></i></div>
+                <div class="floating-icon" style="top:50%;left:50%;"><i class="fas fa-coins"></i></div>
+                <div class="floating-icon" style="top:50%;left:50%;"><i class="fas fa-chart-line"></i></div>
+                <div class="floating-icon" style="top:50%;left:50%;"><i class="fas fa-shield-halved"></i></div>
             </div>
         </div>
     </section>
 
-    <!-- Services Section -->
+    <!-- ═══════════ SERVICES ═══════════ -->
     <section class="section" id="services">
-        <div class="section-header fade-in">
-            <span class="section-tag">Nos Services</span>
-            <h2>Tout ce dont vous avez besoin pour réussir</h2>
-            <p>Une plateforme complète qui vous accompagne à chaque étape de votre parcours entrepreneurial.</p>
+        <div class="section-header reveal">
+            <span class="section-tag"><i class="fas fa-star"></i> Nos Services</span>
+            <h2>Tout pour réussir en ligne</h2>
+            <p>Une plateforme complète qui vous accompagne à chaque étape de votre parcours.</p>
         </div>
         <div class="services-grid">
-            <div class="service-card fade-in">
-                <div class="service-icon"><i class="fas fa-graduation-cap"></i></div>
+            <div class="service-card reveal">
+                <div class="service-icon-wrap"><i class="fas fa-graduation-cap"></i></div>
                 <h3>Formation</h3>
-                <p>Accédez à des formations de qualité pour développer vos compétences et augmenter vos revenus dans le digital.</p>
+                <p>Des formations premium pour maîtriser le digital, le e-commerce et le marketing.</p>
             </div>
-            <div class="service-card fade-in">
-                <div class="service-icon"><i class="fas fa-handshake"></i></div>
+            <div class="service-card reveal">
+                <div class="service-icon-wrap"><i class="fas fa-handshake"></i></div>
                 <h3>Affiliation</h3>
-                <p>Recommandez des produits et gagnez une commission attractive sur chaque vente réalisée grâce à votre lien.</p>
+                <p>Partagez des liens et touchez des commissions attractives sur chaque vente.</p>
             </div>
-            <div class="service-card fade-in">
-                <div class="service-icon"><i class="fas fa-store"></i></div>
-                <h3>Vente</h3>
-                <p>Achetez et vendez des produits numériques ou physiques directement depuis notre marketplace sécurisée.</p>
+            <div class="service-card reveal">
+                <div class="service-icon-wrap"><i class="fas fa-store"></i></div>
+                <h3>Marketplace</h3>
+                <p>Vendez vos produits numériques et physiques sur notre market sécurisé.</p>
             </div>
-            <div class="service-card fade-in">
-                <div class="service-icon"><i class="fas fa-tasks"></i></div>
-                <h3>Missions rémunérées</h3>
-                <p>Effectuez des tâches simples proposées par nos partenaires et recevez une rémunération après validation.</p>
+            <div class="service-card reveal">
+                <div class="service-icon-wrap"><i class="fas fa-clipboard-check"></i></div>
+                <h3>Missions</h3>
+                <p>Réalisez des tâches simples et soyez rémunéré rapidement après validation.</p>
             </div>
         </div>
     </section>
 
-    <!-- How It Works -->
+    <!-- ═══════════ STEPS ═══════════ -->
     <section class="section" id="comment-ca-marche">
-        <div class="section-header fade-in">
-            <span class="section-tag">Comment ça marche</span>
-            <h2>Commencez en 4 étapes simples</h2>
-            <p>Notre processus est conçu pour être simple, rapide et accessible à tous.</p>
+        <div class="section-header reveal">
+            <span class="section-tag"><i class="fas fa-route"></i> Comment ça marche</span>
+            <h2>4 étapes pour démarrer</h2>
+            <p>Simple, rapide et accessible à tous.</p>
         </div>
         <div class="steps-container">
-            <div class="step-card fade-in">
-                <div class="step-number">1</div>
-                <h3>Créer un compte</h3>
-                <p>Inscription gratuite en moins de 2 minutes</p>
-            </div>
-            <div class="step-card fade-in">
-                <div class="step-number">2</div>
-                <h3>Compléter son profil</h3>
-                <p>Ajoutez vos informations et préférences</p>
-            </div>
-            <div class="step-card fade-in">
-                <div class="step-number">3</div>
-                <h3>Choisir une activité</h3>
-                <p>Formation, vente, affiliation ou missions</p>
-            </div>
-            <div class="step-card fade-in">
-                <div class="step-number">4</div>
-                <h3>Recevoir ses revenus</h3>
-                <p>Retraits rapides et sécurisés</p>
-            </div>
+            <div class="step-card reveal"><div class="step-num">1</div><h3>Inscrivez-vous</h3><p>Créez votre compte gratuit en 2 minutes</p></div>
+            <div class="step-card reveal"><div class="step-num">2</div><h3>Complétez votre profil</h3><p>Ajoutez vos infos et moyens de paiement</p></div>
+            <div class="step-card reveal"><div class="step-num">3</div><h3>Choisissez une activité</h3><p>Formation, vente, affiliation ou missions</p></div>
+            <div class="step-card reveal"><div class="step-num">4</div><h3>Recevez vos gains</h3><p>Retraits rapides et sécurisés</p></div>
         </div>
     </section>
 
-    <!-- Features Section -->
+    <!-- ═══════════ FEATURES ═══════════ -->
     <section class="section">
-        <div class="section-header fade-in">
-            <span class="section-tag">Pourquoi nous choisir</span>
-            <h2>Les avantages NectarPro</h2>
-            <p>Une plateforme conçue pour votre succès et votre tranquillité d'esprit.</p>
+        <div class="section-header reveal">
+            <span class="section-tag"><i class="fas fa-gem"></i> Pourquoi NectarPro</span>
+            <h2>Des avantages concrets</h2>
+            <p>Conçu pour votre succès et votre tranquillité.</p>
         </div>
         <div class="features-grid">
-            <div class="feature-item fade-in">
-                <div class="feature-icon"><i class="fas fa-bolt"></i></div>
-                <div class="feature-text"><h4>Paiements rapides</h4><p>Retraits instantanés</p></div>
-            </div>
-            <div class="feature-item fade-in">
-                <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
-                <div class="feature-text"><h4>Sécurité avancée</h4><p>Protection maximale</p></div>
-            </div>
-            <div class="feature-item fade-in">
-                <div class="feature-icon"><i class="fas fa-fingerprint"></i></div>
-                <div class="feature-text"><h4>Authentification biométrique</h4><p>Face ID / Empreinte</p></div>
-            </div>
-            <div class="feature-item fade-in">
-                <div class="feature-icon"><i class="fas fa-lock"></i></div>
-                <div class="feature-text"><h4>Transactions protégées</h4><p>Cryptage SSL</p></div>
-            </div>
-            <div class="feature-item fade-in">
-                <div class="feature-icon"><i class="fas fa-headset"></i></div>
-                <div class="feature-text"><h4>Assistance disponible</h4><p>Support 24/7</p></div>
-            </div>
-            <div class="feature-item fade-in">
-                <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
-                <div class="feature-text"><h4>Interface simple</h4><p>100% responsive</p></div>
-            </div>
-            <div class="feature-item fade-in">
-                <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
-                <div class="feature-text"><h4>Tableau de bord intuitif</h4><p>Suivi en temps réel</p></div>
-            </div>
-            <div class="feature-item fade-in">
-                <div class="feature-icon"><i class="fas fa-globe"></i></div>
-                <div class="feature-text"><h4>Compatible mobile</h4><p>Disponible partout</p></div>
-            </div>
+            <div class="feature-item reveal"><div class="feature-icon-sm"><i class="fas fa-bolt"></i></div><div class="feature-text"><h4>Paiements rapides</h4><p>Retraits en moins de 24h</p></div></div>
+            <div class="feature-item reveal"><div class="feature-icon-sm"><i class="fas fa-shield-halved"></i></div><div class="feature-text"><h4>Sécurité renforcée</h4><p>PIN + biométrie</p></div></div>
+            <div class="feature-item reveal"><div class="feature-icon-sm"><i class="fas fa-fingerprint"></i></div><div class="feature-text"><h4>Biométrie</h4><p>Face ID / Empreinte</p></div></div>
+            <div class="feature-item reveal"><div class="feature-icon-sm"><i class="fas fa-lock"></i></div><div class="feature-text"><h4>SSL crypté</h4><p>Données protégées</p></div></div>
+            <div class="feature-item reveal"><div class="feature-icon-sm"><i class="fas fa-headset"></i></div><div class="feature-text"><h4>Support 24/7</h4><p>Une équipe à l'écoute</p></div></div>
+            <div class="feature-item reveal"><div class="feature-icon-sm"><i class="fas fa-mobile-screen"></i></div><div class="feature-text"><h4>100% Mobile</h4><p>Disponible partout</p></div></div>
+            <div class="feature-item reveal"><div class="feature-icon-sm"><i class="fas fa-chart-pie"></i></div><div class="feature-text"><h4>Dashboard pro</h4><p>Suivi en temps réel</p></div></div>
+            <div class="feature-item reveal"><div class="feature-icon-sm"><i class="fas fa-globe"></i></div><div class="feature-text"><h4>Accessible</h4><p>Afrique & Europe</p></div></div>
         </div>
     </section>
 
-    <!-- Statistics Section -->
-    <section class="section">
-        <div class="stats-section fade-in">
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-number" data-target="15000">0</div>
-                    <div class="stat-label">Utilisateurs inscrits</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" data-target="2500">0</div>
-                    <div class="stat-label">Produits disponibles</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" data-target="150">0</div>
-                    <div class="stat-label">Formations</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" data-target="50">0</div>
-                    <div class="stat-label">Partenaires</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" data-target="8500">0</div>
-                    <div class="stat-label">Retraits effectués</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" data-target="45000000">0</div>
-                    <div class="stat-label">Commissions versées (XOF)</div>
-                </div>
-            </div>
+    <!-- ═══════════ STATS ═══════════ -->
+    <div class="stats-banner reveal">
+        <div class="stats-grid">
+            <div class="stat-item"><div class="stat-num" data-target="15000">0</div><div class="stat-label">Inscrits</div></div>
+            <div class="stat-item"><div class="stat-num" data-target="2500">0</div><div class="stat-label">Produits</div></div>
+            <div class="stat-item"><div class="stat-num" data-target="150">0</div><div class="stat-label">Formations</div></div>
+            <div class="stat-item"><div class="stat-num" data-target="50">0</div><div class="stat-label">Partenaires</div></div>
+            <div class="stat-item"><div class="stat-num" data-target="8500">0</div><div class="stat-label">Retraits</div></div>
+            <div class="stat-item"><div class="stat-num" data-target="45000000">0</div><div class="stat-label">XOF versés</div></div>
         </div>
-    </section>
+    </div>
 
-    <!-- Testimonials Section -->
+    <!-- ═══════════ TESTIMONIALS ═══════════ -->
     <section class="section" id="temoignages">
-        <div class="section-header fade-in">
-            <span class="section-tag">Témoignages</span>
+        <div class="section-header reveal">
+            <span class="section-tag"><i class="fas fa-heart"></i> Témoignages</span>
             <h2>Ils nous font confiance</h2>
-            <p>Découvrez les expériences de notre communauté.</p>
+            <p>Des milliers d'utilisateurs satisfaits à travers l'Afrique.</p>
         </div>
         <div class="testimonials-grid">
-            <div class="testimonial-card fade-in">
-                <div class="testimonial-header">
-                    <div class="testimonial-avatar" style="background: var(--gradient-blue);">AK</div>
-                    <div class="testimonial-info">
-                        <h4>Aminata Koné</h4>
-                        <span class="country"><i class="fas fa-map-marker-alt"></i> Côte d'Ivoire</span>
-                    </div>
+            <div class="testimonial-card reveal">
+                <div class="testi-header">
+                    <div class="testi-avatar c1">AK</div>
+                    <div class="testi-info"><h4>Aminata Koné</h4><span>🇨🇮 Côte d'Ivoire</span></div>
                 </div>
-                <div class="testimonial-rating">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                </div>
-                <p class="testimonial-text">"NectarPro a transformé ma vie. J'ai commencé par les formations et maintenant je vends mes propres produits. Les retraits sont rapides et le support est excellent."</p>
+                <div class="testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p class="testi-text">"NectarPro a transformé ma vie. J'ai commencé par les formations et aujourd'hui je vends mes propres produits. Incroyable !"</p>
             </div>
-            <div class="testimonial-card fade-in">
-                <div class="testimonial-header">
-                    <div class="testimonial-avatar" style="background: var(--gradient-green);">MT</div>
-                    <div class="testimonial-info">
-                        <h4>Moussa Traoré</h4>
-                        <span class="country"><i class="fas fa-map-marker-alt"></i> Mali</span>
-                    </div>
+            <div class="testimonial-card reveal">
+                <div class="testi-header">
+                    <div class="testi-avatar c2">MT</div>
+                    <div class="testi-info"><h4>Moussa Traoré</h4><span>🇲🇱 Mali</span></div>
                 </div>
-                <div class="testimonial-rating">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                </div>
-                <p class="testimonial-text">"L'affiliation m'a permis de générer un revenu passif incroyable. Je recommande vivement cette plateforme à tous ceux qui veulent se lancer dans le digital."</p>
+                <div class="testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p class="testi-text">"L'affiliation m'a permis de générer un revenu passif. Je recommande cette plateforme à 100%."</p>
             </div>
-            <div class="testimonial-card fade-in">
-                <div class="testimonial-header">
-                    <div class="testimonial-avatar" style="background: var(--gradient-pink);">SD</div>
-                    <div class="testimonial-info">
-                        <h4>Sophie Diallo</h4>
-                        <span class="country"><i class="fas fa-map-marker-alt"></i> Sénégal</span>
-                    </div>
+            <div class="testimonial-card reveal">
+                <div class="testi-header">
+                    <div class="testi-avatar c3">SD</div>
+                    <div class="testi-info"><h4>Sophie Diallo</h4><span>🇸🇳 Sénégal</span></div>
                 </div>
-                <div class="testimonial-rating">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                </div>
-                <p class="testimonial-text">"Les missions rémunérées sont parfaites pour compléter mes revenus. L'interface is simple et les paiements arrivent toujours à temps."</p>
+                <div class="testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-stroke"></i></div>
+                <p class="testi-text">"Les missions rémunérées complètent parfaitement mes revenus. Paiements toujours à l'heure !"</p>
             </div>
         </div>
     </section>
 
-    <!-- FAQ Section -->
+    <!-- ═══════════ FAQ ═══════════ -->
     <section class="section" id="faq">
-        <div class="section-header fade-in">
-            <span class="section-tag">FAQ</span>
+        <div class="section-header reveal">
+            <span class="section-tag"><i class="fas fa-circle-question"></i> FAQ</span>
             <h2>Questions fréquentes</h2>
-            <p>Tout ce que vous devez savoir sur NectarPro.</p>
+            <p>Tout ce que vous devez savoir.</p>
         </div>
         <div class="faq-container">
-            <div class="faq-item fade-in">
-                <div class="faq-question">
-                    <h3>Comment gagner de l'argent sur NectarPro ?</h3>
-                    <div class="faq-icon"><i class="fas fa-plus"></i></div>
-                </div>
-                <div class="faq-answer">
-                    <p>Vous pouvez gagner de l'argent de plusieurs façons : en suivant des formations pour développer vos compétences, en recommandant des produits via l'affiliation, en vendant vos propres produits, ou en réalisant des missions rémunérées proposées par nos partenaires.</p>
-                </div>
+            <div class="faq-item reveal">
+                <div class="faq-question"><h3>Comment gagner de l'argent sur NectarPro ?</h3><div class="faq-toggle"><i class="fas fa-plus"></i></div></div>
+                <div class="faq-answer"><p>Vous pouvez gagner via les formations, l'affiliation (commissions sur ventes), la vente de vos propres produits, ou les missions rémunérées de nos partenaires.</p></div>
             </div>
-            <div class="faq-item fade-in">
-                <div class="faq-question">
-                    <h3>Comment fonctionne l'affiliation ?</h3>
-                    <div class="faq-icon"><i class="fas fa-plus"></i></div>
-                </div>
-                <div class="faq-answer">
-                    <p>L'affiliation vous permet de recommander des produits et de gagner une commission sur chaque vente réalisée grâce à votre lien unique. Vous pouvez partager vos liens sur les réseaux sociaux, par email, ou sur votre site web.</p>
-                </div>
+            <div class="faq-item reveal">
+                <div class="faq-question"><h3>Comment fonctionne l'affiliation ?</h3><div class="faq-toggle"><i class="fas fa-plus"></i></div></div>
+                <div class="faq-answer"><p>Partagez vos liens d'affiliation uniques sur les réseaux sociaux, emails ou sites web. Chaque vente générée vous rapporte une commission.</p></div>
             </div>
-            <div class="faq-item fade-in">
-                <div class="faq-question">
-                    <h3>Comment retirer mes revenus ?</h3>
-                    <div class="faq-icon"><i class="fas fa-plus"></i></div>
-                </div>
-                <div class="faq-answer">
-                    <p>Les retraits sont disponibles via mobile money (MTN, Orange, Wave, etc.) selon votre pays. Il suffit de demander un retrait depuis votre tableau de bord, de confirmer avec votre code PIN ou votre empreinte biométrique, et les fonds sont transférés instantanément.</p>
-                </div>
+            <div class="faq-item reveal">
+                <div class="faq-question"><h3>Comment retirer mes revenus ?</h3><div class="faq-toggle"><i class="fas fa-plus"></i></div></div>
+                <div class="faq-answer"><p>Retraits disponibles via mobile money (Orange, MTN, Wave, etc.). Demandez depuis votre dashboard, confirmez avec votre PIN et recevez instantanément.</p></div>
             </div>
-            <div class="faq-item fade-in">
-                <div class="faq-question">
-                    <h3>Comment sécuriser mon compte ?</h3>
-                    <div class="faq-icon"><i class="fas fa-plus"></i></div>
-                </div>
-                <div class="faq-answer">
-                    <p>Nous offrons plusieurs options de sécurité : code PIN à 6 chiffres, authentification biométrique (Face ID, Touch ID), et notifications en temps réel pour chaque transaction. Vous pouvez activer ces options dans les paramètres de votre profil.</p>
-                </div>
+            <div class="faq-item reveal">
+                <div class="faq-question"><h3>Comment sécuriser mon compte ?</h3><div class="faq-toggle"><i class="fas fa-plus"></i></div></div>
+                <div class="faq-answer"><p>Code PIN 6 chiffres, authentification biométrique (Face ID, empreinte), notifications temps réel pour chaque transaction. Le tout activable dans vos paramètres.</p></div>
             </div>
-            <div class="faq-item fade-in">
-                <div class="faq-question">
-                    <h3>Comment devenir vendeur ?</h3>
-                    <div class="faq-icon"><i class="fas fa-plus"></i></div>
-                </div>
-                <div class="faq-answer">
-                    <p>Pour devenir vendeur, créez d'abord une boutique depuis votre tableau de bord. Vous pourrez ensuite ajouter des produits, gérer vos commandes et suivre vos ventes. La création de boutique is gratuite et ne prend que quelques minutes.</p>
-                </div>
+            <div class="faq-item reveal">
+                <div class="faq-question"><h3>Comment devenir vendeur ?</h3><div class="faq-toggle"><i class="fas fa-plus"></i></div></div>
+                <div class="faq-answer"><p>Créez votre boutique depuis votre tableau de bord, ajoutez vos produits et commencez à vendre. Gratuit et rapide !</p></div>
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="cta-content">
-            <h2>Commencez votre aventure dès aujourd'hui</h2>
-            <p>Rejoignez des milliers de personnes qui ont déjà transformé leur vie grâce à NectarPro.</p>
-            <div class="cta-buttons">
-                <a href="{{ url_for('inscription_page') }}" class="btn-cta btn-cta-white">
-                    <i class="fas fa-user-plus"></i>
-                    Créer un compte
-                </a>
-                <a href="{{ url_for('market_page') if market_page else '#services' }}" class="btn-cta btn-cta-outline">
-                    <i class="fas fa-graduation-cap"></i>
-                    Découvrir les formations
-                </a>
+    <!-- ═══════════ CTA ═══════════ -->
+    <div class="cta-mega reveal">
+        <div class="cta-mega-content">
+            <h2>Prêt à transformer votre avenir ?</h2>
+            <p>Rejoignez des milliers d'utilisateurs qui gagnent déjà de l'argent avec NectarPro.</p>
+            <div class="cta-btns">
+                <a href="{{ url_for('inscription_page') }}" class="btn-cta-white"><i class="fas fa-user-plus"></i> Créer un compte gratuit</a>
+                <a href="{{ url_for('market_page') }}" class="btn-cta-outline"><i class="fas fa-store"></i> Explorer le market</a>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Footer -->
+    <!-- ═══════════ FOOTER ═══════════ -->
     <footer class="footer">
-        <div class="footer-content">
+        <div class="footer-grid">
             <div class="footer-brand">
-                <div class="logo">
-                    <div class="logo-icon">NT</div>
-                    <span>NectarPro</span>
-                </div>
+                <h3><span class="f-n">Nectar</span><span class="f-p">Pro</span></h3>
                 <p>La plateforme tout-en-un pour apprendre, vendre, recommander et gagner de l'argent en ligne. Rejoignez notre communauté dès aujourd'hui.</p>
                 <div class="footer-social">
                     <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-x-twitter"></i></a>
                     <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
                     <a href="#"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
-            <div class="footer-links">
-                <h4>Services</h4>
-                <ul>
-                    <li><a href="#services">Formations</a></li>
-                    <li><a href="#services">Affiliation</a></li>
-                    <li><a href="#services">Marketplace</a></li>
-                    <li><a href="#services">Missions</a></li>
-                </ul>
-            </div>
-            <div class="footer-links">
-                <h4>Entreprise</h4>
-                <ul>
-                    <li><a href="#">À propos</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">Équipe</a></li>
-                    <li><a href="#">Presse</a></li>
-                </ul>
-            </div>
-            <div class="footer-links">
-                <h4>Légal</h4>
-                <ul>
-                    <li><a href="#">Conditions d'utilisation</a></li>
-                    <li><a href="#">Politique de confidentialité</a></li>
-                    <li><a href="#">Cookies</a></li>
-                    <li><a href="#">Mentions légales</a></li>
-                </ul>
-            </div>
+            <div class="footer-col"><h4>Services</h4><ul><li><a href="#services">Formations</a></li><li><a href="#services">Affiliation</a></li><li><a href="#services">Marketplace</a></li><li><a href="#services">Missions</a></li></ul></div>
+            <div class="footer-col"><h4>Entreprise</h4><ul><li><a href="#">À propos</a></li><li><a href="#">Contact</a></li><li><a href="#">Carrières</a></li><li><a href="#">Blog</a></li></ul></div>
+            <div class="footer-col"><h4>Légal</h4><ul><li><a href="#">CGU</a></li><li><a href="#">Confidentialité</a></li><li><a href="#">Cookies</a></li><li><a href="#">Mentions légales</a></li></ul></div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 NectarPro. Tous droits réservés.</p>
-            <div class="footer-bottom-links">
-                <a href="#">Conditions</a>
-                <a href="#">Confidentialité</a>
-                <a href="#">Cookies</a>
-            </div>
+            <p>&copy; 2026 NectarPro by Nina Academy. Tous droits réservés.</p>
+            <div class="footer-bottom-links"><a href="#">CGU</a><a href="#">Confidentialité</a></div>
         </div>
     </footer>
 
     <script>
-        // Navbar scroll effect
-        window.addEventListener('scroll', function() {
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
+        // ────────────── PARTICULE STORM ──────────────
+        (function(){
+            const container = document.getElementById('particleStorm');
+            for(let i=0;i<50;i++){
+                const dot = document.createElement('div');
+                dot.className='storm-dot';
+                dot.style.left=Math.random()*100+'%';
+                dot.style.animationDuration=(8+Math.random()*12)+'s';
+                dot.style.animationDelay=Math.random()*10+'s';
+                dot.style.width=(2+Math.random()*4)+'px';
+                dot.style.height=dot.style.width;
+                container.appendChild(dot);
             }
+        })();
+
+        // ────────────── NAVBAR SCROLL ──────────────
+        window.addEventListener('scroll',()=>{
+            document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>50);
         });
 
-        // Mobile menu toggle
-        document.getElementById('mobileToggle').addEventListener('click', function() {
-            document.getElementById('navbarMenu').classList.toggle('active');
+        // ────────────── MOBILE MENU ──────────────
+        document.getElementById('navToggle').addEventListener('click',()=>{
+            document.getElementById('navMenu').classList.toggle('active');
+        });
+        document.querySelectorAll('#navMenu a').forEach(link=>{
+            link.addEventListener('click',()=>document.getElementById('navMenu').classList.remove('active'));
         });
 
-        // FAQ accordion
-        document.querySelectorAll('.faq-question').forEach(question => {
-            question.addEventListener('click', function() {
-                const item = this.parentElement;
-                const isActive = item.classList.contains('active');
-                
-                // Close all items
-                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
-                
-                // Open clicked item if it wasn't active
-                if (!isActive) {
-                    item.classList.add('active');
-                }
+        // ────────────── FAQ ACCORDION ──────────────
+        document.querySelectorAll('.faq-question').forEach(q=>{
+            q.addEventListener('click',function(){
+                const item=this.parentElement;
+                const wasActive=item.classList.contains('active');
+                document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('active'));
+                if(!wasActive)item.classList.add('active');
             });
         });
 
-        // Fade-in animation on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+        // ────────────── SCROLL REVEAL ──────────────
+        const revealObserver=new IntersectionObserver((entries)=>{
+            entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+        },{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+        document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+        // ────────────── STATS COUNTER ──────────────
+        const statObserver=new IntersectionObserver((entries)=>{
+            entries.forEach(entry=>{
+                if(entry.isIntersecting){
+                    const el=entry.target;
+                    const target=parseInt(el.getAttribute('data-target'));
+                    const dur=2000;const step=target/(dur/16);
+                    let cur=0;
+                    const timer=setInterval(()=>{
+                        cur+=step;
+                        if(cur>=target){cur=target;clearInterval(timer);}
+                        if(target>=1e6)el.textContent=(cur/1e6).toFixed(1)+'M';
+                        else if(target>=1e3)el.textContent=Math.round(cur/1e3)+'K';
+                        else el.textContent=Math.round(cur);
+                    },16);
+                    statObserver.unobserve(el);
                 }
             });
-        }, observerOptions);
-
-        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-        // Counter animation for stats
-        function animateCounter(element) {
-            const target = parseInt(element.getAttribute('data-target'));
-            const duration = 2000;
-            const step = target / (duration / 16);
-            let current = 0;
-
-            const timer = setInterval(() => {
-                current += step;
-                if (current >= target) {
-                    current = target;
-                    clearInterval(timer);
-                }
-                
-                // Format number based on size
-                if (target >= 1000000) {
-                    element.textContent = (current / 1000000).toFixed(1) + 'M';
-                } else if (target >= 1000) {
-                    element.textContent = Math.round(current / 1000) + 'K';
-                } else {
-                    element.textContent = Math.round(current);
-                }
-            }, 16);
-        }
-
-        // Observe stat numbers
-        const statObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateCounter(entry.target);
-                    entry.target.classList.add('visible');
-                    statObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.5 });
-
-        document.querySelectorAll('.stat-number').forEach(el => statObserver.observe(el));
+        },{threshold:.5});
+        document.querySelectorAll('.stat-num').forEach(el=>statObserver.observe(el));
     </script>
 </body>
 </html>

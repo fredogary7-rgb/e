@@ -6,7 +6,7 @@
     <title>Market - NectarPro — Achetez et vendez en ligne</title>
     <meta name="description" content="Marketplace NectarPro : achetez et vendez des produits numériques et physiques. Paiements sécurisés, livraison rapide.">
     <link rel="icon" href="/static/images/net.jpg" type="image/jpeg">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <!-- Open Graph -->
@@ -35,729 +35,679 @@
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/static/images/net.jpg">
-    <meta name="theme-color" content="#22c55e">
+    <meta name="theme-color" content="#db2777">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="NectarPro">
 
     <style>
-        /* RESET & BASE */
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
-        
-        :root {
-            --bg-primary: #f8fafc;
-            --bg-secondary: rgba(255, 255, 255, 0.8);
-            --bg-card: rgba(255, 255, 255, 0.7);
-            --accent-blue: #38bdf8;
-            --accent-blue-light: #7dd3fc;
-            --accent-green: #86efac;
-            --accent-pink: #f9a8d4;
-            --text-primary: #334155;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
-            --border-color: rgba(148, 163, 184, 0.2);
-            --gradient-blue: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
-            --gradient-pink: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
-            --gradient-bg: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 30%, #fdf2f8 70%, #f0f9ff 100%);
-            --radius-lg: 16px;
-            --radius-xl: 20px;
-            --radius-2xl: 24px;
-            --shadow-medium: 0 8px 24px rgba(56, 189, 248, 0.12);
+        /* ═══════════════════════════════════════════════════════════
+           NECTARPRO MARKET - DESIGN PREMIUM (inspiré du Dashboard)
+           ═══════════════════════════════════════════════════════════ */
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+
+        :root{
+            --bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);
+            --glass:rgba(255,255,255,0.72);
+            --glass-hover:rgba(255,255,255,0.88);
+            --accent:#db2777;
+            --accent2:#ec4899;
+            --accent-light:#f9a8d4;
+            --gold:#f59e0b;
+            --gold-light:#fef3c7;
+            --emerald:#10b981;
+            --emerald-light:#d1fae5;
+            --violet:#8b5cf6;
+            --violet-light:#ede9fe;
+            --sky:#0ea5e9;
+            --sky-light:#e0f2fe;
+            --text:#000;
+            --text2:#1f2937;
+            --muted:#6b7280;
+            --border:rgba(236,72,153,0.2);
+            --shadow-sm:0 2px 8px rgba(236,72,153,0.08);
+            --shadow:0 8px 32px rgba(236,72,153,0.12);
+            --shadow-lg:0 16px 48px rgba(236,72,153,0.18);
+            --radius-sm:12px;
+            --radius:18px;
+            --radius-lg:24px;
+            --radius-xl:32px;
         }
 
-        body {
-            background: var(--gradient-bg);
-            min-height: 100vh;
-            padding: 20px;
-            font-style: italic;
-            color: var(--text-primary);
+        /* ██████ BODY ██████ */
+        body{
+            background:var(--bg);
+            min-height:100vh;min-height:100dvh;
+            color:var(--text);
+            font-style:italic;
+            overflow-x:hidden;
+            position:relative;
         }
 
-        /* HEADER */
-        .header {
-            max-width: 1400px;
-            margin: 0 auto 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px;
-            background: var(--bg-secondary);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-2xl);
-            box-shadow: var(--shadow-medium);
+        /* ██████ FOND PARTICULES ANIMÉES ██████ */
+        .bg-particles{
+            position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+        }
+        .particle{
+            position:absolute;border-radius:50%;
+            background:radial-gradient(circle,rgba(236,72,153,0.18),transparent 70%);
+            animation:floatUp linear infinite;
+        }
+        .particle:nth-child(1){width:180px;height:180px;left:5%;top:70%;animation-duration:18s;animation-delay:0s}
+        .particle:nth-child(2){width:120px;height:120px;left:60%;top:80%;animation-duration:14s;animation-delay:3s}
+        .particle:nth-child(3){width:200px;height:200px;left:30%;top:75%;animation-duration:22s;animation-delay:6s}
+        .particle:nth-child(4){width:100px;height:100px;left:80%;top:85%;animation-duration:16s;animation-delay:9s}
+        .particle:nth-child(5){width:150px;height:150px;left:50%;top:90%;animation-duration:20s;animation-delay:2s}
+        .particle:nth-child(6){width:90px;height:90px;left:15%;top:50%;animation-duration:12s;animation-delay:5s}
+        .particle:nth-child(7){width:160px;height:160px;left:75%;top:60%;animation-duration:24s;animation-delay:8s}
+        @keyframes floatUp{
+            0%{transform:translateY(0)scale(0.6);opacity:0}
+            10%{opacity:0.7}
+            90%{opacity:0.4}
+            100%{transform:translateY(-110vh)scale(1.4);opacity:0}
         }
 
-        .header h1 {
-            font-style: italic;
-            font-size: 28px;
-            font-weight: 800;
-            background: var(--gradient-blue);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        /* ██████ TOPBAR ██████ */
+        .topbar{
+            display:flex;justify-content:space-between;align-items:center;
+            padding:10px 20px;
+            background:rgba(255,255,255,0.7);
+            backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+            border-bottom:1px solid var(--border);
+            position:sticky;top:0;z-index:1000;
+        }
+        .topbar-logo{
+            display:flex;align-items:center;gap:8px;
+            position:absolute;left:50%;transform:translateX(-50%);
+        }
+        .topbar-logo img{width:32px;height:32px;border-radius:10px;box-shadow:0 2px 8px rgba(236,72,153,0.2)}
+        .topbar-logo span{font-size:18px;font-weight:900}
+        .topbar-logo .brand-n{color:var(--accent2)}
+        .topbar-logo .brand-p{color:var(--accent)}
+
+        /* ██████ HEADER NAV ██████ */
+        .header-nav{
+            display:flex;gap:10px;flex-wrap:wrap;
+        }
+        .header-nav a{
+            color:var(--text2);text-decoration:none;
+            font-weight:700;font-size:12px;
+            padding:9px 16px;
+            background:rgba(236,72,153,0.06);
+            border:1px solid var(--border);
+            border-radius:30px;
+            transition:all .3s;
+            display:flex;align-items:center;gap:6px;
+        }
+        .header-nav a:hover{
+            background:rgba(236,72,153,0.14);
+            color:var(--accent);
+            transform:translateY(-2px);
+            box-shadow:var(--shadow-sm);
+        }
+        .header-nav a.active{
+            background:linear-gradient(135deg,#ec4899,#db2777);
+            color:#fff;
+            border-color:transparent;
+            box-shadow:0 4px 16px rgba(219,39,119,0.35);
         }
 
-        .header h1 i {
-            -webkit-text-fill-color: var(--accent-pink);
+        /* ██████ MAIN CONTAINER ██████ */
+        .main-container{
+            position:relative;z-index:1;
+            max-width:1400px;margin:0 auto;padding:20px;
         }
 
-        .header-nav {
-            display: flex;
-            gap: 15px;
+        /* ██████ PAGE TITLE ██████ */
+        .page-title-section{
+            text-align:center;margin-bottom:28px;
+            background:linear-gradient(135deg,rgba(236,72,153,0.08),rgba(219,39,119,0.04));
+            backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+            border:1px solid var(--border);border-radius:var(--radius-xl);
+            padding:28px 24px;
+            box-shadow:var(--shadow);position:relative;overflow:hidden;
+        }
+        .page-title-section::before{
+            content:'';position:absolute;top:-30px;right:-30px;
+            width:120px;height:120px;border-radius:50%;
+            background:radial-gradient(circle,rgba(236,72,153,0.15),transparent 70%);
+            animation:heroGlow 3s ease-in-out infinite;
+        }
+        @keyframes heroGlow{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.3);opacity:.9}}
+        .page-title-section h1{
+            font-weight:900;font-size:30px;margin-bottom:6px;
+            background:linear-gradient(135deg,#ec4899,#db2777);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            background-clip:text;position:relative;z-index:1;
+            display:flex;align-items:center;justify-content:center;gap:12px;
+        }
+        .page-title-section h1 i{
+            -webkit-text-fill-color:var(--accent2);
+        }
+        .page-title-section p{
+            font-weight:600;font-size:13px;color:var(--text2);opacity:.8;
+            position:relative;z-index:1;
         }
 
-        .header-nav a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-style: italic;
-            font-weight: 600;
-            font-size: 14px;
-            padding: 10px 20px;
-            background: rgba(56, 189, 248, 0.1);
-            border-radius: var(--radius-lg);
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        /* ██████ SEARCH SECTION ██████ */
+        .search-section{
+            display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;
+        }
+        .search-box{
+            background:var(--glass);
+            backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+            border:1px solid var(--border);border-radius:var(--radius-lg);
+            padding:22px;
+            box-shadow:var(--shadow-sm);
+            transition:all .3s;
+        }
+        .search-box:hover{
+            box-shadow:var(--shadow);
+        }
+        .search-box h3{
+            font-weight:700;font-size:15px;
+            margin-bottom:12px;
+            color:var(--text);
+            display:flex;align-items:center;gap:8px;
+        }
+        .search-box h3 i{
+            color:var(--accent2);
+        }
+        .search-input-wrapper{
+            position:relative;
+        }
+        .search-input-wrapper input{
+            width:100%;
+            padding:13px 18px 13px 48px;
+            border:2px solid var(--border);
+            border-radius:var(--radius-sm);
+            font-size:14px;font-weight:600;
+            background:rgba(255,255,255,0.8);
+            transition:all .3s;
+        }
+        .search-input-wrapper input:focus{
+            outline:none;
+            border-color:var(--accent2);
+            box-shadow:0 0 0 4px rgba(236,72,153,0.1);
+        }
+        .search-input-wrapper i{
+            position:absolute;left:16px;top:50%;
+            transform:translateY(-50%);
+            color:var(--muted);
+            font-size:16px;
         }
 
-        .header-nav a:hover {
-            background: rgba(56, 189, 248, 0.2);
-            color: var(--accent-blue);
-            transform: translateY(-2px);
+        /* ██████ CATEGORY FILTERS ██████ */
+        .category-filters{
+            margin-bottom:28px;
+            background:var(--glass);
+            backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+            border:1px solid var(--border);border-radius:var(--radius-lg);
+            padding:20px 22px;
+            box-shadow:var(--shadow-sm);
+        }
+        .category-filters h3{
+            font-weight:700;font-size:15px;
+            margin-bottom:14px;
+            color:var(--text);
+            display:flex;align-items:center;gap:8px;
+        }
+        .category-filters h3 i{
+            color:var(--accent2);
+        }
+        .category-scroll{
+            display:flex;gap:10px;overflow-x:auto;
+            padding-bottom:8px;
+            scrollbar-width:thin;
+            scrollbar-color:var(--accent2) transparent;
+        }
+        .category-scroll::-webkit-scrollbar{height:6px;}
+        .category-scroll::-webkit-scrollbar-thumb{
+            background:linear-gradient(135deg,#ec4899,#db2777);
+            border-radius:10px;
+        }
+        .category-btn{
+            padding:10px 20px;
+            border:2px solid var(--border);
+            border-radius:30px;
+            background:rgba(255,255,255,0.5);
+            color:var(--text2);
+            font-size:12px;font-weight:700;
+            cursor:pointer;transition:all .3s;
+            white-space:nowrap;text-decoration:none;
+            display:flex;align-items:center;gap:6px;
+        }
+        .category-btn:hover{
+            border-color:var(--accent2);
+            color:var(--accent);
+            background:rgba(236,72,153,0.08);
+            transform:translateY(-2px);
+        }
+        .category-btn.active{
+            background:linear-gradient(135deg,#ec4899,#db2777);
+            color:#fff;
+            border-color:transparent;
+            box-shadow:0 4px 16px rgba(219,39,119,0.35);
         }
 
-        .header-nav a.active {
-            background: var(--gradient-blue);
-            color: white;
+        /* ██████ SECTION TITLE ██████ */
+        .section-title{
+            font-weight:800;font-size:20px;
+            margin-bottom:22px;
+            color:var(--text);
+            display:flex;align-items:center;gap:12px;
+        }
+        .section-title i{
+            color:var(--accent2);
+            font-size:22px;
         }
 
-        /* SEARCH & FILTER SECTION */
-        .search-section {
-            max-width: 1400px;
-            margin: 0 auto 30px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+        /* ██████ SHOPS GRID ██████ */
+        .shops-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+            gap:20px;margin-bottom:50px;
+        }
+        .shop-card{
+            background:var(--glass);
+            backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+            border:1px solid var(--border);border-radius:var(--radius-lg);
+            padding:24px;
+            box-shadow:var(--shadow-sm);
+            transition:all .3s;
+            text-decoration:none;color:inherit;
+            display:block;position:relative;overflow:hidden;
+        }
+        .shop-card::after{
+            content:'';position:absolute;top:-20px;right:-20px;
+            width:80px;height:80px;border-radius:50%;
+            background:radial-gradient(circle,rgba(236,72,153,0.08),transparent 70%);
+            transition:all .5s;
+        }
+        .shop-card:hover{
+            transform:translateY(-6px);
+            box-shadow:var(--shadow-lg);
+            border-color:var(--accent2);
+            background:var(--glass-hover);
+        }
+        .shop-card:hover::after{
+            width:120px;height:120px;
+            background:radial-gradient(circle,rgba(236,72,153,0.14),transparent 70%);
+        }
+        .shop-card-header{
+            display:flex;align-items:center;gap:16px;
+            margin-bottom:14px;position:relative;z-index:1;
+        }
+        .shop-logo{
+            width:60px;height:60px;border-radius:16px;
+            background:linear-gradient(135deg,#f9a8d4,#ec4899,#db2777);
+            display:flex;align-items:center;justify-content:center;
+            font-size:24px;flex-shrink:0;overflow:hidden;
+            box-shadow:0 4px 14px rgba(219,39,119,0.25);
+        }
+        .shop-logo img{
+            width:100%;height:100%;object-fit:cover;
+        }
+        .shop-info{position:relative;z-index:1;}
+        .shop-info h3{
+            font-weight:700;font-size:17px;
+            color:var(--text);margin-bottom:3px;
+        }
+        .shop-info p{
+            font-size:12px;color:var(--muted);font-weight:600;
+        }
+        .shop-stats{
+            display:flex;gap:20px;margin-top:16px;
+            padding-top:16px;
+            border-top:1px solid var(--border);
+            position:relative;z-index:1;
+        }
+        .stat-item{
+            display:flex;align-items:center;gap:7px;
+            font-size:12px;color:var(--text2);font-weight:600;
+        }
+        .stat-item i{color:var(--accent2);font-size:13px;}
+
+        /* ██████ PRODUCTS GRID ██████ */
+        .products-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+            gap:22px;margin-bottom:50px;
+        }
+        .product-card{
+            background:var(--glass);
+            backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+            border:1px solid var(--border);border-radius:var(--radius-lg);
+            overflow:hidden;
+            box-shadow:var(--shadow-sm);
+            transition:all .35s;
+            text-decoration:none;color:inherit;
+            display:block;
+        }
+        .product-card:hover{
+            transform:translateY(-6px);
+            box-shadow:var(--shadow-lg);
+            border-color:var(--accent2);
+            background:var(--glass-hover);
+        }
+        .product-image{
+            width:100%;height:210px;
+            background:linear-gradient(135deg,rgba(236,72,153,0.05),rgba(219,39,119,0.03));
+            position:relative;overflow:hidden;
+        }
+        .product-image img{
+            width:100%;height:100%;object-fit:cover;
+            transition:transform .4s;
+        }
+        .product-card:hover .product-image img{
+            transform:scale(1.08);
+        }
+        .product-image-overlay{
+            position:absolute;inset:0;
+            background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,0.05) 100%);
+        }
+        .product-badge{
+            position:absolute;top:12px;right:12px;
+            padding:7px 14px;
+            background:linear-gradient(135deg,#ec4899,#db2777);
+            color:#fff;font-size:11px;font-weight:800;
+            border-radius:20px;z-index:2;
+            box-shadow:0 4px 12px rgba(219,39,119,0.3);
+            letter-spacing:.5px;
+        }
+        .product-details{
+            padding:18px;
+        }
+        .product-shop{
+            font-size:11px;color:var(--accent);
+            font-weight:700;margin-bottom:6px;
+            display:flex;align-items:center;gap:4px;
+        }
+        .product-name{
+            font-weight:700;font-size:15px;
+            color:var(--text);margin-bottom:10px;
+            line-height:1.4;
+        }
+        .product-price{
+            display:flex;align-items:center;gap:10px;
+        }
+        .current-price{
+            font-size:19px;font-weight:900;
+            color:var(--accent);
+        }
+        .old-price{
+            font-size:13px;color:var(--muted);
+            text-decoration:line-through;font-weight:600;
+        }
+        .product-meta{
+            display:flex;align-items:center;
+            justify-content:space-between;
+            margin-top:14px;padding-top:14px;
+            border-top:1px solid var(--border);
+        }
+        .product-category{
+            font-size:11px;color:var(--muted);font-weight:600;
+            padding:5px 12px;
+            background:rgba(236,72,153,0.07);
+            border-radius:20px;
+            border:1px solid rgba(236,72,153,0.12);
+        }
+        .product-views{
+            font-size:11px;color:var(--muted);font-weight:600;
+            display:flex;align-items:center;gap:4px;
+        }
+        .product-views i{color:var(--accent2);}
+
+        /* ██████ EMPTY STATE ██████ */
+        .empty-state{
+            text-align:center;padding:60px 24px;
+            background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+            border:1px solid var(--border);border-radius:var(--radius-lg);
+            box-shadow:var(--shadow-sm);
+        }
+        .empty-state i{
+            font-size:64px;
+            background:linear-gradient(135deg,#f9a8d4,#ec4899);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            background-clip:text;
+            margin-bottom:18px;
+            display:inline-block;
+            animation:bounceEmpty 2s ease-in-out infinite;
+        }
+        @keyframes bounceEmpty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+        .empty-state h3{
+            font-weight:800;font-size:20px;
+            color:var(--text);margin-bottom:8px;
+        }
+        .empty-state p{
+            font-size:14px;color:var(--muted);font-weight:600;
         }
 
-        .search-box {
-            background: var(--bg-secondary);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-xl);
-            padding: 25px;
-            box-shadow: var(--shadow-medium);
+        /* ██████ LOADING SPINNER ██████ */
+        .loading{
+            text-align:center;padding:40px;
+        }
+        .loading i{
+            font-size:40px;color:var(--accent2);
+            animation:spin 1s linear infinite;
+        }
+        @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+
+        /* ██████ FOOTER ██████ */
+        footer{
+            text-align:center;padding:24px;
+            font-size:12px;color:var(--muted);font-weight:700;
+            position:relative;z-index:1;
         }
 
-        .search-box h3 {
-            font-style: italic;
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        /* ██████ RESPONSIVE ██████ */
+        @media(max-width:900px){
+            .search-section{grid-template-columns:1fr}
+            .topbar{flex-wrap:wrap;gap:10px}
+            .topbar-logo{position:static;transform:none}
+            .header-nav{justify-content:center}
+            .page-title-section h1{font-size:24px}
+            .shops-grid{grid-template-columns:1fr}
+            .products-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+            .section-title{font-size:17px}
         }
-
-        .search-box h3 i {
-            color: var(--accent-pink);
-        }
-
-        .search-input-wrapper {
-            position: relative;
-        }
-
-        .search-input-wrapper input {
-            width: 100%;
-            padding: 14px 20px 14px 50px;
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            font-size: 14px;
-            font-style: italic;
-            background: rgba(255, 255, 255, 0.8);
-            transition: all 0.3s;
-        }
-
-        .search-input-wrapper input:focus {
-            outline: none;
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
-        }
-
-        .search-input-wrapper i {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-        }
-
-        /* CATEGORY FILTERS */
-        .category-filters {
-            max-width: 1400px;
-            margin: 0 auto 30px;
-            background: var(--bg-secondary);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-xl);
-            padding: 20px 25px;
-            box-shadow: var(--shadow-medium);
-        }
-
-        .category-filters h3 {
-            font-style: italic;
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .category-filters h3 i {
-            color: var(--accent-blue);
-        }
-
-        .category-scroll {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--accent-blue) transparent;
-        }
-
-        .category-scroll::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .category-scroll::-webkit-scrollbar-thumb {
-            background: var(--accent-blue);
-            border-radius: 10px;
-        }
-
-        .category-btn {
-            padding: 10px 20px;
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            background: rgba(255, 255, 255, 0.5);
-            color: var(--text-secondary);
-            font-size: 13px;
-            font-style: italic;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            white-space: nowrap;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .category-btn:hover {
-            border-color: var(--accent-blue);
-            color: var(--accent-blue);
-            background: rgba(56, 189, 248, 0.1);
-        }
-
-        .category-btn.active {
-            background: var(--gradient-blue);
-            color: white;
-            border-color: transparent;
-        }
-
-        /* MAIN CONTENT */
-        .main-content {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        /* SECTION TITLE */
-        .section-title {
-            font-style: italic;
-            font-size: 22px;
-            font-weight: 800;
-            margin-bottom: 25px;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .section-title i {
-            color: var(--accent-pink);
-        }
-
-        /* SHOPS GRID */
-        .shops-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 50px;
-        }
-
-        .shop-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-xl);
-            padding: 25px;
-            box-shadow: var(--shadow-medium);
-            transition: all 0.3s;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
-
-        .shop-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(56, 189, 248, 0.2);
-            border-color: var(--accent-blue);
-        }
-
-        .shop-card-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .shop-logo {
-            width: 60px;
-            height: 60px;
-            border-radius: var(--radius-lg);
-            background: var(--gradient-blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            overflow: hidden;
-        }
-
-        .shop-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .shop-info h3 {
-            font-style: italic;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-
-        .shop-info p {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-style: italic;
-        }
-
-        .shop-stats {
-            display: flex;
-            gap: 20px;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            color: var(--text-secondary);
-            font-style: italic;
-        }
-
-        .stat-item i {
-            color: var(--accent-pink);
-        }
-
-        /* PRODUCTS GRID */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 25px;
-            margin-bottom: 50px;
-        }
-
-        .product-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-xl);
-            overflow: hidden;
-            box-shadow: var(--shadow-medium);
-            transition: all 0.3s;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(56, 189, 248, 0.2);
-            border-color: var(--accent-blue);
-        }
-
-        .product-image {
-            width: 100%;
-            height: 200px;
-            background: #e2e8f0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .product-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s;
-        }
-
-        .product-card:hover .product-image img {
-            transform: scale(1.05);
-        }
-
-        .product-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            padding: 6px 12px;
-            background: var(--gradient-pink);
-            color: white;
-            font-size: 11px;
-            font-weight: 700;
-            font-style: italic;
-            border-radius: var(--radius-lg);
-        }
-
-        .product-details {
-            padding: 18px;
-        }
-
-        .product-shop {
-            font-size: 11px;
-            color: var(--accent-blue);
-            font-style: italic;
-            font-weight: 600;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .product-name {
-            font-style: italic;
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-            line-height: 1.4;
-        }
-
-        .product-price {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .current-price {
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--accent-blue);
-            font-style: italic;
-        }
-
-        .old-price {
-            font-size: 13px;
-            color: var(--text-muted);
-            text-decoration: line-through;
-            font-style: italic;
-        }
-
-        .product-meta {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .product-category {
-            font-size: 11px;
-            color: var(--text-muted);
-            font-style: italic;
-            padding: 4px 10px;
-            background: rgba(148, 163, 184, 0.1);
-            border-radius: var(--radius-lg);
-        }
-
-        .product-views {
-            font-size: 11px;
-            color: var(--text-muted);
-            font-style: italic;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        /* EMPTY STATE */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-medium);
-        }
-
-        .empty-state i {
-            font-size: 60px;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-        }
-
-        .empty-state h3 {
-            font-style: italic;
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 10px;
-        }
-
-        .empty-state p {
-            font-size: 14px;
-            color: var(--text-muted);
-            font-style: italic;
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
-
-            .header-nav {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .search-section {
-                grid-template-columns: 1fr;
-            }
-
-            .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 15px;
-            }
-
-            .shops-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .section-title {
-                font-size: 18px;
-            }
-        }
-
-        /* LOADING SPINNER */
-        .loading {
-            text-align: center;
-            padding: 40px;
-        }
-
-        .loading i {
-            font-size: 40px;
-            color: var(--accent-blue);
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @media(max-width:480px){
+            .main-container{padding:10px 8px}
+            .products-grid{grid-template-columns:1fr 1fr;gap:10px}
+            .product-image{height:150px}
+            .product-details{padding:12px}
+            .product-name{font-size:13px}
+            .current-price{font-size:16px}
+            .page-title-section{padding:20px 16px}
+            .page-title-section h1{font-size:20px}
+            .header-nav a{padding:7px 12px;font-size:11px}
         }
     </style>
 </head>
 <body>
-    <!-- HEADER -->
-    <header class="header">
-        <h1><i class="fas fa-store"></i> NectarPro Market</h1>
+
+    <!-- FOND PARTICULES ANIMÉES -->
+    <div class="bg-particles">
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="topbar-logo">
+            <img src="/static/images/net.jpg" alt="NectarPro">
+            <span class="brand-name"><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></span>
+        </div>
         <nav class="header-nav">
             <a href="{{ url_for('index_page') }}"><i class="fas fa-home"></i> Accueil</a>
             <a href="{{ url_for('market_page') }}" class="active"><i class="fas fa-store"></i> Market</a>
             <a href="{{ url_for('liste_boutiques') }}"><i class="fas fa-shop"></i> Boutiques</a>
             <a href="{{ url_for('liste_produits') }}"><i class="fas fa-box"></i> Produits</a>
             {% if user %}
-                <a href="{{ url_for('dashboard_page') }}"><i class="fas fa-user"></i> Dashboard</a>
+                <a href="{{ url_for('dashboard_page') }}"><i class="fas fa-chart-pie"></i> Dashboard</a>
             {% else %}
                 <a href="{{ url_for('connexion_page') }}"><i class="fas fa-sign-in-alt"></i> Connexion</a>
             {% endif %}
         </nav>
-    </header>
+    </div>
 
-    <!-- SEARCH SECTION -->
-    <section class="search-section">
-        <div class="search-box">
-            <h3><i class="fas fa-search"></i> Rechercher un produit</h3>
-            <div class="search-input-wrapper">
-                <i class="fas fa-search"></i>
-                <input type="text" id="productSearch" placeholder="Nom du produit, description..." oninput="searchProducts()">
+    <div class="main-container">
+
+        <!-- PAGE TITLE -->
+        <div class="page-title-section">
+            <h1><i class="fas fa-store"></i> NectarPro Market</h1>
+            <p>✨ Découvrez les meilleurs produits et boutiques de notre marketplace</p>
+        </div>
+
+        <!-- SEARCH SECTION -->
+        <section class="search-section">
+            <div class="search-box">
+                <h3><i class="fas fa-search"></i> Rechercher un produit</h3>
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="productSearch" placeholder="Nom du produit, description..." oninput="searchProducts()">
+                </div>
             </div>
-        </div>
-        <div class="search-box">
-            <h3><i class="fas fa-store"></i> Rechercher une boutique</h3>
-            <div class="search-input-wrapper">
-                <i class="fas fa-search"></i>
-                <input type="text" id="shopSearch" placeholder="Nom de la boutique, vendeur..." oninput="searchShops()">
+            <div class="search-box">
+                <h3><i class="fas fa-store-alt"></i> Rechercher une boutique</h3>
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="shopSearch" placeholder="Nom de la boutique, vendeur..." oninput="searchShops()">
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- CATEGORY FILTERS -->
-    <section class="category-filters">
-        <h3><i class="fas fa-tags"></i> Catégories de produits</h3>
-        <div class="category-scroll">
-            <a href="{{ url_for('market_page') }}" class="category-btn {% if not categorie_actuelle %}active{% endif %}">
-                <i class="fas fa-th"></i> Tout
-            </a>
-            {% for cat in categories %}
-            <a href="{{ url_for('market_page', categorie=cat.id) }}" class="category-btn {% if categorie_actuelle == cat.id %}active{% endif %}">
-                {{ cat.icone }} {{ cat.nom }}
-            </a>
-            {% endfor %}
-        </div>
-    </section>
-
-    <!-- MAIN CONTENT -->
-    <main class="main-content">
-        <!-- SHOPS SECTION -->
-        <section>
-            <h2 class="section-title"><i class="fas fa-store"></i> Boutiques en vedette</h2>
-            {% if boutiques %}
-            <div class="shops-grid" id="shopsGrid">
-                {% for boutique in boutiques %}
-                <a href="{{ url_for('boutique_publique', username=boutique.proprietaire.username) }}" class="shop-card">
-                    <div class="shop-card-header">
-                        <div class="shop-logo">
-                            {% if boutique.logo %}
-                                <img src="{{ boutique.logo }}" alt="{{ boutique.nom }}">
-                            {% else %}
-                                <span>🏪</span>
-                            {% endif %}
-                        </div>
-                        <div class="shop-info">
-                            <h3>{{ boutique.nom }}</h3>
-                            <p>Par {{ boutique.proprietaire.username }}</p>
-                        </div>
-                    </div>
-                    {% if boutique.description %}
-                    <p style="font-size: 13px; color: var(--text-secondary); font-style: italic; margin-bottom: 10px;">
-                        {{ boutique.description[:80] }}{% if boutique.description|length > 80 %}...{% endif %}
-                    </p>
-                    {% endif %}
-                    <div class="shop-stats">
-                        <div class="stat-item">
-                            <i class="fas fa-box"></i>
-                            {{ boutique.produits.count() }} produits
-                        </div>
-                        {% if note_moyenne %}
-                        <div class="stat-item">
-                            <i class="fas fa-star"></i>
-                            {{ "%.1f"|format(note_moyenne) }}/5
-                        </div>
-                        {% endif %}
-                    </div>
+        <!-- CATEGORY FILTERS -->
+        <section class="category-filters">
+            <h3><i class="fas fa-tags"></i> Catégories de produits</h3>
+            <div class="category-scroll">
+                <a href="{{ url_for('market_page') }}" class="category-btn {% if not categorie_actuelle %}active{% endif %}">
+                    <i class="fas fa-th"></i> Tout
+                </a>
+                {% for cat in categories %}
+                <a href="{{ url_for('market_page', categorie=cat.id) }}" class="category-btn {% if categorie_actuelle == cat.id %}active{% endif %}">
+                    {{ cat.icone }} {{ cat.nom }}
                 </a>
                 {% endfor %}
             </div>
-            {% else %}
-            <div class="empty-state">
-                <i class="fas fa-store"></i>
-                <h3>Aucune boutique trouvée</h3>
-                <p>Soyez le premier à créer une boutique !</p>
-            </div>
-            {% endif %}
         </section>
 
-        <!-- RECENT PRODUCTS SECTION -->
-        <section>
-            <h2 class="section-title"><i class="fas fa-fire"></i> Produits récents</h2>
-            {% if produits %}
-            <div class="products-grid" id="productsGrid">
-                {% for produit in produits %}
-                <a href="{{ url_for('voir_produit_public', slug=produit.slug) }}" class="product-card">
-                    <div class="product-image">
-                        <img src="{{ produit.image_principale }}" alt="{{ produit.nom }}" loading="lazy">
-                        {% if produit.est_en_promo %}
-                        <span class="product-badge">-{{ ((1 - produit.prix_promo / produit.prix) * 100)|int }}%</span>
+        <!-- MAIN CONTENT -->
+        <main>
+
+            <!-- SHOPS SECTION -->
+            <section>
+                <h2 class="section-title"><i class="fas fa-store"></i> Boutiques en vedette</h2>
+                {% if boutiques %}
+                <div class="shops-grid" id="shopsGrid">
+                    {% for boutique in boutiques %}
+                    <a href="{{ url_for('boutique_publique', username=boutique.proprietaire.username) }}" class="shop-card">
+                        <div class="shop-card-header">
+                            <div class="shop-logo">
+                                {% if boutique.logo %}
+                                    <img src="{{ boutique.logo }}" alt="{{ boutique.nom }}" loading="lazy">
+                                {% else %}
+                                    <span>🏪</span>
+                                {% endif %}
+                            </div>
+                            <div class="shop-info">
+                                <h3>{{ boutique.nom }}</h3>
+                                <p>Par {{ boutique.proprietaire.username }}</p>
+                            </div>
+                        </div>
+                        {% if boutique.description %}
+                        <p style="font-size:13px;color:var(--text2);font-weight:600;margin-bottom:10px;position:relative;z-index:1;line-height:1.5;">
+                            {{ boutique.description[:80] }}{% if boutique.description|length > 80 %}...{% endif %}
+                        </p>
                         {% endif %}
-                    </div>
-                    <div class="product-details">
-                        <div class="product-shop">
-                            <i class="fas fa-store"></i> {{ produit.boutique.nom }}
-                        </div>
-                        <h3 class="product-name">{{ produit.nom }}</h3>
-                        <div class="product-price">
-                            {% if produit.est_en_promo and produit.prix_promo %}
-                                <span class="current-price">{{ "%.0f"|format(produit.prix_promo) }} {{ produit.devise }}</span>
-                                <span class="old-price">{{ "%.0f"|format(produit.prix) }} {{ produit.devise }}</span>
-                            {% else %}
-                                <span class="current-price">{{ "%.0f"|format(produit.prix) }} {{ produit.devise }}</span>
+                        <div class="shop-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-box"></i>
+                                {{ boutique.produits.count() }} produits
+                            </div>
+                            {% if note_moyenne %}
+                            <div class="stat-item">
+                                <i class="fas fa-star"></i>
+                                {{ "%.1f"|format(note_moyenne) }}/5
+                            </div>
                             {% endif %}
                         </div>
-                        <div class="product-meta">
-                            {% if produit.categorie %}
-                            <span class="product-category">{{ produit.categorie.nom }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-store"></i>
+                    <h3>Aucune boutique trouvée</h3>
+                    <p>Soyez le premier à créer une boutique !</p>
+                </div>
+                {% endif %}
+            </section>
+
+            <!-- RECENT PRODUCTS SECTION -->
+            <section>
+                <h2 class="section-title"><i class="fas fa-fire"></i> Produits récents</h2>
+                {% if produits %}
+                <div class="products-grid" id="productsGrid">
+                    {% for produit in produits %}
+                    <a href="{{ url_for('voir_produit_public', slug=produit.slug) }}" class="product-card">
+                        <div class="product-image">
+                            <img src="{{ produit.image_principale }}" alt="{{ produit.nom }}" loading="lazy">
+                            <div class="product-image-overlay"></div>
+                            {% if produit.est_en_promo %}
+                            <span class="product-badge">-{{ ((1 - produit.prix_promo / produit.prix) * 100)|int }}%</span>
                             {% endif %}
-                            <span class="product-views">
-                                <i class="fas fa-eye"></i> {{ produit.vues or 0 }}
-                            </span>
                         </div>
-                    </div>
-                </a>
-                {% endfor %}
-            </div>
-            {% else %}
-            <div class="empty-state">
-                <i class="fas fa-box-open"></i>
-                <h3>Aucun produit trouvé</h3>
-                <p>Les produits apparaîtront ici une fois ajoutés par les vendeurs.</p>
-            </div>
-            {% endif %}
-        </section>
-    </main>
+                        <div class="product-details">
+                            <div class="product-shop">
+                                <i class="fas fa-store"></i> {{ produit.boutique.nom }}
+                            </div>
+                            <h3 class="product-name">{{ produit.nom }}</h3>
+                            <div class="product-price">
+                                {% if produit.est_en_promo and produit.prix_promo %}
+                                    <span class="current-price">{{ "%.0f"|format(produit.prix_promo) }} {{ produit.devise }}</span>
+                                    <span class="old-price">{{ "%.0f"|format(produit.prix) }} {{ produit.devise }}</span>
+                                {% else %}
+                                    <span class="current-price">{{ "%.0f"|format(produit.prix) }} {{ produit.devise }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="product-meta">
+                                {% if produit.categorie %}
+                                <span class="product-category">{{ produit.categorie.nom }}</span>
+                                {% endif %}
+                                <span class="product-views">
+                                    <i class="fas fa-eye"></i> {{ produit.vues or 0 }}
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-box-open"></i>
+                    <h3>Aucun produit trouvé</h3>
+                    <p>Les produits apparaîtront ici une fois ajoutés par les vendeurs.</p>
+                </div>
+                {% endif %}
+            </section>
+        </main>
+
+        <footer>2026 © NectarPro by Nina Academy ✨</footer>
+    </div>
 
     <script>
         // Recherche de produits
         function searchProducts() {
             const query = document.getElementById('productSearch').value.toLowerCase();
             const cards = document.querySelectorAll('#productsGrid .product-card');
-            
+
             cards.forEach(card => {
                 const name = card.querySelector('.product-name').textContent.toLowerCase();
                 const shop = card.querySelector('.product-shop').textContent.toLowerCase();
                 const category = card.querySelector('.product-category') ? card.querySelector('.product-category').textContent.toLowerCase() : '';
-                
+
                 if (name.includes(query) || shop.includes(query) || category.includes(query)) {
                     card.style.display = 'block';
                 } else {
@@ -770,11 +720,11 @@
         function searchShops() {
             const query = document.getElementById('shopSearch').value.toLowerCase();
             const cards = document.querySelectorAll('#shopsGrid .shop-card');
-            
+
             cards.forEach(card => {
                 const name = card.querySelector('h3').textContent.toLowerCase();
                 const seller = card.querySelector('.shop-info p').textContent.toLowerCase();
-                
+
                 if (name.includes(query) || seller.includes(query)) {
                     card.style.display = 'block';
                 } else {
