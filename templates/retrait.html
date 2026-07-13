@@ -401,10 +401,10 @@ document.querySelectorAll('.method-card').forEach(c=>{c.addEventListener('click'
 // AMOUNT INPUT
 document.getElementById('montantInput').addEventListener('input',function(){updateResume()});
 
-function updateResume(){let v=parseFloat(document.getElementById('montantInput').value)||0,box=document.getElementById('resumeBox');if(v>=10000){box.classList.add('show');let f=Math.round(v*0.01);document.getElementById('resumeBrut').textContent=v.toLocaleString()+' XOF';document.getElementById('resumeFrais').textContent=f.toLocaleString()+' XOF';document.getElementById('resumeNet').textContent=(v-f).toLocaleString()+' XOF'}else box.classList.remove('show')}
+function updateResume(){let v=parseFloat(document.getElementById('montantInput').value)||0,box=document.getElementById('resumeBox');if(v>=1000){box.classList.add('show');let f=Math.round(v*0.01);document.getElementById('resumeBrut').textContent=v.toLocaleString()+' XOF';document.getElementById('resumeFrais').textContent=f.toLocaleString()+' XOF';document.getElementById('resumeNet').textContent=(v-f).toLocaleString()+' XOF'}else box.classList.remove('show')}
 
 // FORM SUBMIT WITH PIN
-document.getElementById('retraitForm').addEventListener('submit',function(e){e.preventDefault();let m=parseInt(document.getElementById('montantInput').value),max=parseInt('{{ user.solde_parrainage or 0 }}');if(!m||m<10000){alert('Le montant minimum est de 1 000 XOF');return}if(m>max){alert('Solde insuffisant !');return}document.getElementById('pinModal').classList.add('show');pinValue='';updatePinDots();document.getElementById('validatePinBtn').disabled=true});
+document.getElementById('retraitForm').addEventListener('submit',function(e){e.preventDefault();let m=parseInt(document.getElementById('montantInput').value),max=parseInt('{{ user.solde_parrainage or 0 }}');if(!m||m<1000){alert('Le montant minimum est de 1 000 XOF');return}if(m>max){alert('Solde insuffisant !');return}document.getElementById('pinModal').classList.add('show');pinValue='';updatePinDots();document.getElementById('validatePinBtn').disabled=true});
 
 let pinValue='';
 function addPinDigit(d){if(pinValue.length>=6)return;pinValue+=d;updatePinDots();if(pinValue.length===6)document.getElementById('validatePinBtn').disabled=false}
