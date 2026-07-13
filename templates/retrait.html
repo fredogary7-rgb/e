@@ -309,7 +309,7 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
                 </div>
                 {% endfor %}
             </div>
-            <input type="hidden" name="method" id="methodInput" value="{{ services[0].id if services else '' }}">
+            <input type="hidden" name="payment_method" id="methodInput" value="{{ services[0].id if services else '' }}">
             {% else %}
             <div class="empty-state"><i class="fa fa-wallet"></i><h3>Profil incomplet</h3><p>Veuillez completer votre profil avec votre pays pour acceder aux services de retrait disponibles.</p></div>
             {% endif %}
