@@ -1,3 +1,4 @@
+
 import time
 import requests
 import os
@@ -3047,7 +3048,7 @@ def apk_canal_page():
     canal_apk = {
         "name": "Canal+ Premium",
         "filename": "canal_plus_vavoo.apk",
-        "link": "https://drive.google.com/uc?id=15G5lmyNMw2xYTm_XvvhIX77uBqT99lLq", # Lien direct vers le téléchargement
+        "link": "https://play.google.com/store/apps/details?id=net.vypn.app", # Lien direct vers le téléchargement
         "reference": "Vavoo.to"
     }
     return render_template("apk_canal.html", app=canal_apk)
