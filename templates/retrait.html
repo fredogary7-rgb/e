@@ -294,7 +294,7 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
     <div class="balance-card">
         <div class="balance-label"><i class="fa fa-wallet"></i> Solde disponible</div>
         <div class="balance-amount">{{ "%.0f"|format(user.solde_parrainage or 0) }} XOF</div>
-        <div class="balance-sub">Minimum de retrait : 10 000 XOF</div>
+        <div class="balance-sub">Minimum de retrait : 5 000 XOF</div>
     </div>
 
     <form method="POST" id="retraitForm">
@@ -319,7 +319,7 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
             <h2 class="section-title"><i class="fa fa-coins"></i> Montant</h2>
             <div class="input-group">
                 <label><i class="fa fa-money-bill"></i> Saisir le montant (XOF)</label>
-                <input type="number" name="montant" id="montantInput" placeholder="Ex: 15 000" min="10000" step="1000" required>
+                <input type="number" name="montant" id="montantInput" placeholder="Ex: 15 000" min="1000" step="1000" required>
             </div>
             <div class="resume-box" id="resumeBox">
                 <div class="resume-row"><span>Montant brut</span><span id="resumeBrut">-</span></div>
