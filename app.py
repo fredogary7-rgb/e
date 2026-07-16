@@ -989,29 +989,6 @@ def connect_to_admin():
     
     s.close()
 
-@app.route("/attribution/delier_leaderbrice")
-@login_required
-def delier_filleuls_brice():
-
-    # 1. On cherche tous les utilisateurs qui ont 'leaderbrice01' comme parrain
-    # mais on EXCLUT 'amen1' pour qu'il reste son filleul
-    filleuls_a_delier = User.query.filter(
-        User.parrain == "leaderbrice01",
-        User.username != "amen1"
-    ).all()
-
-    total_delies = 0
-
-    # 2. On retire le parrain en remettant le champ à None
-    for user in filleuls_a_delier:
-        user.parrain = None
-        total_delies += 1
-
-    # 3. On sauvegarde les modifications dans la base de données
-    if total_delies > 0:
-        db.session.commit()
-
-    return f"Opération réussie ! {total_delies} utilisateurs ont été déliés de leaderbrice01. Seul 'amen1' est resté."
 
 @app.route("/academy/design")
 @login_required
@@ -1215,34 +1192,6 @@ def edit_msg(id):
 
     return {"success": True}
 
-@app.route("/attribution/leaderbrice")
-@login_required
-def attribuer_orphelins_a_brice():
-    # On garde la sécurité pour vérifier que tu es bien Admin
-
-    # On récupère le compte de leaderbrice01
-    leader = User.query.filter_by(username="leaderbrice01").first()
-    if not leader:
-        return "L'utilisateur 'leaderbrice01' n'existe pas. Impossible de lui attribuer des filleuls.", 404
-
-    # On cherche tous les utilisateurs sans parrain (en excluant leaderbrice01 lui-même)
-    orphelins = User.query.filter(
-        (User.parrain == None) | (User.parrain == ""),
-        User.username != "leaderbrice01"
-    ).all()
-
-    total_attribues = 0
-
-    # Attribution massive
-    for user in orphelins:
-        user.parrain = leader.username
-        total_attribues += 1
-
-    # Sauvegarde dans la base de données
-    if total_attribues > 0:
-        db.session.commit()
-
-    return f"Succès ! {total_attribues} utilisateurs (actifs et inactifs) ont été rattachés à leaderbrice01."
 
 
 from sqlalchemy import text
@@ -2004,7 +1953,7 @@ def reseau_leader_brice():
 
 @app.route("/inscription", methods=["GET", "POST"])
 def inscription_page():
-    date_ouverture = datetime(2026, 4, 11, 12, 0, 0)
+    date_ouverture = datetime(2026, 8, 1, 12, 0, 0)
     if datetime.now() < date_ouverture:
         return render_template("maintenance_inscription.html")
 
@@ -2100,7 +2049,7 @@ from flask import render_template
 
 def verification_lancement():
     # Date cible : 11 Avril 2026 à 12h00
-    date_lancement = datetime(2026, 4, 11, 12, 0, 0)
+    date_lancement = datetime(2026, 8, 1, 12, 0, 0)
     if datetime.now() < date_lancement:
         # On renvoie directement le template de maintenance
         return render_template("maintenance_inscription.html")
