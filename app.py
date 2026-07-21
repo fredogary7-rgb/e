@@ -150,7 +150,6 @@ migrate = Migrate(app, db)
 
 # ─── SYSTÈME PUSH VAPID ───────────────────────────────
 from push_notifications import (
-    PushSubscription, Notification, NotificationQueue,
     get_vapid_public_key,
     send_notification_to_user, send_bulk_notification, notify_all_users,
     get_push_stats, init_push_tables,
@@ -852,6 +851,51 @@ class Follow(db.Model):
     def __repr__(self):
         return f"<Follow {self.follower.username} -> {self.following.username}>"
 
+
+# ─── MODÈLES PUSH VAPID ──────────────────────────────────
+class PushSubscription(db.Model):
+    """Abonnement Web Push d'un utilisateur (endpoint + clés)."""
+    __tablename__ = "push_subscriptions"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True, index=True)
+    endpoint = db.Column(db.Text, nullable=False)
+    p256dh = db.Column(db.Text, nullable=False)
+    auth = db.Column(db.Text, nullable=False)
+    browser = db.Column(db.String(50))
+    platform = db.Column(db.String(50))
+    user_agent = db.Column(db.String(300))
+    actif = db.Column(db.Boolean, default=True)
+    date_creation = db.Column(db.DateTime, default=datetime.utcnow)
+    derniere_utilisation = db.Column(db.DateTime, default=datetime.utcnow)
+    def to_dict(self):
+        return {"id": self.id, "user_id": self.user_id, "endpoint": self.endpoint,
+                "browser": self.browser, "platform": self.platform, "actif": self.actif}
+
+class Notification(db.Model):
+    """Notification envoyée à un utilisateur."""
+    __tablename__ = "notifications"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True, index=True)
+    titre = db.Column(db.String(200), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    icon = db.Column(db.String(500))
+    image = db.Column(db.String(500))
+    url = db.Column(db.String(500))
+    type = db.Column(db.String(50))
+    lu = db.Column(db.Boolean, default=False)
+    date_creation = db.Column(db.DateTime, default=datetime.utcnow)
+    date_envoi = db.Column(db.DateTime)
+    date_lecture = db.Column(db.DateTime)
+
+class NotificationQueue(db.Model):
+    """File d'attente pour l'envoi des notifications push."""
+    __tablename__ = "notification_queue"
+    id = db.Column(db.Integer, primary_key=True)
+    notification_id = db.Column(db.Integer, db.ForeignKey("notifications.id"), nullable=False, index=True)
+    statut = db.Column(db.String(20), default="en_attente")
+    erreur = db.Column(db.Text)
+    date_creation = db.Column(db.DateTime, default=datetime.utcnow)
+    date_traitement = db.Column(db.DateTime)
 
 def envoyer_otp(recipient_email, code_otp):
     if not API_KEY:
