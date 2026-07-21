@@ -6330,6 +6330,12 @@ def apple_touch_icon_precomposed():
     from flask import send_from_directory
     return send_from_directory('static/images', 'icon-192.png')
 
+@app.route('/.well-known/assetlinks.json')
+def assetlinks():
+    """Fichier Digital Asset Links pour Android PWA/TWA"""
+    from flask import send_from_directory
+    return send_from_directory('.well-known', 'assetlinks.json')
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))  # Render fournit le PORT
     app.run(host="0.0.0.0", port=port, debug=False)
