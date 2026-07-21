@@ -2883,13 +2883,29 @@ def admin_parrainage():
 def get_logged_in_user_phone():
     return session.get("phone")
 
-from flask import send_from_directory
+import os
+from flask import Flask, render_template, send_from_directory, flash, redirect, url_for
+
+@app.route('/contact')
+def contact_page():
+    # Affiche la page HTML d'explication et de téléchargement
+    return render_template('contact.html')
 
 @app.route('/download/contact')
 def download_contact():
-    return send_from_directory('static/files', 'con.vcf', as_attachment=True)
+    directory = os.path.join(app.root_path, 'static', 'files')
+    filename = 'contacts.vcf'
+    
+    # Vérification que le fichier existe bien avant l'envoi
+    if not os.path.exists(os.path.join(directory, filename)):
+        flash("Le fichier de contacts VCF n'est pas encore disponible.", "error")
+        return redirect(url_for('contact_page'))
 
-from flask import Flask, render_template
+    return send_from_directory(directory, filename, as_attachment=True)
+
+
+from flask import send_from_directory
+
 
 
 # Route pour la page About
