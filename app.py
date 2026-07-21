@@ -6404,20 +6404,6 @@ def offline_page():
     """Page hors connexion pour la PWA NectarPro"""
     return render_template('offline.html')
 
-@app.route('/service-worker.js')
-def service_worker():
-    """Service Worker PWA avec injection de la clé VAPID publique"""
-    import os as _os
-    sw_path = _os.path.join(app.root_path, 'static', 'service-worker.js')
-    if not _os.path.exists(sw_path):
-        return '', 404
-    with open(sw_path, 'r', encoding='utf-8') as f:
-        content = f.read()
-    # Injecter la clé VAPID publique
-    vapid_key = get_vapid_public_key() or ''
-    content = content.replace('{{VAPID_PUBLIC_KEY}}', vapid_key)
-    from flask import Response
-    return Response(content, mimetype='application/javascript')
 
 @app.route('/apple-touch-icon.png')
 def apple_touch_icon():
@@ -6438,106 +6424,6 @@ def assetlinks():
     return send_from_directory('.well-known', 'assetlinks.json')
 
 
-# ============================================================
-# 🔔 ROUTES API PUSH VAPID
-# ============================================================
-
-@app.route('/api/push/vapid-public-key', methods=['GET'])
-def api_vapid_public_key():
-    """Retourne la clé publique VAPID pour le frontend."""
-    key = get_vapid_public_key()
-    if not key:
-        return jsonify({"success": False, "message": "Clé VAPID non disponible"}), 500
-    return jsonify({"success": True, "publicKey": key})
-
-
-@app.route('/api/push/subscribe', methods=['POST'])
-def api_push_subscribe():
-    """Enregistre ou met à jour un abonnement push."""
-    data = request.get_json(silent=True)
-    if not data or not data.get('endpoint'):
-        return jsonify({"success": False, "message": "Données invalides"}), 400
-
-    endpoint = data.get('endpoint')
-    keys = data.get('keys', {})
-    p256dh = keys.get('p256dh', '')
-    auth = keys.get('auth', '')
-
-    user = get_logged_in_user()
-    user_id = user.id if user else None
-
-    # Vérifier si l'abonnement existe déjà (même endpoint + user)
-    existing = PushSubscription.query.filter_by(endpoint=endpoint, user_id=user_id).first()
-    if existing:
-        # Mettre à jour les clés et métadonnées
-        existing.p256dh = p256dh
-        existing.auth = auth
-        existing.user_agent = data.get('user_agent', existing.user_agent)
-        existing.browser = data.get('browser', existing.browser)
-        existing.platform = data.get('platform', existing.platform)
-        existing.language = data.get('language', existing.language)
-        existing.timezone = data.get('timezone', existing.timezone)
-        existing.actif = True
-        existing.derniere_utilisation = datetime.now(timezone.utc)
-        db.session.commit()
-        return jsonify({"success": True, "message": "Abonnement mis à jour", "id": existing.id})
-
-    # Nouvel abonnement
-    sub = PushSubscription(
-        user_id=user_id,
-        endpoint=endpoint,
-        p256dh=p256dh,
-        auth=auth,
-        user_agent=data.get('user_agent'),
-        browser=data.get('browser'),
-        platform=data.get('platform'),
-        language=data.get('language'),
-        timezone=data.get('timezone'),
-        ip=request.remote_addr,
-        actif=True,
-    )
-    db.session.add(sub)
-    db.session.commit()
-    return jsonify({"success": True, "message": "Abonnement enregistré", "id": sub.id})
-
-
-@app.route('/api/push/unsubscribe', methods=['POST'])
-def api_push_unsubscribe():
-    """Désactive un abonnement push."""
-    data = request.get_json(silent=True)
-    if not data or not data.get('endpoint'):
-        return jsonify({"success": False, "message": "Données invalides"}), 400
-
-    endpoint = data.get('endpoint')
-    user = get_logged_in_user()
-    user_id = user.id if user else None
-
-    sub = PushSubscription.query.filter_by(endpoint=endpoint, user_id=user_id).first()
-    if sub:
-        sub.actif = False
-        db.session.commit()
-    return jsonify({"success": True, "message": "Désabonnement effectué"})
-
-
-@app.route('/api/push/sync-subscription', methods=['POST'])
-def api_push_sync_subscription():
-    """Synchronise un abonnement après un pushsubscriptionchange."""
-    data = request.get_json(silent=True)
-    if not data or not data.get('endpoint'):
-        return jsonify({"success": False, "message": "Données invalides"}), 400
-    # Marque l'abonnement comme actif (re-subscribe)
-    sub = PushSubscription.query.filter_by(endpoint=data['endpoint']).first()
-    if sub:
-        sub.actif = True
-        sub.derniere_utilisation = datetime.now(timezone.utc)
-        db.session.commit()
-    return jsonify({"success": True})
-
-
-@app.route('/api/push/check-updates', methods=['GET'])
-def api_push_check_updates():
-    """Vérifie la version actuelle de l'app pour le periodic sync."""
-    return jsonify({"hasUpdate": False, "version": "2.0.0"})
 
 
 @app.route('/api/push/test', methods=['POST'])
@@ -6654,6 +6540,177 @@ def api_notifications_read_all():
     Notification.query.filter_by(user_id=user.id, lu=False).update({"lu": True})
     db.session.commit()
     return jsonify({"success": True})
+
+
+# ============================================================
+# 🔔 ROUTES API WEB PUSH VAPID
+# ============================================================
+
+@app.route('/api/push/vapid-public-key', methods=['GET'])
+def api_push_vapid_public_key():
+    """Renvoie la clé publique VAPID au format attendu par le navigateur."""
+    import logging
+    logger = logging.getLogger("nectarpro.push")
+    try:
+        pub_key = get_vapid_public_key()
+        if not pub_key:
+            logger.error("❌ api_push_vapid_public_key: clé publique VAPID introuvable")
+            return jsonify({"success": False, "message": "Clé VAPID non configurée"}), 500
+        logger.info("✅ Clé publique VAPID servie au client (%d caractères)", len(pub_key))
+        return jsonify({"success": True, "publicKey": pub_key})
+    except Exception as e:
+        logger.error("❌ Erreur récupération clé VAPID: %s", e)
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@app.route('/api/push/subscribe', methods=['POST'])
+def api_push_subscribe():
+    """Enregistre un nouvel abonnement Web Push."""
+    import logging
+    logger = logging.getLogger("nectarpro.push")
+    try:
+        data = request.get_json(force=True)
+        if not data:
+            return jsonify({"success": False, "message": "Données JSON requises"}), 400
+
+        endpoint = data.get('endpoint')
+        keys = data.get('keys', {})
+        p256dh = keys.get('p256dh')
+        auth = keys.get('auth')
+
+        if not endpoint or not p256dh or not auth:
+            logger.warning("⚠️ Tentative d'abonnement avec données incomplètes")
+            return jsonify({"success": False, "message": "endpoint, keys.p256dh et keys.auth requis"}), 400
+
+        user = get_logged_in_user()
+        user_id = user.id if user else None
+        user_agent = request.headers.get('User-Agent', '')[:300]
+        browser = request.headers.get('Sec-CH-UA', '')[:50] or data.get('browser', 'Inconnu')
+        platform = request.headers.get('Sec-CH-UA-Platform', '')[:50] or data.get('platform', 'Inconnu')
+        language = request.headers.get('Accept-Language', '')[:10] or data.get('language', '')
+        timezone = data.get('timezone', '')
+        ip = request.headers.get('X-Forwarded-For', request.remote_addr or '')[:45]
+
+        # Vérifier si l'abonnement existe déjà
+        existing = PushSubscription.query.filter_by(endpoint=endpoint).first()
+        if existing:
+            # Mise à jour
+            existing.p256dh = p256dh
+            existing.auth = auth
+            existing.user_id = user_id or existing.user_id
+            existing.browser = browser or existing.browser
+            existing.platform = platform or existing.platform
+            existing.user_agent = user_agent or existing.user_agent
+            existing.language = language or existing.language
+            existing.timezone = timezone or existing.timezone
+            existing.ip = ip or existing.ip
+            existing.actif = True
+            existing.derniere_utilisation = datetime.now(timezone.utc)
+            db.session.commit()
+            logger.info("✅ Abonnement push mis à jour pour user_id=%s (endpoint existant)", user_id)
+            return jsonify({"success": True, "message": "Abonnement mis à jour", "updated": True})
+        else:
+            # Nouvel abonnement
+            sub = PushSubscription(
+                user_id=user_id,
+                endpoint=endpoint,
+                p256dh=p256dh,
+                auth=auth,
+                browser=browser,
+                platform=platform,
+                user_agent=user_agent,
+                language=language,
+                timezone=timezone,
+                ip=ip,
+                actif=True,
+            )
+            db.session.add(sub)
+            db.session.commit()
+            logger.info("✅ Nouvel abonnement push enregistré (id=%d, user_id=%s, navigateur=%s)", sub.id, user_id, browser)
+            return jsonify({"success": True, "message": "Abonnement enregistré", "id": sub.id})
+    except Exception as e:
+        db.session.rollback()
+        logger.error("❌ Erreur enregistrement abonnement push: %s", e)
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@app.route('/api/push/unsubscribe', methods=['POST'])
+def api_push_unsubscribe():
+    """Désactive un abonnement Web Push."""
+    import logging
+    logger = logging.getLogger("nectarpro.push")
+    try:
+        data = request.get_json(force=True)
+        endpoint = data.get('endpoint') if data else None
+
+        if not endpoint:
+            return jsonify({"success": False, "message": "endpoint requis"}), 400
+
+        sub = PushSubscription.query.filter_by(endpoint=endpoint).first()
+        if sub:
+            sub.actif = False
+            db.session.commit()
+            logger.info("🗑️ Abonnement push désactivé: %s...", endpoint[:80])
+        return jsonify({"success": True, "message": "Abonnement désactivé"})
+    except Exception as e:
+        db.session.rollback()
+        logger.error("❌ Erreur désabonnement push: %s", e)
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@app.route('/api/push/sync-subscription', methods=['POST'])
+def api_push_sync_subscription():
+    """Synchronise un abonnement existant (appelé par le SW via Background Sync)."""
+    import logging
+    logger = logging.getLogger("nectarpro.push")
+    try:
+        data = request.get_json(force=True)
+        endpoint = data.get('endpoint') if data else None
+
+        if not endpoint:
+            return jsonify({"success": False, "message": "endpoint requis"}), 400
+
+        sub = PushSubscription.query.filter_by(endpoint=endpoint).first()
+        if sub:
+            sub.actif = True
+            sub.derniere_utilisation = datetime.now(timezone.utc)
+            db.session.commit()
+            logger.info("✅ Abonnement synchronisé: %s...", endpoint[:80])
+        return jsonify({"success": True})
+    except Exception as e:
+        db.session.rollback()
+        logger.error("❌ Erreur sync abonnement: %s", e)
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@app.route('/api/push/check-updates', methods=['GET'])
+def api_push_check_updates():
+    """Vérifie si une mise à jour est disponible (pour Periodic Sync)."""
+    return jsonify({"hasUpdate": False, "version": "2.0.0"})
+
+
+@app.route('/service-worker.js')
+def serve_service_worker():
+    """Sert le Service Worker avec la clé VAPID injectée."""
+    import logging
+    logger = logging.getLogger("nectarpro.push")
+    try:
+        vapid_key = get_vapid_public_key()
+        sw_path = os.path.join(app.static_folder, 'service-worker.js')
+        if not os.path.exists(sw_path):
+            sw_path = os.path.join(os.getcwd(), 'static', 'service-worker.js')
+        with open(sw_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        content = content.replace("'{{VAPID_PUBLIC_KEY}}'", f"'{vapid_key}'")
+        logger.info("✅ Service Worker servi avec clé VAPID injectée")
+        from flask import make_response
+        response = make_response(content)
+        response.headers['Content-Type'] = 'application/javascript'
+        response.headers['Service-Worker-Allowed'] = '/'
+        return response
+    except Exception as e:
+        logger.error("❌ Erreur service worker: %s", e)
+        return send_from_directory(app.static_folder, 'service-worker.js')
 
 
 # ============================================================

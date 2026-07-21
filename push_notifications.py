@@ -44,8 +44,33 @@ def _get_models():
     return PushSubscription, Notification, NotificationQueue
 
 def _get_vapid_private_key():
-    """Retourne la clé privée VAPID depuis les variables d'environnement."""
-    return os.environ.get("VAPID_PRIVATE_KEY")
+    """
+    Retourne la clé privée VAPID depuis les variables d'environnement.
+    Corrige automatiquement les \\\\n littéraux (Render, Railway, etc.)
+    en vrais sauts de ligne, nécessaires pour le format PEM.
+    Fonctionne partout : local, Render, Railway, tout hébergeur.
+    """
+    raw = os.environ.get("VAPID_PRIVATE_KEY", "")
+    if not raw:
+        logger.error("❌ VAPID_PRIVATE_KEY absente de l'environnement")
+        return None
+
+    # Restaurer les vrais \n à partir des \\n littéraux (problème connu sur Render/Railway)
+    if "\\n" in raw and "\n" not in raw.replace("\\n", ""):
+        # Cas : la clé contient des \\n littéraux mais pas de vrais \n
+        raw = raw.replace("\\n", "\n")
+        logger.info("🔧 VAPID_PRIVATE_KEY: \\\\n littéraux convertis en vrais \\n")
+    elif "\\n" in raw:
+        # Cas mixte : on remplace quand même les \\n restants
+        raw = raw.replace("\\n", "\n")
+
+    # Vérifier que la clé a l'air d'être un PEM valide
+    if "-----BEGIN PRIVATE KEY-----" not in raw and "-----BEGIN EC PRIVATE KEY-----" not in raw:
+        logger.error("❌ VAPID_PRIVATE_KEY ne contient pas d'en-tête PEM valide. Reçu: %s...", raw[:80])
+        return None
+
+    logger.info("✅ VAPID_PRIVATE_KEY chargée et validée (%d caractères)", len(raw))
+    return raw
 
 def _get_vapid_claims():
     """Retourne les claims VAPID (sub, aud)."""
@@ -58,7 +83,7 @@ def generate_vapid_keys():
         from cryptography.hazmat.primitives.asymmetric import ec
         from cryptography.hazmat.primitives import serialization
     except ImportError:
-        logger.error("cryptography non installé – pip install cryptography")
+        logger.error("❌ cryptography non installé – pip install cryptography")
         return None, None
 
     private_key = ec.generate_private_key(ec.SECP256R1())
@@ -82,13 +107,34 @@ def generate_vapid_keys():
     )
     import base64
     public_b64 = base64.urlsafe_b64encode(public_raw).rstrip(b"=").decode("ascii")
+    logger.info("✅ Nouvelles clés VAPID générées")
     return public_b64, private_pem
 
 def get_vapid_public_key():
-    """Retourne la clé publique VAPID (générée ou depuis l'env)."""
+    """
+    Retourne la clé publique VAPID (depuis l'env ou générée).
+    Valide que la clé est au format URL-safe base64 attendu par le navigateur.
+    """
     from_env = os.environ.get("VAPID_PUBLIC_KEY")
     if from_env:
-        return from_env
+        pub = from_env.strip()
+        # Validation basique : la clé publique VAPID est en base64 URL-safe (65 octets non compressés)
+        import base64
+        try:
+            # Tenter de décoder pour valider
+            padded = pub + "=" * (4 - len(pub) % 4) if len(pub) % 4 else pub
+            decoded = base64.urlsafe_b64decode(padded)
+            if len(decoded) != 65:
+                logger.warning("⚠️ VAPID_PUBLIC_KEY longueur anormale: %d octets (attendu 65)", len(decoded))
+            else:
+                logger.info("✅ VAPID_PUBLIC_KEY chargée et validée depuis l'environnement")
+        except Exception as e:
+            logger.error("❌ VAPID_PUBLIC_KEY invalide (base64 corrompu): %s", e)
+            return None
+        return pub
+
+    # Génération automatique (fallback dev)
+    logger.warning("⚠️ VAPID_PUBLIC_KEY absente, génération automatique (dev uniquement)")
     pub, priv = generate_vapid_keys()
     if pub:
         os.environ["VAPID_PUBLIC_KEY"] = pub
@@ -96,22 +142,24 @@ def get_vapid_public_key():
     return pub
 
 def _send_webpush_single(subscription_data, payload_dict):
-    """Envoi unitaire via pywebpush. Retourne True si succès, False sinon."""
+    """Envoi unitaire via pywebpush. Retourne True si succès, False sinon.
+    Gère automatiquement la suppression des abonnements invalides
+    (404, 410, 401, expired)."""
     try:
         from pywebpush import webpush, WebPushException
     except ImportError:
-        logger.error("pywebpush non installé – pip install pywebpush")
+        logger.error("❌ pywebpush non installé – pip install pywebpush")
         return False
 
     priv_key = _get_vapid_private_key()
     if not priv_key:
-        logger.error("VAPID_PRIVATE_KEY absente de l'environnement")
         return False
 
+    endpoint = subscription_data.get("endpoint", "inconnu")
     try:
         webpush(
             subscription_info={
-                "endpoint": subscription_data["endpoint"],
+                "endpoint": endpoint,
                 "keys": {
                     "p256dh": subscription_data["p256dh"],
                     "auth": subscription_data["auth"],
@@ -122,31 +170,43 @@ def _send_webpush_single(subscription_data, payload_dict):
             vapid_claims=_get_vapid_claims(),
             timeout=15,
         )
+        logger.info("✅ Notification push envoyée → %s...", endpoint[:80])
         return True
     except WebPushException as e:
-        logger.warning("WebPushException: %s", e)
+        logger.warning("⚠️ WebPushException: %s", e)
         if hasattr(e, "response") and e.response is not None:
             status = e.response.status_code
-            if status in (404, 410):
-                _invalidate_subscription(subscription_data.get("endpoint"))
+            logger.warning("   ↳ Statut HTTP: %s", status)
+            if status in (404, 410, 401):
+                logger.warning("   ↳ Suppression de l'abonnement invalide (%s)", status)
+                _delete_subscription(endpoint)
+            else:
+                logger.warning("   ↳ Statut non géré: %s", status)
+        else:
+            err_msg = str(e).lower()
+            if "expired" in err_msg or "unsubscribed" in err_msg or "no such subscription" in err_msg:
+                logger.warning("   ↳ Abonnement expiré détecté dans le message d'erreur")
+                _delete_subscription(endpoint)
         return False
     except Exception as e:
-        logger.error("Erreur push inconnue: %s", e)
+        logger.error("❌ Erreur push inconnue: %s", e)
+        err_msg = str(e).lower()
+        if "subscription" in err_msg and ("expired" in err_msg or "invalid" in err_msg or "not found" in err_msg):
+            _delete_subscription(endpoint)
         return False
 
-def _invalidate_subscription(endpoint):
-    """Désactive (actif=False) l'abonnement correspondant à un endpoint."""
+def _delete_subscription(endpoint):
+    """Supprime définitivement un abonnement invalide de la base de données."""
     db = _get_db()
     PushSubscription, _, _ = _get_models()
     try:
-        sub = PushSubscription.query.filter_by(endpoint=endpoint, actif=True).first()
-        if sub:
-            sub.actif = False
-            db.session.commit()
-            logger.info("Abonnement désactivé (endpoint invalide): %s", endpoint[:80])
+        deleted = PushSubscription.query.filter_by(endpoint=endpoint).delete()
+        db.session.commit()
+        if deleted:
+            logger.info("🗑️ Abonnement supprimé (endpoint invalide): %s...", endpoint[:80])
     except Exception as e:
         db.session.rollback()
-        logger.error("Erreur désactivation abonnement: %s", e)
+        logger.error("❌ Erreur suppression abonnement: %s", e)
 
 def _build_payload(notification):
     """Construit le payload JSON envoyé au Service Worker."""
@@ -208,6 +268,7 @@ def _process_single_notification(notification_id):
     PushSubscription, Notification, NotificationQueue = _get_models()
 
     with app.app_context():
+        logger.info("📨 Traitement notification #%s...", notification_id)
         queue_entry = (
             NotificationQueue.query
             .filter_by(notification_id=notification_id, statut="en_attente")
@@ -215,6 +276,7 @@ def _process_single_notification(notification_id):
             .first()
         )
         if not queue_entry:
+            logger.info("   ↳ Aucune entrée en attente trouvée")
             return
 
         queue_entry.statut = "en_cours"
@@ -225,18 +287,21 @@ def _process_single_notification(notification_id):
             queue_entry.statut = "echec"
             queue_entry.erreur = "Notification introuvable"
             db.session.commit()
+            logger.warning("   ↳ Notification #%s introuvable", notification_id)
             return
 
         payload = _build_payload(notification)
+        logger.info("   ↳ Titre: %s, Type: %s", notification.titre, notification.type)
 
         subs = (
             PushSubscription.query
             .filter_by(user_id=notification.user_id, actif=True)
             .all()
         )
+        logger.info("   ↳ %d abonnement(s) actif(s) pour user_id=%s", len(subs), notification.user_id)
 
         success_count = 0
-        for sub in subs:
+        for i, sub in enumerate(subs):
             sub_data = {
                 "endpoint": sub.endpoint,
                 "p256dh": sub.p256dh,
@@ -245,13 +310,17 @@ def _process_single_notification(notification_id):
             if _send_webpush_single(sub_data, payload):
                 success_count += 1
                 sub.derniere_utilisation = datetime.now(timezone.utc)
+            else:
+                logger.warning("   ↳ Échec envoi #%d/%d", i + 1, len(subs))
 
         if success_count > 0:
             queue_entry.statut = "envoye"
             notification.date_envoi = datetime.now(timezone.utc)
+            logger.info("✅ Notification #%s envoyée (%d/%d succès)", notification_id, success_count, len(subs))
         else:
             queue_entry.statut = "echec"
             queue_entry.erreur = "Aucun envoi réussi"
+            logger.warning("❌ Notification #%s: aucun envoi réussi sur %d abonnements", notification_id, len(subs))
 
         queue_entry.date_traitement = datetime.now(timezone.utc)
         db.session.commit()
