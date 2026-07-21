@@ -4,13 +4,16 @@
  *   - Cache intelligent (CSS, JS, images, polices, pages)
  *   - Mode offline
  *   - Mise à jour automatique
- *   - Compatibilité Web Push API (VAPID) - préparée
+ *   - Web Push API (VAPID) – notifications, click, close, subscription change
  *
- * Version: 1.0.0
+ * Version: 2.0.0
  */
 
-const CACHE_NAME = 'nectarpro-v1';
-const RUNTIME_CACHE = 'nectarpro-runtime-v1';
+// ── Clé publique VAPID (remplacée au déploiement par le serveur) ──
+const VAPID_PUBLIC_KEY = '{{VAPID_PUBLIC_KEY}}';
+
+const CACHE_NAME = 'nectarpro-v2';
+const RUNTIME_CACHE = 'nectarpro-runtime-v2';
 
 // Ressources à mettre en cache immédiatement à l'installation
 const PRECACHE_ASSETS = [
@@ -30,7 +33,6 @@ const PRECACHE_ASSETS = [
     '/js/main.js',
     '/css/global_modern.css',
     '/css/style.css',
-    // Polices Google (fallback hors ligne sur la page offline)
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css',
 ];
 
@@ -74,7 +76,7 @@ const SWR_EXTENSIONS = [
 // INSTALLATION
 // ============================================================
 self.addEventListener('install', (event) => {
-    console.log('[SW NectarPro] Installation...');
+    console.log('[SW NectarPro] Installation v2...');
 
     event.waitUntil(
         caches.open(CACHE_NAME)
@@ -123,7 +125,6 @@ self.addEventListener('activate', (event) => {
 
 /**
  * Cache First - Pour les assets statiques
- * Sert du cache, sinon va chercher le réseau et met en cache
  */
 async function cacheFirst(request) {
     const cachedResponse = await caches.match(request);
@@ -138,7 +139,6 @@ async function cacheFirst(request) {
         }
         return networkResponse;
     } catch (error) {
-        // Si c'est une page HTML, retourne la page offline
         if (request.headers.get('Accept') && request.headers.get('Accept').includes('text/html')) {
             const offlineCache = await caches.match('/offline');
             if (offlineCache) return offlineCache;
@@ -149,7 +149,6 @@ async function cacheFirst(request) {
 
 /**
  * Network First - Pour les pages dynamiques (dashboard, etc.)
- * Essaie le réseau d'abord, fallback sur le cache, puis page offline
  */
 async function networkFirst(request) {
     try {
@@ -164,7 +163,6 @@ async function networkFirst(request) {
         if (cachedResponse) {
             return cachedResponse;
         }
-        // Fallback offline
         const offlineCache = await caches.match('/offline');
         if (offlineCache) return offlineCache;
         throw error;
@@ -173,7 +171,6 @@ async function networkFirst(request) {
 
 /**
  * Stale While Revalidate - Pour les assets (CSS, JS, images)
- * Sert du cache immédiatement, puis met à jour en arrière-plan
  */
 async function staleWhileRevalidate(request) {
     const cache = await caches.open(RUNTIME_CACHE);
@@ -203,7 +200,7 @@ self.addEventListener('fetch', (event) => {
     // Ignorer les requêtes non-GET
     if (request.method !== 'GET') return;
 
-    // Ignorer les requêtes vers l'API (SoleasPay, etc.)
+    // Ignorer les requêtes vers l'API
     if (url.pathname.startsWith('/api/')) return;
     if (url.pathname.startsWith('/admin/')) return;
     if (url.pathname.startsWith('/webhook')) return;
@@ -248,21 +245,24 @@ self.addEventListener('message', (event) => {
     if (event.data && event.data.type === 'SKIP_WAITING') {
         self.skipWaiting();
     }
-});
 
-// Notifie les clients qu'une mise à jour est disponible
-self.addEventListener('controllerchange', () => {
-    // Le nouveau SW a pris le contrôle
+    // Reçoit la clé VAPID publique du client
+    if (event.data && event.data.type === 'SET_VAPID_KEY') {
+        // Stocke en variable (sera utilisée pour re-subscribe)
+        self._vapidPublicKey = event.data.key;
+        console.log('[SW NectarPro] Clé VAPID reçue');
+    }
 });
 
 // ============================================================
-// WEB PUSH API - PRÉPARATION (VAPID)
+// WEB PUSH API (VAPID) – COMPLET
 // ============================================================
-// Architecture prête pour les notifications Web Push avec VAPID
-// À activer lorsque les clés VAPID seront générées
 
+/**
+ * Réception d'une notification push
+ */
 self.addEventListener('push', (event) => {
-    console.log('[SW NectarPro] Push reçu:', event);
+    console.log('[SW NectarPro] Push reçu');
 
     let data = {
         title: 'NectarPro',
@@ -290,56 +290,193 @@ self.addEventListener('push', (event) => {
         badge: data.badge,
         tag: data.tag,
         data: data.data,
-        vibrate: [200, 100, 200],
+        vibrate: data.vibrate || [200, 100, 200],
         actions: data.actions || [],
         requireInteraction: data.requireInteraction || false,
+        image: data.image || undefined,
+        silent: data.silent || false,
+        timestamp: data.timestamp || Date.now(),
+        renotify: data.renotify || false,
     };
 
     event.waitUntil(
         self.registration.showNotification(data.title, options)
+            .then(() => {
+                // Notifier le client que la notif a été affichée (pour analytics)
+                self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+                    .then((clients) => {
+                        clients.forEach((client) => {
+                            client.postMessage({
+                                type: 'NOTIFICATION_DISPLAYED',
+                                notificationId: data.data && data.data.notification_id,
+                                timestamp: Date.now()
+                            });
+                        });
+                    });
+            })
     );
 });
 
+/**
+ * Clic sur une notification
+ */
 self.addEventListener('notificationclick', (event) => {
-    console.log('[SW NectarPro] Notification cliquée:', event);
+    console.log('[SW NectarPro] Notification cliquée');
 
     event.notification.close();
 
     const url = event.notification.data && event.notification.data.url
         ? event.notification.data.url
         : '/';
+    const notificationId = event.notification.data && event.notification.data.notification_id;
 
     event.waitUntil(
-        clients.matchAll({ type: 'window', includeUncontrolled: true })
+        self.clients.matchAll({ type: 'window', includeUncontrolled: true })
             .then((windowClients) => {
-                // Chercher un onglet déjà ouvert
+                // Chercher un onglet déjà ouvert avec cette URL
                 for (const client of windowClients) {
                     if (client.url.includes(url) && 'focus' in client) {
+                        // Notifier le client du clic (pour marquer comme lu)
+                        client.postMessage({
+                            type: 'NOTIFICATION_CLICKED',
+                            notificationId: notificationId,
+                            url: url
+                        });
                         return client.focus();
                     }
                 }
                 // Ouvrir un nouvel onglet
-                if (clients.openWindow) {
-                    return clients.openWindow(url);
+                if (self.clients.openWindow) {
+                    return self.clients.openWindow(url);
                 }
             })
     );
 });
 
+/**
+ * Fermeture d'une notification (l'utilisateur la swipe)
+ */
+self.addEventListener('notificationclose', (event) => {
+    console.log('[SW NectarPro] Notification fermée');
+
+    const notificationId = event.notification.data && event.notification.data.notification_id;
+
+    if (notificationId) {
+        event.waitUntil(
+            self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+                .then((windowClients) => {
+                    windowClients.forEach((client) => {
+                        client.postMessage({
+                            type: 'NOTIFICATION_CLOSED',
+                            notificationId: notificationId
+                        });
+                    });
+                })
+        );
+    }
+});
+
+/**
+ * Changement du PushSubscription (expiration, révocation, etc.)
+ */
 self.addEventListener('pushsubscriptionchange', (event) => {
-    console.log('[SW NectarPro] Le push subscription a changé');
-    // TODO: Envoyer la nouvelle subscription au serveur
+    console.log('[SW NectarPro] PushSubscription a changé – re-subscription...');
+
+    const vapidKey = self._vapidPublicKey || VAPID_PUBLIC_KEY;
+
     event.waitUntil(
         self.registration.pushManager.subscribe({
             userVisibleOnly: true,
-            // Les clés VAPID seront ajoutées ici
-            applicationServerKey: null // À remplacer par la clé publique VAPID
+            applicationServerKey: urlBase64ToUint8Array(vapidKey)
         })
         .then((newSubscription) => {
-            console.log('[SW NectarPro] Nouvelle subscription:', newSubscription);
-            // TODO: POST /api/push/subscribe avec la nouvelle subscription
+            console.log('[SW NectarPro] Nouvelle subscription');
+            // Envoyer la nouvelle subscription au serveur
+            return fetch('/api/push/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    endpoint: newSubscription.endpoint,
+                    keys: {
+                        p256dh: btoa(String.fromCharCode.apply(null, new Uint8Array(newSubscription.getKey('p256dh')))),
+                        auth: btoa(String.fromCharCode.apply(null, new Uint8Array(newSubscription.getKey('auth'))))
+                    }
+                })
+            });
+        })
+        .then(() => {
+            console.log('[SW NectarPro] Re-subscription envoyée au serveur');
+        })
+        .catch((err) => {
+            console.error('[SW NectarPro] Erreur re-subscription:', err);
         })
     );
 });
 
-console.log('[SW NectarPro] Service Worker chargé et prêt.');
+// ── Utilitaire : conversion base64 URL-safe → Uint8Array ──
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+    const rawData = atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+
+// ============================================================
+// BACKGROUND SYNC
+// ============================================================
+self.addEventListener('sync', (event) => {
+    console.log('[SW NectarPro] Background Sync:', event.tag);
+
+    if (event.tag === 'nectarpro-resubscribe') {
+        event.waitUntil(
+            self.registration.pushManager.getSubscription()
+                .then((subscription) => {
+                    if (subscription) {
+                        return fetch('/api/push/sync-subscription', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                endpoint: subscription.endpoint
+                            })
+                        });
+                    }
+                })
+        );
+    }
+});
+
+// ============================================================
+// PÉRIODIC SYNC (si supporté par le navigateur)
+// ============================================================
+self.addEventListener('periodicsync', (event) => {
+    console.log('[SW NectarPro] Periodic Sync:', event.tag);
+
+    if (event.tag === 'nectarpro-check-updates') {
+        event.waitUntil(
+            fetch('/api/push/check-updates')
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data.hasUpdate) {
+                        // Notifier le client
+                        self.clients.matchAll().then((clients) => {
+                            clients.forEach((client) => {
+                                client.postMessage({
+                                    type: 'UPDATE_AVAILABLE',
+                                    version: data.version
+                                });
+                            });
+                        });
+                    }
+                })
+                .catch(() => { /* silencieux */ })
+        );
+    }
+});
+
+console.log('[SW NectarPro v2] Service Worker chargé et prêt.');

@@ -148,6 +148,24 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+# ─── SYSTÈME PUSH VAPID ───────────────────────────────
+from push_notifications import (
+    PushSubscription, Notification, NotificationQueue,
+    get_vapid_public_key,
+    send_notification_to_user, send_bulk_notification, notify_all_users,
+    get_push_stats, init_push_tables,
+    notify_deposit_accepted, notify_deposit_rejected,
+    notify_retrait_accepted, notify_retrait_rejected,
+    notify_new_order, notify_order_shipped,
+    notify_new_message, notify_new_follower,
+    notify_new_comment, notify_new_like,
+    notify_new_publicite, notify_new_product,
+    notify_promotion, notify_bonus,
+    notify_maintenance, notify_update, notify_admin_announcement,
+    cleanup_expired_subscriptions, cleanup_old_queue_entries,
+)
+import base64
+
 # ─── FLASK-LOGIN CONFIG ─────────────────────────────────
 from flask_login import LoginManager, UserMixin, current_user
 
@@ -3646,6 +3664,12 @@ def valider_depot(depot_id):
 
     db.session.commit()
 
+    # 🔔 Notification push : dépôt validé
+    try:
+        notify_deposit_accepted(user.id, depot.montant, depot.reference or f"DEP-{depot.id}")
+    except Exception as e:
+        print(f"[PUSH] Erreur notif dépôt validé: {e}")
+
     flash("Dépôt validé et crédité avec succès !", "success")
     return redirect(url_for("admin_deposits"))
 
@@ -3661,6 +3685,13 @@ def rejeter_depot(depot_id):
 
     depot.statut = "rejete"
     db.session.commit()
+
+    # 🔔 Notification push : dépôt refusé
+    try:
+        if depot.user_id:
+            notify_deposit_rejected(depot.user_id, depot.montant, depot.reference or f"DEP-{depot.id}")
+    except Exception as e:
+        print(f"[PUSH] Erreur notif dépôt refusé: {e}")
 
     flash("Dépôt rejeté avec succès.", "danger")
     return redirect(url_for("admin_deposits"))
@@ -3744,6 +3775,13 @@ def valider_retrait(retrait_id):
 
     db.session.commit()
 
+    # 🔔 Notification push : retrait validé
+    try:
+        if retrait.user_id:
+            notify_retrait_accepted(retrait.user_id, retrait.montant)
+    except Exception as e:
+        print(f"[PUSH] Erreur notif retrait validé: {e}")
+
     flash("Retrait validé avec succès !", "success")
     return redirect(url_for("admin_retraits"))
 
@@ -3768,7 +3806,14 @@ def refuser_retrait(retrait_id):
 
     db.session.commit()
 
-    flash("Retrait refusé et montant recrédité à l’utilisateur.", "warning")
+    # 🔔 Notification push : retrait refusé
+    try:
+        if retrait.user_id:
+            notify_retrait_rejected(retrait.user_id, retrait.montant)
+    except Exception as e:
+        print(f"[PUSH] Erreur notif retrait refusé: {e}")
+
+    flash("Retrait refusé et montant recrédité à l'utilisateur.", "warning")
     return redirect(url_for("admin_retraits"))
 
 
@@ -6314,9 +6359,18 @@ def offline_page():
 
 @app.route('/service-worker.js')
 def service_worker():
-    """Service Worker PWA - servi à la racine obligatoirement"""
-    from flask import send_from_directory
-    return send_from_directory('static', 'service-worker.js', mimetype='application/javascript')
+    """Service Worker PWA avec injection de la clé VAPID publique"""
+    import os as _os
+    sw_path = _os.path.join(app.root_path, 'static', 'service-worker.js')
+    if not _os.path.exists(sw_path):
+        return '', 404
+    with open(sw_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Injecter la clé VAPID publique
+    vapid_key = get_vapid_public_key() or ''
+    content = content.replace('{{VAPID_PUBLIC_KEY}}', vapid_key)
+    from flask import Response
+    return Response(content, mimetype='application/javascript')
 
 @app.route('/apple-touch-icon.png')
 def apple_touch_icon():
@@ -6335,6 +6389,251 @@ def assetlinks():
     """Fichier Digital Asset Links pour Android PWA/TWA"""
     from flask import send_from_directory
     return send_from_directory('.well-known', 'assetlinks.json')
+
+
+# ============================================================
+# 🔔 ROUTES API PUSH VAPID
+# ============================================================
+
+@app.route('/api/push/vapid-public-key', methods=['GET'])
+def api_vapid_public_key():
+    """Retourne la clé publique VAPID pour le frontend."""
+    key = get_vapid_public_key()
+    if not key:
+        return jsonify({"success": False, "message": "Clé VAPID non disponible"}), 500
+    return jsonify({"success": True, "publicKey": key})
+
+
+@app.route('/api/push/subscribe', methods=['POST'])
+def api_push_subscribe():
+    """Enregistre ou met à jour un abonnement push."""
+    data = request.get_json(silent=True)
+    if not data or not data.get('endpoint'):
+        return jsonify({"success": False, "message": "Données invalides"}), 400
+
+    endpoint = data.get('endpoint')
+    keys = data.get('keys', {})
+    p256dh = keys.get('p256dh', '')
+    auth = keys.get('auth', '')
+
+    user = get_logged_in_user()
+    user_id = user.id if user else None
+
+    # Vérifier si l'abonnement existe déjà (même endpoint + user)
+    existing = PushSubscription.query.filter_by(endpoint=endpoint, user_id=user_id).first()
+    if existing:
+        # Mettre à jour les clés et métadonnées
+        existing.p256dh = p256dh
+        existing.auth = auth
+        existing.user_agent = data.get('user_agent', existing.user_agent)
+        existing.browser = data.get('browser', existing.browser)
+        existing.platform = data.get('platform', existing.platform)
+        existing.language = data.get('language', existing.language)
+        existing.timezone = data.get('timezone', existing.timezone)
+        existing.actif = True
+        existing.derniere_utilisation = datetime.now(timezone.utc)
+        db.session.commit()
+        return jsonify({"success": True, "message": "Abonnement mis à jour", "id": existing.id})
+
+    # Nouvel abonnement
+    sub = PushSubscription(
+        user_id=user_id,
+        endpoint=endpoint,
+        p256dh=p256dh,
+        auth=auth,
+        user_agent=data.get('user_agent'),
+        browser=data.get('browser'),
+        platform=data.get('platform'),
+        language=data.get('language'),
+        timezone=data.get('timezone'),
+        ip=request.remote_addr,
+        actif=True,
+    )
+    db.session.add(sub)
+    db.session.commit()
+    return jsonify({"success": True, "message": "Abonnement enregistré", "id": sub.id})
+
+
+@app.route('/api/push/unsubscribe', methods=['POST'])
+def api_push_unsubscribe():
+    """Désactive un abonnement push."""
+    data = request.get_json(silent=True)
+    if not data or not data.get('endpoint'):
+        return jsonify({"success": False, "message": "Données invalides"}), 400
+
+    endpoint = data.get('endpoint')
+    user = get_logged_in_user()
+    user_id = user.id if user else None
+
+    sub = PushSubscription.query.filter_by(endpoint=endpoint, user_id=user_id).first()
+    if sub:
+        sub.actif = False
+        db.session.commit()
+    return jsonify({"success": True, "message": "Désabonnement effectué"})
+
+
+@app.route('/api/push/sync-subscription', methods=['POST'])
+def api_push_sync_subscription():
+    """Synchronise un abonnement après un pushsubscriptionchange."""
+    data = request.get_json(silent=True)
+    if not data or not data.get('endpoint'):
+        return jsonify({"success": False, "message": "Données invalides"}), 400
+    # Marque l'abonnement comme actif (re-subscribe)
+    sub = PushSubscription.query.filter_by(endpoint=data['endpoint']).first()
+    if sub:
+        sub.actif = True
+        sub.derniere_utilisation = datetime.now(timezone.utc)
+        db.session.commit()
+    return jsonify({"success": True})
+
+
+@app.route('/api/push/check-updates', methods=['GET'])
+def api_push_check_updates():
+    """Vérifie la version actuelle de l'app pour le periodic sync."""
+    return jsonify({"hasUpdate": False, "version": "2.0.0"})
+
+
+@app.route('/api/push/test', methods=['POST'])
+@login_required
+def api_push_test():
+    """Test : envoie une notification push à l'utilisateur connecté."""
+    user = get_logged_in_user()
+    notif = send_notification_to_user(
+        user.id,
+        titre="🔔 Test NectarPro",
+        message="Ceci est une notification de test. Si vous la voyez, tout fonctionne !",
+        url="/dashboard",
+        type="test",
+    )
+    return jsonify({"success": True, "notification_id": notif.id})
+
+
+@app.route('/api/push/send', methods=['POST'])
+def api_push_send():
+    """Route admin : envoie une notification à un utilisateur spécifique."""
+    user_admin = get_logged_in_admin()
+    if not user_admin:
+        return jsonify({"success": False, "message": "Accès refusé"}), 403
+
+    data = request.get_json(silent=True)
+    if not data:
+        return jsonify({"success": False, "message": "Données invalides"}), 400
+
+    user_id = data.get('user_id')
+    titre = data.get('titre', 'Notification')
+    message = data.get('message', '')
+    url = data.get('url', '/')
+    notif_type = data.get('type', 'annonce_admin')
+
+    if not user_id or not message:
+        return jsonify({"success": False, "message": "user_id et message requis"}), 400
+
+    notif = send_notification_to_user(
+        user_id,
+        titre=titre,
+        message=message,
+        url=url,
+        type=notif_type,
+    )
+    return jsonify({"success": True, "notification_id": notif.id})
+
+
+@app.route('/api/push/send-all', methods=['POST'])
+def api_push_send_all():
+    """Route admin : envoie une notification à tous les abonnés."""
+    user_admin = get_logged_in_admin()
+    if not user_admin:
+        return jsonify({"success": False, "message": "Accès refusé"}), 403
+
+    data = request.get_json(silent=True)
+    if not data:
+        return jsonify({"success": False, "message": "Données invalides"}), 400
+
+    titre = data.get('titre', '📣 Annonce NectarPro')
+    message = data.get('message', '')
+    url = data.get('url', '/')
+
+    if not message:
+        return jsonify({"success": False, "message": "message requis"}), 400
+
+    count = notify_all_users(titre=titre, message=message, url=url, type='annonce_admin')
+    return jsonify({"success": True, "envoyes": count})
+
+
+# ============================================================
+# 🔔 ROUTES API NOTIFICATIONS (lecture, historique)
+# ============================================================
+
+@app.route('/api/notifications', methods=['GET'])
+@login_required
+def api_notifications_list():
+    """Liste les notifications de l'utilisateur connecté."""
+    user = get_logged_in_user()
+    page = request.args.get('page', 1, type=int)
+    per_page = 20
+
+    notifs = (
+        Notification.query
+        .filter_by(user_id=user.id)
+        .order_by(Notification.date_creation.desc())
+        .paginate(page=page, per_page=per_page, error_out=False)
+    )
+
+    return jsonify({
+        "success": True,
+        "notifications": [n.to_dict() for n in notifs.items],
+        "total": notifs.total,
+        "page": page,
+        "pages": notifs.pages,
+        "unread": Notification.query.filter_by(user_id=user.id, lu=False).count(),
+    })
+
+
+@app.route('/api/notifications/read/<int:notif_id>', methods=['POST'])
+def api_notification_read(notif_id):
+    """Marque une notification comme lue."""
+    notif = Notification.query.get(notif_id)
+    if notif:
+        notif.lu = True
+        db.session.commit()
+    return jsonify({"success": True})
+
+
+@app.route('/api/notifications/read-all', methods=['POST'])
+@login_required
+def api_notifications_read_all():
+    """Marque toutes les notifications de l'utilisateur comme lues."""
+    user = get_logged_in_user()
+    Notification.query.filter_by(user_id=user.id, lu=False).update({"lu": True})
+    db.session.commit()
+    return jsonify({"success": True})
+
+
+# ============================================================
+# 🔔 ADMIN PUSH DASHBOARD
+# ============================================================
+
+@app.route('/admin/push')
+def admin_push_dashboard():
+    """Dashboard administrateur des notifications push."""
+    admin_user = get_logged_in_admin()
+    if not admin_user:
+        flash("Accès refusé.", "danger")
+        return redirect(url_for("admin_finance"))
+
+    stats = get_push_stats()
+    return render_template("admin_push.html", user=admin_user, stats=stats)
+
+
+# ============================================================
+# 🔔 INITIALISATION DES TABLES PUSH AU DÉMARRAGE
+# ============================================================
+with app.app_context():
+    try:
+        init_push_tables(app)
+    except Exception as e:
+        print(f"[PUSH] Erreur init tables: {e}")
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))  # Render fournit le PORT
