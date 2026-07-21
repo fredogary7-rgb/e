@@ -6307,6 +6307,11 @@ def videos_nectarpro():
                 })
     return render_template('videos_nectarpro.html', videos=videos)
 
+@app.route('/offline')
+def offline_page():
+    """Page hors connexion pour la PWA NectarPro"""
+    return render_template('offline.html')
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))  # Render fournit le PORT
     app.run(host="0.0.0.0", port=port, debug=False)

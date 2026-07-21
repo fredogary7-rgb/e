@@ -744,5 +744,9 @@ function prepareWhatsappNumber(){document.getElementById("fullWhatsapp").value=d
 
 (function(){let u=document.querySelector('.topbar .user-pill');if(!u)return;u.addEventListener('click',e=>{e.stopPropagation();document.getElementById('userDropdown').classList.toggle('active')});document.addEventListener('click',e=>{let dd=document.getElementById('userDropdown');if(dd&&!u.contains(e.target))dd.classList.remove('active')})})();
 </script>
+
+<!-- PWA -->
+<script src="/static/pwa-register.js" defer></script>
+<script src="/static/pwa-install.js" defer></script>
 </body>
 </html>

@@ -1,22 +1,112 @@
 {
   "name": "NectarPro",
   "short_name": "NectarPro",
-  "description": "Apprenez, vendez et recommandez avec NectarPro.",
-  "start_url": "/",
+  "description": "Marketplace et plateforme d'investissement moderne.",
+  "start_url": "/?utm_source=pwa",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#22c55e",
+  "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait",
-  "icons": [
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
+  "categories": ["finance", "shopping", "social"],
+  "lang": "fr-FR",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "id": "https://nectarpro.cc",
+  "protocol_handlers": [
     {
-      "src": "/static/images/net.jpg",
-      "sizes": "192x192",
-      "type": "image/jpeg"
+      "protocol": "web+nectarpro",
+      "url": "/?q=%s"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Tableau de bord",
+      "short_name": "Dashboard",
+      "description": "Accéder à votre tableau de bord",
+      "url": "/dashboard",
+      "icons": [{ "src": "/static/images/icon-96.png", "sizes": "96x96" }]
     },
     {
-      "src": "/static/images/net.jpg",
+      "name": "Market",
+      "short_name": "Market",
+      "description": "Parcourir le Market",
+      "url": "/market",
+      "icons": [{ "src": "/static/images/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Retrait",
+      "short_name": "Retrait",
+      "description": "Retirer vos gains",
+      "url": "/retrait",
+      "icons": [{ "src": "/static/images/icon-96.png", "sizes": "96x96" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/static/images/pwa/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Tableau de bord NectarPro"
+    },
+    {
+      "src": "/static/images/pwa/screenshot-narrow.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "NectarPro sur mobile"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/static/images/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/images/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/images/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/images/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/images/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/images/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/images/icon-512.png",
       "sizes": "512x512",
-      "type": "image/jpeg"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
