@@ -8,8 +8,18 @@
   let deferredPrompt = null;
   let installBanner = null;
   let installButtons = null;
+  let bannerShown = false;
 
-  // ─── Écouter l'événement beforeinstallprompt ──────
+  // ─── Vérifier si l'app est déjà installée (mode standalone) ──────
+  var isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    || navigator.standalone
+    || document.referrer.includes('android-app://');
+
+  // ─── Vérifier si bannière dismissée récemment (< 7 jours) ──────
+  var dismissed = localStorage.getItem('pwa-banner-dismissed');
+  var isRecentlyDismissed = dismissed && (Date.now() - parseInt(dismissed)) < 7 * 24 * 60 * 60 * 1000;
+
+  // ─── Écouter l'événement beforeinstallprompt (affichage immédiat) ──────
   window.addEventListener('beforeinstallprompt', function(e) {
     e.preventDefault();
     deferredPrompt = e;
@@ -17,8 +27,22 @@
     console.log('📲 PWA : beforeinstallprompt capturé');
   });
 
+  // ─── FALLBACK : afficher la bannière après 3s même sans beforeinstallprompt ──────
+  // (indispensable pour iOS et les premières visites où le flag PWA
+  //  n'est pas encore activé par Chrome)
+  if (!isStandalone && !isRecentlyDismissed) {
+    setTimeout(function() {
+      if (!bannerShown) {
+        console.log('📲 PWA : fallback banner (beforeinstallprompt non reçu)');
+        showInstallUI();
+      }
+    }, 3000);
+  }
+
   // ─── Afficher l'UI d'installation ──────
   function showInstallUI() {
+    if (bannerShown || isStandalone) return;
+    bannerShown = true;
     // Boutons pwa-install dans le DOM
     installButtons = document.querySelectorAll('.pwa-install-btn, #pwa-install');
     if (installButtons.length > 0) {

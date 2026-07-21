@@ -6312,6 +6312,24 @@ def offline_page():
     """Page hors connexion pour la PWA NectarPro"""
     return render_template('offline.html')
 
+@app.route('/service-worker.js')
+def service_worker():
+    """Service Worker PWA - servi à la racine obligatoirement"""
+    from flask import send_from_directory
+    return send_from_directory('static', 'service-worker.js', mimetype='application/javascript')
+
+@app.route('/apple-touch-icon.png')
+def apple_touch_icon():
+    """Icône Apple touch - fallback"""
+    from flask import send_from_directory
+    return send_from_directory('static/images', 'icon-192.png')
+
+@app.route('/apple-touch-icon-precomposed.png')
+def apple_touch_icon_precomposed():
+    """Icône Apple touch precomposed - fallback"""
+    from flask import send_from_directory
+    return send_from_directory('static/images', 'icon-192.png')
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))  # Render fournit le PORT
     app.run(host="0.0.0.0", port=port, debug=False)
