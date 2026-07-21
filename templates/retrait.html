@@ -182,9 +182,9 @@ body{background:var(--bg);min-height:100vh;min-height:100dvh;color:var(--text);f
 .empty-state h3{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px}
 
 /* PIN MODAL */
-.pin-overlay{display:none;position:fixed;inset:0;z-index:2100;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);align-items:center;justify-content:center}
+.pin-overlay{display:none;position:fixed;inset:0;z-index:2100;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);align-items:center;justify-content:center;touch-action:none}
 .pin-overlay.show{display:flex}
-.pin-modal{background:#fff;border-radius:var(--radius-lg);padding:28px 24px;width:90%;max-width:380px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.pin-modal{background:#fff;border-radius:var(--radius-lg);padding:28px 24px;width:90%;max-width:380px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);touch-action:manipulation}
 .pin-modal h3{font-weight:800;font-size:18px;margin-bottom:6px;color:var(--text)}
 .pin-modal p{font-size:13px;color:var(--muted);margin-bottom:20px}
 .pin-dots{display:flex;justify-content:center;gap:12px;margin-bottom:24px}
@@ -192,7 +192,7 @@ body{background:var(--bg);min-height:100vh;min-height:100dvh;color:var(--text);f
 .pin-dot.filled{background:var(--accent2);border-color:var(--accent2)}
 .pin-input{position:absolute;opacity:0;pointer-events:none}
 .pin-keyboard{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
-.pin-key{padding:16px;font-size:20px;font-weight:800;border:2px solid var(--border);border-radius:var(--radius-sm);background:rgba(255,255,255,0.8);cursor:pointer;transition:all .2s;color:var(--text)}
+.pin-key{padding:16px;font-size:20px;font-weight:800;border:2px solid var(--border);border-radius:var(--radius-sm);background:rgba(255,255,255,0.8);cursor:pointer;transition:all .2s;color:var(--text);touch-action:manipulation;-webkit-user-select:none;user-select:none}
 .pin-key:hover{background:rgba(236,72,153,0.1);border-color:var(--accent2)}
 .pin-key:active{transform:scale(.95)}
 .pin-key.delete{font-size:14px;color:var(--accent)}
@@ -294,7 +294,7 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
     <div class="balance-card">
         <div class="balance-label"><i class="fa fa-wallet"></i> Solde disponible</div>
         <div class="balance-amount">{{ "%.0f"|format(user.solde_parrainage or 0) }} XOF</div>
-        <div class="balance-sub">Minimum de retrait : 5 000 XOF | Frais : 500 XOF</div>
+<div class="balance-sub">Minimum de retrait : 5 000 XOF | Frais : 500 XOF (débités en plus)</div>
     </div>
 
     <form method="POST" id="retraitForm">
@@ -318,13 +318,13 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
             <div class="section">
             <h2 class="section-title"><i class="fa fa-coins"></i> Montant</h2>
             <div class="input-group">
-                <label><i class="fa fa-money-bill"></i> Saisir le montant (XOF)</label>
-                <input type="number" name="montant" id="montantInput" placeholder="Ex: 15 000" min="5000" step="100" required>
+                <label><i class="fa fa-money-bill"></i> Saisir le montant à recevoir (XOF)</label>
+                <input type="number" name="montant" id="montantInput" placeholder="Ex: 5 000" min="5000" step="100" required>
             </div>
             <div class="resume-box" id="resumeBox">
-                <div class="resume-row"><span>Montant brut</span><span id="resumeBrut">-</span></div>
+                <div class="resume-row"><span>Vous recevez</span><span id="resumeNet">-</span></div>
                 <div class="resume-row"><span>Frais (500 XOF)</span><span id="resumeFrais">-</span></div>
-                <div class="resume-row total"><span>Vous recevez</span><span id="resumeNet">-</span></div>
+                <div class="resume-row total"><span>Total débité</span><span id="resumeBrut">-</span></div>
             </div>
         </div>
 
@@ -336,7 +336,7 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
             </div>
             <input type="hidden" name="retirer" value="1">
             <button type="submit" class="btn btn-primary" id="submitBtn"><i class="fa fa-paper-plane"></i> Demander le retrait</button>
-            <div class="info-box"><i class="fa fa-info-circle"></i> <span>Le retrait sera traité sous 24 à 48 heures. Un minimum de 5 000 XOF est requis. Frais fixes de 500 XOF.</span></div>
+<div class="info-box"><i class="fa fa-info-circle"></i> <span>Le retrait sera traité sous 24 à 48h. Minimum : 5 000 XOF reçus. Frais : 500 XOF (débités en plus, soit 5 500 XOF au total).</span></div>
         </div>
     </form>
 
@@ -367,15 +367,15 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
         <div class="pin-dots" id="pinDots"><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div></div>
         <input type="text" class="pin-input" id="pinHiddenInput" maxlength="6" inputmode="numeric" pattern="[0-9]{6}">
         <div class="pin-keyboard">
-            <button class="pin-key" onclick="addPinDigit('1')">1</button><button class="pin-key" onclick="addPinDigit('2')">2</button><button class="pin-key" onclick="addPinDigit('3')">3</button>
-            <button class="pin-key" onclick="addPinDigit('4')">4</button><button class="pin-key" onclick="addPinDigit('5')">5</button><button class="pin-key" onclick="addPinDigit('6')">6</button>
-            <button class="pin-key" onclick="addPinDigit('7')">7</button><button class="pin-key" onclick="addPinDigit('8')">8</button><button class="pin-key" onclick="addPinDigit('9')">9</button>
-            <button class="pin-key" onclick="addPinDigit('0')">0</button>
-            <button class="pin-key delete" onclick="removePinDigit()"><i class="fa fa-delete-left"></i></button>
+            <button type="button" class="pin-key" onclick="addPinDigit('1')">1</button><button type="button" class="pin-key" onclick="addPinDigit('2')">2</button><button type="button" class="pin-key" onclick="addPinDigit('3')">3</button>
+            <button type="button" class="pin-key" onclick="addPinDigit('4')">4</button><button type="button" class="pin-key" onclick="addPinDigit('5')">5</button><button type="button" class="pin-key" onclick="addPinDigit('6')">6</button>
+            <button type="button" class="pin-key" onclick="addPinDigit('7')">7</button><button type="button" class="pin-key" onclick="addPinDigit('8')">8</button><button type="button" class="pin-key" onclick="addPinDigit('9')">9</button>
+            <button type="button" class="pin-key" onclick="addPinDigit('0')">0</button>
+            <button type="button" class="pin-key delete" onclick="removePinDigit()"><i class="fa fa-delete-left"></i></button>
         </div>
         <div class="pin-actions">
-            <button class="btn btn-secondary" onclick="closePinModal()">Annuler</button>
-            <button class="btn btn-primary" id="validatePinBtn" disabled onclick="validatePin()">Confirmer</button>
+            <button type="button" class="btn btn-secondary" onclick="closePinModal()">Annuler</button>
+            <button type="button" class="btn btn-primary" id="validatePinBtn" disabled onclick="validatePin()">Confirmer</button>
         </div>
     </div>
 </div>
@@ -401,7 +401,7 @@ document.querySelectorAll('.method-card').forEach(c=>{c.addEventListener('click'
 // AMOUNT INPUT
 document.getElementById('montantInput').addEventListener('input',function(){updateResume()});
 
-function updateResume(){let v=parseFloat(document.getElementById('montantInput').value)||0,box=document.getElementById('resumeBox');let f=500;if(v>=5000){box.classList.add('show');document.getElementById('resumeBrut').textContent=v.toLocaleString()+' XOF';document.getElementById('resumeFrais').textContent=f.toLocaleString()+' XOF';document.getElementById('resumeNet').textContent=(v-f).toLocaleString()+' XOF'}else box.classList.remove('show')}
+function updateResume(){let v=parseFloat(document.getElementById('montantInput').value)||0,box=document.getElementById('resumeBox');let f=500;if(v>=5000){box.classList.add('show');document.getElementById('resumeNet').textContent=v.toLocaleString()+' XOF';document.getElementById('resumeFrais').textContent=f.toLocaleString()+' XOF';document.getElementById('resumeBrut').textContent=(v+f).toLocaleString()+' XOF'}else box.classList.remove('show')}
 
 // FORM SUBMIT WITH PIN
 document.getElementById('retraitForm').addEventListener('submit',function(e){e.preventDefault();let m=parseInt(document.getElementById('montantInput').value),max=parseInt('{{ user.solde_parrainage or 0 }}'),f=500;if(!m||m<5000){alert('Le montant minimum est de 5 000 XOF');return}if((m+f)>max){alert('Solde insuffisant (montant + 500 XOF de frais) !');return}document.getElementById('pinModal').classList.add('show');pinValue='';updatePinDots();document.getElementById('validatePinBtn').disabled=true});
