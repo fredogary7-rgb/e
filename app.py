@@ -3074,7 +3074,7 @@ def retrait_page():
 
     MIN_RETRAIT = 5000
     MAX_RETRAIT = 100000
-    FRAIS = 0
+    FRAIS = 500
 
     # On s'assure que c'est bien un float
     solde_actuel = float(user.solde_parrainage or 0)
