@@ -1718,7 +1718,7 @@ def verify_page():
             return redirect(url_for('new_password_page'))
 
         # ==========================
-        # 💸 RETRAIT (FINAL FIX)
+        # 💸 RETRAIT (OTP VERIFIE)
         # ==========================
         elif session.get('mode') == 'retrait':
 
@@ -1730,57 +1730,65 @@ def verify_page():
                 return redirect(url_for("retrait_page"))
 
             try:
-                # ==========================
-                # 🔥 API CALL
-                # ==========================
-                response = envoyer_retrait_soleaspay(
-                    data["service_id"],
-                    data["wallet"],
-                    data["montant"]
-                )
+                montant_total = data["montant"] + data.get("frais", 0)
 
-                print("🔵 API RESPONSE :", response)
-
-                if not response or response.get("success") != True:
-                    flash("Erreur API paiement.", "danger")
-                    return redirect(url_for("retrait_page"))
-
-                # ==========================
-                # 🧾 SAVE WITHDRAWAL
-                # ==========================
+                # Créer d'abord le retrait pour avoir l'ID
                 nouveau_retrait = Retrait(
                     user_id=user.id,
                     montant=data["montant"],
-                    frais=data["frais"],
+                    frais=data.get("frais", 0),
                     payment_method=data["service_name"],
-                    statut="successful",
+                    statut="en_attente",
                     phone=data["wallet"],
                     pays=user.country,
                     date=datetime.now(UTC)
                 )
-
                 db.session.add(nouveau_retrait)
+                db.session.flush()
 
-                montant_total = data["montant"] + data["frais"]
+                external_reference = f"W-{nouveau_retrait.id}"
+                logging.info(f"[RETRAIT OTP] User {user.id} - External reference: {external_reference}")
 
-                user.solde_parrainage -= montant_total
-                user.total_retrait = (user.total_retrait or 0) + montant_total
+                # 🔥 API CALL AVEC EXTERNAL_REFERENCE
+                response = envoyer_retrait_soleaspay(
+                    data["service_id"],
+                    data["wallet"],
+                    data["montant"],
+                    external_reference
+                )
+
+                logging.info(f"[RETRAIT OTP] API RESPONSE : {response}")
+
+                if not response or response.get("success") != True:
+                    db.session.rollback()
+                    error_msg = response.get('message', 'Erreur API paiement.') if response else 'Erreur de connexion API.'
+                    flash(error_msg, "danger")
+                    return redirect(url_for("retrait_page"))
+
+                # 🧾 METTRE A JOUR LE RETRAIT AVEC SOLEASPAY
+                response_data = response.get("data", {})
+                nouveau_retrait.reference_soleaspay = response_data.get("reference")
+                nouveau_retrait.transaction_reference = response_data.get("transaction_reference")
+                nouveau_retrait.external_reference = external_reference
+                nouveau_retrait.soleaspay_status = response_data.get("status", "PROCESSING")
+                nouveau_retrait.statut = "accepte" if response_data.get("status", "").upper() in ["SUCCESS", "ACCEPTED", "PROCESSED", "COMPLETED", "APPROVED"] else "en_attente"
+
+                user.solde_parrainage = float(user.solde_parrainage or 0) - montant_total
 
                 db.session.commit()
 
-                # ==========================
                 # 🧹 CLEAN SESSION
-                # ==========================
                 session.pop('otp', None)
                 session.pop('retrait_data', None)
                 session.pop('mode', None)
                 session.pop('otp_expiration', None)
 
-                flash("Retrait confirmé avec succès ✅", "success")
+                flash("Votre demande de retrait a été enregistrée avec succès ✅", "success")
                 return redirect(url_for("mes_retraits"))
 
             except Exception as e:
                 db.session.rollback()
+                logging.error(f"[RETRAIT OTP] Exception: {str(e)}")
                 flash("Erreur retrait : " + str(e), "danger")
                 return redirect(url_for("retrait_page"))
 
@@ -2121,29 +2129,39 @@ SOLEAS_API_KEY = "SP_y7QKkaamPsVTlw8GDDGyzlJ7bmPUvdLorOQqWUXfRLI_AP"
 SOLEAS_WEBHOOK_SECRET = "b42ed39b9e0db71db4556a2dfe1b1ad00dcce656fd4dba033f1947f913f1908bc817588c2edb32d92533a1d162e57ad4b1f7299f39695c5671c3ef07baa6f22a"
 
 # Mapping des noms de pays vers les codes utilisés dans SERVICES
+# Inclut les formes originales + normalisées (sans accents, minuscules) pour compatibilité
 COUNTRY_CODE = {
-    "Cameroun": "CM",
-    "Cameroon": "CM",
-    "cm": "CM",
-    "Côte d'Ivoire": "CI",
-    "Cote d'Ivoire": "CI",
-    "ci": "CI",
-    "Burkina Faso": "BF",
-    "bf": "BF",
-    "Bénin": "BJ",
-    "Benin": "BJ",
-    "bj": "BJ",
-    "Togo": "TG",
-    "tg": "TG",
-    "Congo DRC": "COD",
-    "Congo": "COD",
-    "cod": "COD",
-    "Congo Brazzaville": "COG",
-    "cog": "COG",
-    "Gabon": "GAB",
-    "gab": "GAB",
-    "Uganda": "UGA",
-    "uga": "UGA",
+    # Cameroun
+    "Cameroun": "CM", "Cameroon": "CM", "cameroun": "CM", "cameroon": "CM",
+    "cm": "CM", "CM": "CM",
+    # Côte d'Ivoire
+    "Côte d'Ivoire": "CI", "Cote d'Ivoire": "CI", "côte d'ivoire": "CI",
+    "cote d'ivoire": "CI", "cote divoire": "CI", "côte divoire": "CI",
+    "ivory coast": "CI", "Ivory Coast": "CI",
+    "ci": "CI", "CI": "CI",
+    # Burkina Faso
+    "Burkina Faso": "BF", "burkina faso": "BF", "burkina": "BF",
+    "bf": "BF", "BF": "BF",
+    # Bénin
+    "Bénin": "BJ", "Benin": "BJ", "bénin": "BJ", "benin": "BJ",
+    "bj": "BJ", "BJ": "BJ",
+    # Togo
+    "Togo": "TG", "togo": "TG",
+    "tg": "TG", "TG": "TG",
+    # Congo DRC
+    "Congo DRC": "COD", "Congo": "COD", "congo drc": "COD", "congo": "COD",
+    "rdc": "COD", "RDC": "COD", "République Démocratique du Congo": "COD",
+    "republique democratique du congo": "COD",
+    "cod": "COD", "COD": "COD",
+    # Congo Brazzaville
+    "Congo Brazzaville": "COG", "congo brazzaville": "COG",
+    "cog": "COG", "COG": "COG",
+    # Gabon
+    "Gabon": "GAB", "gabon": "GAB",
+    "gab": "GAB", "GAB": "GAB",
+    # Uganda
+    "Uganda": "UGA", "uganda": "UGA",
+    "uga": "UGA", "UGA": "UGA",
 }
 
 SERVICES = {
@@ -3054,16 +3072,32 @@ def retrait_page():
 
     logging.info(f"[RETRAIT] User {user.id} ({user.username}) - Début traitement retrait")
 
-    MIN_RETRAIT = 500
-    MAX_RETRAIT = 50000
+    MIN_RETRAIT = 5000
+    MAX_RETRAIT = 100000
     FRAIS = 0
 
     # On s'assure que c'est bien un float
     solde_actuel = float(user.solde_parrainage or 0)
     stats = {"commissions_total": solde_actuel}
 
-    country_code = COUNTRY_CODE.get(user.country)
-    services = SERVICES.get(country_code, [])
+    # ─── DIAGNOSTIC PAYS / OPÉRATEURS ───
+    country_raw = (user.country or "").strip()
+    country_code = COUNTRY_CODE.get(country_raw)
+    if not country_code:
+        # Fallback : tentative avec le nom normalisé (sans accents, minuscules)
+        country_normalized = unicodedata.normalize('NFKD', country_raw).encode('ascii', 'ignore').decode('ascii').lower()
+        country_code = COUNTRY_CODE.get(country_normalized)
+        logging.warning(f"[RETRAIT] User {user.id} - Pays brut='{country_raw}', normalisé='{country_normalized}', code trouvé={country_code}")
+
+    if not country_code:
+        logging.error(f"[RETRAIT] User {user.id} - PAYS NON RECONNU: '{country_raw}'. COUNTRY_CODE keys={list(COUNTRY_CODE.keys())}")
+        flash(f"Pays '{country_raw}' non supporté pour les retraits. Contactez le support.", "danger")
+        services = []
+    else:
+        services = SERVICES.get(country_code, [])
+        logging.info(f"[RETRAIT] User {user.id} - Pays={country_raw}, Code={country_code}, Opérateurs disponibles={[s['name'] for s in services]}")
+        if not services:
+            logging.error(f"[RETRAIT] User {user.id} - AUCUN OPÉRATEUR pour le code pays '{country_code}'. SERVICES keys={list(SERVICES.keys())}")
 
     if request.method == "POST":
         try:
