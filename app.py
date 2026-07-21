@@ -3061,6 +3061,31 @@ PRIVATE_SECRET_KEY = "SP_bS4Kwii-Txs1aMunv8D9wpEbdpEVgfpvDvKn-OrWt6Y"
 
 from datetime import datetime
 
+@app.route("/api/verify_pin", methods=["POST"])
+def api_verify_pin():
+    """Vérifie le code PIN envoyé par le frontend avant un retrait."""
+    import logging
+    user = get_logged_in_user()
+    if not user:
+        return jsonify({"success": False, "message": "Utilisateur non connecté."}), 401
+    
+    data = request.get_json(silent=True) or {}
+    pin = str(data.get("pin", "")).strip()
+    
+    if not pin or len(pin) != 6 or not pin.isdigit():
+        return jsonify({"success": False, "message": "Code PIN invalide (6 chiffres requis)."}), 400
+    
+    if not user.pin_code:
+        return jsonify({"success": False, "message": "Aucun code PIN configuré. Veuillez en définir un dans votre profil."}), 400
+    
+    success, message = verify_pin(user, pin, log_context="api_retrait")
+    
+    if success:
+        return jsonify({"success": True, "message": message})
+    else:
+        return jsonify({"success": False, "message": message}), 403
+
+
 @app.route("/retrait", methods=["GET", "POST"])
 def retrait_page():
     import logging
