@@ -175,6 +175,26 @@
             color: #ec4899;
         }
 
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            text-align: left;
+            font-style: italic;
+            font-size: 13px;
+            font-weight: 700;
+            color: #000000;
+            cursor: pointer;
+        }
+
+        .remember-me input {
+            cursor: pointer;
+            width: 17px;
+            height: 17px;
+            accent-color: #ec4899;
+        }
+
         .policy-check {
             display: flex;
             align-items: center;
@@ -396,6 +416,11 @@
                     </div>
                     <a href="/reset-password" class="forgot-password">Mot de passe oublié ?</a>
                 </div>
+
+                <label class="remember-me">
+                    <input type="checkbox" name="remember_me" id="remember-me" value="1">
+                    <span>Se souvenir de moi</span>
+                </label>
 
                 <label class="policy-check">
                     <input type="checkbox" id="check-policy" onchange="togglePolicies()">

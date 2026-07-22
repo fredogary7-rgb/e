@@ -162,6 +162,40 @@
         .dl-alt{margin-top:20px;font-size:13px;color:var(--text2);font-style:italic;font-weight:600;}
         .dl-alt a{color:var(--accent2);text-decoration:none;font-weight:600;}
 
+        /* DEVICES GRID */
+        .devices-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:12px;}
+        .device-card{
+            background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+            border:1px solid var(--border);border-radius:var(--radius-xl);
+            padding:36px 28px 32px;text-align:center;
+            box-shadow:var(--shadow-sm);transition:all .3s;
+            position:relative;display:flex;flex-direction:column;align-items:center;
+        }
+        .device-card:hover{border-color:var(--accent2);box-shadow:var(--shadow-lg);transform:translateY(-4px);}
+        .device-badge{
+            position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+            background:rgba(236,72,153,0.1);color:var(--accent2);
+            padding:5px 16px;border-radius:50px;font-size:12px;
+            font-weight:700;font-style:italic;white-space:nowrap;
+            border:1px solid var(--border);
+        }
+        .device-icon{
+            width:64px;height:64px;margin:16px auto 16px;
+            border-radius:20px;display:flex;align-items:center;justify-content:center;
+            font-size:30px;color:white;
+        }
+        .device-android .device-icon{background:linear-gradient(135deg,#a4c639,#8bc34a);box-shadow:0 6px 20px rgba(139,195,74,0.35);}
+        .device-icon-ios{background:linear-gradient(135deg,#0ea5e9,#0284c7);box-shadow:0 6px 20px rgba(14,165,233,0.35);}
+        .device-icon-tv{background:linear-gradient(135deg,#8b5cf6,#7c3aed);box-shadow:0 6px 20px rgba(139,92,246,0.35);}
+        .device-card h3{font-size:20px;font-weight:900;font-style:italic;margin-bottom:8px;color:var(--text);}
+        .device-desc{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.5;font-weight:600;}
+        .device-card .dl-specs{margin-bottom:24px;}
+        .device-card .btn-download-main{padding:14px 24px;width:100%;justify-content:center;font-size:14px;}
+        .btn-ios{background:linear-gradient(135deg,#0ea5e9,#0284c7)!important;box-shadow:0 6px 24px rgba(14,165,233,0.35)!important;}
+        .btn-ios:hover{box-shadow:0 10px 32px rgba(14,165,233,0.45)!important;}
+        .btn-tv{background:linear-gradient(135deg,#8b5cf6,#7c3aed)!important;box-shadow:0 6px 24px rgba(139,92,246,0.35)!important;}
+        .btn-tv:hover{box-shadow:0 10px 32px rgba(139,92,246,0.45)!important;}
+
         /* SECTION */
         .features-section{margin-top:60px;}
         .section-title{
@@ -231,6 +265,8 @@
             .navbar{padding:12px 16px;}
             .nav-links{display:none;}
             .features-grid{grid-template-columns:1fr;}
+            .devices-grid{grid-template-columns:1fr;gap:24px;}
+            .device-card{padding:36px 20px 28px;}
             .download-card{padding:32px 20px;}
             .dl-specs{gap:16px;}
             .hero h1{font-size:30px;}
@@ -276,32 +312,89 @@
             </p>
         </section>
 
-        <div class="download-card">
-            <div class="app-icon"><i class="fa-solid fa-crown"></i></div>
-            <h2>Canal+ Premium APK</h2>
-            <p class="version">Version <span>5.12.1</span> — Dernière mise à jour : Juin 2026</p>
+        <!-- DEVICE SELECTOR -->
+        <div class="device-section">
+            <h2 class="section-title" style="margin-bottom:4px;">Choisissez votre appareil</h2>
+            <p class="section-subtitle">Téléchargez ou accédez selon votre plateforme</p>
 
-            <div class="dl-specs">
-                <div class="dl-spec">
-                    <div class="spec-value">89 MB</div>
-                    <div class="spec-label">Taille</div>
+            <div class="devices-grid">
+
+                <!-- ANDROID -->
+                <div class="device-card device-android">
+                    <div class="device-badge">Le plus populaire</div>
+                    <div class="device-icon"><i class="fa-brands fa-android"></i></div>
+                    <h3>Android</h3>
+                    <p class="device-desc">Téléchargez l'APK directement sur votre téléphone ou tablette Android.</p>
+                    <div class="dl-specs">
+                        <div class="dl-spec">
+                            <div class="spec-value">89 MB</div>
+                            <div class="spec-label">Taille</div>
+                        </div>
+                        <div class="dl-spec">
+                            <div class="spec-value">Android 6+</div>
+                            <div class="spec-label">OS Minimum</div>
+                        </div>
+                        <div class="dl-spec">
+                            <div class="spec-value">v5.12.1</div>
+                            <div class="spec-label">Version</div>
+                        </div>
+                    </div>
+                    <a href="https://drive.google.com/file/d/15G5lmyNMw2xYTm_XvvhIX77uBqT99lLq/view" class="btn-download-main" target="_blank">
+                        <i class="fa-solid fa-download"></i> Télécharger l'APK
+                    </a>
                 </div>
-                <div class="dl-spec">
-                    <div class="spec-value">Android 6+</div>
-                    <div class="spec-label">OS Minimum</div>
+
+                <!-- iPHONE -->
+                <div class="device-card device-iphone">
+                    <div class="device-badge" style="background:rgba(14,165,233,0.12);color:var(--sky);">iOS</div>
+                    <div class="device-icon device-icon-ios"><i class="fa-brands fa-apple"></i></div>
+                    <h3>iPhone / iPad</h3>
+                    <p class="device-desc">Accédez au service via le portail web optimisé pour iOS. Aucune installation requise.</p>
+                    <div class="dl-specs">
+                        <div class="dl-spec">
+                            <div class="spec-value" style="color:var(--sky);">Aucune</div>
+                            <div class="spec-label">Installation</div>
+                        </div>
+                        <div class="dl-spec">
+                            <div class="spec-value" style="color:var(--sky);">iOS 12+</div>
+                            <div class="spec-label">Compatible</div>
+                        </div>
+                        <div class="dl-spec">
+                            <div class="spec-value" style="color:var(--sky);">Web App</div>
+                            <div class="spec-label">Type</div>
+                        </div>
+                    </div>
+                    <a href="https://vavoo.to/" class="btn-download-main btn-ios" target="_blank">
+                        <i class="fa-solid fa-globe"></i> Accéder au portail iPhone
+                    </a>
                 </div>
-                <div class="dl-spec">
-                    <div class="spec-value">100%</div>
-                    <div class="spec-label">Débloqué</div>
+
+                <!-- SMART TV -->
+                <div class="device-card device-tv">
+                    <div class="device-badge" style="background:rgba(139,92,246,0.12);color:var(--violet);">TV</div>
+                    <div class="device-icon device-icon-tv"><i class="fa-solid fa-tv"></i></div>
+                    <h3>Smart TV</h3>
+                    <p class="device-desc">Installez l'application directement sur votre téléviseur Android TV, Google TV ou Chromecast.</p>
+                    <div class="dl-specs">
+                        <div class="dl-spec">
+                            <div class="spec-value" style="color:var(--violet);">Google Play</div>
+                            <div class="spec-label">Source</div>
+                        </div>
+                        <div class="dl-spec">
+                            <div class="spec-value" style="color:var(--violet);">Android TV</div>
+                            <div class="spec-label">Plateforme</div>
+                        </div>
+                        <div class="dl-spec">
+                            <div class="spec-value" style="color:var(--violet);">4K HDR</div>
+                            <div class="spec-label">Qualité</div>
+                        </div>
+                    </div>
+                    <a href="https://play.google.com/store/apps/details?id=net.vypn.app" class="btn-download-main btn-tv" target="_blank">
+                        <i class="fa-solid fa-download"></i> Installer sur Smart TV
+                    </a>
                 </div>
+
             </div>
-
-            <a href="https://play.google.com/store/apps/details?id=net.vypn.app" class="btn-download-main" target="_blank">
-                <i class="fa-solid fa-download"></i> Télécharger l'APK
-            </a>
-            <p class="dl-alt">
-                Lien alternatif : <a href="https://drive.google.com/file/d/15G5lmyNMw2xYTm_XvvhIX77uBqT99lLq/view" target="_blank">Google Drive (miroir)</a>
-            </p>
         </div>
 
         <div class="features-section">

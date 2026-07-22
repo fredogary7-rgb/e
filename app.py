@@ -1964,11 +1964,11 @@ def connexion_page():
             flash("Votre compte a été suspendu. Contactez le support.", "danger")
             return redirect(url_for("connexion_page"))
 
-        # --- POSITION SUPPRIMÉE ICI ---
+        remember_me = request.form.get("remember_me") == "1"
         session.clear()
         session["user_id"] = user.id
         session["username"] = user.username
-        session.permanent = True
+        session.permanent = remember_me
 
         flash(f"Connexion réussie ! Bienvenue {user.username}.", "success")
         return redirect(url_for("dashboard_page"))
