@@ -43,178 +43,40 @@ def _get_models():
     from app import PushSubscription, Notification, NotificationQueue
     return PushSubscription, Notification, NotificationQueue
 
-# ── Cache global pour l'objet clé privée cryptography ──
-_vapid_private_key_obj = None
-_vapid_private_key_obj_valid = False
-
 def _get_vapid_private_key():
     """
-    Retourne l'OBJET clé privée VAPID (cryptography) depuis les variables d'environnement.
-    
-    Charge la clé PEM depuis VAPID_PRIVATE_KEY, la parse en objet cryptography
-    EC private key, et retourne l'objet directement.
-    
-    L'objet est utilisable par pywebpush sans parsing interne (évite le bug
-    'header too long' d'OpenSSL sur certaines versions de pywebpush/cryptography).
-    
-    L'objet est caché globalement pour éviter de re-parser la clé à chaque envoi.
+    Retourne la clé privée VAPID au format Base64URL brut (string).
+    Format identique à TransAfrik : MIGHAgE... sans PEM, sans BEGIN/END.
+    Passée directement à pywebpush comme string.
     """
-    global _vapid_private_key_obj, _vapid_private_key_obj_valid
-    
-    # Retourner l'objet caché s'il est déjà chargé
-    if _vapid_private_key_obj_valid and _vapid_private_key_obj is not None:
-        return _vapid_private_key_obj
-
     raw = os.environ.get("VAPID_PRIVATE_KEY", "")
     if not raw:
         logger.error("❌ VAPID_PRIVATE_KEY absente de l'environnement")
-        logger.error("   ⚠️  VAPID_PUBLIC_KEY est configurée mais pas VAPID_PRIVATE_KEY.")
-        logger.error("   ⚠️  Les notifications push NE FONCTIONNERONT PAS.")
         logger.error("   ➜ Solution: sur Railway → Variables → ajouter VAPID_PRIVATE_KEY")
-        logger.error("   ➜ La clé privée doit être au format PEM PKCS8 (240 caractères, 5 lignes)")
-        logger.error("   ➜ Exemple: -----BEGIN PRIVATE KEY-----\\nMIGHAgE...\\n-----END PRIVATE KEY-----")
+        logger.error("   ➜ Format: Base64URL brut (MIGHAgE...) sans BEGIN/END, sans PEM")
         logger.error("   ➜ Générer une paire: python -c \"from push_notifications import generate_vapid_keys; pub, priv = generate_vapid_keys(); print(f'PUBLIC: {pub}'); print(f'PRIVATE: {priv}')\"")
         return None
 
-    # ── DIAGNOSTIC COMPLET ──
-    logger.info("🔍 DIAGNOSTIC VAPID_PRIVATE_KEY:")
-    logger.info("   Longueur brute: %d caractères", len(raw))
-    logger.info("   20 premiers caractères (repr): %s", repr(raw[:20]))
-    logger.info("   20 derniers caractères (repr): %s", repr(raw[-20:]))
-    logger.info("   Contient '-----BEGIN': %s", "-----BEGIN" in raw)
-    logger.info("   Contient '-----END': %s", "-----END" in raw)
-    logger.info("   Contient guillemets doubles: %s", '"' in raw)
-    logger.info("   Contient guillemets simples: %s", "'" in raw)
-    logger.info("   Contient espaces en début: %s", raw.startswith(" ") or raw.startswith("\t"))
-    logger.info("   Contient espaces en fin: %s", raw.endswith(" ") or raw.endswith("\t"))
-    logger.info("   Contient \\\\n littéral: %s", "\\n" in raw)
-    logger.info("   Contient vrai \\n (LF): %s", "\n" in raw)
-    logger.info("   Contient \\r (CR): %s", "\r" in raw)
-    logger.info("   Contient \\r\\n (CRLF): %s", "\r\n" in raw)
-    # Compter les lignes
-    lines = raw.split("\n")
-    logger.info("   Nombre de lignes (split sur LF): %d", len(lines))
-    if len(lines) >= 3:
-        logger.info("   Ligne 0: %s", repr(lines[0]))
-        logger.info("   Ligne 1: %s", repr(lines[1]))
-        logger.info("   Dernière ligne: %s", repr(lines[-1]))
-
-    # ── NETTOYAGE ──
     cleaned = raw.strip()
 
-    # Supprimer les guillemets englobants si présents (copie mal formatée)
+    # Supprimer guillemets englobants
     if (cleaned.startswith('"') and cleaned.endswith('"')) or \
        (cleaned.startswith("'") and cleaned.endswith("'")):
-        logger.warning("⚠️ La clé est entourée de guillemets, suppression...")
         cleaned = cleaned[1:-1]
 
-    # Remplacer CRLF → LF
-    if "\r\n" in cleaned:
-        logger.info("🔧 Conversion CRLF → LF")
-        cleaned = cleaned.replace("\r\n", "\n")
-    # Remplacer CR seul → LF
-    elif "\r" in cleaned and "\n" not in cleaned:
-        logger.info("🔧 Conversion CR → LF")
-        cleaned = cleaned.replace("\r", "\n")
+    # Supprimer les retours à la ligne éventuels
+    cleaned = cleaned.replace("\n", "").replace("\r", "")
 
-    # Restaurer les vrais \n à partir des \\n littéraux
-    if "\\n" in cleaned:
-        logger.info("🔧 Conversion \\\\n littéraux → vrais \\n")
-        cleaned = cleaned.replace("\\n", "\n")
+    # Supprimer les en-têtes PEM si quelqu'un les a collés par erreur
+    if "-----BEGIN" in cleaned:
+        cleaned = cleaned.replace("-----BEGIN PRIVATE KEY-----", "")
+        cleaned = cleaned.replace("-----BEGIN EC PRIVATE KEY-----", "")
+        cleaned = cleaned.replace("-----END PRIVATE KEY-----", "")
+        cleaned = cleaned.replace("-----END EC PRIVATE KEY-----", "")
+        cleaned = cleaned.replace("\n", "").replace("\r", "").strip()
+        logger.info("🔧 En-têtes PEM supprimés, clé brute: %d caractères", len(cleaned))
 
-    # ── VALIDATION ──
-    if "-----BEGIN PRIVATE KEY-----" not in cleaned and "-----BEGIN EC PRIVATE KEY-----" not in cleaned:
-        logger.error("❌ VAPID_PRIVATE_KEY ne contient pas d'en-tête PEM valide.")
-        logger.error("   Début de la clé nettoyée: %s", repr(cleaned[:100]))
-        return None
-
-    # Vérifier que la clé se termine par un END valide
-    if "-----END PRIVATE KEY-----" not in cleaned and "-----END EC PRIVATE KEY-----" not in cleaned:
-        logger.error("❌ VAPID_PRIVATE_KEY ne contient pas de pied PEM valide.")
-        logger.error("   Fin de la clé nettoyée: %s", repr(cleaned[-50:]))
-        return None
-
-    # Vérifier la structure : doit avoir au moins 3 lignes (BEGIN, corps base64, END)
-    pem_lines = [l for l in cleaned.split("\n") if l.strip()]
-    if len(pem_lines) < 3:
-        logger.error("❌ Structure PEM invalide: seulement %d ligne(s) non vides", len(pem_lines))
-        for i, line in enumerate(pem_lines):
-            logger.error("   Ligne %d: %s", i, repr(line))
-        return None
-
-    logger.info("✅ VAPID_PRIVATE_KEY nettoyée et validée (%d caractères, %d lignes)", len(cleaned), len(pem_lines))
-
-    # ── CHARGER EN OBJET CRYPTOGRAPHY ──
-    try:
-        from cryptography.hazmat.primitives import serialization
-        from cryptography.hazmat.primitives.asymmetric import ec
-        import base64
-
-        # Charger la clé privée PEM en objet cryptography
-        priv_key_obj = serialization.load_pem_private_key(
-            cleaned.encode("utf-8"),
-            password=None,
-        )
-        
-        # Vérifier que c'est bien une clé EC (EllipticCurvePrivateKey)
-        if not hasattr(priv_key_obj, "private_numbers"):
-            logger.error("❌ La clé chargée n'est pas une clé privée EC valide")
-            return None
-
-        logger.info("✅ Clé privée VAPID chargée en objet cryptography (type: %s)", type(priv_key_obj).__name__)
-
-        # ── VÉRIFICATION DE LA CORRESPONDANCE PUBLIQUE/PRIVÉE ──
-        pub_from_priv = priv_key_obj.public_key()
-        pub_raw = pub_from_priv.public_bytes(
-            encoding=serialization.Encoding.X962,
-            format=serialization.PublicFormat.UncompressedPoint,
-        )
-        pub_b64_from_priv = base64.urlsafe_b64encode(pub_raw).rstrip(b"=").decode("ascii")
-
-        # Comparer avec VAPID_PUBLIC_KEY
-        vapid_pub = os.environ.get("VAPID_PUBLIC_KEY", "").strip()
-        if vapid_pub:
-            if vapid_pub == pub_b64_from_priv:
-                logger.info("✅ La paire VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY correspond parfaitement")
-            else:
-                logger.critical("❌❌❌ INCOMPATIBILITÉ DES CLÉS VAPID ! ❌❌❌")
-                logger.critical("   VAPID_PUBLIC_KEY (env): %s...", vapid_pub[:40])
-                logger.critical("   Publique dérivée de la privée: %s...", pub_b64_from_priv[:40])
-                logger.critical("   Ces deux clés ne forment PAS une paire valide !")
-                logger.critical("   Solution: régénérer une nouvelle paire avec generate_vapid_keys()")
-                logger.critical("   et mettre à jour les deux variables d'environnement sur Render.")
-                _vapid_private_key_obj_valid = False
-                return None
-        else:
-            logger.warning("⚠️ VAPID_PUBLIC_KEY absente, impossible de vérifier la correspondance")
-
-        # Mettre en cache l'objet
-        _vapid_private_key_obj = priv_key_obj
-        _vapid_private_key_obj_valid = True
-        
-        return priv_key_obj
-
-    except Exception as e:
-        logger.critical("❌ Impossible de charger la clé privée avec cryptography: %s", e)
-        logger.critical("   La clé est corrompue ou dans un format non supporté.")
-        logger.critical("   Clé nettoyée (repr complet): %s", repr(cleaned))
-        _vapid_private_key_obj_valid = False
-        return None
-
-def _get_vapid_private_key_pem():
-    """
-    Retourne la clé privée VAPID au format PEM (string).
-    Utile uniquement pour le diagnostic/logging, pas pour pywebpush.
-    Préférer _get_vapid_private_key() qui retourne l'objet cryptography.
-    """
-    raw = os.environ.get("VAPID_PRIVATE_KEY", "")
-    if not raw:
-        return None
-    cleaned = raw.strip()
-    if "\\n" in cleaned:
-        cleaned = cleaned.replace("\\n", "\n")
-    if "\r\n" in cleaned:
-        cleaned = cleaned.replace("\r\n", "\n")
+    logger.info("✅ VAPID_PRIVATE_KEY chargée (%d caractères, début: %s...)", len(cleaned), cleaned[:8])
     return cleaned
 
 def _get_vapid_claims():
@@ -223,7 +85,11 @@ def _get_vapid_claims():
     return {"sub": domain}
 
 def generate_vapid_keys():
-    """Génère une nouvelle paire de clés VAPID (à utiliser une seule fois en dev)."""
+    """
+    Génère une nouvelle paire de clés VAPID (à utiliser une seule fois en dev).
+    Retourne (public_b64, private_b64) au format Base64URL brut, identique à TransAfrik.
+    Exemple: public=MFkwEwY..., private=MIGHAgE...
+    """
     try:
         from cryptography.hazmat.primitives.asymmetric import ec
         from cryptography.hazmat.primitives import serialization
@@ -231,29 +97,28 @@ def generate_vapid_keys():
         logger.error("❌ cryptography non installé – pip install cryptography")
         return None, None
 
+    import base64
+
     private_key = ec.generate_private_key(ec.SECP256R1())
     public_key = private_key.public_key()
 
-    private_pem = (
-        private_key.private_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PrivateFormat.PKCS8,
-            encryption_algorithm=serialization.NoEncryption(),
-        )
-        .decode("utf-8")
-        .strip()
+    # Clé privée: DER PKCS8 encodé en base64 URL-safe
+    private_der = private_key.private_bytes(
+        encoding=serialization.Encoding.DER,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.NoEncryption(),
     )
+    private_b64 = base64.urlsafe_b64encode(private_der).rstrip(b"=").decode("ascii")
 
-    public_raw = (
-        public_key.public_bytes(
-            encoding=serialization.Encoding.X962,
-            format=serialization.PublicFormat.UncompressedPoint,
-        )
+    # Clé publique: X962 uncompressed point (65 octets) encodé en base64 URL-safe
+    public_raw = public_key.public_bytes(
+        encoding=serialization.Encoding.X962,
+        format=serialization.PublicFormat.UncompressedPoint,
     )
-    import base64
     public_b64 = base64.urlsafe_b64encode(public_raw).rstrip(b"=").decode("ascii")
+
     logger.info("✅ Nouvelles clés VAPID générées")
-    return public_b64, private_pem
+    return public_b64, private_b64
 
 def get_vapid_public_key():
     """
@@ -304,26 +169,8 @@ def _send_webpush_single(subscription_data, payload_dict):
     claims = _get_vapid_claims()
     logger.info("🔍 PRÉ-WEBPUSH:")
     logger.info("   vapid_claims: %s", claims)
-    logger.info("   priv_key type: %s", type(priv_key).__name__)
-    
-    # Vérifier si c'est un objet cryptography (EllipticCurvePrivateKey)
-    is_crypto_obj = hasattr(priv_key, "private_numbers") and not isinstance(priv_key, str)
-    if is_crypto_obj:
-        logger.info("   ✅ Clé privée est un objet cryptography (sera passé directement à pywebpush)")
-        # Extraire la taille de la clé
-        try:
-            key_size = priv_key.key_size
-            logger.info("   Taille de la clé: %d bits", key_size)
-        except Exception:
-            pass
-    elif isinstance(priv_key, str):
-        logger.info("   priv_key longueur: %d", len(priv_key))
-        logger.info("   priv_key contient BEGIN: %s", "-----BEGIN" in priv_key)
-        logger.info("   priv_key contient END: %s", "-----END" in priv_key)
-        if "-----BEGIN" not in priv_key:
-            logger.warning("⚠️ La clé privée n'est PAS au format PEM ! pywebpush attend du PEM PKCS8.")
-    else:
-        logger.warning("⚠️ Type de clé inattendu: %s", type(priv_key))
+    logger.info("   priv_key longueur: %d caractères", len(priv_key))
+    logger.info("   priv_key début: %s...", priv_key[:8])
 
     endpoint = subscription_data.get("endpoint", "inconnu")
     try:
