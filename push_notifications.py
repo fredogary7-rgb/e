@@ -43,13 +43,28 @@ def _get_models():
     from app import PushSubscription, Notification, NotificationQueue
     return PushSubscription, Notification, NotificationQueue
 
+# ── Cache global pour l'objet clé privée cryptography ──
+_vapid_private_key_obj = None
+_vapid_private_key_obj_valid = False
+
 def _get_vapid_private_key():
     """
-    Retourne la clé privée VAPID depuis les variables d'environnement.
-    Format attendu : PEM PKCS8 (-----BEGIN PRIVATE KEY-----...)
-    avec vrais sauts de ligne LF (\\n), ou bien \\n littéraux (Render/Railway).
-    Retourne la clé prête à être passée à pywebpush.
+    Retourne l'OBJET clé privée VAPID (cryptography) depuis les variables d'environnement.
+    
+    Charge la clé PEM depuis VAPID_PRIVATE_KEY, la parse en objet cryptography
+    EC private key, et retourne l'objet directement.
+    
+    L'objet est utilisable par pywebpush sans parsing interne (évite le bug
+    'header too long' d'OpenSSL sur certaines versions de pywebpush/cryptography).
+    
+    L'objet est caché globalement pour éviter de re-parser la clé à chaque envoi.
     """
+    global _vapid_private_key_obj, _vapid_private_key_obj_valid
+    
+    # Retourner l'objet caché s'il est déjà chargé
+    if _vapid_private_key_obj_valid and _vapid_private_key_obj is not None:
+        return _vapid_private_key_obj
+
     raw = os.environ.get("VAPID_PRIVATE_KEY", "")
     if not raw:
         logger.error("❌ VAPID_PRIVATE_KEY absente de l'environnement")
@@ -123,18 +138,26 @@ def _get_vapid_private_key():
 
     logger.info("✅ VAPID_PRIVATE_KEY nettoyée et validée (%d caractères, %d lignes)", len(cleaned), len(pem_lines))
 
-    # ── VÉRIFICATION DE LA CORRESPONDANCE PUBLIQUE/PRIVÉE ──
+    # ── CHARGER EN OBJET CRYPTOGRAPHY ──
     try:
         from cryptography.hazmat.primitives import serialization
         from cryptography.hazmat.primitives.asymmetric import ec
         import base64
 
-        # Charger la clé privée pour extraire la clé publique correspondante
+        # Charger la clé privée PEM en objet cryptography
         priv_key_obj = serialization.load_pem_private_key(
             cleaned.encode("utf-8"),
             password=None,
         )
-        # Extraire la clé publique de la privée
+        
+        # Vérifier que c'est bien une clé EC (EllipticCurvePrivateKey)
+        if not hasattr(priv_key_obj, "private_numbers"):
+            logger.error("❌ La clé chargée n'est pas une clé privée EC valide")
+            return None
+
+        logger.info("✅ Clé privée VAPID chargée en objet cryptography (type: %s)", type(priv_key_obj).__name__)
+
+        # ── VÉRIFICATION DE LA CORRESPONDANCE PUBLIQUE/PRIVÉE ──
         pub_from_priv = priv_key_obj.public_key()
         pub_raw = pub_from_priv.public_bytes(
             encoding=serialization.Encoding.X962,
@@ -154,14 +177,38 @@ def _get_vapid_private_key():
                 logger.critical("   Ces deux clés ne forment PAS une paire valide !")
                 logger.critical("   Solution: régénérer une nouvelle paire avec generate_vapid_keys()")
                 logger.critical("   et mettre à jour les deux variables d'environnement sur Render.")
+                _vapid_private_key_obj_valid = False
+                return None
         else:
             logger.warning("⚠️ VAPID_PUBLIC_KEY absente, impossible de vérifier la correspondance")
+
+        # Mettre en cache l'objet
+        _vapid_private_key_obj = priv_key_obj
+        _vapid_private_key_obj_valid = True
+        
+        return priv_key_obj
+
     except Exception as e:
         logger.critical("❌ Impossible de charger la clé privée avec cryptography: %s", e)
         logger.critical("   La clé est corrompue ou dans un format non supporté.")
         logger.critical("   Clé nettoyée (repr complet): %s", repr(cleaned))
+        _vapid_private_key_obj_valid = False
         return None
 
+def _get_vapid_private_key_pem():
+    """
+    Retourne la clé privée VAPID au format PEM (string).
+    Utile uniquement pour le diagnostic/logging, pas pour pywebpush.
+    Préférer _get_vapid_private_key() qui retourne l'objet cryptography.
+    """
+    raw = os.environ.get("VAPID_PRIVATE_KEY", "")
+    if not raw:
+        return None
+    cleaned = raw.strip()
+    if "\\n" in cleaned:
+        cleaned = cleaned.replace("\\n", "\n")
+    if "\r\n" in cleaned:
+        cleaned = cleaned.replace("\r\n", "\n")
     return cleaned
 
 def _get_vapid_claims():
@@ -251,15 +298,26 @@ def _send_webpush_single(subscription_data, payload_dict):
     claims = _get_vapid_claims()
     logger.info("🔍 PRÉ-WEBPUSH:")
     logger.info("   vapid_claims: %s", claims)
-    logger.info("   priv_key longueur: %d", len(priv_key))
-    logger.info("   priv_key 40 premiers chars (repr): %s", repr(priv_key[:40]))
-    logger.info("   priv_key 40 derniers chars (repr): %s", repr(priv_key[-40:]))
-    logger.info("   priv_key contient BEGIN: %s", "-----BEGIN" in priv_key)
-    logger.info("   priv_key contient END: %s", "-----END" in priv_key)
-    # Vérifier si la clé est du PEM ou du Base64URL brut
-    if "-----BEGIN" not in priv_key:
-        logger.warning("⚠️ La clé privée n'est PAS au format PEM ! pywebpush attend du PEM PKCS8.")
-        logger.warning("   Format détecté: Base64URL brut probable")
+    logger.info("   priv_key type: %s", type(priv_key).__name__)
+    
+    # Vérifier si c'est un objet cryptography (EllipticCurvePrivateKey)
+    is_crypto_obj = hasattr(priv_key, "private_numbers") and not isinstance(priv_key, str)
+    if is_crypto_obj:
+        logger.info("   ✅ Clé privée est un objet cryptography (sera passé directement à pywebpush)")
+        # Extraire la taille de la clé
+        try:
+            key_size = priv_key.key_size
+            logger.info("   Taille de la clé: %d bits", key_size)
+        except Exception:
+            pass
+    elif isinstance(priv_key, str):
+        logger.info("   priv_key longueur: %d", len(priv_key))
+        logger.info("   priv_key contient BEGIN: %s", "-----BEGIN" in priv_key)
+        logger.info("   priv_key contient END: %s", "-----END" in priv_key)
+        if "-----BEGIN" not in priv_key:
+            logger.warning("⚠️ La clé privée n'est PAS au format PEM ! pywebpush attend du PEM PKCS8.")
+    else:
+        logger.warning("⚠️ Type de clé inattendu: %s", type(priv_key))
 
     endpoint = subscription_data.get("endpoint", "inconnu")
     try:
