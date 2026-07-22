@@ -6588,7 +6588,7 @@ def api_push_subscribe():
         browser = request.headers.get('Sec-CH-UA', '')[:50] or data.get('browser', 'Inconnu')
         platform = request.headers.get('Sec-CH-UA-Platform', '')[:50] or data.get('platform', 'Inconnu')
         language = request.headers.get('Accept-Language', '')[:10] or data.get('language', '')
-        timezone = data.get('timezone', '')
+        user_timezone = data.get('timezone', '')
         ip = request.headers.get('X-Forwarded-For', request.remote_addr or '')[:45]
 
         # Vérifier si l'abonnement existe déjà
@@ -6602,7 +6602,7 @@ def api_push_subscribe():
             existing.platform = platform or existing.platform
             existing.user_agent = user_agent or existing.user_agent
             existing.language = language or existing.language
-            existing.timezone = timezone or existing.timezone
+            existing.timezone = user_timezone or existing.timezone
             existing.ip = ip or existing.ip
             existing.actif = True
             existing.derniere_utilisation = datetime.now(timezone.utc)
@@ -6620,7 +6620,7 @@ def api_push_subscribe():
                 platform=platform,
                 user_agent=user_agent,
                 language=language,
-                timezone=timezone,
+                timezone=user_timezone,
                 ip=ip,
                 actif=True,
             )
