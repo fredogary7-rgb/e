@@ -3102,6 +3102,15 @@ def apk_canal_page():
     return render_template("apk_canal.html", app=canal_apk)
 
 
+@app.route("/transafrik")
+def transafrik_page():
+    """
+    Page de présentation TransAfrik - Plateforme de transfert d'argent PWA
+    Domaine : transafrik.org
+    """
+    return render_template("transafrik.html")
+
+
 @app.route("/ecom")
 def ecom():
     return render_template("ecom.html")
