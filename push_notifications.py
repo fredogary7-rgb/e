@@ -46,31 +46,123 @@ def _get_models():
 def _get_vapid_private_key():
     """
     Retourne la clé privée VAPID depuis les variables d'environnement.
-    Corrige automatiquement les \\\\n littéraux (Render, Railway, etc.)
-    en vrais sauts de ligne, nécessaires pour le format PEM.
-    Fonctionne partout : local, Render, Railway, tout hébergeur.
+    Format attendu : PEM PKCS8 (-----BEGIN PRIVATE KEY-----...)
+    avec vrais sauts de ligne LF (\\n), ou bien \\n littéraux (Render/Railway).
+    Retourne la clé prête à être passée à pywebpush.
     """
     raw = os.environ.get("VAPID_PRIVATE_KEY", "")
     if not raw:
         logger.error("❌ VAPID_PRIVATE_KEY absente de l'environnement")
         return None
 
-    # Restaurer les vrais \n à partir des \\n littéraux (problème connu sur Render/Railway)
-    if "\\n" in raw and "\n" not in raw.replace("\\n", ""):
-        # Cas : la clé contient des \\n littéraux mais pas de vrais \n
-        raw = raw.replace("\\n", "\n")
-        logger.info("🔧 VAPID_PRIVATE_KEY: \\\\n littéraux convertis en vrais \\n")
-    elif "\\n" in raw:
-        # Cas mixte : on remplace quand même les \\n restants
-        raw = raw.replace("\\n", "\n")
+    # ── DIAGNOSTIC COMPLET ──
+    logger.info("🔍 DIAGNOSTIC VAPID_PRIVATE_KEY:")
+    logger.info("   Longueur brute: %d caractères", len(raw))
+    logger.info("   20 premiers caractères (repr): %s", repr(raw[:20]))
+    logger.info("   20 derniers caractères (repr): %s", repr(raw[-20:]))
+    logger.info("   Contient '-----BEGIN': %s", "-----BEGIN" in raw)
+    logger.info("   Contient '-----END': %s", "-----END" in raw)
+    logger.info("   Contient guillemets doubles: %s", '"' in raw)
+    logger.info("   Contient guillemets simples: %s", "'" in raw)
+    logger.info("   Contient espaces en début: %s", raw.startswith(" ") or raw.startswith("\t"))
+    logger.info("   Contient espaces en fin: %s", raw.endswith(" ") or raw.endswith("\t"))
+    logger.info("   Contient \\\\n littéral: %s", "\\n" in raw)
+    logger.info("   Contient vrai \\n (LF): %s", "\n" in raw)
+    logger.info("   Contient \\r (CR): %s", "\r" in raw)
+    logger.info("   Contient \\r\\n (CRLF): %s", "\r\n" in raw)
+    # Compter les lignes
+    lines = raw.split("\n")
+    logger.info("   Nombre de lignes (split sur LF): %d", len(lines))
+    if len(lines) >= 3:
+        logger.info("   Ligne 0: %s", repr(lines[0]))
+        logger.info("   Ligne 1: %s", repr(lines[1]))
+        logger.info("   Dernière ligne: %s", repr(lines[-1]))
 
-    # Vérifier que la clé a l'air d'être un PEM valide
-    if "-----BEGIN PRIVATE KEY-----" not in raw and "-----BEGIN EC PRIVATE KEY-----" not in raw:
-        logger.error("❌ VAPID_PRIVATE_KEY ne contient pas d'en-tête PEM valide. Reçu: %s...", raw[:80])
+    # ── NETTOYAGE ──
+    cleaned = raw.strip()
+
+    # Supprimer les guillemets englobants si présents (copie mal formatée)
+    if (cleaned.startswith('"') and cleaned.endswith('"')) or \
+       (cleaned.startswith("'") and cleaned.endswith("'")):
+        logger.warning("⚠️ La clé est entourée de guillemets, suppression...")
+        cleaned = cleaned[1:-1]
+
+    # Remplacer CRLF → LF
+    if "\r\n" in cleaned:
+        logger.info("🔧 Conversion CRLF → LF")
+        cleaned = cleaned.replace("\r\n", "\n")
+    # Remplacer CR seul → LF
+    elif "\r" in cleaned and "\n" not in cleaned:
+        logger.info("🔧 Conversion CR → LF")
+        cleaned = cleaned.replace("\r", "\n")
+
+    # Restaurer les vrais \n à partir des \\n littéraux
+    if "\\n" in cleaned:
+        logger.info("🔧 Conversion \\\\n littéraux → vrais \\n")
+        cleaned = cleaned.replace("\\n", "\n")
+
+    # ── VALIDATION ──
+    if "-----BEGIN PRIVATE KEY-----" not in cleaned and "-----BEGIN EC PRIVATE KEY-----" not in cleaned:
+        logger.error("❌ VAPID_PRIVATE_KEY ne contient pas d'en-tête PEM valide.")
+        logger.error("   Début de la clé nettoyée: %s", repr(cleaned[:100]))
         return None
 
-    logger.info("✅ VAPID_PRIVATE_KEY chargée et validée (%d caractères)", len(raw))
-    return raw
+    # Vérifier que la clé se termine par un END valide
+    if "-----END PRIVATE KEY-----" not in cleaned and "-----END EC PRIVATE KEY-----" not in cleaned:
+        logger.error("❌ VAPID_PRIVATE_KEY ne contient pas de pied PEM valide.")
+        logger.error("   Fin de la clé nettoyée: %s", repr(cleaned[-50:]))
+        return None
+
+    # Vérifier la structure : doit avoir au moins 3 lignes (BEGIN, corps base64, END)
+    pem_lines = [l for l in cleaned.split("\n") if l.strip()]
+    if len(pem_lines) < 3:
+        logger.error("❌ Structure PEM invalide: seulement %d ligne(s) non vides", len(pem_lines))
+        for i, line in enumerate(pem_lines):
+            logger.error("   Ligne %d: %s", i, repr(line))
+        return None
+
+    logger.info("✅ VAPID_PRIVATE_KEY nettoyée et validée (%d caractères, %d lignes)", len(cleaned), len(pem_lines))
+
+    # ── VÉRIFICATION DE LA CORRESPONDANCE PUBLIQUE/PRIVÉE ──
+    try:
+        from cryptography.hazmat.primitives import serialization
+        from cryptography.hazmat.primitives.asymmetric import ec
+        import base64
+
+        # Charger la clé privée pour extraire la clé publique correspondante
+        priv_key_obj = serialization.load_pem_private_key(
+            cleaned.encode("utf-8"),
+            password=None,
+        )
+        # Extraire la clé publique de la privée
+        pub_from_priv = priv_key_obj.public_key()
+        pub_raw = pub_from_priv.public_bytes(
+            encoding=serialization.Encoding.X962,
+            format=serialization.PublicFormat.UncompressedPoint,
+        )
+        pub_b64_from_priv = base64.urlsafe_b64encode(pub_raw).rstrip(b"=").decode("ascii")
+
+        # Comparer avec VAPID_PUBLIC_KEY
+        vapid_pub = os.environ.get("VAPID_PUBLIC_KEY", "").strip()
+        if vapid_pub:
+            if vapid_pub == pub_b64_from_priv:
+                logger.info("✅ La paire VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY correspond parfaitement")
+            else:
+                logger.critical("❌❌❌ INCOMPATIBILITÉ DES CLÉS VAPID ! ❌❌❌")
+                logger.critical("   VAPID_PUBLIC_KEY (env): %s...", vapid_pub[:40])
+                logger.critical("   Publique dérivée de la privée: %s...", pub_b64_from_priv[:40])
+                logger.critical("   Ces deux clés ne forment PAS une paire valide !")
+                logger.critical("   Solution: régénérer une nouvelle paire avec generate_vapid_keys()")
+                logger.critical("   et mettre à jour les deux variables d'environnement sur Render.")
+        else:
+            logger.warning("⚠️ VAPID_PUBLIC_KEY absente, impossible de vérifier la correspondance")
+    except Exception as e:
+        logger.critical("❌ Impossible de charger la clé privée avec cryptography: %s", e)
+        logger.critical("   La clé est corrompue ou dans un format non supporté.")
+        logger.critical("   Clé nettoyée (repr complet): %s", repr(cleaned))
+        return None
+
+    return cleaned
 
 def _get_vapid_claims():
     """Retourne les claims VAPID (sub, aud)."""
@@ -155,6 +247,20 @@ def _send_webpush_single(subscription_data, payload_dict):
     if not priv_key:
         return False
 
+    # ── DIAGNOSTIC PRÉ-WEBPUSH ──
+    claims = _get_vapid_claims()
+    logger.info("🔍 PRÉ-WEBPUSH:")
+    logger.info("   vapid_claims: %s", claims)
+    logger.info("   priv_key longueur: %d", len(priv_key))
+    logger.info("   priv_key 40 premiers chars (repr): %s", repr(priv_key[:40]))
+    logger.info("   priv_key 40 derniers chars (repr): %s", repr(priv_key[-40:]))
+    logger.info("   priv_key contient BEGIN: %s", "-----BEGIN" in priv_key)
+    logger.info("   priv_key contient END: %s", "-----END" in priv_key)
+    # Vérifier si la clé est du PEM ou du Base64URL brut
+    if "-----BEGIN" not in priv_key:
+        logger.warning("⚠️ La clé privée n'est PAS au format PEM ! pywebpush attend du PEM PKCS8.")
+        logger.warning("   Format détecté: Base64URL brut probable")
+
     endpoint = subscription_data.get("endpoint", "inconnu")
     try:
         webpush(
@@ -167,7 +273,7 @@ def _send_webpush_single(subscription_data, payload_dict):
             },
             data=json.dumps(payload_dict),
             vapid_private_key=priv_key,
-            vapid_claims=_get_vapid_claims(),
+            vapid_claims=claims,
             timeout=15,
         )
         logger.info("✅ Notification push envoyée → %s...", endpoint[:80])
