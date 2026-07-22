@@ -68,6 +68,12 @@ def _get_vapid_private_key():
     raw = os.environ.get("VAPID_PRIVATE_KEY", "")
     if not raw:
         logger.error("❌ VAPID_PRIVATE_KEY absente de l'environnement")
+        logger.error("   ⚠️  VAPID_PUBLIC_KEY est configurée mais pas VAPID_PRIVATE_KEY.")
+        logger.error("   ⚠️  Les notifications push NE FONCTIONNERONT PAS.")
+        logger.error("   ➜ Solution: sur Render → Environment → ajouter VAPID_PRIVATE_KEY")
+        logger.error("   ➜ La clé privée doit être au format PEM PKCS8 (240 caractères, 5 lignes)")
+        logger.error("   ➜ Exemple: -----BEGIN PRIVATE KEY-----\\nMIGHAgE...\\n-----END PRIVATE KEY-----")
+        logger.error("   ➜ Générer une paire: python -c \"from push_notifications import generate_vapid_keys; pub, priv = generate_vapid_keys(); print(f'PUBLIC: {pub}'); print(f'PRIVATE: {priv}')\"")
         return None
 
     # ── DIAGNOSTIC COMPLET ──
