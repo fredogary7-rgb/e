@@ -325,29 +325,34 @@ self.addEventListener('notificationclick', (event) => {
 
     event.notification.close();
 
-    const url = event.notification.data && event.notification.data.url
+    let targetUrl = event.notification.data && event.notification.data.url
         ? event.notification.data.url
         : '/';
     const notificationId = event.notification.data && event.notification.data.notification_id;
 
+    // Construire une URL absolue (openWindow nécessite une URL absolue)
+    const absoluteUrl = targetUrl.startsWith('/')
+        ? self.location.origin + targetUrl
+        : targetUrl;
+
     event.waitUntil(
         self.clients.matchAll({ type: 'window', includeUncontrolled: true })
             .then((windowClients) => {
-                // Chercher un onglet déjà ouvert avec cette URL
+                // Chercher un onglet déjà ouvert avec exactement cette URL
                 for (const client of windowClients) {
-                    if (client.url.includes(url) && 'focus' in client) {
+                    if (client.url === absoluteUrl && 'focus' in client) {
                         // Notifier le client du clic (pour marquer comme lu)
                         client.postMessage({
                             type: 'NOTIFICATION_CLICKED',
                             notificationId: notificationId,
-                            url: url
+                            url: absoluteUrl
                         });
                         return client.focus();
                     }
                 }
-                // Ouvrir un nouvel onglet
+                // Ouvrir un nouvel onglet avec l'URL absolue
                 if (self.clients.openWindow) {
-                    return self.clients.openWindow(url);
+                    return self.clients.openWindow(absoluteUrl);
                 }
             })
     );
