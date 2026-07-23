@@ -2512,6 +2512,9 @@ def webhook_soleaspay():
         if depot.statut == "success":
             return jsonify({"received": True}), 200
 
+        # Stocker l'ancien statut pour ne pas double-notifier
+        old_depot_statut = depot.statut
+
         if status in ["SUCCESS", "COMPLETED", "APPROVED"]:
             depot.statut = "success"
 
@@ -2534,6 +2537,16 @@ def webhook_soleaspay():
         db.session.commit()
 
         logging.info(f"DEPOT UPDATED : {depot.id} -> {depot.statut}")
+
+        # 🔔 Notification push via webhook
+        if old_depot_statut != depot.statut:
+            try:
+                if depot.statut == "success":
+                    notify_deposit_accepted(depot.user_id, depot.montant, depot.reference or f"DEP-{depot.id}")
+                elif depot.statut == "failed":
+                    notify_deposit_rejected(depot.user_id, depot.montant, depot.reference or f"DEP-{depot.id}")
+            except Exception as e:
+                logging.error(f"[WEBHOOK PUSH] Erreur notif dépôt: {e}")
 
         return jsonify({"received": True}), 200
 
@@ -2594,6 +2607,16 @@ def webhook_soleaspay():
         db.session.commit()
 
         logging.info(f"RETRAIT UPDATED : {retrait.id} -> {new_status}")
+
+        # 🔔 Notification push via webhook
+        if old_status != new_status:
+            try:
+                if new_status == "successful":
+                    notify_retrait_accepted(retrait.user_id, retrait.montant)
+                elif new_status in ["failed", "refused"]:
+                    notify_retrait_rejected(retrait.user_id, retrait.montant)
+            except Exception as e:
+                logging.error(f"[WEBHOOK PUSH] Erreur notif retrait: {e}")
 
         return jsonify({"received": True}), 200
 
