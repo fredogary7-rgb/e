@@ -4519,6 +4519,17 @@ def ajouter_produit(boutique_id):
         db.session.add(nouveau_produit)
         db.session.commit()
 
+        # Notification push à tous les utilisateurs
+        try:
+            notify_all_users(
+                titre="🆕 Nouveau produit !",
+                message=f"{boutique.nom} a ajouté : {nom}",
+                url=f"/produit/{nouveau_produit.slug}",
+                type="nouveau_produit",
+            )
+        except Exception:
+            pass  # ne pas bloquer l'ajout si la notif échoue
+
         flash("Produit ajouté avec succès !", "success")
         return redirect(url_for("ma_boutique", boutique_id=boutique.id))
 
