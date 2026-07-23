@@ -76,6 +76,17 @@
         }
         .nav-links a:hover,.nav-links a.active{color:var(--accent);background:rgba(236,72,153,0.08)}
 
+        /* BACK BUTTON */
+        .back-btn{
+            display:inline-flex;align-items:center;gap:8px;padding:10px 20px;
+            background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+            border:1px solid var(--border);border-radius:50px;color:var(--accent2);
+            text-decoration:none;font-weight:700;font-size:14px;font-style:italic;
+            box-shadow:var(--shadow-sm);transition:all .3s;margin-bottom:20px;
+        }
+        .back-btn:hover{background:rgba(236,72,153,0.1);transform:translateX(-4px);box-shadow:var(--shadow)}
+        .back-btn i{font-size:16px}
+
         /* MAIN */
         .main-container{max-width:1000px;margin:0 auto;padding:50px 24px 80px;position:relative;z-index:1}
 
@@ -319,6 +330,9 @@
     </nav>
 
     <div class="main-container">
+
+        <!-- BACK BUTTON -->
+        <a href="/dashboard" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Retour au Dashboard</a>
 
         <!-- HERO -->
         <section class="hero">
