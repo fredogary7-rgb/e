@@ -4524,7 +4524,7 @@ def ajouter_produit(boutique_id):
             notify_all_users(
                 titre="🆕 Nouveau produit !",
                 message=f"{boutique.nom} a ajouté : {nom}",
-                url=f"/produit/{nouveau_produit.slug}",
+                url=f"/product/{nouveau_produit.slug}",
                 type="nouveau_produit",
             )
         except Exception:
