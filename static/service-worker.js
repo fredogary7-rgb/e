@@ -227,6 +227,13 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
+    // Stratégie : Network First pour les images de produits uploadées
+    // Évite les incohérences de cache (200 sur fichier inexistant, 404 sur fichier existant)
+    if (url.pathname.startsWith('/static/uploads/') || url.pathname.startsWith('/static/vlogs/')) {
+        event.respondWith(networkFirst(request));
+        return;
+    }
+
     // Stratégie : Stale While Revalidate pour les assets statiques
     const isAsset = SWR_EXTENSIONS.some(ext => url.pathname.endsWith(ext));
     if (isAsset || url.pathname.startsWith('/static/')) {
