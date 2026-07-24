@@ -181,6 +181,8 @@ def load_user(user_id):
 @app.before_request
 def load_logged_in_user():
     from flask import g
+    # Restaurer la persistance de session pour "Se souvenir de moi"
+    session.permanent = session.get("_remember_me", False)
     user_id = session.get("user_id")
     if user_id:
         try:
@@ -958,9 +960,11 @@ app.jinja_env.globals.update(t=t)
 
 @app.route("/")
 def index_page():
-    # On vérifie si l'utilisateur est déjà connecté pour personnaliser l'accueil
+    # Rediriger l'utilisateur connecté vers le dashboard
     user = get_logged_in_user()
-    return render_template("index.html", user=user)
+    if user:
+        return redirect(url_for("dashboard_page"))
+    return render_template("index.html", user=None)
 
 # -----------------------
 # Utilisateur connecté
@@ -1984,6 +1988,7 @@ def connexion_page():
         session.clear()
         session["user_id"] = user.id
         session["username"] = user.username
+        session["_remember_me"] = remember_me
         session.permanent = remember_me
 
         flash(f"Connexion réussie ! Bienvenue {user.username}.", "success")
