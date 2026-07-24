@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Canal - NectarPro</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ═══════════════════════════════════════════
+   NECTARPRO ADMIN CANAL - STYLE DASHBOARD
+   ═══════════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+
+:root{
+    --bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);
+    --glass:rgba(255,255,255,0.72);
+    --glass-hover:rgba(255,255,255,0.88);
+    --accent:#db2777;
+    --accent2:#ec4899;
+    --accent-light:#f9a8d4;
+    --gold:#f59e0b;
+    --gold-light:#fef3c7;
+    --emerald:#10b981;
+    --emerald-light:#d1fae5;
+    --sky:#0ea5e9;
+    --sky-light:#e0f2fe;
+    --text:#000;
+    --text2:#1f2937;
+    --muted:#6b7280;
+    --border:rgba(236,72,153,0.2);
+    --shadow-sm:0 2px 8px rgba(236,72,153,0.08);
+    --shadow:0 8px 32px rgba(236,72,153,0.12);
+    --shadow-lg:0 16px 48px rgba(236,72,153,0.18);
+    --radius-sm:12px;
+    --radius:18px;
+    --radius-lg:24px;
+    --radius-xl:32px;
+}
+
+body{
+    background:var(--bg);
+    min-height:100vh;min-height:100dvh;
+    color:var(--text);
+    font-style:italic;
+    position:relative;
+}
+
+/* ██████ TOP BAR ██████ */
+.topbar{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:12px 20px;
+    background:rgba(255,255,255,0.7);
+    backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+    border-bottom:1px solid var(--border);
+    position:sticky;top:0;z-index:1000;
+}
+.topbar-logo{
+    display:flex;align-items:center;gap:8px;
+    font-size:18px;font-weight:900;
+}
+.topbar-logo .brand-n{color:var(--accent2)}
+.topbar-logo .brand-p{color:var(--accent)}
+.topbar .back{
+    color:var(--accent2);text-decoration:none;font-weight:700;font-size:13px;
+    display:flex;align-items:center;gap:6px;
+}
+.topbar .nav-links{display:flex;gap:12px}
+.topbar .nav-links a{
+    color:var(--text2);text-decoration:none;font-weight:600;font-size:12px;
+    padding:6px 14px;border-radius:20px;
+    background:rgba(236,72,153,0.06);
+    transition:all .2s;
+}
+.topbar .nav-links a:hover,.topbar .nav-links a.active{
+    background:var(--accent2);color:#fff;
+}
+
+/* ██████ CONTENEUR PRINCIPAL ██████ */
+.container{max-width:800px;margin:0 auto;padding:20px}
+
+/* ██████ FORMULAIRE D'ENVOI ██████ */
+.card{
+    background:var(--glass);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    border:1px solid var(--border);
+    border-radius:var(--radius-xl);
+    padding:24px;margin-bottom:20px;
+    box-shadow:var(--shadow);
+}
+.card h2{
+    font-size:18px;font-weight:800;margin-bottom:16px;
+    display:flex;align-items:center;gap:8px;
+}
+.card h2 i{color:var(--accent2)}
+
+.form-group{margin-bottom:14px}
+.form-group label{
+    display:flex;align-items:center;gap:6px;
+    font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px;
+}
+.form-group label i{color:var(--accent2);font-size:13px}
+.form-group textarea{
+    width:100%;min-height:100px;padding:14px;
+    background:rgba(255,255,255,0.9);border:1px solid var(--border);
+    border-radius:var(--radius-sm);font-size:14px;font-style:italic;
+    color:var(--text);resize:vertical;
+    font-family:'Poppins',sans-serif;
+    transition:all .3s;
+}
+.form-group textarea:focus{
+    outline:none;border-color:var(--accent2);
+    box-shadow:0 0 0 3px rgba(236,72,153,0.12);
+}
+
+.media-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.media-row .form-group{flex:1;min-width:200px}
+
+.file-input-wrapper{
+    position:relative;overflow:hidden;display:inline-block;width:100%;
+}
+.file-input-wrapper input[type=file]{
+    position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;
+}
+.file-input-label{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    width:100%;padding:12px 16px;
+    background:rgba(236,72,153,0.08);border:2px dashed var(--border);
+    border-radius:var(--radius-sm);font-size:12px;font-weight:700;
+    color:var(--accent2);cursor:pointer;transition:all .3s;
+}
+.file-input-label:hover{
+    background:rgba(236,72,153,0.14);border-color:var(--accent2);
+}
+.file-name{font-size:10px;color:var(--muted);margin-top:4px;text-align:center;word-break:break-all}
+
+.btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:14px 24px;border:none;border-radius:var(--radius-sm);
+    font-size:14px;font-weight:800;font-style:italic;cursor:pointer;
+    transition:all .3s;box-shadow:var(--shadow-sm);
+}
+.btn-send{
+    background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;
+    width:100%;box-shadow:0 8px 28px rgba(219,39,119,0.3);
+}
+.btn-send:hover{transform:translateY(-2px);box-shadow:0 12px 38px rgba(219,39,119,0.45)}
+.btn-send:active{transform:scale(0.97)}
+
+.btn-send-push{
+    background:linear-gradient(135deg,#f59e0b,#f97316);color:#fff;
+    width:100%;margin-top:10px;
+    box-shadow:0 6px 20px rgba(245,158,11,0.3);
+}
+.btn-send-push:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(245,158,11,0.45)}
+
+.btn-del{
+    background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;
+    padding:8px 14px;font-size:11px;
+}
+.btn-edit{
+    background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;
+    padding:8px 14px;font-size:11px;
+}
+
+/* ██████ LISTE MESSAGES ██████ */
+.msg-list{display:flex;flex-direction:column;gap:12px}
+
+.msg-card{
+    background:var(--glass);
+    backdrop-filter:blur(16px);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:16px;
+    box-shadow:var(--shadow-sm);
+    transition:all .3s;
+}
+.msg-card:hover{box-shadow:var(--shadow)}
+.msg-header{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    margin-bottom:8px;
+}
+.msg-time{
+    font-size:10px;color:var(--muted);font-weight:600;
+    display:flex;align-items:center;gap:4px;
+}
+.msg-actions{display:flex;gap:6px}
+.msg-content{
+    font-size:14px;font-weight:600;color:var(--text);
+    line-height:1.6;white-space:pre-wrap;margin-bottom:8px;
+}
+.msg-media{margin-top:10px;border-radius:var(--radius);overflow:hidden}
+.msg-media img{width:100%;max-height:350px;object-fit:cover;border-radius:var(--radius)}
+.msg-media video{width:100%;max-height:350px;border-radius:var(--radius)}
+.msg-media audio{width:100%}
+.msg-badge{
+    display:inline-flex;align-items:center;gap:4px;
+    padding:4px 10px;border-radius:12px;
+    font-size:10px;font-weight:700;
+}
+.badge-img{background:var(--sky-light);color:var(--sky)}
+.badge-vid{background:var(--emerald-light);color:var(--emerald)}
+.badge-aud{background:var(--gold-light);color:#92400e}
+.badge-txt{background:rgba(236,72,153,0.08);color:var(--accent2)}
+
+/* ██████ EMPTY STATE ██████ */
+.empty{
+    text-align:center;padding:60px 20px;
+    background:var(--glass);border-radius:var(--radius-xl);
+    border:1px solid var(--border);
+}
+.empty i{font-size:64px;color:var(--accent-light);margin-bottom:12px}
+.empty p{font-size:14px;color:var(--muted);font-weight:600}
+
+/* ██████ MODAL ÉDITION ██████ */
+.modal-overlay{
+    position:fixed;inset:0;z-index:2000;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(12px);
+    display:none;align-items:center;justify-content:center;
+}
+.modal-overlay.active{display:flex}
+.modal-box{
+    background:rgba(255,255,255,0.96);
+    backdrop-filter:blur(24px);
+    border:1px solid var(--border);
+    border-radius:var(--radius-xl);
+    padding:30px;width:90%;max-width:500px;
+    box-shadow:var(--shadow-lg);
+}
+.modal-box h3{font-size:18px;font-weight:800;margin-bottom:16px}
+.modal-box textarea{
+    width:100%;min-height:120px;padding:14px;
+    background:rgba(255,255,255,0.9);border:1px solid var(--border);
+    border-radius:var(--radius-sm);font-size:14px;font-style:italic;
+    font-family:'Poppins',sans-serif;resize:vertical;
+}
+.modal-btns{display:flex;gap:10px;margin-top:16px;justify-content:flex-end}
+
+/* ██████ NOTIFICATION TOAST ██████ */
+.toast{
+    position:fixed;bottom:30px;left:50%;transform:translateX(-50%);z-index:3000;
+    background:linear-gradient(135deg,#10b981,#059669);color:#fff;
+    padding:14px 28px;border-radius:50px;
+    font-weight:700;font-size:13px;box-shadow:0 8px 28px rgba(16,185,129,0.4);
+    opacity:0;visibility:hidden;
+    transition:all .3s;
+}
+.toast.show{opacity:1;visibility:visible}
+.toast.error{background:linear-gradient(135deg,#ef4444,#dc2626)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="topbar-logo"><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></div>
+    <div class="nav-links">
+        <a href="/admin/deposits">Dépôts</a>
+        <a href="/admin/canal/edit" class="active">Canal</a>
+        <a href="/admin/push">Push</a>
+    </div>
+    <a href="/dashboard" class="back"><i class="fa fa-arrow-left"></i> Dashboard</a>
+</div>
+
+<div class="container">
+
+<!-- ██████ FORMULAIRE NOUVEAU MESSAGE ██████ -->
+<div class="card">
+    <h2><i class="fa fa-paper-plane"></i> Envoyer un message au canal</h2>
+    <form id="sendForm" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label><i class="fa fa-message"></i> Message (texte)</label>
+            <textarea name="content" placeholder="Écris ton message ici..."></textarea>
+        </div>
+        <div class="media-row">
+            <div class="form-group">
+                <label><i class="fa fa-image"></i> Image/Vidéo</label>
+                <div class="file-input-wrapper">
+                    <input type="file" name="media" accept="image/*,video/*" id="mediaInput" onchange="showFileName(this,'mediaName')">
+                    <div class="file-input-label"><i class="fa fa-upload"></i> Choisir un fichier</div>
+                </div>
+                <div class="file-name" id="mediaName"></div>
+            </div>
+            <div class="form-group">
+                <label><i class="fa fa-music"></i> Audio</label>
+                <div class="file-input-wrapper">
+                    <input type="file" name="audio" accept="audio/*" id="audioInput" onchange="showFileName(this,'audioName')">
+                    <div class="file-input-label"><i class="fa fa-upload"></i> Choisir un audio</div>
+                </div>
+                <div class="file-name" id="audioName"></div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-send" id="sendBtn"><i class="fa fa-paper-plane"></i> Envoyer le message</button>
+    </form>
+    <button class="btn btn-send-push" onclick="sendPush()"><i class="fa fa-bell"></i> Envoyer une notification push à tous</button>
+</div>
+
+<!-- ██████ LISTE MESSAGES ██████ -->
+{% if messages %}
+<div class="msg-list">
+{% for msg in messages %}
+<div class="msg-card" id="msg{{ msg.id }}">
+    <div class="msg-header">
+        <div>
+            <span class="msg-time"><i class="fa fa-clock"></i> {{ msg.timestamp.strftime('%d/%m/%Y %H:%M') if msg.timestamp else '—' }}</span>
+            {% if msg.media_type == 'image' %}<span class="msg-badge badge-img"><i class="fa fa-image"></i> Image</span>{% endif %}
+            {% if msg.media_type == 'video' %}<span class="msg-badge badge-vid"><i class="fa fa-video"></i> Vidéo</span>{% endif %}
+            {% if msg.media_type == 'audio' %}<span class="msg-badge badge-aud"><i class="fa fa-music"></i> Audio</span>{% endif %}
+            {% if not msg.media_type and msg.content %}<span class="msg-badge badge-txt"><i class="fa fa-text-height"></i> Texte</span>{% endif %}
+        </div>
+        <div class="msg-actions">
+            <button class="btn btn-edit" onclick="openEdit({{ msg.id }}, '{{ msg.content|e|replace("\n", "\\n")|replace("'", "\\'") }}')"><i class="fa fa-pen"></i></button>
+            <a href="/delete_msg/{{ msg.id }}" class="btn btn-del" onclick="return confirm('Supprimer ce message ?')"><i class="fa fa-trash"></i></a>
+        </div>
+    </div>
+    {% if msg.content %}<div class="msg-content">{{ msg.content }}</div>{% endif %}
+    {% if msg.media_url %}
+    <div class="msg-media">
+        {% if msg.media_type == 'image' %}<img src="{{ msg.media_url }}" alt="Média" loading="lazy">{% endif %}
+        {% if msg.media_type == 'video' %}
+        <video src="{{ msg.media_url }}" controls preload="metadata" playsinline></video>
+        {% endif %}
+        {% if msg.media_type == 'audio' %}
+        <audio src="{{ msg.media_url }}" controls preload="metadata"></audio>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endfor %}
+</div>
+{% else %}
+<div class="empty"><i class="fa fa-inbox"></i><p>Aucun message pour le moment</p></div>
+{% endif %}
+
+</div>
+
+<!-- ██████ MODAL ÉDITION ██████ -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+        <h3><i class="fa fa-pen-to-square"></i> Modifier le message</h3>
+        <textarea id="editContent" placeholder="Contenu du message..."></textarea>
+        <div class="modal-btns">
+            <button class="btn btn-del" onclick="closeEdit()">Annuler</button>
+            <button class="btn btn-send" style="width:auto" onclick="saveEdit()"><i class="fa fa-save"></i> Enregistrer</button>
+        </div>
+    </div>
+</div>
+
+<!-- ██████ TOAST ██████ -->
+<div class="toast" id="toast"></div>
+
+<script>
+let editingId = null;
+
+function showFileName(input, labelId) {
+    const lbl = document.getElementById(labelId);
+    if (input.files.length > 0) {
+        lbl.textContent = input.files[0].name;
+    } else {
+        lbl.textContent = '';
+    }
+}
+
+function toast(msg, isError) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (isError ? ' error' : '');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ██████ ENVOI DU FORMULAIRE (avec push auto) ██████
+document.getElementById('sendForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('sendBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Envoi...';
+
+    const fd = new FormData(this);
+    try {
+        const resp = await fetch('/admin/canal/edit', { method: 'POST', body: fd });
+        if (resp.ok) {
+            // Envoyer notification push
+            const content = fd.get('content') || '';
+            const mediaFile = fd.get('media');
+            const audioFile = fd.get('audio');
+            let pushTitle = '📢 Nouvelle annonce';
+            let pushBody = content ? content.substring(0, 120) : '';
+            if (mediaFile && mediaFile.name) {
+                pushBody = pushBody || 'Nouveau média partagé dans le canal';
+                pushBody = pushBody.substring(0, 120);
+            }
+            if (audioFile && audioFile.name) {
+                pushBody = pushBody || 'Nouvel audio partagé dans le canal';
+                pushBody = pushBody.substring(0, 120);
+            }
+            if (!pushBody) pushBody = 'Un nouveau message a été publié';
+
+            try {
+                await fetch('/api/push/send-all', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title: pushTitle, body: pushBody, tag: 'canal-msg' })
+                });
+            } catch(e) { console.log('Push non envoyé, mais message OK'); }
+
+            location.reload();
+        } else {
+            toast('Erreur lors de l\'envoi', true);
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa fa-paper-plane"></i> Envoyer le message';
+        }
+    } catch(err) {
+        toast('Erreur réseau', true);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa fa-paper-plane"></i> Envoyer le message';
+    }
+});
+
+// ██████ NOTIFICATION PUSH MANUELLE ██████
+async function sendPush() {
+    const content = document.querySelector('textarea[name="content"]').value;
+    const title = '📢 Nouvelle annonce';
+    const body = content ? content.substring(0, 120) : 'Un nouveau message a été publié dans le canal';
+
+    try {
+        const resp = await fetch('/api/push/send-all', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, body, tag: 'canal-msg' })
+        });
+        if (resp.ok) {
+            toast('Notification push envoyée à tous !');
+        } else {
+            toast('Erreur lors de l\'envoi push', true);
+        }
+    } catch(e) {
+        toast('Erreur réseau', true);
+    }
+}
+
+// ██████ ÉDITION MESSAGE ██████
+function openEdit(id, content) {
+    editingId = id;
+    document.getElementById('editContent').value = content.replace(/\\n/g, '\n');
+    document.getElementById('editModal').classList.add('active');
+}
+function closeEdit() {
+    editingId = null;
+    document.getElementById('editModal').classList.remove('active');
+}
+async function saveEdit() {
+    const content = document.getElementById('editContent').value;
+    try {
+        const resp = await fetch('/edit_msg/' + editingId, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content })
+        });
+        if (resp.ok) {
+            location.reload();
+        } else {
+            toast('Erreur édition', true);
+        }
+    } catch(e) {
+        toast('Erreur réseau', true);
+    }
+}
+</script>
+</body>
+</html>

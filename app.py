@@ -1240,6 +1240,21 @@ def admin_canal_edit():
 
         db.session.add(msg)
         db.session.commit()
+
+        # Envoi notification push automatique à tous les utilisateurs
+        try:
+            from push_notifications import notify_all_users
+            push_title = "📢 Nouvelle annonce"
+            push_body = (content[:120] if content else (
+                "Nouvelle image" if media_type == "image" else
+                "Nouvelle vidéo" if media_type == "video" else
+                "Nouvel audio" if media_type == "audio" else
+                "Un nouveau message a été publié"
+            ))
+            notify_all_users(push_title, push_body, tag="canal-msg")
+        except Exception as e:
+            print(f"[Canal] Erreur push: {e}")
+
         return redirect(url_for("admin_canal_edit"))
 
     messages = ChannelMessage.query.order_by(ChannelMessage.id.desc()).all()
