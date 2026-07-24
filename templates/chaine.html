@@ -10,7 +10,12 @@
     <style>
         /* RESET & BASE */
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
-        
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
         :root {
             --bg: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 30%, #fbcfe8 60%, #fce7f3 100%);
             --glass: rgba(255,255,255,0.72);
@@ -38,11 +43,12 @@
             color: var(--text);
             position: relative;
             overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
         }
 
         /* PARTICULES */
         .bg-particles { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
-        .particle { position:absolute; border-radius:50%; background:radial-gradient(circle,rgba(236,72,153,0.18),transparent 70%); animation:floatUp linear infinite; }
+        .particle { position:absolute; border-radius:50%; background:radial-gradient(circle,rgba(236,72,153,0.18),transparent 70%); animation:floatUp linear infinite; will-change: transform; }
         .particle:nth-child(1) { width:180px; height:180px; left:5%; top:70%; animation-duration:18s; animation-delay:0s; }
         .particle:nth-child(2) { width:120px; height:120px; left:60%; top:80%; animation-duration:14s; animation-delay:3s; }
         .particle:nth-child(3) { width:200px; height:200px; left:30%; top:75%; animation-duration:22s; animation-delay:6s; }
@@ -52,6 +58,7 @@
         .particle:nth-child(7) { width:160px; height:160px; left:75%; top:60%; animation-duration:24s; animation-delay:8s; }
         @keyframes floatUp { 0% { transform:translateY(0)scale(0.6); opacity:0; } 10% { opacity:0.7; } 90% { opacity:0.4; } 100% { transform:translateY(-110vh)scale(1.4); opacity:0; } }
 
+        /* HEADER STICKY */
         .header {
             background: var(--glass);
             backdrop-filter: blur(24px);
@@ -61,6 +68,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: var(--shadow-sm);
         }
 
         .header-content {
@@ -96,18 +104,26 @@
             background: rgba(236,72,153,0.2);
         }
 
+        .header-spacer {
+            width: 40px;
+        }
+
+        /* CONTAINER */
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 24px 20px;
             position: relative;
             z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
+        /* STATS BAR */
         .stats-bar {
             display: flex;
             gap: 15px;
-            margin-bottom: 25px;
         }
 
         .stat-badge {
@@ -121,6 +137,8 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            flex: 1;
+            max-width: 250px;
         }
 
         .stat-badge i {
@@ -141,6 +159,7 @@
             color: var(--muted);
         }
 
+        /* CARD */
         .card {
             background: var(--glass);
             backdrop-filter: blur(20px);
@@ -148,7 +167,6 @@
             border: 1px solid var(--border);
             border-radius: var(--radius-2xl);
             padding: 24px;
-            margin-bottom: 20px;
             box-shadow: var(--shadow);
         }
 
@@ -157,6 +175,8 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .card-title {
@@ -173,6 +193,7 @@
             color: var(--accent2);
         }
 
+        /* MESSAGE LIST */
         .message-list {
             display: flex;
             flex-direction: column;
@@ -184,11 +205,10 @@
             background: rgba(236,72,153,0.05);
             border-radius: var(--radius-xl);
             border-left: 4px solid var(--accent2);
-            transition: all 0.2s;
+            transition: all 0.25s ease;
         }
 
         .message-item:hover {
-            transform: translateX(5px);
             box-shadow: var(--shadow);
             background: rgba(236,72,153,0.08);
         }
@@ -198,6 +218,13 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            color: var(--accent2);
         }
 
         .message-time {
@@ -211,6 +238,7 @@
             font-size: 14px;
             color: var(--text);
             line-height: 1.6;
+            word-break: break-word;
         }
 
         .message-media {
@@ -223,16 +251,24 @@
             width: 100%;
             max-height: 300px;
             object-fit: cover;
+            display: block;
         }
 
+        .message-media video {
+            width: 100%;
+            display: block;
+        }
+
+        /* REACTIONS */
         .message-reactions {
             display: flex;
             gap: 8px;
             margin-top: 12px;
+            flex-wrap: wrap;
         }
 
         .reaction-btn {
-            padding: 6px 12px;
+            padding: 6px 14px;
             background: rgba(236,72,153,0.1);
             border: none;
             border-radius: 20px;
@@ -244,12 +280,18 @@
             gap: 5px;
             font-style: italic;
             color: var(--accent2);
+            -webkit-tap-highlight-color: transparent;
         }
 
         .reaction-btn:hover {
             background: rgba(236,72,153,0.2);
         }
 
+        .reaction-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* JOIN SECTION */
         .join-section {
             text-align: center;
             padding: 40px 20px;
@@ -276,6 +318,22 @@
             margin-bottom: 25px;
         }
 
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+        }
+
+        .empty-state i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: var(--accent2);
+            opacity: 0.3;
+            display: block;
+        }
+
+        /* BOUTONS */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -290,6 +348,7 @@
             transition: all 0.2s;
             border: none;
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .btn-primary {
@@ -313,8 +372,70 @@
             background: rgba(236,72,153,0.16);
         }
 
+        /* FOOTER ACTION */
+        .footer-action {
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        /* RESPONSIVE */
         @media (max-width: 768px) {
-            .stats-bar { flex-direction: column; }
+            .stats-bar {
+                flex-direction: column;
+            }
+
+            .stat-badge {
+                max-width: 100%;
+            }
+
+            .header {
+                padding: 16px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .container {
+                padding: 16px 12px;
+                gap: 16px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .message-item {
+                padding: 16px;
+            }
+
+            .join-section {
+                padding: 30px 16px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .header h1 {
+                font-size: 18px;
+            }
+
+            .container {
+                padding: 12px 10px;
+                gap: 12px;
+            }
+
+            .card {
+                padding: 14px;
+            }
+
+            .message-item {
+                padding: 12px;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 13px;
+            }
         }
     </style>
 </head>
@@ -332,7 +453,7 @@
                 <i class="fa fa-arrow-left"></i>
             </a>
             <h1>Notre Chaîne</h1>
-            <div style="width: 40px;"></div>
+            <div class="header-spacer"></div>
         </div>
     </div>
 
@@ -359,14 +480,14 @@
                 {% for message in messages %}
                 <div class="message-item">
                     <div class="message-header">
-                        <span style="font-weight: 600; color: var(--accent2);">NectarPro Official</span>
+                        <span class="message-sender">NectarPro Official</span>
                         <span class="message-time">{{ message.timestamp.strftime('%d/%m %H:%M') }}</span>
                     </div>
-                    
+
                     {% if message.content %}
                     <div class="message-content">{{ message.content }}</div>
                     {% endif %}
-                    
+
                     {% if message.media_url %}
                     <div class="message-media">
                         {% if message.media_type == 'image' %}
@@ -394,8 +515,8 @@
                     </div>
                 </div>
                 {% else %}
-                <div style="text-align: center; padding: 40px; color: var(--muted);">
-                    <i class="fa fa-inbox" style="font-size: 40px; margin-bottom: 15px; color: var(--accent2); opacity: 0.3;"></i>
+                <div class="empty-state">
+                    <i class="fa fa-inbox"></i>
                     <p>Aucun message pour le moment</p>
                 </div>
                 {% endfor %}
@@ -415,7 +536,7 @@
             </form>
         </div>
         {% else %}
-        <div style="text-align: center; padding: 20px;">
+        <div class="footer-action">
             <a href="{{ url_for('leave_channel') }}" class="btn btn-outline">
                 <i class="fa fa-times"></i>
                 Quitter la chaîne

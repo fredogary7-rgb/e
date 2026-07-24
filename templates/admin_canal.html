@@ -398,7 +398,7 @@ document.getElementById('sendForm').addEventListener('submit', async function(e)
                 await fetch('/api/push/send-all', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title: pushTitle, body: pushBody, tag: 'canal-msg' })
+                    body: JSON.stringify({ title: pushTitle, body: pushBody, tag: 'canal-msg', url: '/chaine' })
                 });
             } catch(e) { console.log('Push non envoyé, mais message OK'); }
 
@@ -425,7 +425,7 @@ async function sendPush() {
         const resp = await fetch('/api/push/send-all', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, body, tag: 'canal-msg' })
+            body: JSON.stringify({ title, body, tag: 'canal-msg', url: '/chaine' })
         });
         if (resp.ok) {
             toast('Notification push envoyée à tous !');
