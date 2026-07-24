@@ -982,7 +982,8 @@ def login_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         if not get_logged_in_user():
-            return redirect(url_for("connexion_page"))
+            next_url = request.url
+            return redirect(url_for("connexion_page", next=next_url))
         return f(*args, **kwargs)
     return wrapper
 
@@ -1986,6 +1987,9 @@ def connexion_page():
         session.permanent = remember_me
 
         flash(f"Connexion réussie ! Bienvenue {user.username}.", "success")
+        next_url = request.args.get("next")
+        if next_url:
+            return redirect(next_url)
         return redirect(url_for("dashboard_page"))
 
     return render_template("connexion.html")
