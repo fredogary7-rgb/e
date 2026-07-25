@@ -1,53 +1,35 @@
 """
-============================================================
-NectarPro – Logique de Notifications Web Push VAPID
-============================================================
-Helpers VAPID, file d'attente, triggers automatiques,
-nettoyage et stats.
-Tous les modèles (PushSubscription, Notification, NotificationQueue)
-sont définis dans app.py pour éviter les imports circulaires.
-============================================================
+Module de notifications push web (Web Push API / VAPID).
+Utilise pywebpush pour l'envoi via les services push des navigateurs.
+Compatible avec le Service Worker static/service-worker.js.
+Utilisation : from push_notifications import send_notification_to_user, notify_all_users
 """
-
 import json
-import logging
 import os
 import time
-from datetime import datetime, timedelta, timezone
-from threading import Thread, Lock
+import logging
+from datetime import datetime, timezone, timedelta
+from threading import Thread
 
-from flask import current_app, url_for
-
-# Logger dédié
-logger = logging.getLogger("nectarpro.push")
-logger.setLevel(logging.INFO)
-if not logger.handlers:
-    h = logging.StreamHandler()
-    h.setFormatter(logging.Formatter("[%(asctime)s] %(levelname)s %(message)s"))
-    logger.addHandler(h)
-
-# ── Verrou pour éviter les doublons d'envoi concurrents ──
-_send_lock = Lock()
+logger = logging.getLogger(__name__)
 
 # ────────────────────────────────────────────────
-# 1. HELPERS VAPID (clés, vérification, pywebpush)
+# 1. FONCTIONS INTERNES (VAPID, WebPush)
 # ────────────────────────────────────────────────
 
 def _get_db():
-    """Retourne l'instance db depuis app (import tardif pour éviter circulaire)."""
+    """Import lazy pour éviter l'import circulaire."""
     from app import db
     return db
 
 def _get_models():
-    """Retourne les 3 modèles push (import tardif)."""
+    """Import lazy des modèles push."""
     from app import PushSubscription, Notification, NotificationQueue
     return PushSubscription, Notification, NotificationQueue
 
 def _get_vapid_private_key():
-    """
-    Retourne la clé privée VAPID au format Base64URL brut (string).
-    Format identique à TransAfrik : MIGHAgE... sans PEM, sans BEGIN/END.
-    Passée directement à pywebpush comme string.
+    """Charge et nettoie la clé privée VAPID depuis les variables d'environnement.
+    Accepte le format Base64URL brut (MIGHAgE...) ou PEM avec en-têtes.
     """
     raw = os.environ.get("VAPID_PRIVATE_KEY", "")
     if not raw:
@@ -597,7 +579,73 @@ def notify_admin_announcement(titre, message):
     )
 
 # ────────────────────────────────────────────────
-# 5. STATISTIQUES
+# 5. NOTIFICATION QUOTIDIENNE DES TÂCHES (LUN-VEN 8H)
+# ────────────────────────────────────────────────
+
+def send_daily_task_notification():
+    """Envoie une notification push à tous les utilisateurs pour les tâches du jour.
+    Appelée automatiquement par le scheduler chaque lundi-vendredi à 08h00 UTC."""
+    from app import app
+    with app.app_context():
+        now = datetime.now(timezone.utc)
+        # Vérification: ne pas envoyer le week-end
+        if now.weekday() >= 5:
+            logger.info("📅 Week-end: pas de notification de tâches aujourd'hui")
+            return 0
+
+        logger.info("🔔 Envoi de la notification quotidienne des tâches...")
+        count = notify_all_users(
+            titre="📋 Nouvelle tâche disponible !",
+            message="Accomplissez les tâches du jour pour votre récompense 🎁",
+            url="/taches",
+            type="tache_quotidienne",
+        )
+        logger.info("✅ Notification quotidienne envoyée à %d utilisateurs", count)
+        return count
+
+
+def schedule_daily_task_notifications(app):
+    """Configure le scheduler APScheduler pour envoyer les notifications
+    de tâches quotidiennes chaque lundi-vendredi à 08h00 UTC.
+    À appeler depuis app.py au démarrage de l'application."""
+    try:
+        from apscheduler.schedulers.background import BackgroundScheduler
+    except ImportError:
+        logger.error("❌ APScheduler non installé – pip install apscheduler")
+        logger.error("   ➜ Le scheduler de notifications quotidiennes ne sera pas actif.")
+        return None
+
+    # Éviter les doublons si Flask reload en mode debug
+    existing = getattr(app, "_daily_task_scheduler", None)
+    if existing is not None and existing.running:
+        logger.info("⏰ Scheduler déjà actif, pas de doublon.")
+        return existing
+
+    scheduler = BackgroundScheduler(timezone="UTC")
+    # Lun-Vendredi = day_of_week = 0,1,2,3,4 (lundi à vendredi)
+    scheduler.add_job(
+        send_daily_task_notification,
+        trigger="cron",
+        day_of_week="mon,tue,wed,thu,fri",
+        hour=8,
+        minute=0,
+        id="daily_task_notification",
+        name="Notification quotidienne des tâches",
+        replace_existing=True,
+    )
+    scheduler.start()
+    app._daily_task_scheduler = scheduler
+    logger.info("✅ Scheduler notifications quotidiennes démarré (lun-ven 08h00 UTC)")
+    # Envoyer immédiatement si on est dans la plage (pour test/démo)
+    now = datetime.now(timezone.utc)
+    if now.weekday() < 5 and 8 <= now.hour < 9:
+        logger.info("⏰ Démarrage dans la plage 8h-9h, envoi immédiat de la notification...")
+        Thread(target=send_daily_task_notification, daemon=True).start()
+    return scheduler
+
+
+# ────────────────────────────────────────────────
+# 6. STATISTIQUES
 # ────────────────────────────────────────────────
 
 def get_push_stats():
@@ -650,7 +698,7 @@ def get_push_stats():
     }
 
 # ────────────────────────────────────────────────
-# 6. CRÉATION AUTOMATIQUE DES TABLES
+# 7. CRÉATION AUTOMATIQUE DES TABLES
 # ────────────────────────────────────────────────
 
 def init_push_tables(app):

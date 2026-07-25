@@ -162,6 +162,7 @@ from push_notifications import (
     notify_promotion, notify_bonus,
     notify_maintenance, notify_update, notify_admin_announcement,
     cleanup_expired_subscriptions, cleanup_old_queue_entries,
+    schedule_daily_task_notifications,
 )
 import base64
 
@@ -6804,6 +6805,12 @@ with app.app_context():
         init_push_tables(app)
     except Exception as e:
         print(f"[PUSH] Erreur init tables: {e}")
+
+    # ⏰ Scheduler de notifications quotidiennes (lun-ven 8h UTC)
+    try:
+        schedule_daily_task_notifications(app)
+    except Exception as e:
+        print(f"[PUSH] Erreur scheduler notifications quotidiennes: {e}")
 
 
 if __name__ == "__main__":
