@@ -792,7 +792,14 @@ async function loadDeposits() {
 }
 
 function updateDepositBadge() {
-    const pending = document.querySelectorAll('#depositTable tr [class*="pending"], #depositTable .statut-en-attente, #depositTable td:contains("en attente")').length;
+    const rows = document.querySelectorAll('#depositTable tr');
+    let pending = 0;
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        if (text.includes('en attente') || text.includes('pending')) {
+            pending++;
+        }
+    });
     document.getElementById('badge-pending-deposits').textContent = pending || '0';
 }
 
