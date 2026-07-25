@@ -1625,8 +1625,12 @@ def join_channel():
     
     return redirect(url_for('view_channel'))
 
-@app.route("/channel/react/<int:msg_id>/<string:emoji>", methods=["POST"])
-def react(msg_id, emoji):
+@app.route("/channel/react/<int:msg_id>", methods=["POST"])
+def react(msg_id):
+    emoji = request.json.get("emoji") if request.is_json else request.form.get("emoji")
+    if not emoji:
+        return {"success": False, "error": "emoji missing"}, 400
+    
     msg = ChannelMessage.query.get_or_404(msg_id)
 
     if not msg.reactions:
@@ -1642,7 +1646,7 @@ def react(msg_id, emoji):
     msg.reactions = reactions
     db.session.commit()
 
-    return {"success": True, "new_count": reactions[emoji]}
+    return {"success": True, "new_count": reactions[emoji], "emoji": emoji}
 
 @app.route("/chaine/quitter")
 def leave_channel():

@@ -8,554 +8,511 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        /* RESET & BASE */
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
-
-        html {
-            scroll-behavior: smooth;
-            scroll-padding-top: 80px;
-        }
+        html { scroll-behavior:smooth; }
 
         :root {
-            --bg: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 30%, #fbcfe8 60%, #fce7f3 100%);
-            --glass: rgba(255,255,255,0.72);
+            --bg: #e8ebe4;
+            --surface: #ffffff;
             --accent: #db2777;
             --accent2: #ec4899;
-            --accent-light: #f9a8d4;
+            --accent-light: #fdf2f8;
             --text: #0f172a;
             --text2: #1f2937;
             --muted: #6b7280;
-            --border: rgba(236,72,153,0.2);
-            --shadow-sm: 0 2px 8px rgba(236,72,153,0.08);
-            --shadow: 0 8px 32px rgba(236,72,153,0.12);
-            --radius-sm: 12px;
-            --radius: 18px;
-            --radius-lg: 24px;
-            --radius-xl: 20px;
-            --radius-2xl: 24px;
+            --border: rgba(236,72,153,0.15);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+            --shadow: 0 4px 16px rgba(0,0,0,0.10);
+            --radius-sm: 10px;
+            --radius: 16px;
+            --radius-lg: 22px;
+            --bubble-out: #ffffff;
+            --bubble-in: #f0d9e8;
+            --bubble-text: #111827;
         }
 
         body {
             background: var(--bg);
             min-height: 100vh;
-            padding-bottom: 80px;
-            font-style: italic;
+            min-height: 100dvh;
             color: var(--text);
+            font-style: italic;
             position: relative;
             overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* PARTICULES */
-        .bg-particles { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
-        .particle { position:absolute; border-radius:50%; background:radial-gradient(circle,rgba(236,72,153,0.18),transparent 70%); animation:floatUp linear infinite; will-change: transform; }
-        .particle:nth-child(1) { width:180px; height:180px; left:5%; top:70%; animation-duration:18s; animation-delay:0s; }
-        .particle:nth-child(2) { width:120px; height:120px; left:60%; top:80%; animation-duration:14s; animation-delay:3s; }
-        .particle:nth-child(3) { width:200px; height:200px; left:30%; top:75%; animation-duration:22s; animation-delay:6s; }
-        .particle:nth-child(4) { width:100px; height:100px; left:80%; top:85%; animation-duration:16s; animation-delay:9s; }
-        .particle:nth-child(5) { width:150px; height:150px; left:50%; top:90%; animation-duration:20s; animation-delay:2s; }
-        .particle:nth-child(6) { width:90px; height:90px; left:15%; top:50%; animation-duration:12s; animation-delay:5s; }
-        .particle:nth-child(7) { width:160px; height:160px; left:75%; top:60%; animation-duration:24s; animation-delay:8s; }
-        @keyframes floatUp { 0% { transform:translateY(0)scale(0.6); opacity:0; } 10% { opacity:0.7; } 90% { opacity:0.4; } 100% { transform:translateY(-110vh)scale(1.4); opacity:0; } }
-
-        /* HEADER STICKY */
+        /* HEADER */
         .header {
-            background: var(--glass);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            padding: 20px;
-            border-bottom: 1px solid var(--border);
+            background: #db2777;
+            background: linear-gradient(135deg, #ec4899, #db2777);
+            color: #fff;
+            padding: 12px 16px;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .header h1 {
-            font-style: italic;
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--text);
-        }
-
-        .back-btn {
-            width: 40px;
-            height: 40px;
-            background: rgba(236,72,153,0.1);
-            border-radius: var(--radius);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent2);
-            text-decoration: none;
-            font-size: 16px;
-            transition: all 0.2s;
-        }
-
-        .back-btn:hover {
-            background: rgba(236,72,153,0.2);
-        }
-
-        .header-spacer {
-            width: 40px;
-        }
-
-        /* CONTAINER */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 24px 20px;
-            position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* STATS BAR */
-        .stats-bar {
-            display: flex;
-            gap: 15px;
-        }
-
-        .stat-badge {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            padding: 15px 25px;
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow);
+            box-shadow: 0 2px 12px rgba(219,39,119,0.25);
             display: flex;
             align-items: center;
             gap: 12px;
+        }
+        .header .back-btn {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+        .header .back-btn:hover { background: rgba(255,255,255,0.35); }
+        .header .channel-info { flex:1; display:flex; align-items:center; gap:10px; }
+        .header .channel-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; flex-shrink:0;
+        }
+        .header .channel-name { font-weight:800; font-size: 16px; line-height: 1.2; }
+        .header .channel-sub { font-weight:500; font-size: 11px; opacity: 0.85; }
+
+        /* CHAT AREA */
+        .chat-area {
             flex: 1;
-            max-width: 250px;
-        }
-
-        .stat-badge i {
-            font-size: 24px;
-            color: var(--accent2);
-        }
-
-        .stat-badge .stat-number {
-            font-style: italic;
-            font-size: 20px;
-            font-weight: 900;
-            color: var(--text);
-        }
-
-        .stat-badge .stat-label {
-            font-style: italic;
-            font-size: 12px;
-            color: var(--muted);
-        }
-
-        /* CARD */
-        .card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-2xl);
-            padding: 24px;
-            box-shadow: var(--shadow);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .card-title {
-            font-style: italic;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .card-title i {
-            color: var(--accent2);
-        }
-
-        /* MESSAGE LIST */
-        .message-list {
+            overflow-y: auto;
+            padding: 12px 14px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 10px;
+            -webkit-overflow-scrolling: touch;
         }
 
-        .message-item {
-            padding: 20px;
-            background: rgba(236,72,153,0.05);
-            border-radius: var(--radius-xl);
-            border-left: 4px solid var(--accent2);
-            transition: all 0.25s ease;
-        }
-
-        .message-item:hover {
-            box-shadow: var(--shadow);
-            background: rgba(236,72,153,0.08);
-        }
-
-        .message-header {
+        /* DATE SEPARATOR */
+        .date-sep {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-            gap: 8px;
+            justify-content: center;
+            margin: 8px 0;
         }
-
-        .message-sender {
-            font-weight: 600;
-            color: var(--accent2);
-        }
-
-        .message-time {
+        .date-sep span {
+            background: rgba(0,0,0,0.08);
+            color: #555;
+            padding: 4px 14px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
             font-style: italic;
-            font-size: 12px;
-            color: var(--muted);
         }
 
-        .message-content {
-            font-style: italic;
-            font-size: 14px;
-            color: var(--text);
-            line-height: 1.6;
+        /* MESSAGE BUBBLE */
+        .msg-row {
+            display: flex;
+            flex-direction: column;
+            max-width: 85%;
+            align-self: flex-start;
+        }
+        .msg-bubble {
+            background: var(--bubble-out);
+            padding: 10px 14px;
+            border-radius: 6px 22px 22px 22px;
+            box-shadow: var(--shadow-sm);
+            position: relative;
             word-break: break-word;
         }
-
-        .message-media {
-            margin-top: 12px;
-            border-radius: var(--radius);
-            overflow: hidden;
+        .msg-time {
+            font-size: 10px;
+            color: var(--muted);
+            margin-top: 3px;
+            margin-left: 8px;
+            font-weight: 600;
         }
 
-        .message-media img {
+        .msg-content {
+            font-size: 14px;
+            line-height: 1.55;
+            color: var(--bubble-text);
+            white-space: pre-wrap;
+        }
+
+        /* MEDIA IN BUBBLE */
+        .msg-media {
+            margin-top: 6px;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            max-width: 100%;
+        }
+        .msg-media img {
             width: 100%;
-            max-height: 300px;
+            max-height: 320px;
             object-fit: cover;
             display: block;
+            border-radius: var(--radius-sm);
         }
-
-        .message-media video {
+        .msg-media video {
             width: 100%;
+            max-height: 360px;
             display: block;
+            border-radius: var(--radius-sm);
+        }
+        .msg-media audio {
+            width: 100%;
+            min-width: 220px;
+            outline: none;
         }
 
         /* REACTIONS */
-        .message-reactions {
+        .msg-reactions {
             display: flex;
-            gap: 8px;
-            margin-top: 12px;
+            gap: 6px;
+            margin-top: 5px;
             flex-wrap: wrap;
         }
-
-        .reaction-btn {
-            padding: 6px 14px;
-            background: rgba(236,72,153,0.1);
-            border: none;
-            border-radius: 20px;
+        .react-btn {
+            padding: 4px 12px;
+            background: rgba(236,72,153,0.08);
+            border: 1px solid rgba(236,72,153,0.18);
+            border-radius: 16px;
             font-size: 13px;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
+            color: var(--accent);
+            font-weight: 600;
             font-style: italic;
-            color: var(--accent2);
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        .react-btn:hover { background: rgba(236,72,153,0.18); }
+        .react-btn:active { transform: scale(0.95); }
+        .react-btn .count { font-size: 11px; opacity: 0.8; }
+        .react-btn.active-reaction {
+            background: var(--accent2);
+            color: #fff;
+            border-color: var(--accent2);
+        }
+
+        /* ADD REACTION BUTTON */
+        .add-react-btn {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            border: 1px dashed rgba(236,72,153,0.3);
+            background: transparent;
+            color: var(--muted);
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
             -webkit-tap-highlight-color: transparent;
         }
+        .add-react-btn:hover { border-color: var(--accent2); color: var(--accent2); }
 
-        .reaction-btn:hover {
-            background: rgba(236,72,153,0.2);
+        /* EMOJI PICKER */
+        .emoji-picker {
+            display: none;
+            gap: 6px;
+            flex-wrap: wrap;
+            padding: 8px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-top: 4px;
+            z-index: 10;
         }
-
-        .reaction-btn:active {
-            transform: scale(0.95);
+        .emoji-picker.show { display: flex; }
+        .emoji-item {
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 8px;
+            transition: background 0.15s;
+            -webkit-tap-highlight-color: transparent;
+            line-height: 1;
         }
+        .emoji-item:hover { background: rgba(236,72,153,0.1); }
 
         /* JOIN SECTION */
         .join-section {
             text-align: center;
-            padding: 40px 20px;
+            padding: 30px 20px;
+            background: var(--surface);
+            margin: 12px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
         }
+        .join-section i { font-size: 50px; color: var(--accent2); margin-bottom: 14px; opacity: 0.7; }
+        .join-section h2 { font-weight:800; font-size: 18px; margin-bottom: 6px; }
+        .join-section p { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
 
-        .join-section i {
-            font-size: 60px;
-            color: var(--accent2);
-            margin-bottom: 20px;
-        }
-
-        .join-section h2 {
-            font-style: italic;
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--text);
-            margin-bottom: 10px;
-        }
-
-        .join-section p {
-            font-style: italic;
-            font-size: 14px;
-            color: var(--text2);
-            margin-bottom: 25px;
-        }
-
-        /* EMPTY STATE */
+        /* EMPTY */
         .empty-state {
             text-align: center;
             padding: 40px;
             color: var(--muted);
         }
+        .empty-state i { font-size: 40px; margin-bottom: 10px; color: var(--accent2); opacity: 0.25; display: block; }
 
-        .empty-state i {
-            font-size: 40px;
-            margin-bottom: 15px;
-            color: var(--accent2);
-            opacity: 0.3;
-            display: block;
-        }
-
-        /* BOUTONS */
+        /* BUTTONS */
         .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 14px 28px;
-            border-radius: var(--radius);
-            font-style: italic;
-            font-weight: 700;
-            font-size: 14px;
-            text-decoration: none;
-            transition: all 0.2s;
-            border: none;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
+            display:inline-flex; align-items:center; justify-content:center; gap:8px;
+            padding:12px 24px; border-radius:var(--radius); font-weight:700; font-size:13px;
+            text-decoration:none; transition:all 0.2s; border:none; cursor:pointer; font-style:italic;
+            -webkit-tap-highlight-color:transparent;
         }
-
         .btn-primary {
-            background: linear-gradient(135deg, #ec4899, #db2777);
-            color: white;
-            box-shadow: 0 6px 20px rgba(219,39,119,0.3);
+            background:linear-gradient(135deg,#ec4899,#db2777); color:#fff;
+            box-shadow:0 6px 20px rgba(219,39,119,0.3);
         }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(219,39,119,0.4);
-        }
-
+        .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(219,39,119,0.4); }
         .btn-outline {
-            background: rgba(236,72,153,0.08);
-            color: var(--accent2);
-            border: 1px solid var(--border);
+            background:rgba(236,72,153,0.06); color:var(--accent2);
+            border:1px solid rgba(236,72,153,0.25);
         }
+        .btn-outline:hover { background:rgba(236,72,153,0.14); }
 
-        .btn-outline:hover {
-            background: rgba(236,72,153,0.16);
-        }
-
-        /* FOOTER ACTION */
+        /* FOOTER */
         .footer-action {
             text-align: center;
-            padding: 10px 0;
+            padding: 10px 12px 18px;
         }
 
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .stats-bar {
-                flex-direction: column;
-            }
-
-            .stat-badge {
-                max-width: 100%;
-            }
-
-            .header {
-                padding: 16px;
-            }
-
-            .header h1 {
-                font-size: 20px;
-            }
-
-            .container {
-                padding: 16px 12px;
-                gap: 16px;
-            }
-
-            .card {
-                padding: 18px;
-            }
-
-            .message-item {
-                padding: 16px;
-            }
-
-            .join-section {
-                padding: 30px 16px;
-            }
+        /* TOAST */
+        .toast {
+            position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:3000;
+            background:#10b981; color:#fff; padding:12px 24px; border-radius:24px;
+            font-weight:700; font-size:12px; font-style:italic;
+            box-shadow:0 6px 20px rgba(16,185,129,0.3);
+            opacity:0; visibility:hidden; transition:all 0.3s;
         }
+        .toast.show { opacity:1; visibility:visible; }
+        .toast.error { background:#ef4444; }
 
-        @media (max-width: 400px) {
-            .header h1 {
-                font-size: 18px;
-            }
-
-            .container {
-                padding: 12px 10px;
-                gap: 12px;
-            }
-
-            .card {
-                padding: 14px;
-            }
-
-            .message-item {
-                padding: 12px;
-            }
-
-            .btn {
-                padding: 12px 20px;
-                font-size: 13px;
-            }
+        @media (max-width: 600px) {
+            .msg-row { max-width: 92%; }
+            .chat-area { padding: 8px 10px; gap: 8px; }
+            .msg-bubble { padding: 8px 12px; }
         }
     </style>
 </head>
 <body>
 
-<div class="bg-particles">
-    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
-    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
-    <div class="particle"></div>
-</div>
-
-    <div class="header">
-        <div class="header-content">
-            <a href="{{ url_for('dashboard_page') }}" class="back-btn">
-                <i class="fa fa-arrow-left"></i>
-            </a>
-            <h1>Notre Chaîne</h1>
-            <div class="header-spacer"></div>
+<div class="header">
+    <a href="{{ url_for('dashboard_page') }}" class="back-btn"><i class="fa fa-arrow-left"></i></a>
+    <div class="channel-info">
+        <div class="channel-avatar"><i class="fa fa-bolt"></i></div>
+        <div>
+            <div class="channel-name">NectarPro Official</div>
+            <div class="channel-sub">{{ sub_count }} abonné(s)</div>
         </div>
     </div>
+</div>
 
-    <div class="container">
-        <div class="stats-bar">
-            <div class="stat-badge">
-                <i class="fa fa-users"></i>
-                <div>
-                    <div class="stat-number">{{ sub_count }}</div>
-                    <div class="stat-label">Abonnés</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">
-                    <i class="fa fa-broadcast-tower"></i>
-                    Messages de l'équipe
-                </div>
-            </div>
-
-            <div class="message-list">
-                {% for message in messages %}
-                <div class="message-item">
-                    <div class="message-header">
-                        <span class="message-sender">NectarPro Official</span>
-                        <span class="message-time">{{ message.timestamp.strftime('%d/%m %H:%M') }}</span>
-                    </div>
-
+<div class="chat-area" id="chatArea">
+    {% if messages %}
+        {% set ns = namespace(last_date='') %}
+        {% for message in messages %}
+            {% set msg_date = message.timestamp.strftime('%d/%m/%Y') %}
+            {% if msg_date != ns.last_date %}
+                {% set ns.last_date = msg_date %}
+                <div class="date-sep"><span>{{ message.timestamp.strftime('%d/%m/%Y') }}</span></div>
+            {% endif %}
+            <div class="msg-row" id="msg-{{ message.id }}">
+                <div class="msg-bubble">
                     {% if message.content %}
-                    <div class="message-content">{{ message.content }}</div>
+                    <div class="msg-content">{{ message.content }}</div>
                     {% endif %}
 
                     {% if message.media_url %}
-                    <div class="message-media">
+                    <div class="msg-media">
                         {% if message.media_type == 'image' %}
-                        <img src="{{ message.media_url }}" alt="Media">
+                        <img src="{{ message.media_url }}" alt="Image" loading="lazy">
                         {% elif message.media_type == 'video' %}
-                        <video controls style="width: 100%;">
+                        <video controls preload="metadata" style="width:100%; max-height:360px;">
                             <source src="{{ message.media_url }}" type="video/mp4">
+                            Votre navigateur ne supporte pas la vidéo.
                         </video>
+                        {% elif message.media_type == 'audio' %}
+                        <audio controls preload="metadata" style="width:100%; min-width:220px;">
+                            <source src="{{ message.media_url }}" type="audio/mpeg">
+                            Votre navigateur ne supporte pas l'audio.
+                        </audio>
+                        {% else %}
+                        <!-- fallback: essayer comme audio ou lien -->
+                        <audio controls preload="metadata" style="width:100%; min-width:220px;">
+                            <source src="{{ message.media_url }}">
+                        </audio>
                         {% endif %}
                     </div>
                     {% endif %}
+                </div>
+                <div class="msg-time">{{ message.timestamp.strftime('%H:%M') }}</div>
 
-                    <div class="message-reactions">
-                        {% if message.reactions %}
-                            {% for emoji, count in message.reactions.items() %}
-                            <button class="reaction-btn" onclick="react({{ message.id }}, '{{ emoji }}')">
-                                {{ emoji }} {{ count }}
+                <!-- Reactions -->
+                <div class="msg-reactions" id="reactions-{{ message.id }}">
+                    {% if message.reactions %}
+                        {% for emoji, count in message.reactions.items() %}
+                            {% if count > 0 %}
+                            <button class="react-btn" onclick="react({{ message.id }}, '{{ emoji }}')">
+                                {{ emoji }} <span class="count">{{ count }}</span>
                             </button>
-                            {% endfor %}
-                        {% else %}
-                            <button class="reaction-btn" onclick="react({{ message.id }}, '\uD83D\uDD25')">🔥</button>
-                            <button class="reaction-btn" onclick="react({{ message.id }}, '\uD83D\uDE80')">🚀</button>
-                            <button class="reaction-btn" onclick="react({{ message.id }}, '\u2764\uFE0F')">❤️</button>
-                        {% endif %}
-                    </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    <button class="add-react-btn" onclick="toggleEmojiPicker(event, {{ message.id }})" title="Ajouter une réaction">+</button>
                 </div>
-                {% else %}
-                <div class="empty-state">
-                    <i class="fa fa-inbox"></i>
-                    <p>Aucun message pour le moment</p>
+
+                <!-- Emoji Picker -->
+                <div class="emoji-picker" id="picker-{{ message.id }}">
+                    <span class="emoji-item" onclick="react({{ message.id }}, '🔥')">🔥</span>
+                    <span class="emoji-item" onclick="react({{ message.id }}, '🚀')">🚀</span>
+                    <span class="emoji-item" onclick="react({{ message.id }}, '❤️')">❤️</span>
+                    <span class="emoji-item" onclick="react({{ message.id }}, '👍')">👍</span>
+                    <span class="emoji-item" onclick="react({{ message.id }}, '😂')">😂</span>
+                    <span class="emoji-item" onclick="react({{ message.id }}, '👏')">👏</span>
+                    <span class="emoji-item" onclick="react({{ message.id }}, '🎉')">🎉</span>
+                    <span class="emoji-item" onclick="react({{ message.id }}, '💯')">💯</span>
                 </div>
-                {% endfor %}
             </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <i class="fa fa-inbox"></i>
+            <p>Aucun message pour le moment</p>
         </div>
+    {% endif %}
+</div>
 
-        {% if not is_sub %}
-        <div class="card join-section">
-            <i class="fa fa-bell"></i>
-            <h2>Rejoignez notre chaîne</h2>
-            <p>Recevez les dernières nouvelles et annonces directement</p>
-            <form action="{{ url_for('join_channel') }}" method="POST">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fa fa-plus"></i>
-                    Rejoindre la chaîne
-                </button>
-            </form>
-        </div>
-        {% else %}
-        <div class="footer-action">
-            <a href="{{ url_for('leave_channel') }}" class="btn btn-outline">
-                <i class="fa fa-times"></i>
-                Quitter la chaîne
-            </a>
-        </div>
-        {% endif %}
-    </div>
+{% if not is_sub %}
+<div class="join-section">
+    <i class="fa fa-bell"></i>
+    <h2>Rejoignez notre chaîne</h2>
+    <p>Recevez les dernières nouvelles et annonces directement</p>
+    <form action="{{ url_for('join_channel') }}" method="POST">
+        <button type="submit" class="btn btn-primary">
+            <i class="fa fa-plus"></i> Rejoindre la chaîne
+        </button>
+    </form>
+</div>
+{% else %}
+<div class="footer-action">
+    <a href="{{ url_for('leave_channel') }}" class="btn btn-outline">
+        <i class="fa fa-times"></i> Quitter la chaîne
+    </a>
+</div>
+{% endif %}
 
-    <script>
-        function react(messageId, emoji) {
-            fetch(`/channel/react/${messageId}/${encodeURIComponent(emoji)}`, {
-                method: 'POST'
-            }).then(response => response.json())
-              .then(data => {
-                  if (data.success) {
-                      location.reload();
-                  }
-              });
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════
+   NECTARPRO CHAINE — JAVASCRIPT
+   ═══════════════════════════════════════ */
+
+// Toast
+function toast(msg, isError) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (isError ? ' error' : '');
+    setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Auto-scroll to bottom on load
+(function() {
+    const chat = document.getElementById('chatArea');
+    if (chat) chat.scrollTop = chat.scrollHeight;
+})();
+
+// Reaction
+async function react(msgId, emoji) {
+    try {
+        const resp = await fetch('/channel/react/' + msgId, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ emoji: emoji })
+        });
+        const data = await resp.json();
+        if (data.success) {
+            // Mettre à jour l'affichage sans recharger la page
+            updateReactionDisplay(msgId, emoji, data.new_count);
+            // Fermer le picker
+            const picker = document.getElementById('picker-' + msgId);
+            if (picker) picker.classList.remove('show');
+        } else {
+            toast(data.error || 'Erreur réaction', true);
         }
-    </script>
+    } catch(e) {
+        toast('Erreur réseau', true);
+    }
+}
+
+function updateReactionDisplay(msgId, emoji, count) {
+    const container = document.getElementById('reactions-' + msgId);
+    if (!container) return;
+
+    // Chercher si le bouton pour cet emoji existe déjà
+    let existingBtn = null;
+    const buttons = container.querySelectorAll('.react-btn');
+    buttons.forEach(btn => {
+        if (btn.textContent.trim().startsWith(emoji)) {
+            existingBtn = btn;
+        }
+    });
+
+    if (existingBtn) {
+        // Mettre à jour le compteur
+        const countSpan = existingBtn.querySelector('.count');
+        if (countSpan) {
+            countSpan.textContent = count;
+        } else {
+            existingBtn.innerHTML = emoji + ' <span class="count">' + count + '</span>';
+        }
+        // Animation
+        existingBtn.classList.add('active-reaction');
+        setTimeout(() => existingBtn.classList.remove('active-reaction'), 600);
+    } else {
+        // Créer un nouveau bouton
+        const newBtn = document.createElement('button');
+        newBtn.className = 'react-btn active-reaction';
+        newBtn.innerHTML = emoji + ' <span class="count">' + count + '</span>';
+        newBtn.setAttribute('onclick', 'react(' + msgId + ', \'' + emoji + '\')');
+        // Insérer avant le bouton +
+        const addBtn = container.querySelector('.add-react-btn');
+        if (addBtn) {
+            container.insertBefore(newBtn, addBtn);
+        } else {
+            container.appendChild(newBtn);
+        }
+        setTimeout(() => newBtn.classList.remove('active-reaction'), 600);
+    }
+}
+
+// Emoji picker toggle
+function toggleEmojiPicker(event, msgId) {
+    event.stopPropagation();
+    const picker = document.getElementById('picker-' + msgId);
+    if (!picker) return;
+    // Fermer tous les autres pickers
+    document.querySelectorAll('.emoji-picker.show').forEach(p => {
+        if (p.id !== 'picker-' + msgId) p.classList.remove('show');
+    });
+    picker.classList.toggle('show');
+}
+
+// Fermer les pickers quand on clique ailleurs
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.add-react-btn') && !e.target.closest('.emoji-picker')) {
+        document.querySelectorAll('.emoji-picker.show').forEach(p => p.classList.remove('show'));
+    }
+});
+</script>
 </body>
 </html>
