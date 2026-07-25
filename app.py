@@ -6797,6 +6797,17 @@ def admin_push_dashboard():
     return render_template("admin_push.html", user=admin_user, stats=stats)
 
 
+# 🏠 NOUVELLE PAGE ADMIN UNIFIÉE
+@app.route('/admin')
+def admin_dashboard_unified():
+    """Dashboard admin unifié avec tous les onglets."""
+    admin_user = get_logged_in_admin()
+    if not admin_user:
+        flash("Accès refusé.", "danger")
+        return redirect(url_for("admin_finance"))
+    return render_template("admin.html", user=admin_user)
+
+
 # ============================================================
 # 🔔 INITIALISATION DES TABLES PUSH AU DÉMARRAGE
 # ============================================================

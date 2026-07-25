@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — NectarPro</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ═══════════════════════════════════════════
+   NECTARPRO ADMIN UNIFIÉ — THÈME ROSE
+   ═══════════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+
+:root{
+    --bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);
+    --glass:rgba(255,255,255,0.72);
+    --glass-hover:rgba(255,255,255,0.88);
+    --accent:#db2777;
+    --accent2:#ec4899;
+    --accent-light:#f9a8d4;
+    --accent-bg:rgba(236,72,153,0.08);
+    --gold:#f59e0b;
+    --gold-light:#fef3c7;
+    --emerald:#10b981;
+    --emerald-light:#d1fae5;
+    --sky:#0ea5e9;
+    --sky-light:#e0f2fe;
+    --red:#ef4444;
+    --red-light:#fef2f2;
+    --text:#000;
+    --text2:#1f2937;
+    --muted:#6b7280;
+    --border:rgba(236,72,153,0.2);
+    --shadow-sm:0 2px 8px rgba(236,72,153,0.08);
+    --shadow:0 8px 32px rgba(236,72,153,0.12);
+    --shadow-lg:0 16px 48px rgba(236,72,153,0.18);
+    --radius-sm:12px;
+    --radius:18px;
+    --radius-lg:24px;
+    --radius-xl:32px;
+}
+
+body{
+    background:var(--bg);
+    min-height:100vh;min-height:100dvh;
+    color:var(--text);
+    font-style:italic;
+    position:relative;
+    overflow-x:hidden;
+}
+
+/* ██████ TOP BAR ██████ */
+.topbar{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:12px 24px;
+    background:rgba(255,255,255,0.7);
+    backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+    border-bottom:1px solid var(--border);
+    position:sticky;top:0;z-index:1000;
+    flex-wrap:wrap;gap:8px;
+}
+.topbar-logo{
+    display:flex;align-items:center;gap:8px;
+    font-size:18px;font-weight:900;
+}
+.topbar-logo .brand-n{color:var(--accent2)}
+.topbar-logo .brand-p{color:var(--accent)}
+.topbar .back{
+    color:var(--accent2);text-decoration:none;font-weight:700;font-size:13px;
+    display:flex;align-items:center;gap:6px;
+    transition:all .2s;
+}
+.topbar .back:hover{color:var(--accent)}
+
+/* ██████ TABS NAVIGATION ██████ */
+.tabs-nav{
+    display:flex;gap:4px;flex-wrap:wrap;padding:16px 24px 0;
+    max-width:1400px;margin:0 auto;
+}
+.tab-btn{
+    padding:10px 18px;border:none;border-radius:20px 20px 0 0;
+    font-size:12px;font-weight:700;font-style:italic;cursor:pointer;
+    background:rgba(236,72,153,0.06);color:var(--text2);
+    transition:all .25s;display:flex;align-items:center;gap:6px;
+    position:relative;
+}
+.tab-btn:hover{background:rgba(236,72,153,0.14);color:var(--accent)}
+.tab-btn.active{
+    background:var(--accent2);color:#fff;
+    box-shadow:0 -4px 16px rgba(219,39,119,0.25);
+}
+.tab-btn .tab-badge{
+    background:rgba(255,255,255,0.3);color:inherit;
+    padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;
+}
+.tab-btn.active .tab-badge{background:rgba(255,255,255,0.3)}
+
+/* ██████ MAIN CONTAINER ██████ */
+.main-wrap{max-width:1400px;margin:0 auto;padding:0 24px 40px}
+
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ██████ STATS CARDS ██████ */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:24px}
+.stat-card{
+    background:var(--glass);backdrop-filter:blur(16px);
+    border:1px solid var(--border);border-radius:var(--radius-lg);
+    padding:18px 20px;box-shadow:var(--shadow-sm);
+    display:flex;align-items:center;gap:14px;
+    transition:all .3s;
+}
+.stat-card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.stat-icon{
+    width:48px;height:48px;border-radius:var(--radius-sm);
+    display:flex;align-items:center;justify-content:center;
+    font-size:20px;flex-shrink:0;
+}
+.stat-icon.pink{background:rgba(236,72,153,0.12);color:var(--accent2)}
+.stat-icon.gold{background:var(--gold-light);color:var(--gold)}
+.stat-icon.emerald{background:var(--emerald-light);color:var(--emerald)}
+.stat-icon.sky{background:var(--sky-light);color:var(--sky)}
+.stat-icon.red{background:var(--red-light);color:var(--red)}
+.stat-info .stat-val{font-size:22px;font-weight:900;line-height:1.2}
+.stat-info .stat-lbl{font-size:11px;color:var(--muted);font-weight:600}
+
+/* ██████ CARDS ██████ */
+.card{
+    background:var(--glass);backdrop-filter:blur(16px);
+    border:1px solid var(--border);border-radius:var(--radius-xl);
+    padding:24px;margin-bottom:20px;
+    box-shadow:var(--shadow);
+}
+.card h2, .card h3{
+    font-weight:800;margin-bottom:16px;
+    display:flex;align-items:center;gap:8px;
+}
+.card h2{font-size:18px}
+.card h3{font-size:15px}
+.card h2 i, .card h3 i{color:var(--accent2)}
+
+/* ██████ TABLE ██████ */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{
+    text-align:left;padding:10px 12px;font-size:11px;font-weight:700;
+    color:var(--muted);text-transform:uppercase;letter-spacing:.5px;
+    border-bottom:2px solid var(--border);
+}
+td{padding:10px 12px;border-bottom:1px solid rgba(236,72,153,0.1);font-weight:500}
+tr:hover td{background:rgba(236,72,153,0.03)}
+
+/* ██████ BUTTONS ██████ */
+.btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    padding:10px 18px;border:none;border-radius:var(--radius-sm);
+    font-size:12px;font-weight:700;font-style:italic;cursor:pointer;
+    transition:all .25s;text-decoration:none;
+    box-shadow:var(--shadow-sm);
+}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:scale(0.97)}
+.btn-pink{background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;box-shadow:0 8px 28px rgba(219,39,119,0.3)}
+.btn-pink:hover{box-shadow:0 12px 38px rgba(219,39,119,0.45)}
+.btn-gold{background:linear-gradient(135deg,#f59e0b,#f97316);color:#fff;box-shadow:0 6px 20px rgba(245,158,11,0.3)}
+.btn-emerald{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
+.btn-red{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
+.btn-sky{background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff}
+.btn-sm{padding:6px 12px;font-size:10px}
+.btn-xs{padding:4px 10px;font-size:10px;border-radius:8px}
+.btn-outline{
+    background:transparent;border:2px solid var(--accent2);
+    color:var(--accent2);box-shadow:none;
+}
+
+/* ██████ BADGES ██████ */
+.badge{
+    display:inline-flex;align-items:center;gap:4px;
+    padding:4px 10px;border-radius:12px;
+    font-size:10px;font-weight:700;
+}
+.badge-pink{background:rgba(236,72,153,0.08);color:var(--accent2)}
+.badge-gold{background:var(--gold-light);color:#92400e}
+.badge-emerald{background:var(--emerald-light);color:var(--emerald)}
+.badge-sky{background:var(--sky-light);color:var(--sky)}
+.badge-red{background:var(--red-light);color:var(--red)}
+
+/* ██████ FORM ██████ */
+.form-group{margin-bottom:14px}
+.form-group label{
+    display:flex;align-items:center;gap:6px;
+    font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px;
+}
+.form-group label i{color:var(--accent2);font-size:13px}
+.form-group input, .form-group textarea, .form-group select{
+    width:100%;padding:12px 14px;
+    background:rgba(255,255,255,0.9);border:1px solid var(--border);
+    border-radius:var(--radius-sm);font-size:14px;font-style:italic;
+    color:var(--text);font-family:'Poppins',sans-serif;
+    transition:all .3s;
+}
+.form-group textarea{min-height:100px;resize:vertical}
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus{
+    outline:none;border-color:var(--accent2);
+    box-shadow:0 0 0 3px rgba(236,72,153,0.12);
+}
+.form-row{display:flex;gap:14px;flex-wrap:wrap}
+.form-row .form-group{flex:1;min-width:180px}
+
+/* ██████ FILE / RECORD BUTTONS ██████ */
+.file-input-wrapper{
+    position:relative;overflow:hidden;display:inline-block;width:100%;
+}
+.file-input-wrapper input[type=file]{
+    position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;
+}
+.file-input-label{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    width:100%;padding:12px 16px;
+    background:rgba(236,72,153,0.08);border:2px dashed var(--border);
+    border-radius:var(--radius-sm);font-size:12px;font-weight:700;
+    color:var(--accent2);cursor:pointer;transition:all .3s;
+}
+.file-input-label:hover{background:rgba(236,72,153,0.14);border-color:var(--accent2)}
+.file-name{font-size:10px;color:var(--muted);margin-top:4px;text-align:center;word-break:break-all}
+
+.record-area{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.record-btn{
+    display:flex;align-items:center;gap:8px;
+    padding:12px 20px;border:none;border-radius:var(--radius-sm);
+    font-size:13px;font-weight:700;font-style:italic;cursor:pointer;
+    transition:all .25s;
+    background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;
+    box-shadow:0 6px 20px rgba(239,68,68,0.3);
+    animation:none;
+}
+.record-btn.recording{
+    animation:pulse-rec 1.5s infinite;
+    box-shadow:0 0 0 0 rgba(239,68,68,0.7);
+}
+@keyframes pulse-rec{
+    0%{box-shadow:0 0 0 0 rgba(239,68,68,0.7)}
+    70%{box-shadow:0 0 0 18px rgba(239,68,68,0)}
+    100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}
+}
+.record-btn:disabled{opacity:0.6;cursor:not-allowed}
+.record-info{font-size:11px;color:var(--muted);font-weight:600}
+.record-preview{display:none;align-items:center;gap:8px}
+.record-preview.show{display:flex}
+.record-preview audio{height:36px}
+
+/* ██████ CANAL MESSAGES ██████ */
+.msg-list{display:flex;flex-direction:column;gap:12px}
+.msg-card{
+    background:var(--glass);backdrop-filter:blur(16px);
+    border:1px solid var(--border);border-radius:var(--radius-lg);
+    padding:16px;box-shadow:var(--shadow-sm);transition:all .3s;
+}
+.msg-card:hover{box-shadow:var(--shadow)}
+.msg-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:8px}
+.msg-time{font-size:10px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:4px}
+.msg-actions{display:flex;gap:6px}
+.msg-content{font-size:14px;font-weight:600;color:var(--text);line-height:1.6;white-space:pre-wrap;margin-bottom:8px}
+.msg-media{margin-top:10px;border-radius:var(--radius);overflow:hidden}
+.msg-media img{width:100%;max-height:350px;object-fit:cover;border-radius:var(--radius)}
+.msg-media video{width:100%;max-height:350px;border-radius:var(--radius)}
+.msg-media audio{width:100%}
+
+/* ██████ EMPTY STATE ██████ */
+.empty{
+    text-align:center;padding:60px 20px;
+    background:var(--glass);border-radius:var(--radius-xl);
+    border:1px solid var(--border);
+}
+.empty i{font-size:64px;color:var(--accent-light);margin-bottom:12px}
+.empty p{font-size:14px;color:var(--muted);font-weight:600}
+
+/* ██████ MODAL ██████ */
+.modal-overlay{
+    position:fixed;inset:0;z-index:2000;
+    background:rgba(0,0,0,0.6);backdrop-filter:blur(12px);
+    display:none;align-items:center;justify-content:center;
+}
+.modal-overlay.active{display:flex}
+.modal-box{
+    background:rgba(255,255,255,0.96);backdrop-filter:blur(24px);
+    border:1px solid var(--border);border-radius:var(--radius-xl);
+    padding:30px;width:90%;max-width:500px;box-shadow:var(--shadow-lg);
+}
+.modal-box h3{font-size:18px;font-weight:800;margin-bottom:16px}
+.modal-box textarea{
+    width:100%;min-height:120px;padding:14px;
+    background:rgba(255,255,255,0.9);border:1px solid var(--border);
+    border-radius:var(--radius-sm);font-size:14px;font-style:italic;
+    font-family:'Poppins',sans-serif;resize:vertical;
+}
+.modal-btns{display:flex;gap:10px;margin-top:16px;justify-content:flex-end}
+
+/* ██████ TOAST ██████ */
+.toast{
+    position:fixed;bottom:30px;left:50%;transform:translateX(-50%);z-index:3000;
+    background:linear-gradient(135deg,#10b981,#059669);color:#fff;
+    padding:14px 28px;border-radius:50px;
+    font-weight:700;font-size:13px;box-shadow:0 8px 28px rgba(16,185,129,0.4);
+    opacity:0;visibility:hidden;transition:all .3s;
+}
+.toast.show{opacity:1;visibility:visible}
+.toast.error{background:linear-gradient(135deg,#ef4444,#dc2626)}
+
+/* ██████ LOADING SPINNER ██████ */
+.spinner{text-align:center;padding:30px}
+.spinner i{font-size:32px;color:var(--accent2);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ██████ SEARCH BAR ██████ */
+.search-bar{
+    display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;
+}
+.search-bar input{
+    flex:1;min-width:200px;padding:10px 14px;
+    border:1px solid var(--border);border-radius:var(--radius-sm);
+    font-size:13px;font-style:italic;font-family:'Poppins',sans-serif;
+    background:rgba(255,255,255,0.9);
+}
+.search-bar input:focus{outline:none;border-color:var(--accent2)}
+
+/* ██████ RESPONSIVE ██████ */
+@media(max-width:768px){
+    .topbar{padding:10px 14px}
+    .tabs-nav{padding:10px 8px 0;gap:2px}
+    .tab-btn{padding:8px 12px;font-size:10px;gap:4px}
+    .main-wrap{padding:0 12px 30px}
+    .stats-row{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+    .stat-card{padding:12px 14px;gap:10px}
+    .stat-icon{width:36px;height:36px;font-size:16px}
+    .stat-info .stat-val{font-size:17px}
+    .card{padding:16px}
+    .form-row{flex-direction:column}
+}
+
+/* ██████ SCROLLBAR ██████ */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--accent-light);border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ TOP BAR ═══════════════ -->
+<div class="topbar">
+    <div class="topbar-logo"><span class="brand-n">Nectar</span><span class="brand-p">Pro</span> <span style="font-size:11px;color:var(--muted);font-weight:500">Admin</span></div>
+    <a href="/dashboard" class="back"><i class="fa fa-arrow-left"></i> Dashboard</a>
+</div>
+
+<!-- ═══════════════ TABS ═══════════════ -->
+<div class="tabs-nav">
+    <button class="tab-btn active" data-tab="canal"><i class="fa fa-tower-broadcast"></i> Canal</button>
+    <button class="tab-btn" data-tab="deposits"><i class="fa fa-wallet"></i> Dépôts <span class="tab-badge" id="badge-pending-deposits">0</span></button>
+    <button class="tab-btn" data-tab="retraits"><i class="fa fa-arrow-right-from-bracket"></i> Retraits <span class="tab-badge" id="badge-pending-retraits">0</span></button>
+    <button class="tab-btn" data-tab="users"><i class="fa fa-users"></i> Utilisateurs</button>
+    <button class="tab-btn" data-tab="finance"><i class="fa fa-chart-pie"></i> Finance</button>
+    <button class="tab-btn" data-tab="push"><i class="fa fa-bell"></i> Push</button>
+    <button class="tab-btn" data-tab="taches"><i class="fa fa-list-check"></i> Tâches</button>
+</div>
+
+<!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+<div class="main-wrap">
+
+<!-- ██████ TAB: CANAL ██████ -->
+<div class="tab-panel active" id="tab-canal">
+    <div class="card">
+        <h2><i class="fa fa-paper-plane"></i> Envoyer un message au canal</h2>
+        <form id="canalForm">
+            <div class="form-group">
+                <label><i class="fa fa-message"></i> Message (texte)</label>
+                <textarea name="content" placeholder="Écris ton message ici..."></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fa fa-image"></i> Image/Vidéo</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" name="media" accept="image/*,video/*" id="mediaInput" onchange="showFileName(this,'mediaName')">
+                        <div class="file-input-label"><i class="fa fa-upload"></i> Choisir un fichier</div>
+                    </div>
+                    <div class="file-name" id="mediaName"></div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fa fa-microphone"></i> Message audio</label>
+                    <div class="record-area" id="recordArea">
+                        <button type="button" class="record-btn" id="recordBtn" onclick="toggleRecording()">
+                            <i class="fa fa-microphone"></i> Enregistrer
+                        </button>
+                        <span class="record-info" id="recordTimer">00:00</span>
+                        <div class="record-preview" id="recordPreview">
+                            <audio id="recordAudio" controls></audio>
+                            <button type="button" class="btn btn-red btn-sm" onclick="clearRecording()"><i class="fa fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-pink" style="width:100%" id="canalSendBtn">
+                <i class="fa fa-paper-plane"></i> Envoyer le message
+            </button>
+        </form>
+        <button class="btn btn-gold" style="width:100%;margin-top:10px" onclick="sendPushFromCanal()">
+            <i class="fa fa-bell"></i> Envoyer une notification push à tous
+        </button>
+    </div>
+
+    <div id="canalMessages"><div class="spinner"><i class="fa fa-spinner"></i></div></div>
+</div>
+
+<!-- ██████ TAB: DÉPÔTS ██████ -->
+<div class="tab-panel" id="tab-deposits">
+    <div class="stats-row" id="depositStats"></div>
+    <div class="card">
+        <h3><i class="fa fa-list"></i> Liste des dépôts</h3>
+        <div class="table-wrap" id="depositTable"><div class="spinner"><i class="fa fa-spinner"></i></div></div>
+    </div>
+</div>
+
+<!-- ██████ TAB: RETRAITS ██████ -->
+<div class="tab-panel" id="tab-retraits">
+    <div class="stats-row" id="retraitStats"></div>
+    <div class="card">
+        <h3><i class="fa fa-list"></i> Liste des retraits</h3>
+        <div class="table-wrap" id="retraitTable"><div class="spinner"><i class="fa fa-spinner"></i></div></div>
+    </div>
+</div>
+
+<!-- ██████ TAB: UTILISATEURS ██████ -->
+<div class="tab-panel" id="tab-users">
+    <div class="stats-row" id="userStats"></div>
+    <div class="card">
+        <div class="search-bar">
+            <input type="text" id="userSearch" placeholder="🔍 Rechercher un utilisateur..." oninput="filterUsers()">
+            <button class="btn btn-outline btn-sm" onclick="loadUsers()"><i class="fa fa-refresh"></i> Rafraîchir</button>
+        </div>
+        <div class="table-wrap" id="userTable"><div class="spinner"><i class="fa fa-spinner"></i></div></div>
+    </div>
+</div>
+
+<!-- ██████ TAB: FINANCE ██████ -->
+<div class="tab-panel" id="tab-finance">
+    <div class="stats-row" id="financeStats"></div>
+    <div class="card">
+        <h3><i class="fa fa-trophy"></i> Classement par solde</h3>
+        <div class="table-wrap" id="classementTable"><div class="spinner"><i class="fa fa-spinner"></i></div></div>
+    </div>
+</div>
+
+<!-- ██████ TAB: PUSH ██████ -->
+<div class="tab-panel" id="tab-push">
+    <div class="card">
+        <h2><i class="fa fa-bell"></i> Envoyer une notification push</h2>
+        <div class="form-group">
+            <label><i class="fa fa-heading"></i> Titre</label>
+            <input type="text" id="pushTitle" placeholder="Titre de la notification" value="📢 NectarPro">
+        </div>
+        <div class="form-group">
+            <label><i class="fa fa-message"></i> Message</label>
+            <textarea id="pushBody" placeholder="Contenu de la notification..."></textarea>
+        </div>
+        <div class="form-group">
+            <label><i class="fa fa-link"></i> URL (optionnel)</label>
+            <input type="text" id="pushUrl" placeholder="/dashboard">
+        </div>
+        <button class="btn btn-gold" onclick="sendPush()"><i class="fa fa-paper-plane"></i> Envoyer à tous</button>
+        <button class="btn btn-outline btn-sm" style="margin-left:8px" onclick="sendPushTest()"><i class="fa fa-flask"></i> Test</button>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+        <h3><i class="fa fa-chart-simple"></i> Statistiques Push</h3>
+        <div class="stats-row" id="pushStats"></div>
+    </div>
+</div>
+
+<!-- ██████ TAB: TÂCHES ██████ -->
+<div class="tab-panel" id="tab-taches">
+    <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+            <h3 style="margin:0"><i class="fa fa-calendar-day"></i> Tâches du jour</h3>
+            <div style="display:flex;gap:8px">
+                <button class="btn btn-pink btn-sm" onclick="tacheAction('generate')"><i class="fa fa-magic"></i> Générer</button>
+                <button class="btn btn-red btn-sm" onclick="tacheAction('regenerate')"><i class="fa fa-refresh"></i> Régénérer</button>
+            </div>
+        </div>
+    </div>
+    <div id="tachesContent"><div class="spinner"><i class="fa fa-spinner"></i></div></div>
+</div>
+
+</div>
+
+<!-- ═══════════════ MODAL ÉDITION MESSAGE ═══════════════ -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+        <h3><i class="fa fa-pen-to-square"></i> Modifier le message</h3>
+        <textarea id="editContent" placeholder="Contenu du message..."></textarea>
+        <div class="modal-btns">
+            <button class="btn btn-red btn-sm" onclick="closeEdit()">Annuler</button>
+            <button class="btn btn-pink btn-sm" onclick="saveEdit()"><i class="fa fa-save"></i> Enregistrer</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ TOAST ═══════════════ -->
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════════ SCRIPTS ═══════════════ -->
+<script>
+/* ═══════════════════════════════════════
+   NECTARPRO ADMIN — JAVASCRIPT
+   ═══════════════════════════════════════ */
+
+// ██████ UTILS ██████
+function toast(msg, isError) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (isError ? ' error' : '');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function showFileName(input, labelId) {
+    const lbl = document.getElementById(labelId);
+    lbl.textContent = input.files.length > 0 ? input.files[0].name : '';
+}
+
+async function fetchJSON(url, options) {
+    const resp = await fetch(url, options);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const contentType = resp.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) return resp.json();
+    return resp.text();
+}
+
+function formatCFA(n) { return (n||0).toLocaleString('fr-FR') + ' FCFA'; }
+function formatDate(d) {
+    if (!d) return '—';
+    const dt = new Date(d);
+    return dt.toLocaleDateString('fr-FR', {day:'2-digit',month:'2-digit',year:'numeric'}) + ' ' + dt.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
+}
+
+// ██████ TABS SWITCHING ██████
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+        // Charger données au clic
+        switch(this.dataset.tab) {
+            case 'canal': loadCanalMessages(); break;
+            case 'deposits': loadDeposits(); break;
+            case 'retraits': loadRetraits(); break;
+            case 'users': loadUsers(); break;
+            case 'finance': loadFinance(); break;
+            case 'push': loadPushStats(); break;
+            case 'taches': loadTaches(); break;
+        }
+    });
+});
+
+/* ═══════════════════════════════════
+   CANAL
+   ═══════════════════════════════════ */
+
+// ██████ AUDIO RECORDING ██████
+let mediaRecorder = null;
+let audioChunks = [];
+let recordStartTime = null;
+let recordTimerInterval = null;
+let recordedBlob = null;
+
+async function toggleRecording() {
+    const btn = document.getElementById('recordBtn');
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+        // Stop recording
+        mediaRecorder.stop();
+        return;
+    }
+    // Start recording
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream, { mimeType: MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' : 'audio/webm' });
+        audioChunks = [];
+        mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+        mediaRecorder.onstop = () => {
+            stream.getTracks().forEach(t => t.stop());
+            recordedBlob = new Blob(audioChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+            const url = URL.createObjectURL(recordedBlob);
+            const audio = document.getElementById('recordAudio');
+            audio.src = url;
+            document.getElementById('recordPreview').classList.add('show');
+            btn.innerHTML = '<i class="fa fa-microphone"></i> Réenregistrer';
+            btn.classList.remove('recording');
+            stopTimer();
+        };
+        mediaRecorder.start();
+        recordStartTime = Date.now();
+        startTimer();
+        btn.innerHTML = '<i class="fa fa-stop"></i> Stop';
+        btn.classList.add('recording');
+    } catch(err) {
+        toast('Micro non disponible : ' + err.message, true);
+    }
+}
+
+function startTimer() {
+    updateTimer();
+    recordTimerInterval = setInterval(updateTimer, 1000);
+}
+function stopTimer() {
+    if (recordTimerInterval) { clearInterval(recordTimerInterval); recordTimerInterval = null; }
+}
+function updateTimer() {
+    if (!recordStartTime) return;
+    const elapsed = Math.floor((Date.now() - recordStartTime) / 1000);
+    const mins = Math.floor(elapsed / 60).toString().padStart(2,'0');
+    const secs = (elapsed % 60).toString().padStart(2,'0');
+    document.getElementById('recordTimer').textContent = mins + ':' + secs;
+}
+
+function clearRecording() {
+    recordedBlob = null;
+    document.getElementById('recordAudio').src = '';
+    document.getElementById('recordPreview').classList.remove('show');
+    document.getElementById('recordTimer').textContent = '00:00';
+    document.getElementById('recordBtn').innerHTML = '<i class="fa fa-microphone"></i> Enregistrer';
+}
+
+// ██████ CANAL FORM SUBMIT ██████
+document.getElementById('canalForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('canalSendBtn');
+    const originalHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Envoi...';
+
+    const fd = new FormData(this);
+    // Add recorded audio blob if exists
+    if (recordedBlob) {
+        fd.append('audio', recordedBlob, 'enregistrement.webm');
+    }
+
+    try {
+        const resp = await fetch('/admin/canal/edit', { method: 'POST', body: fd });
+        if (resp.ok) {
+            // Auto push notification
+            const content = fd.get('content') || '';
+            const mediaFile = fd.get('media');
+            let pushTitle = '📢 Nouvelle annonce';
+            let pushBody = content ? content.substring(0, 120) : '';
+            if (mediaFile && mediaFile.name) pushBody = pushBody || 'Nouveau média partagé dans le canal';
+            if (recordedBlob) pushBody = pushBody || 'Nouvel audio partagé dans le canal';
+            if (!pushBody) pushBody = 'Un nouveau message a été publié';
+
+            try {
+                await fetch('/api/push/send-all', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title: pushTitle, body: pushBody.substring(0,120), tag: 'canal-msg', url: '/chaine' })
+                });
+            } catch(e) {}
+
+            // Reset form
+            this.reset();
+            document.getElementById('mediaName').textContent = '';
+            clearRecording();
+            loadCanalMessages();
+            toast('Message envoyé !');
+        } else {
+            toast('Erreur lors de l\'envoi', true);
+        }
+    } catch(err) {
+        toast('Erreur réseau', true);
+    }
+    btn.disabled = false;
+    btn.innerHTML = originalHtml;
+});
+
+async function loadCanalMessages() {
+    const container = document.getElementById('canalMessages');
+    try {
+        const html = await fetch('/chaine').then(r => r.text());
+        // Extraire la liste des messages du HTML de la page chaîne
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const msgs = doc.querySelectorAll('.msg-card, [class*="message"], [class*="post"]');
+        if (msgs.length > 0) {
+            container.innerHTML = '<div class="msg-list">' + Array.from(msgs).map(m => m.outerHTML).join('') + '</div>';
+        } else {
+            // Fallback : afficher le HTML brut si pas de structure reconnue
+            container.innerHTML = '<div class="empty"><i class="fa fa-inbox"></i><p>Chargement...</p></div>';
+            // Recharger via iframe ou direct fetch
+            loadCanalViaAPI();
+        }
+    } catch(e) {
+        loadCanalViaAPI();
+    }
+}
+
+async function loadCanalViaAPI() {
+    const container = document.getElementById('canalMessages');
+    try {
+        const html = await fetch('/chaine').then(r => r.text());
+        // Parse les messages de la page chaine
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        // Chercher le contenu principal
+        const main = div.querySelector('.container') || div.querySelector('main') || div.body;
+        if (main) {
+            container.innerHTML = '<div class="msg-list" style="margin-top:16px">' + main.innerHTML + '</div>';
+        } else {
+            container.innerHTML = '<div class="empty"><i class="fa fa-inbox"></i><p>Aucun message trouvé</p></div>';
+        }
+        // Ré-attacher les event listeners pour les boutons dans les messages si besoin
+    } catch(e) {
+        container.innerHTML = '<div class="empty"><i class="fa fa-inbox"></i><p>Erreur de chargement</p></div>';
+    }
+}
+
+function sendPushFromCanal() {
+    const content = document.querySelector('#canalForm textarea[name="content"]').value;
+    const title = '📢 Nouvelle annonce';
+    const body = content ? content.substring(0, 120) : 'Un nouveau message a été publié dans le canal';
+    fetch('/api/push/send-all', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, body, tag: 'canal-msg', url: '/chaine' })
+    }).then(r => {
+        if (r.ok) toast('Notification push envoyée à tous !');
+        else toast('Erreur push', true);
+    }).catch(() => toast('Erreur réseau', true));
+}
+
+// ██████ ÉDITION MESSAGE ██████
+let editingId = null;
+function openEdit(id, content) {
+    editingId = id;
+    document.getElementById('editContent').value = content.replace(/\\n/g, '\n');
+    document.getElementById('editModal').classList.add('active');
+}
+function closeEdit() {
+    editingId = null;
+    document.getElementById('editModal').classList.remove('active');
+}
+async function saveEdit() {
+    const content = document.getElementById('editContent').value;
+    try {
+        const resp = await fetch('/edit_msg/' + editingId, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content })
+        });
+        if (resp.ok) { loadCanalMessages(); closeEdit(); toast('Message modifié !'); }
+        else toast('Erreur édition', true);
+    } catch(e) { toast('Erreur réseau', true); }
+}
+
+/* ═══════════════════════════════════
+   DÉPÔTS
+   ═══════════════════════════════════ */
+async function loadDeposits() {
+    try {
+        const html = await fetch('/admin/deposits').then(r => r.text());
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        const table = div.querySelector('table');
+        const statsRow = document.getElementById('depositStats');
+        const tableWrap = document.getElementById('depositTable');
+
+        // Extraire les stats
+        const stats = div.querySelectorAll('.stat-card, [class*="stat"]');
+        if (stats.length > 0) {
+            statsRow.innerHTML = Array.from(stats).map(s => s.outerHTML).join('');
+        } else {
+            statsRow.innerHTML = '';
+        }
+
+        if (table) {
+            tableWrap.innerHTML = table.outerHTML;
+        } else {
+            // Chercher la partie contenu
+            const main = div.querySelector('.container') || div.querySelector('main') || div.body;
+            tableWrap.innerHTML = main ? main.innerHTML : '<div class="empty"><p>Chargement...</p></div>';
+        }
+        updateDepositBadge();
+    } catch(e) {
+        document.getElementById('depositTable').innerHTML = '<div class="empty"><i class="fa fa-exclamation-triangle"></i><p>Erreur de chargement</p></div>';
+    }
+}
+
+function updateDepositBadge() {
+    const pending = document.querySelectorAll('#depositTable tr [class*="pending"], #depositTable .statut-en-attente, #depositTable td:contains("en attente")').length;
+    document.getElementById('badge-pending-deposits').textContent = pending || '0';
+}
+
+/* ═══════════════════════════════════
+   RETRAITS
+   ═══════════════════════════════════ */
+async function loadRetraits() {
+    try {
+        const html = await fetch('/admin/retraits').then(r => r.text());
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        const retraitTable = document.getElementById('retraitTable');
+        const retraitStats = document.getElementById('retraitStats');
+
+        const stats = div.querySelectorAll('.stat-card, [class*="stat"]');
+        if (stats.length > 0) {
+            retraitStats.innerHTML = Array.from(stats).map(s => s.outerHTML).join('');
+        } else {
+            retraitStats.innerHTML = '';
+        }
+
+        const table = div.querySelector('table');
+        if (table) {
+            retraitTable.innerHTML = table.outerHTML;
+        } else {
+            const main = div.querySelector('.container') || div.querySelector('main') || div.body;
+            retraitTable.innerHTML = main ? main.innerHTML : '<div class="empty"><p>Chargement...</p></div>';
+        }
+    } catch(e) {
+        document.getElementById('retraitTable').innerHTML = '<div class="empty"><i class="fa fa-exclamation-triangle"></i><p>Erreur de chargement</p></div>';
+    }
+}
+
+/* ═══════════════════════════════════
+   UTILISATEURS
+   ═══════════════════════════════════ */
+let allUsers = [];
+async function loadUsers() {
+    try {
+        const html = await fetch('/admin/users').then(r => r.text());
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        const table = div.querySelector('table');
+        const userStats = document.getElementById('userStats');
+        const userTable = document.getElementById('userTable');
+
+        const stats = div.querySelectorAll('.stat-card, [class*="stat"]');
+        if (stats.length > 0) {
+            userStats.innerHTML = Array.from(stats).map(s => s.outerHTML).join('');
+        }
+
+        if (table) {
+            userTable.innerHTML = table.outerHTML;
+            // Store rows for search
+            allUsers = Array.from(table.querySelectorAll('tbody tr')).map(tr => ({
+                element: tr,
+                text: tr.textContent.toLowerCase()
+            }));
+        } else {
+            const main = div.querySelector('.container') || div.querySelector('main') || div.body;
+            userTable.innerHTML = main ? main.innerHTML : '<div class="empty"><p>Aucun utilisateur</p></div>';
+        }
+    } catch(e) {
+        document.getElementById('userTable').innerHTML = '<div class="empty"><i class="fa fa-exclamation-triangle"></i><p>Erreur de chargement</p></div>';
+    }
+}
+
+function filterUsers() {
+    const q = document.getElementById('userSearch').value.toLowerCase();
+    allUsers.forEach(u => {
+        u.element.style.display = q === '' || u.text.includes(q) ? '' : 'none';
+    });
+}
+
+/* ═══════════════════════════════════
+   FINANCE
+   ═══════════════════════════════════ */
+async function loadFinance() {
+    try {
+        const html = await fetch('/admin/finance').then(r => r.text());
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        const financeStats = document.getElementById('financeStats');
+        const classementTable = document.getElementById('classementTable');
+
+        // Stats
+        const stats = div.querySelectorAll('.stat-card, [class*="stat"]');
+        if (stats.length > 0) {
+            financeStats.innerHTML = Array.from(stats).map(s => s.outerHTML).join('');
+        }
+
+        // Classement
+        const table = div.querySelector('table');
+        if (table) {
+            classementTable.innerHTML = table.outerHTML;
+        } else {
+            const main = div.querySelector('.container') || div.querySelector('main') || div.body;
+            classementTable.innerHTML = main ? main.innerHTML : '<div class="empty"><p>Chargement...</p></div>';
+        }
+    } catch(e) {
+        document.getElementById('classementTable').innerHTML = '<div class="empty"><i class="fa fa-exclamation-triangle"></i><p>Erreur de chargement</p></div>';
+    }
+}
+
+/* ═══════════════════════════════════
+   PUSH
+   ═══════════════════════════════════ */
+async function sendPush() {
+    const title = document.getElementById('pushTitle').value || '📢 NectarPro';
+    const body = document.getElementById('pushBody').value || '';
+    const url = document.getElementById('pushUrl').value || '/dashboard';
+    if (!body) { toast('Veuillez entrer un message', true); return; }
+    try {
+        const resp = await fetch('/api/push/send-all', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, body, tag: 'admin-push', url })
+        });
+        if (resp.ok) {
+            toast('Notification push envoyée à tous !');
+            document.getElementById('pushBody').value = '';
+        } else {
+            toast('Erreur lors de l\'envoi', true);
+        }
+    } catch(e) { toast('Erreur réseau', true); }
+}
+
+async function sendPushTest() {
+    const title = '🧪 Test Notification';
+    const body = 'Ceci est un test de notification push.';
+    try {
+        const resp = await fetch('/api/push/test', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, body, tag: 'admin-test', url: '/dashboard' })
+        });
+        if (resp.ok) toast('Notification de test envoyée !');
+        else toast('Erreur test push', true);
+    } catch(e) { toast('Erreur réseau', true); }
+}
+
+async function loadPushStats() {
+    const statsDiv = document.getElementById('pushStats');
+    try {
+        const resp = await fetch('/api/push/check-updates');
+        const data = await resp.json();
+        statsDiv.innerHTML = `
+            <div class="stat-card"><div class="stat-icon sky"><i class="fa fa-bell"></i></div><div class="stat-info"><div class="stat-val">${data.subscriber_count || 0}</div><div class="stat-lbl">Abonnés push</div></div></div>
+            <div class="stat-card"><div class="stat-icon emerald"><i class="fa fa-check-circle"></i></div><div class="stat-info"><div class="stat-val">Actif</div><div class="stat-lbl">Statut</div></div></div>
+        `;
+    } catch(e) {
+        statsDiv.innerHTML = '<div class="stat-card"><div class="stat-icon pink"><i class="fa fa-bell"></i></div><div class="stat-info"><div class="stat-val">—</div><div class="stat-lbl">Statistiques push</div></div></div>';
+    }
+}
+
+/* ═══════════════════════════════════
+   TÂCHES
+   ═══════════════════════════════════ */
+async function loadTaches() {
+    try {
+        const html = await fetch('/admin/taches').then(r => r.text());
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        const content = document.getElementById('tachesContent');
+
+        const main = div.querySelector('.container') || div.querySelector('main') || div.body;
+        if (main) {
+            // Garder le contenu mais retirer le header/nav qui sont déjà dans notre layout
+            const cards = main.querySelectorAll('.card, .stat-grid');
+            let inner = '';
+            cards.forEach(c => inner += c.outerHTML);
+            content.innerHTML = inner || main.innerHTML;
+        } else {
+            content.innerHTML = '<div class="empty"><p>Aucune tâche</p></div>';
+        }
+    } catch(e) {
+        document.getElementById('tachesContent').innerHTML = '<div class="empty"><i class="fa fa-exclamation-triangle"></i><p>Erreur de chargement</p></div>';
+    }
+}
+
+async function tacheAction(action) {
+    try {
+        const fd = new FormData();
+        fd.append('action', action);
+        const resp = await fetch('/admin/taches', { method: 'POST', body: fd });
+        if (resp.ok) {
+            loadTaches();
+            toast(action === 'generate' ? 'Tâches générées !' : 'Tâches régénérées !');
+        } else {
+            toast('Erreur', true);
+        }
+    } catch(e) { toast('Erreur réseau', true); }
+}
+
+/* ═══════════════════════════════════
+   INIT
+   ═══════════════════════════════════ */
+// Charger le canal par défaut
+loadCanalMessages();
+</script>
+</body>
+</html>
