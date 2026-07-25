@@ -139,6 +139,7 @@ tr:hover td{background:rgba(236,72,153,0.03)}
 .btn-pink:hover{box-shadow:0 12px 38px rgba(219,39,119,0.45)}
 .btn-emerald{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
 .btn-red{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
+.btn-gold{background:linear-gradient(135deg,#f59e0b,#f97316);color:#fff;box-shadow:0 6px 20px rgba(245,158,11,0.3)}
 .btn-sm{padding:6px 12px;font-size:10px}
 .btn-xs{padding:4px 10px;font-size:10px;border-radius:8px}
 
@@ -297,22 +298,9 @@ tr:hover td{background:rgba(236,72,153,0.03)}
                         </td>
                         <td>{{ r.date.strftime('%d/%m/%Y %H:%M') if r.date else '—' }}</td>
                         <td style="text-align:right">
-                            {% if r.statut == 'successful' %}
-                            <a href="{{ url_for('valider_retrait', retrait_id=r.id) }}" class="btn btn-emerald btn-xs" onclick="return confirm('Valider ce retrait de {{ "%.0f"|format(r.montant) }} F ?')">
-                                <i class="fas fa-check"></i> Valider
+                            <a href="{{ url_for('rembourser_retrait', retrait_id=r.id) }}" class="btn btn-gold btn-xs" onclick="return confirm('Rembourser {{ '%.0f'|format(r.montant) }} F à {{ r.username_display }} ?')">
+                                <i class="fas fa-undo-alt"></i> Rembourser
                             </a>
-                            <a href="{{ url_for('refuser_retrait', retrait_id=r.id) }}" class="btn btn-red btn-xs" onclick="return confirm('Refuser et recréditer {{ "%.0f"|format(r.montant) }} F ?')">
-                                <i class="fas fa-times"></i> Refuser
-                            </a>
-                            {% elif r.statut == 'validé' %}
-                            <a href="{{ url_for('refuser_retrait', retrait_id=r.id) }}" class="btn btn-red btn-xs" onclick="return confirm('Déjà validé. Forcer le refus et recréditer ?')">
-                                <i class="fas fa-undo"></i> Annuler
-                            </a>
-                            {% elif r.statut == 'refusé' %}
-                            <a href="{{ url_for('valider_retrait', retrait_id=r.id) }}" class="btn btn-emerald btn-xs" onclick="return confirm('Forcer la validation ?')">
-                                <i class="fas fa-check"></i> Re-valider
-                            </a>
-                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}

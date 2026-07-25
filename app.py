@@ -3920,6 +3920,29 @@ def refuser_retrait(retrait_id):
     flash("Retrait refusé et montant recrédité à l'utilisateur.", "warning")
     return redirect(url_for("admin_retraits"))
 
+@app.route("/admin/retraits/rembourser/<int:retrait_id>")
+def rembourser_retrait(retrait_id):
+    user_admin = get_logged_in_admin()
+    if not user_admin:
+        flash("Accès refusé.", "danger")
+        return redirect(url_for("admin_finance"))
+
+    retrait = Retrait.query.get_or_404(retrait_id)
+    user = User.query.filter_by(phone=retrait.phone).first()
+
+    if not user:
+        flash("Utilisateur introuvable.", "danger")
+        return redirect(url_for("admin_retraits"))
+
+    # Recréditer le solde de parrainage
+    montant_total = retrait.montant + (retrait.frais or 0)
+    user.solde_parrainage += montant_total
+    retrait.statut = "remboursé"
+
+    db.session.commit()
+
+    flash(f"Retrait de {montant_total:.0f} F remboursé à {user.username}.", "success")
+    return redirect(url_for("admin_retraits"))
 
 
 @app.route("/admin/users/activer/<username>")
