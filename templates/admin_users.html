@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Utilisateurs — Admin NectarPro</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ═══════════════════════════════════════════
+   NECTARPRO ADMIN USERS — THÈME ROSE
+   ═══════════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+
+:root{
+    --bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);
+    --glass:rgba(255,255,255,0.72);
+    --glass-hover:rgba(255,255,255,0.88);
+    --accent:#db2777;
+    --accent2:#ec4899;
+    --accent-light:#f9a8d4;
+    --accent-bg:rgba(236,72,153,0.08);
+    --gold:#f59e0b;
+    --gold-light:#fef3c7;
+    --emerald:#10b981;
+    --emerald-light:#d1fae5;
+    --sky:#0ea5e9;
+    --sky-light:#e0f2fe;
+    --red:#ef4444;
+    --red-light:#fef2f2;
+    --text:#000;
+    --text2:#1f2937;
+    --muted:#6b7280;
+    --border:rgba(236,72,153,0.2);
+    --shadow-sm:0 2px 8px rgba(236,72,153,0.08);
+    --shadow:0 8px 32px rgba(236,72,153,0.12);
+    --shadow-lg:0 16px 48px rgba(236,72,153,0.18);
+    --radius-sm:12px;
+    --radius:18px;
+    --radius-lg:24px;
+    --radius-xl:32px;
+}
+
+body{
+    background:var(--bg);
+    min-height:100vh;min-height:100dvh;
+    color:var(--text);
+    font-style:italic;
+    position:relative;
+    overflow-x:hidden;
+}
+
+/* ██████ TOP BAR ██████ */
+.topbar{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:12px 24px;
+    background:rgba(255,255,255,0.7);
+    backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+    border-bottom:1px solid var(--border);
+    position:sticky;top:0;z-index:1000;
+    flex-wrap:wrap;gap:8px;
+}
+.topbar-logo{
+    display:flex;align-items:center;gap:8px;
+    font-size:18px;font-weight:900;
+}
+.topbar-logo .brand-n{color:var(--accent2)}
+.topbar-logo .brand-p{color:var(--accent)}
+.back-btn{
+    background:var(--glass);border:1px solid var(--border);
+    color:var(--accent2);text-decoration:none;font-weight:700;font-size:13px;
+    display:flex;align-items:center;gap:6px;
+    padding:8px 16px;border-radius:var(--radius-sm);
+    transition:all .2s;
+}
+.back-btn:hover{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+
+/* ██████ SUB-NAV TABS ██████ */
+.subnav{
+    display:flex;gap:4px;flex-wrap:wrap;
+    max-width:1400px;margin:0 auto;padding:16px 24px 0;
+}
+.subnav a{
+    padding:8px 16px;border-radius:20px 20px 0 0;
+    font-size:12px;font-weight:700;font-style:italic;
+    text-decoration:none;color:var(--text2);
+    background:rgba(236,72,153,0.06);
+    transition:all .25s;display:flex;align-items:center;gap:6px;
+}
+.subnav a:hover{background:rgba(236,72,153,0.14);color:var(--accent)}
+.subnav a.active{
+    background:var(--accent2);color:#fff;
+    box-shadow:0 -4px 16px rgba(219,39,119,0.25);
+}
+
+/* ██████ MAIN CONTAINER ██████ */
+.container{max-width:1400px;margin:0 auto;padding:20px 24px 40px}
+
+/* ██████ STATS CARDS ██████ */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:24px}
+.stat-card{
+    background:var(--glass);backdrop-filter:blur(16px);
+    border:1px solid var(--border);border-radius:var(--radius-lg);
+    padding:16px 18px;box-shadow:var(--shadow-sm);
+    display:flex;align-items:center;gap:12px;
+    transition:all .3s;
+}
+.stat-card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.stat-icon{
+    width:44px;height:44px;border-radius:var(--radius-sm);
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;flex-shrink:0;
+}
+.stat-icon.pink{background:rgba(236,72,153,0.12);color:var(--accent2)}
+.stat-icon.gold{background:var(--gold-light);color:var(--gold)}
+.stat-icon.emerald{background:var(--emerald-light);color:var(--emerald)}
+.stat-icon.sky{background:var(--sky-light);color:var(--sky)}
+.stat-icon.red{background:var(--red-light);color:var(--red)}
+.stat-info .stat-val{font-size:20px;font-weight:900;line-height:1.2}
+.stat-info .stat-lbl{font-size:10px;color:var(--muted);font-weight:600}
+
+/* ██████ CARD ██████ */
+.card{
+    background:var(--glass);backdrop-filter:blur(16px);
+    border:1px solid var(--border);border-radius:var(--radius-xl);
+    padding:24px;margin-bottom:20px;
+    box-shadow:var(--shadow);
+}
+.card h2, .card h3{
+    font-weight:800;margin-bottom:16px;
+    display:flex;align-items:center;gap:8px;
+}
+.card h2{font-size:18px}
+.card h3{font-size:15px}
+.card h2 i, .card h3 i{color:var(--accent2)}
+
+/* ██████ SEARCH BAR ██████ */
+.search-bar{
+    display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;
+}
+.search-bar input{
+    flex:1;min-width:200px;
+    padding:10px 14px;border:1px solid var(--border);
+    border-radius:var(--radius-sm);font-size:14px;font-style:italic;
+    background:rgba(255,255,255,0.9);color:var(--text);
+    font-family:'Poppins',sans-serif;
+    transition:border-color .2s,box-shadow .2s;
+}
+.search-bar input:focus{outline:none;border-color:var(--accent2);box-shadow:0 0 0 3px rgba(236,72,153,0.15)}
+.search-bar input::placeholder{color:var(--muted)}
+
+/* ██████ TABLE ██████ */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{
+    text-align:left;padding:10px 12px;font-size:11px;font-weight:700;
+    color:var(--muted);text-transform:uppercase;letter-spacing:.5px;
+    border-bottom:2px solid var(--border);cursor:pointer;
+    user-select:none;white-space:nowrap;
+}
+th:hover{color:var(--accent2)}
+th i{font-size:9px;margin-left:4px}
+td{padding:10px 12px;border-bottom:1px solid rgba(236,72,153,0.1);font-weight:500}
+tr:hover td{background:rgba(236,72,153,0.03)}
+
+/* ██████ BUTTONS ██████ */
+.btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    padding:10px 18px;border:none;border-radius:var(--radius-sm);
+    font-size:12px;font-weight:700;font-style:italic;cursor:pointer;
+    transition:all .25s;text-decoration:none;
+    box-shadow:var(--shadow-sm);
+}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:scale(0.97)}
+.btn-pink{background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;box-shadow:0 8px 28px rgba(219,39,119,0.3)}
+.btn-pink:hover{box-shadow:0 12px 38px rgba(219,39,119,0.45)}
+.btn-emerald{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
+.btn-red{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
+.btn-sky{background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff}
+.btn-gold{background:linear-gradient(135deg,#f59e0b,#f97316);color:#fff}
+.btn-sm{padding:6px 12px;font-size:10px}
+.btn-xs{padding:4px 10px;font-size:10px;border-radius:8px}
+
+/* ██████ BADGES ██████ */
+.badge{
+    display:inline-flex;align-items:center;gap:4px;
+    padding:4px 10px;border-radius:12px;
+    font-size:10px;font-weight:700;
+}
+.badge-pink{background:rgba(236,72,153,0.08);color:var(--accent2)}
+.badge-emerald{background:var(--emerald-light);color:var(--emerald)}
+.badge-gold{background:var(--gold-light);color:#92400e}
+.badge-red{background:var(--red-light);color:var(--red)}
+.badge-sky{background:var(--sky-light);color:var(--sky)}
+
+/* ██████ ALERTS ██████ */
+.alert{
+    padding:12px 18px;border-radius:var(--radius-sm);
+    margin-bottom:16px;font-size:13px;font-weight:600;
+    display:flex;align-items:center;gap:8px;
+}
+.alert-success{background:var(--emerald-light);color:#065f46}
+.alert-danger{background:var(--red-light);color:#991b1b}
+.alert-info{background:var(--sky-light);color:#075985}
+.alert-warning{background:var(--gold-light);color:#92400e}
+
+/* ██████ EMPTY STATE ██████ */
+.empty-state{
+    text-align:center;padding:60px 20px;color:var(--muted);
+}
+.empty-state i{font-size:48px;margin-bottom:12px;color:var(--accent-light)}
+.empty-state p{font-size:14px;font-weight:600}
+
+/* ██████ PAGINATION INFO ██████ */
+.page-info{
+    text-align:center;padding:12px;font-size:12px;
+    color:var(--muted);font-weight:600;
+}
+
+/* ██████ RESPONSIVE ██████ */
+@media(max-width:768px){
+    .topbar{padding:10px 16px}
+    .container{padding:12px 12px 30px}
+    .stats-row{grid-template-columns:repeat(2,1fr)}
+    .card{padding:16px}
+    .subnav{padding:12px 16px 0;overflow-x:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- ██████ TOP BAR ██████ -->
+<header class="topbar">
+    <div class="topbar-logo">
+        <span class="brand-n">N</span><span class="brand-p">ectar</span><span class="brand-n">P</span><span class="brand-p">ro</span>
+        <span style="font-size:11px;font-weight:500;color:var(--muted);margin-left:4px">| Admin Utilisateurs</span>
+    </div>
+    <a href="{{ url_for('admin_finance') }}" class="back-btn"><i class="fas fa-arrow-left"></i> Retour Finance</a>
+</header>
+
+<!-- ██████ SUB-NAVIGATION ██████ -->
+<nav class="subnav">
+    <a href="{{ url_for('admin_users') }}" class="active"><i class="fas fa-users"></i> Tous</a>
+    <a href="{{ url_for('admin_users_actifs') }}"><i class="fas fa-user-check"></i> Actifs</a>
+    <a href="{{ url_for('admin_users_inactifs') }}"><i class="fas fa-user-clock"></i> Inactifs</a>
+</nav>
+
+<!-- ██████ MAIN ██████ -->
+<div class="container">
+
+    <!-- FLASH MESSAGES -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    <i class="fas fa-{% if category=='success' %}check-circle{% elif category=='danger' %}exclamation-circle{% elif category=='warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- STATISTIQUES -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-icon pink"><i class="fas fa-users"></i></div>
+            <div class="stat-info">
+                <div class="stat-val">{{ users|length }}</div>
+                <div class="stat-lbl">Total utilisateurs</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon emerald"><i class="fas fa-user-check"></i></div>
+            <div class="stat-info">
+                <div class="stat-val">{{ users|selectattr('premier_depot','equalto',true)|list|length }}</div>
+                <div class="stat-lbl">Actifs (1er dépôt)</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon gold"><i class="fas fa-user-clock"></i></div>
+            <div class="stat-info">
+                <div class="stat-val">{{ users|selectattr('premier_depot','equalto',false)|list|length }}</div>
+                <div class="stat-lbl">Inactifs</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon sky"><i class="fas fa-sitemap"></i></div>
+            <div class="stat-info">
+                <div class="stat-val">{{ users|sum(attribute='niveau1') }}</div>
+                <div class="stat-lbl">Total Filleuls Niv.1</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLEAU DES UTILISATEURS -->
+    <div class="card">
+        <h2><i class="fas fa-table"></i> Liste des utilisateurs</h2>
+
+        <!-- Barre de recherche -->
+        <div class="search-bar">
+            <input type="text" id="userSearch" placeholder="&#128269; Rechercher par nom, email ou téléphone..." onkeyup="filterUsers()">
+        </div>
+
+        {% if users %}
+        <div class="table-wrap">
+            <table id="userTable">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable(0)">Nom d'utilisateur <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable(1)">Email <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable(2)">Téléphone <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable(3)">Parrain <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable(4)">Niv.1 <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable(5)">Niv.2 <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable(6)">Niv.3 <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable(7)">Statut <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable(8)">Inscription <i class="fas fa-sort"></i></th>
+                        <th style="text-align:right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                    <tr>
+                        <td><strong>{{ u.username }}</strong></td>
+                        <td>{{ u.email or '—' }}</td>
+                        <td>{{ u.phone or '—' }}</td>
+                        <td>
+                            {% if u.parrain and u.parrain != '—' %}
+                            <span class="badge badge-pink"><i class="fas fa-link"></i> {{ u.parrain }}</span>
+                            {% else %}
+                            <span style="color:var(--muted)">—</span>
+                            {% endif %}
+                        </td>
+                        <td><span class="badge badge-sky">{{ u.niveau1 }}</span></td>
+                        <td><span class="badge badge-gold">{{ u.niveau2 }}</span></td>
+                        <td><span class="badge badge-pink">{{ u.niveau3 }}</span></td>
+                        <td>
+                            {% if u.premier_depot %}
+                            <span class="badge badge-emerald"><i class="fas fa-check-circle"></i> Actif</span>
+                            {% else %}
+                            <span class="badge badge-red"><i class="fas fa-clock"></i> Inactif</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ u.date_creation.strftime('%d/%m/%Y') if u.date_creation else '—' }}</td>
+                        <td style="text-align:right;white-space:nowrap">
+                            <a href="{{ url_for('admin_activer_user', username=u.username) }}" class="btn btn-emerald btn-xs" onclick="return confirm('Activer {{ u.username }} ?')">
+                                <i class="fas fa-check"></i> Activer
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="page-info">
+            <i class="fas fa-database"></i> {{ users|length }} utilisateur(s) affiché(s)
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-users-slash"></i>
+            <p>Aucun utilisateur trouvé.</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<script>
+// ═══════════ RECHERCHE DYNAMIQUE ═══════════
+function filterUsers(){
+    const input = document.getElementById('userSearch');
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById('userTable');
+    const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+    for(let i = 0; i < rows.length; i++){
+        const cells = rows[i].getElementsByTagName('td');
+        let match = false;
+        for(let j = 0; j < Math.min(cells.length, 3); j++){
+            const txt = cells[j].textContent || cells[j].innerText;
+            if(txt.toLowerCase().indexOf(filter) > -1){
+                match = true;
+                break;
+            }
+        }
+        rows[i].style.display = match ? '' : 'none';
+    }
+}
+
+// ═══════════ TRI PAR COLONNE ═══════════
+let sortDir = {};
+function sortTable(colIndex){
+    const table = document.getElementById('userTable');
+    const tbody = table.getElementsByTagName('tbody')[0];
+    const rows = Array.from(tbody.getElementsByTagName('tr'));
+
+    sortDir[colIndex] = !sortDir[colIndex];
+    const asc = sortDir[colIndex];
+
+    rows.sort((a,b) => {
+        const aVal = (a.getElementsByTagName('td')[colIndex]?.textContent || '').trim().toLowerCase();
+        const bVal = (b.getElementsByTagName('td')[colIndex]?.textContent || '').trim().toLowerCase();
+
+        // Numeric detection
+        const aNum = parseFloat(aVal.replace(/[^0-9.-]/g,''));
+        const bNum = parseFloat(bVal.replace(/[^0-9.-]/g,''));
+        if(!isNaN(aNum) && !isNaN(bNum)){
+            return asc ? aNum - bNum : bNum - aNum;
+        }
+        return asc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+    });
+
+    rows.forEach(row => tbody.appendChild(row));
+}
+</script>
+
+</body>
+</html>

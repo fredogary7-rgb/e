@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retraits — Admin NectarPro</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ═══════════════════════════════════════════
+   NECTARPRO ADMIN RETRAITS — THÈME ROSE
+   ═══════════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+
+:root{
+    --bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);
+    --glass:rgba(255,255,255,0.72);
+    --glass-hover:rgba(255,255,255,0.88);
+    --accent:#db2777;
+    --accent2:#ec4899;
+    --accent-light:#f9a8d4;
+    --accent-bg:rgba(236,72,153,0.08);
+    --gold:#f59e0b;
+    --gold-light:#fef3c7;
+    --emerald:#10b981;
+    --emerald-light:#d1fae5;
+    --sky:#0ea5e9;
+    --sky-light:#e0f2fe;
+    --red:#ef4444;
+    --red-light:#fef2f2;
+    --text:#000;
+    --text2:#1f2937;
+    --muted:#6b7280;
+    --border:rgba(236,72,153,0.2);
+    --shadow-sm:0 2px 8px rgba(236,72,153,0.08);
+    --shadow:0 8px 32px rgba(236,72,153,0.12);
+    --shadow-lg:0 16px 48px rgba(236,72,153,0.18);
+    --radius-sm:12px;
+    --radius:18px;
+    --radius-lg:24px;
+    --radius-xl:32px;
+}
+
+body{
+    background:var(--bg);
+    min-height:100vh;min-height:100dvh;
+    color:var(--text);
+    font-style:italic;
+    position:relative;
+    overflow-x:hidden;
+}
+
+/* ██████ TOP BAR ██████ */
+.topbar{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:12px 24px;
+    background:rgba(255,255,255,0.7);
+    backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+    border-bottom:1px solid var(--border);
+    position:sticky;top:0;z-index:1000;
+    flex-wrap:wrap;gap:8px;
+}
+.topbar-logo{
+    display:flex;align-items:center;gap:8px;
+    font-size:18px;font-weight:900;
+}
+.topbar-logo .brand-n{color:var(--accent2)}
+.topbar-logo .brand-p{color:var(--accent)}
+.back-btn{
+    background:var(--glass);border:1px solid var(--border);
+    color:var(--accent2);text-decoration:none;font-weight:700;font-size:13px;
+    display:flex;align-items:center;gap:6px;
+    padding:8px 16px;border-radius:var(--radius-sm);
+    transition:all .2s;
+}
+.back-btn:hover{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+
+/* ██████ MAIN CONTAINER ██████ */
+.container{max-width:1400px;margin:0 auto;padding:20px 24px 40px}
+
+/* ██████ STATS CARDS ██████ */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:24px}
+.stat-card{
+    background:var(--glass);backdrop-filter:blur(16px);
+    border:1px solid var(--border);border-radius:var(--radius-lg);
+    padding:18px 20px;box-shadow:var(--shadow-sm);
+    display:flex;align-items:center;gap:14px;
+    transition:all .3s;
+}
+.stat-card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.stat-icon{
+    width:48px;height:48px;border-radius:var(--radius-sm);
+    display:flex;align-items:center;justify-content:center;
+    font-size:20px;flex-shrink:0;
+}
+.stat-icon.pink{background:rgba(236,72,153,0.12);color:var(--accent2)}
+.stat-icon.gold{background:var(--gold-light);color:var(--gold)}
+.stat-icon.emerald{background:var(--emerald-light);color:var(--emerald)}
+.stat-info .stat-val{font-size:22px;font-weight:900;line-height:1.2}
+.stat-info .stat-lbl{font-size:11px;color:var(--muted);font-weight:600}
+
+/* ██████ CARD ██████ */
+.card{
+    background:var(--glass);backdrop-filter:blur(16px);
+    border:1px solid var(--border);border-radius:var(--radius-xl);
+    padding:24px;margin-bottom:20px;
+    box-shadow:var(--shadow);
+}
+.card h2, .card h3{
+    font-weight:800;margin-bottom:16px;
+    display:flex;align-items:center;gap:8px;
+}
+.card h2{font-size:18px}
+.card h3{font-size:15px}
+.card h2 i, .card h3 i{color:var(--accent2)}
+
+/* ██████ TABLE ██████ */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{
+    text-align:left;padding:10px 12px;font-size:11px;font-weight:700;
+    color:var(--muted);text-transform:uppercase;letter-spacing:.5px;
+    border-bottom:2px solid var(--border);
+}
+td{padding:10px 12px;border-bottom:1px solid rgba(236,72,153,0.1);font-weight:500}
+tr:hover td{background:rgba(236,72,153,0.03)}
+
+/* ██████ BUTTONS ██████ */
+.btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    padding:10px 18px;border:none;border-radius:var(--radius-sm);
+    font-size:12px;font-weight:700;font-style:italic;cursor:pointer;
+    transition:all .25s;text-decoration:none;
+    box-shadow:var(--shadow-sm);
+}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:scale(0.97)}
+.btn-pink{background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;box-shadow:0 8px 28px rgba(219,39,119,0.3)}
+.btn-pink:hover{box-shadow:0 12px 38px rgba(219,39,119,0.45)}
+.btn-emerald{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
+.btn-red{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
+.btn-sm{padding:6px 12px;font-size:10px}
+.btn-xs{padding:4px 10px;font-size:10px;border-radius:8px}
+
+/* ██████ BADGES ██████ */
+.badge{
+    display:inline-flex;align-items:center;gap:4px;
+    padding:4px 10px;border-radius:12px;
+    font-size:10px;font-weight:700;
+}
+.badge-pink{background:rgba(236,72,153,0.08);color:var(--accent2)}
+.badge-emerald{background:var(--emerald-light);color:var(--emerald)}
+.badge-gold{background:var(--gold-light);color:#92400e}
+.badge-red{background:var(--red-light);color:var(--red)}
+.badge-sky{background:var(--sky-light);color:var(--sky)}
+
+/* ██████ ALERTS ██████ */
+.alert{
+    padding:12px 18px;border-radius:var(--radius-sm);
+    margin-bottom:16px;font-size:13px;font-weight:600;
+    display:flex;align-items:center;gap:8px;
+}
+.alert-success{background:var(--emerald-light);color:#065f46}
+.alert-danger{background:var(--red-light);color:#991b1b}
+.alert-info{background:var(--sky-light);color:#075985}
+.alert-warning{background:var(--gold-light);color:#92400e}
+
+/* ██████ EMPTY STATE ██████ */
+.empty-state{
+    text-align:center;padding:60px 20px;color:var(--muted);
+}
+.empty-state i{font-size:48px;margin-bottom:12px;color:var(--accent-light)}
+.empty-state p{font-size:14px;font-weight:600}
+
+/* ██████ RESPONSIVE ██████ */
+@media(max-width:768px){
+    .topbar{padding:10px 16px}
+    .container{padding:12px 12px 30px}
+    .stats-row{grid-template-columns:repeat(2,1fr)}
+    .card{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- ██████ TOP BAR ██████ -->
+<header class="topbar">
+    <div class="topbar-logo">
+        <span class="brand-n">N</span><span class="brand-p">ectar</span><span class="brand-n">P</span><span class="brand-p">ro</span>
+        <span style="font-size:11px;font-weight:500;color:var(--muted);margin-left:4px">| Admin Retraits</span>
+    </div>
+    <a href="{{ url_for('admin_finance') }}" class="back-btn"><i class="fas fa-arrow-left"></i> Retour Finance</a>
+</header>
+
+<!-- ██████ MAIN ██████ -->
+<div class="container">
+
+    <!-- FLASH MESSAGES -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    <i class="fas fa-{% if category=='success' %}check-circle{% elif category=='danger' %}exclamation-circle{% elif category=='warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- STATISTIQUES -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-icon pink"><i class="fas fa-wallet"></i></div>
+            <div class="stat-info">
+                <div class="stat-val">{{ retraits|length }}</div>
+                <div class="stat-lbl">Total retraits</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon gold"><i class="fas fa-coins"></i></div>
+            <div class="stat-info">
+                <div class="stat-val">{{ "%.0f"|format(retraits|sum(attribute='montant')) }} F</div>
+                <div class="stat-lbl">Montant total retiré</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon emerald"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-info">
+                <div class="stat-val">{{ retraits|selectattr('statut','equalto','validé')|list|length }}</div>
+                <div class="stat-lbl">Retraits validés</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background:var(--red-light);color:var(--red)">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-val">{{ retraits|selectattr('statut','equalto','refusé')|list|length }}</div>
+                <div class="stat-lbl">Retraits refusés</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLEAU DES RETRAITS -->
+    <div class="card">
+        <h2><i class="fas fa-list-ul"></i> Liste des retraits</h2>
+
+        {% if retraits %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Utilisateur</th>
+                        <th>Téléphone</th>
+                        <th>Montant</th>
+                        <th>Frais</th>
+                        <th>Méthode</th>
+                        <th>Code</th>
+                        <th>Statut</th>
+                        <th>Date</th>
+                        <th style="text-align:right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in retraits %}
+                    <tr>
+                        <td><span class="badge badge-pink">#{{ r.id }}</span></td>
+                        <td><strong>{{ r.username_display }}</strong></td>
+                        <td>{{ r.phone }}</td>
+                        <td><span class="badge badge-gold">{{ "%.0f"|format(r.montant) }} F</span></td>
+                        <td>{{ "%.0f"|format(r.frais or 0) }} F</td>
+                        <td>
+                            {% if r.methode %}
+                            <span class="badge badge-sky">{{ r.methode }}</span>
+                            {% else %}
+                            <span class="badge badge-pink">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if r.code_unique %}
+                            <span class="badge badge-pink">{{ r.code_unique }}</span>
+                            {% else %}
+                            <span style="color:var(--muted)">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if r.statut == 'validé' %}
+                            <span class="badge badge-emerald"><i class="fas fa-check"></i> Validé</span>
+                            {% elif r.statut == 'refusé' %}
+                            <span class="badge badge-red"><i class="fas fa-times"></i> Refusé</span>
+                            {% elif r.statut == 'successful' %}
+                            <span class="badge badge-sky"><i class="fas fa-clock"></i> En attente</span>
+                            {% else %}
+                            <span class="badge badge-pink">{{ r.statut }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ r.date.strftime('%d/%m/%Y %H:%M') if r.date else '—' }}</td>
+                        <td style="text-align:right">
+                            {% if r.statut == 'successful' %}
+                            <a href="{{ url_for('valider_retrait', retrait_id=r.id) }}" class="btn btn-emerald btn-xs" onclick="return confirm('Valider ce retrait de {{ "%.0f"|format(r.montant) }} F ?')">
+                                <i class="fas fa-check"></i> Valider
+                            </a>
+                            <a href="{{ url_for('refuser_retrait', retrait_id=r.id) }}" class="btn btn-red btn-xs" onclick="return confirm('Refuser et recréditer {{ "%.0f"|format(r.montant) }} F ?')">
+                                <i class="fas fa-times"></i> Refuser
+                            </a>
+                            {% elif r.statut == 'validé' %}
+                            <a href="{{ url_for('refuser_retrait', retrait_id=r.id) }}" class="btn btn-red btn-xs" onclick="return confirm('Déjà validé. Forcer le refus et recréditer ?')">
+                                <i class="fas fa-undo"></i> Annuler
+                            </a>
+                            {% elif r.statut == 'refusé' %}
+                            <a href="{{ url_for('valider_retrait', retrait_id=r.id) }}" class="btn btn-emerald btn-xs" onclick="return confirm('Forcer la validation ?')">
+                                <i class="fas fa-check"></i> Re-valider
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <p>Aucun retrait pour le moment.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- ACTIONS GLOBALES -->
+    <div class="card">
+        <h3><i class="fas fa-tools"></i> Actions globales</h3>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <a href="{{ url_for('delete_all_retraits') }}" class="btn btn-red btn-sm" onclick="return confirm('⚠️ Supprimer TOUS les retraits ? Cette action est irréversible !')">
+                <i class="fas fa-trash-alt"></i> Supprimer tous les retraits
+            </a>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
