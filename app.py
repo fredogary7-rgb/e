@@ -6895,6 +6895,13 @@ def admin_dashboard_unified():
 # 🔔 INITIALISATION DES TABLES PUSH AU DÉMARRAGE
 # ============================================================
 with app.app_context():
+    # 📦 Création automatique de toutes les tables manquantes
+    try:
+        db.create_all()
+        print("[INIT] db.create_all() exécuté — toutes les tables sont à jour")
+    except Exception as e:
+        print(f"[INIT] Erreur db.create_all(): {e}")
+
     try:
         init_push_tables(app)
     except Exception as e:
@@ -6905,6 +6912,13 @@ with app.app_context():
         schedule_daily_task_notifications(app)
     except Exception as e:
         print(f"[PUSH] Erreur scheduler notifications quotidiennes: {e}")
+
+    # 🧠 Initialisation des tables GeniusPay
+    try:
+        init_genius_tables()
+        print("[GENIUSPAY] Tables GeniusPay initialisées")
+    except Exception as e:
+        print(f"[GENIUSPAY] Erreur init tables: {e}")
 
 
 # ============================================================
