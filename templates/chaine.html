@@ -336,17 +336,16 @@
                         {% if message.media_type == 'image' %}
                         <img src="{{ message.media_url }}" alt="Image" loading="lazy">
                         {% elif message.media_type == 'video' %}
-                        <video controls preload="metadata" style="width:100%; max-height:360px;">
-                            <source src="{{ message.media_url }}" type="video/mp4">
+                        <video controls playsinline preload="metadata" style="width:100%; max-height:360px;">
+                            <source src="{{ message.media_url }}">
                             Votre navigateur ne supporte pas la vidéo.
                         </video>
                         {% elif message.media_type == 'audio' %}
                         <audio controls preload="metadata" style="width:100%; min-width:220px;">
-                            <source src="{{ message.media_url }}" type="audio/mpeg">
+                            <source src="{{ message.media_url }}">
                             Votre navigateur ne supporte pas l'audio.
                         </audio>
                         {% else %}
-                        <!-- fallback: essayer comme audio ou lien -->
                         <audio controls preload="metadata" style="width:100%; min-width:220px;">
                             <source src="{{ message.media_url }}">
                         </audio>
@@ -361,7 +360,7 @@
                     {% if message.reactions %}
                         {% for emoji, count in message.reactions.items() %}
                             {% if count > 0 %}
-                            <button class="react-btn" onclick="react({{ message.id }}, '{{ emoji }}')">
+                            <button class="react-btn {% if user_reactions.get(message.id) == emoji %}active-reaction{% endif %}" onclick="react({{ message.id }}, '{{ emoji }}')">
                                 {{ emoji }} <span class="count">{{ count }}</span>
                             </button>
                             {% endif %}
@@ -441,8 +440,10 @@ async function react(msgId, emoji) {
         });
         const data = await resp.json();
         if (data.success) {
-            // Mettre à jour l'affichage sans recharger la page
-            updateReactionDisplay(msgId, emoji, data.new_count);
+            // data.reactions = { "🔥": 3, "❤️": 1, ... }
+            // data.action  = "added" | "removed" | "changed"
+            // Reconstruire toute la barre de réactions
+            rebuildReactions(msgId, data.reactions, data.action, emoji);
             // Fermer le picker
             const picker = document.getElementById('picker-' + msgId);
             if (picker) picker.classList.remove('show');
@@ -454,44 +455,46 @@ async function react(msgId, emoji) {
     }
 }
 
-function updateReactionDisplay(msgId, emoji, count) {
+function rebuildReactions(msgId, reactions, action, activeEmoji) {
     const container = document.getElementById('reactions-' + msgId);
     if (!container) return;
 
-    // Chercher si le bouton pour cet emoji existe déjà
-    let existingBtn = null;
-    const buttons = container.querySelectorAll('.react-btn');
-    buttons.forEach(btn => {
-        if (btn.textContent.trim().startsWith(emoji)) {
-            existingBtn = btn;
-        }
-    });
+    // Supprimer tous les boutons de réaction existants (garder le bouton +)
+    const addBtn = container.querySelector('.add-react-btn');
+    container.innerHTML = '';
 
-    if (existingBtn) {
-        // Mettre à jour le compteur
-        const countSpan = existingBtn.querySelector('.count');
-        if (countSpan) {
-            countSpan.textContent = count;
-        } else {
-            existingBtn.innerHTML = emoji + ' <span class="count">' + count + '</span>';
-        }
-        // Animation
-        existingBtn.classList.add('active-reaction');
-        setTimeout(() => existingBtn.classList.remove('active-reaction'), 600);
+    // Recréer les boutons depuis les compteurs globaux
+    if (reactions && typeof reactions === 'object') {
+        const entries = Object.entries(reactions);
+        entries.sort(function(a, b) { return b[1] - a[1]; }); // tri par count décroissant
+        entries.forEach(function(entry) {
+            const emo = entry[0];
+            const count = entry[1];
+            if (count > 0) {
+                const btn = document.createElement('button');
+                btn.className = 'react-btn';
+                if (action === 'added' && emo === activeEmoji) {
+                    btn.classList.add('active-reaction');
+                } else if (action === 'changed' && emo === activeEmoji) {
+                    btn.classList.add('active-reaction');
+                }
+                btn.setAttribute('onclick', 'react(' + msgId + ', \'' + emo + '\')');
+                btn.innerHTML = emo + ' <span class="count">' + count + '</span>';
+                container.appendChild(btn);
+            }
+        });
+    }
+
+    // Remettre le bouton +
+    if (addBtn) {
+        container.appendChild(addBtn);
     } else {
-        // Créer un nouveau bouton
-        const newBtn = document.createElement('button');
-        newBtn.className = 'react-btn active-reaction';
-        newBtn.innerHTML = emoji + ' <span class="count">' + count + '</span>';
-        newBtn.setAttribute('onclick', 'react(' + msgId + ', \'' + emoji + '\')');
-        // Insérer avant le bouton +
-        const addBtn = container.querySelector('.add-react-btn');
-        if (addBtn) {
-            container.insertBefore(newBtn, addBtn);
-        } else {
-            container.appendChild(newBtn);
-        }
-        setTimeout(() => newBtn.classList.remove('active-reaction'), 600);
+        const newAddBtn = document.createElement('button');
+        newAddBtn.className = 'add-react-btn';
+        newAddBtn.setAttribute('onclick', 'toggleEmojiPicker(event, ' + msgId + ')');
+        newAddBtn.title = 'Ajouter une réaction';
+        newAddBtn.textContent = '+';
+        container.appendChild(newAddBtn);
     }
 }
 

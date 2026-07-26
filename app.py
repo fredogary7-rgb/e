@@ -7,7 +7,12 @@ import sys
 import uuid
 import unicodedata
 import socket
+import logging
 from datetime import datetime, timedelta, timezone, date, UTC
+from dotenv import load_dotenv
+
+# Charger les variables d'environnement depuis .env
+load_dotenv()
 from functools import wraps
 from urllib.parse import urlencode
 import cloudinary
@@ -468,6 +473,19 @@ class ChannelMessage(db.Model):
 class ChannelSub(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id')) # Assure-toi que 'user.id' est correct
+
+
+class ChannelReaction(db.Model):
+    """Une réaction par utilisateur par message (comme Telegram)."""
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    message_id = db.Column(db.Integer, db.ForeignKey('channel_message.id'), nullable=False)
+    emoji = db.Column(db.String(10), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    __table_args__ = (
+        db.UniqueConstraint('user_id', 'message_id', name='uq_user_msg_reaction'),
+    )
 
 
 class GameControl(db.Model):
@@ -1575,6 +1593,13 @@ def view_channel():
     # Messages
     messages = ChannelMessage.query.order_by(ChannelMessage.timestamp.asc()).all()
 
+    # Dictionnaire des réactions de l'utilisateur connecté
+    # { msg_id: emoji } → pour afficher l'état actif dans le template
+    user_reactions = {}
+    if user:
+        user_reacts = ChannelReaction.query.filter_by(user_id=user.id).all()
+        user_reactions = {r.message_id: r.emoji for r in user_reacts}
+
     # Nombre abonnés
     sub_count = ChannelSub.query.count()
 
@@ -1583,7 +1608,8 @@ def view_channel():
         messages=messages,
         sub_count=sub_count,
         is_sub=is_sub,
-        user=user
+        user=user,
+        user_reactions=user_reactions,
     )
 
 @app.route("/admin/restreindre_comptes")
@@ -1630,23 +1656,53 @@ def react(msg_id):
     emoji = request.json.get("emoji") if request.is_json else request.form.get("emoji")
     if not emoji:
         return {"success": False, "error": "emoji missing"}, 400
-    
+
+    user_id = session.get("user_id")
+    if not user_id:
+        return {"success": False, "error": "login required"}, 401
+
     msg = ChannelMessage.query.get_or_404(msg_id)
 
+    # Assurer que le JSON reactions existe
     if not msg.reactions:
         msg.reactions = {}
 
-    reactions = msg.reactions
+    # Chercher une réaction existante de cet utilisateur sur ce message
+    existing = ChannelReaction.query.filter_by(user_id=user_id, message_id=msg_id).first()
 
-    if emoji not in reactions:
-        reactions[emoji] = 0
+    action = None
+    if existing:
+        if existing.emoji == emoji:
+            # Même emoji → toggle off (retirer)
+            db.session.delete(existing)
+            action = "removed"
+        else:
+            # Autre emoji → remplacer
+            old_emoji = existing.emoji
+            existing.emoji = emoji
+            existing.timestamp = datetime.utcnow()
+            action = "changed"
+    else:
+        # Aucune réaction → ajouter
+        new_reaction = ChannelReaction(user_id=user_id, message_id=msg_id, emoji=emoji)
+        db.session.add(new_reaction)
+        action = "added"
 
-    reactions[emoji] += 1
+    # Recalculer les compteurs globaux depuis la table ChannelReaction
+    all_reacts = ChannelReaction.query.filter_by(message_id=msg_id).all()
+    new_reactions = {}
+    for r in all_reacts:
+        new_reactions[r.emoji] = new_reactions.get(r.emoji, 0) + 1
 
-    msg.reactions = reactions
+    msg.reactions = new_reactions
     db.session.commit()
 
-    return {"success": True, "new_count": reactions[emoji], "emoji": emoji}
+    return {
+        "success": True,
+        "action": action,
+        "emoji": emoji,
+        "reactions": new_reactions,
+    }
 
 @app.route("/chaine/quitter")
 def leave_channel():
@@ -6849,6 +6905,330 @@ with app.app_context():
         schedule_daily_task_notifications(app)
     except Exception as e:
         print(f"[PUSH] Erreur scheduler notifications quotidiennes: {e}")
+
+
+# ============================================================
+# 🧠 GENIUSPAY — ROUTES API ET PAGE DE TEST (Documentation : https://geniuspay.ci/docs/api)
+# ============================================================
+
+# Import du module GeniusPay v3.0 (documentation officielle)
+from geniuspay import genius, GeniusPay, _mask
+from genius_models import (
+    GeniusTransaction, GeniusApiLog, GeniusWebhookLog, GeniusErrorLog,
+    init_genius_tables
+)
+
+
+@app.route('/genius')
+def genius_test_page():
+    """Page de test de l'API GeniusPay (interface NectarPro)."""
+    user = get_logged_in_user()
+    if not user:
+        flash("Veuillez vous connecter pour accéder à cette page.", "danger")
+        return redirect(url_for("connexion_page"))
+    return render_template("genius_test.html", user=user)
+
+
+# ── API: Ping (le module répond) ───────────────────────
+
+@app.route('/genius/api/ping')
+def genius_api_ping():
+    """Simple test que le module GeniusPay est chargé."""
+    return jsonify({
+        "success": True,
+        "data": {
+            "module": "GeniusPay v3.0",
+            "base_url": genius.base_url,
+            "key_configured": bool(genius.api_key),
+            "secret_configured": bool(genius.api_secret),
+            "webhook_secret_configured": bool(genius.webhook_secret),
+            "key_preview": _mask(genius.api_key) if genius.api_key else "NON CONFIGURÉE",
+        },
+        "response_time": 0,
+    })
+
+
+# ── API: Fournisseurs MMO (Pays + Opérateurs) ─────────
+
+@app.route('/genius/api/providers')
+def genius_api_providers():
+    """
+    GET /genius/api/providers?country=CI
+    Liste les fournisseurs Mobile Money par pays (dynamique, jamais codé en dur).
+    Documentation : GET /api/v1/merchant/pawapay/providers?country=XX
+    """
+    country = request.args.get("country", None)
+    success, data, response_time = genius.get_providers(country)
+    # Aplatir la réponse GeniusPay (data.data → data pour éviter double imbrication)
+    flat_data = data.get("data", data) if isinstance(data, dict) else data
+    return jsonify({
+        "success": success,
+        "data": flat_data,
+        "response_time": response_time,
+    })
+
+
+# ── API: Création de paiement ──────────────────────────
+
+@app.route('/genius/api/create-payment', methods=['POST'])
+def genius_api_create_payment():
+    """
+    POST /genius/api/create-payment
+    Crée un paiement via GeniusPay.
+    Documentation : POST /api/v1/merchant/payments
+
+    Paramètres (JSON body) conformes à la documentation :
+        - amount (float, requis)
+        - currency (string, défaut: XOF)
+        - payment_method (string, optionnel: wave, pawapay, paystack, orange_money, mtn_money, card)
+          Si omis → page checkout GeniusPay
+        - gateway (string, optionnel: wave, pawapay, orange_money, mtn_momo, moov_money)
+        - mmo_provider (string, optionnel, dynamique: ORANGE_CIV, MTN_MOMO_CIV...)
+        - description (string, optionnel)
+        - customer (object, optionnel: {name, email, phone, country})
+        - customer_name, customer_email, customer_phone (optionnel, forme simplifiée)
+        - success_url (string, optionnel)
+        - error_url (string, optionnel)
+        - metadata (object, optionnel: order_id, user_id, deposit_id, wallet_id...)
+    """
+    try:
+        payload = request.get_json(force=True)
+        if not payload:
+            return jsonify({"success": False, "error": "JSON body requis"}), 400
+
+        amount = payload.get("amount")
+        if not amount or float(amount) <= 0:
+            return jsonify({"success": False, "error": "Montant invalide"}), 400
+
+        # Construire l'objet customer
+        customer = {}
+        if payload.get("customer_name"):
+            customer["name"] = payload["customer_name"]
+        if payload.get("customer_email"):
+            customer["email"] = payload["customer_email"]
+        if payload.get("customer_phone"):
+            customer["phone"] = payload["customer_phone"]
+        if payload.get("country"):
+            customer["country"] = payload["country"]
+        # Support aussi de customer comme objet direct (prioritaire)
+        if payload.get("customer") and isinstance(payload["customer"], dict):
+            customer = {**customer, **payload["customer"]}
+
+        # Construire les metadata
+        metadata = payload.get("metadata", {})
+        if isinstance(metadata, dict):
+            user = get_logged_in_user()
+            if user:
+                metadata.setdefault("user_id", str(user.id))
+                metadata.setdefault("user_reference", user.username or user.email or str(user.id))
+            # Ajouter une référence NectarPro si pas déjà présente
+            if "source" not in metadata:
+                metadata["source"] = "nectarpro"
+
+        success, data, response_time = genius.create_payment(
+            amount=float(amount),
+            currency=payload.get("currency", "XOF"),
+            payment_method=payload.get("payment_method"),
+            gateway=payload.get("gateway"),
+            mmo_provider=payload.get("mmo_provider"),
+            description=payload.get("description", ""),
+            customer=customer if customer else None,
+            success_url=payload.get("success_url"),
+            error_url=payload.get("error_url"),
+            metadata=metadata if metadata else None,
+        )
+
+        # Aplatir la réponse GeniusPay (évite double imbrication data.data.xxx)
+        resp_data = data.get("data", data) if isinstance(data, dict) and "data" in data else data
+
+        # Enregistrer la transaction en base si succès
+        if success:
+            try:
+                tx = GeniusTransaction(
+                    transaction_id=resp_data.get("reference") or resp_data.get("id", ""),
+                    reference=resp_data.get("reference", ""),
+                    amount=float(amount),
+                    currency=payload.get("currency", "XOF"),
+                    description=payload.get("description", ""),
+                    status=resp_data.get("status", "pending"),
+                    status_message=resp_data.get("message", ""),
+                    payment_url=resp_data.get("payment_url") or resp_data.get("checkout_url", ""),
+                    qr_code=resp_data.get("qr_code", ""),
+                    customer_name=customer.get("name", ""),
+                    customer_email=customer.get("email", ""),
+                    customer_phone=customer.get("phone", ""),
+                    raw_request=payload,
+                    raw_response=data,
+                    callback_url=payload.get("success_url") or payload.get("callback_url", ""),
+                    return_url=payload.get("error_url") or payload.get("return_url", ""),
+                )
+                user = get_logged_in_user()
+                if user:
+                    tx.user_id = user.id
+                    tx.user_reference = user.username or user.email or str(user.id)
+                db.session.add(tx)
+                db.session.commit()
+            except Exception as e:
+                logging.warning(f"[GENIUSPAY] Erreur sauvegarde transaction: {e}")
+
+        # Aplatir complètement : tous les champs de resp_data au niveau racine
+        # pour que le frontend puisse accéder à data.reference, data.status, etc.
+        flat_response = {
+            "success": success,
+            "response_time": response_time,
+        }
+        if isinstance(resp_data, dict):
+            flat_response.update(resp_data)
+        else:
+            flat_response["data"] = resp_data
+
+        return jsonify(flat_response)
+    except Exception as e:
+        logging.exception("[GENIUSPAY] Erreur création paiement")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+# ── API: Récupérer un paiement par référence ───────────
+
+@app.route('/genius/api/payment/<reference>')
+def genius_api_get_payment(reference):
+    """
+    GET /genius/api/payment/<reference>
+    Récupère un paiement par sa référence.
+    Documentation : GET /api/v1/merchant/payments/{reference}
+    """
+    success, data, response_time = genius.get_payment(reference)
+    # Aplatir la réponse GeniusPay (évite double imbrication data.data.xxx)
+    resp_data = data.get("data", data) if isinstance(data, dict) and "data" in data else data
+    # Aplatir complètement : tous les champs au niveau racine
+    flat_response = {
+        "success": success,
+        "response_time": response_time,
+    }
+    if isinstance(resp_data, dict):
+        flat_response.update(resp_data)
+    else:
+        flat_response["data"] = resp_data
+    return jsonify(flat_response)
+
+
+# ── API: Lister les fournisseurs MMO (dynamique, sans country) ──
+
+@app.route('/genius/api/mmoproviders')
+def genius_api_mmo_providers():
+    """
+    GET /genius/api/mmoproviders?country=CI
+    Retourne UNIQUEMENT la liste des providers MMO (plus propre pour le frontend).
+    """
+    country = request.args.get("country", None)
+    success, data, response_time = genius.get_providers(country)
+    flat_data = data.get("data", data) if isinstance(data, dict) else data
+    providers = flat_data.get("providers", []) if isinstance(flat_data, dict) else []
+    return jsonify({
+        "success": success,
+        "providers": providers,
+        "response_time": response_time,
+    })
+
+
+# ═══════════════════════════════════════════════════════════
+# WEBHOOK GENIUSPAY — /webhook/genius
+# ═══════════════════════════════════════════════════════════
+
+@app.route('/webhook/genius', methods=['POST'])
+def webhook_genius():
+    """
+    Réception des webhooks GeniusPay.
+    Met à jour automatiquement : pending → processing → completed/failed/expired.
+    Cette route ne doit JAMAIS retourner une erreur 500.
+    """
+    import json
+    from datetime import datetime, timezone
+
+    event_id = "unknown"
+    start_time = time.time()
+
+    try:
+        raw_body = request.get_data()
+        signature_header = request.headers.get("X-Genius-Signature", "")
+
+        # Traiter le webhook via le nouveau module geniuspay
+        success, webhook_data, message = genius.process_webhook(raw_body, signature_header)
+
+        # Logger le webhook en base
+        try:
+            parsed_data = json.loads(raw_body.decode("utf-8")) if raw_body else {}
+            event_id = (parsed_data.get("transaction_id")
+                        or parsed_data.get("reference")
+                        or webhook_data.get("transaction_id", "unknown"))
+
+            webhook_log = GeniusWebhookLog(
+                transaction_id=webhook_data.get("transaction_id"),
+                reference=webhook_data.get("reference"),
+                event_type=webhook_data.get("event"),
+                raw_payload=parsed_data,
+                status=webhook_data.get("status"),
+                signature_valid=bool(signature_header),
+                signature_header=signature_header[:500] if signature_header else None,
+                processed=success,
+                processing_error=message if not success else None,
+                received_at=datetime.now(timezone.utc),
+            )
+            db.session.add(webhook_log)
+
+            # Mettre à jour la transaction correspondante si trouvée
+            if success and webhook_data.get("transaction_id"):
+                tx = GeniusTransaction.query.filter_by(
+                    transaction_id=webhook_data["transaction_id"]
+                ).first()
+                if tx:
+                    tx.status = webhook_data.get("status", tx.status)
+                    tx.status_message = webhook_data.get("status", "")
+                    tx.updated_at = datetime.now(timezone.utc)
+                    tx.raw_response = webhook_data.get("raw", {})
+                    # Mapper les statuts GeniusPay → statuts internes
+                    new_status = webhook_data.get("status", "")
+                    if new_status in ("pending", "processing", "completed", "failed", "expired"):
+                        tx.status = new_status
+                    logging.info(
+                        f"[GENIUSPAY] Transaction {tx.transaction_id} mise à jour: {tx.status}"
+                    )
+
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            logging.error(f"[GENIUSPAY] Erreur sauvegarde webhook log: {e}")
+
+        response_time = round(time.time() - start_time, 3)
+        logging.info(
+            f"[GENIUSPAY] Webhook traité: {event_id} | succès={success} | {response_time}s"
+        )
+
+        return jsonify({
+            "received": True,
+            "message": message if success else "Webhook reçu, vérification échouée",
+        }), 200 if success else 400
+
+    except Exception as e:
+        response_time = round(time.time() - start_time, 3)
+        logging.exception(f"[GENIUSPAY] ⛔ ERREUR CRITIQUE WEBHOOK {event_id}: {e}")
+
+        # Toujours retourner 200 pour éviter les retries en boucle de GeniusPay
+        return jsonify({
+            "received": True,
+            "error": "Erreur serveur interne — webhook journalisé",
+        }), 200
+
+
+# ============================================================
+# INITIALISATION DES TABLES GENIUS AU DÉMARRAGE
+# ============================================================
+with app.app_context():
+    try:
+        init_genius_tables()
+        logging.info("[GENIUSPAY] Tables initialisées avec succès.")
+    except Exception as e:
+        logging.warning(f"[GENIUSPAY] Erreur init tables: {e}")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GeniusPay - Test API</title>
+<style>
+    :root {
+        --genius-primary: #6C5CE7;
+        --genius-primary-dark: #5A4BD1;
+        --genius-success: #00B894;
+        --genius-danger: #FF6B6B;
+        --genius-warning: #FDCB6E;
+        --genius-bg: #0F0F1A;
+        --genius-card: #1A1A2E;
+        --genius-border: #2D2D44;
+        --genius-text: #E0E0E0;
+        --genius-text-muted: #8888AA;
+        --genius-input-bg: #12122A;
+        --genius-glow: rgba(108, 92, 231, 0.3);
+    }
+
+    body {
+        background: var(--genius-bg);
+        color: var(--genius-text);
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    .genius-container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px 16px;
+    }
+
+    .genius-header {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    .genius-header h1 {
+        font-size: 2.2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 8px;
+    }
+
+    .genius-header .subtitle {
+        color: var(--genius-text-muted);
+        font-size: 0.95rem;
+    }
+
+    .genius-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .badge-production {
+        background: rgba(0, 184, 148, 0.15);
+        color: #00B894;
+        border: 1px solid rgba(0, 184, 148, 0.3);
+    }
+
+    .badge-live {
+        background: rgba(108, 92, 231, 0.15);
+        color: #A29BFE;
+        border: 1px solid rgba(108, 92, 231, 0.3);
+    }
+
+    /* Grille */
+    .genius-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+        .genius-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Cartes */
+    .genius-card {
+        background: var(--genius-card);
+        border: 1px solid var(--genius-border);
+        border-radius: 16px;
+        padding: 24px;
+        transition: all 0.3s ease;
+    }
+    .genius-card:hover {
+        border-color: rgba(108, 92, 231, 0.5);
+        box-shadow: 0 4px 24px var(--genius-glow);
+    }
+    .genius-card.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .genius-card h2 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .genius-card h2 .icon {
+        font-size: 1.3rem;
+    }
+
+    /* Statut */
+    .status-indicator {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin-bottom: 12px;
+    }
+    .status-ok {
+        background: rgba(0, 184, 148, 0.1);
+        border: 1px solid rgba(0, 184, 148, 0.2);
+    }
+    .status-err {
+        background: rgba(255, 107, 107, 0.1);
+        border: 1px solid rgba(255, 107, 107, 0.2);
+    }
+    .status-pending {
+        background: rgba(253, 203, 110, 0.1);
+        border: 1px solid rgba(253, 203, 110, 0.2);
+    }
+
+    .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+    .dot-ok { background: #00B894; box-shadow: 0 0 8px rgba(0,184,148,0.6); }
+    .dot-err { background: #FF6B6B; box-shadow: 0 0 8px rgba(255,107,107,0.6); }
+    .dot-pending { background: #FDCB6E; box-shadow: 0 0 8px rgba(253,203,110,0.6); animation: pulse 1.5s infinite; }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+    }
+
+    /* Boutons */
+    .btn-genius {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        text-decoration: none;
+        color: #fff;
+    }
+    .btn-primary {
+        background: var(--genius-primary);
+    }
+    .btn-primary:hover {
+        background: var(--genius-primary-dark);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px var(--genius-glow);
+    }
+    .btn-outline {
+        background: transparent;
+        border: 1.5px solid var(--genius-border);
+        color: var(--genius-text);
+    }
+    .btn-outline:hover {
+        border-color: var(--genius-primary);
+        background: rgba(108, 92, 231, 0.08);
+    }
+    .btn-sm {
+        padding: 6px 14px;
+        font-size: 0.82rem;
+    }
+
+    .btn-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    /* Inputs */
+    .genius-input {
+        width: 100%;
+        padding: 10px 14px;
+        background: var(--genius-input-bg);
+        border: 1.5px solid var(--genius-border);
+        border-radius: 10px;
+        color: var(--genius-text);
+        font-size: 0.9rem;
+        transition: border-color 0.2s;
+    }
+    .genius-input:focus {
+        outline: none;
+        border-color: var(--genius-primary);
+        box-shadow: 0 0 0 3px var(--genius-glow);
+    }
+
+    .form-group {
+        margin-bottom: 12px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 0.82rem;
+        color: var(--genius-text-muted);
+        font-weight: 500;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    /* Résultat */
+    .result-box {
+        background: var(--genius-input-bg);
+        border: 1px solid var(--genius-border);
+        border-radius: 12px;
+        padding: 16px;
+        max-height: 400px;
+        overflow-y: auto;
+        font-family: 'JetBrains Mono', 'Fira Code', monospace;
+        font-size: 0.82rem;
+        white-space: pre-wrap;
+        word-break: break-all;
+        color: #A29BFE;
+        line-height: 1.5;
+    }
+
+    .result-box.error {
+        color: #FF6B6B;
+        border-color: rgba(255, 107, 107, 0.3);
+    }
+    .result-box.success {
+        color: #00B894;
+        border-color: rgba(0, 184, 148, 0.3);
+    }
+
+    /* Table de résultats */
+    .genius-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .genius-table th,
+    .genius-table td {
+        padding: 10px 14px;
+        text-align: left;
+        border-bottom: 1px solid var(--genius-border);
+        font-size: 0.85rem;
+    }
+    .genius-table th {
+        color: var(--genius-text-muted);
+        font-weight: 500;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .genius-table td {
+        color: var(--genius-text);
+    }
+
+    /* Spinner */
+    .spinner {
+        display: none;
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255,255,255,0.2);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        margin: 0 auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading .spinner { display: inline-block; }
+    .loading .btn-text { display: none; }
+
+    /* Toast/flash messages */
+    .genius-flash {
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin-bottom: 16px;
+        font-size: 0.85rem;
+    }
+    .flash-info {
+        background: rgba(108, 92, 231, 0.1);
+        border: 1px solid rgba(108, 92, 231, 0.3);
+        color: #A29BFE;
+    }
+    .flash-success {
+        background: rgba(0, 184, 148, 0.1);
+        border: 1px solid rgba(0, 184, 148, 0.3);
+        color: #00B894;
+    }
+    .flash-error {
+        background: rgba(255, 107, 107, 0.1);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        color: #FF6B6B;
+    }
+
+    .genius-footer {
+        text-align: center;
+        margin-top: 32px;
+        padding: 16px;
+        color: var(--genius-text-muted);
+        font-size: 0.78rem;
+        border-top: 1px solid var(--genius-border);
+    }
+</style>
+</head>
+<body>
+<div class="genius-container">
+    <!-- En-tête -->
+    <div class="genius-header">
+        <h1>🧠 GeniusPay</h1>
+        <p class="subtitle">
+            Module de test API — Intégration Production
+            <span class="genius-badge badge-production" style="margin-left: 8px;">Production</span>
+            <span class="genius-badge badge-live" style="margin-left: 4px;">Live</span>
+        </p>
+    </div>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="genius-flash flash-{{ category }}">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <!-- Grille principale -->
+    <div class="genius-grid">
+
+        <!-- ============ ÉTAT CONNEXION ============ -->
+        <div class="genius-card">
+            <h2><span class="icon">📡</span> État de la connexion</h2>
+            <div id="status-connection" class="status-indicator status-pending">
+                <span class="status-dot dot-pending"></span>
+                <span class="status-text">En attente de test...</span>
+            </div>
+            <div id="status-auth" class="status-indicator status-pending">
+                <span class="status-dot dot-pending"></span>
+                <span class="status-text">Authentification non vérifiée</span>
+            </div>
+            <div class="btn-group">
+                <button class="btn-genius btn-primary" onclick="testConnection()">
+                    <span class="btn-text">🔌 Tester la connexion</span>
+                    <span class="spinner"></span>
+                </button>
+                <button class="btn-genius btn-outline" onclick="testAuth()">
+                    <span class="btn-text">🔑 Vérifier les credentials</span>
+                    <span class="spinner"></span>
+                </button>
+            </div>
+            <div id="connection-result"></div>
+        </div>
+
+        <!-- ============ CRÉER UN PAIEMENT ============ -->
+        <div class="genius-card">
+            <h2><span class="icon">💳</span> Créer un paiement test</h2>
+            <form id="payment-form" onsubmit="createPayment(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Montant *</label>
+                        <input type="number" class="genius-input" id="amount" placeholder="5000" min="1" step="any" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Devise</label>
+                        <input type="text" class="genius-input" id="currency" value="XOF" placeholder="XOF">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Méthode de paiement</label>
+                    <select class="genius-input" id="payment_method" style="cursor:pointer;">
+                        <option value="">— Page checkout GeniusPay (par défaut) —</option>
+                        <option value="wave">Wave</option>
+                        <option value="pawapay">PawaPay (MMO)</option>
+                        <option value="paystack">Paystack</option>
+                        <option value="orange_money">Orange Money</option>
+                        <option value="mtn_money">MTN Mobile Money</option>
+                        <option value="card">Carte bancaire</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Référence</label>
+                    <input type="text" class="genius-input" id="reference" placeholder="Laissez vide pour auto-générer">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" class="genius-input" id="description" placeholder="Test paiement NectarPro">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nom du client</label>
+                        <input type="text" class="genius-input" id="customer_name" placeholder="Jean Dupont">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="genius-input" id="customer_email" placeholder="client@exemple.com">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Téléphone</label>
+                    <input type="text" class="genius-input" id="customer_phone" placeholder="+225XXXXXXXX">
+                </div>
+                <button type="submit" class="btn-genius btn-primary" id="payment-btn" style="width:100%;justify-content:center;">
+                    <span class="btn-text">💰 Créer le paiement</span>
+                    <span class="spinner"></span>
+                </button>
+            </form>
+        </div>
+
+        <!-- ============ VÉRIFIER / CONSULTER TRANSACTION ============ -->
+        <div class="genius-card">
+            <h2><span class="icon">🔍</span> Vérifier une transaction</h2>
+            <div class="form-group">
+                <label>ID de transaction GeniusPay</label>
+                <input type="text" class="genius-input" id="tx-id" placeholder="Ex: gpay_abc123...">
+            </div>
+            <div class="btn-group">
+                <button class="btn-genius btn-outline btn-sm" onclick="checkTransaction()">
+                    <span class="btn-text">📋 Consulter</span>
+                    <span class="spinner"></span>
+                </button>
+            </div>
+
+            <div class="form-group" style="margin-top: 12px;">
+                <label>Référence de transaction</label>
+                <input type="text" class="genius-input" id="tx-ref" placeholder="Ex: NOVA-G-ABCD1234">
+            </div>
+            <div class="btn-group">
+                <button class="btn-genius btn-outline btn-sm" onclick="verifyTransaction()">
+                    <span class="btn-text">✅ Vérifier par référence</span>
+                    <span class="spinner"></span>
+                </button>
+            </div>
+
+            <div id="tx-result"></div>
+        </div>
+
+        <!-- ============ RÉSULTAT ============ -->
+        <div class="genius-card" id="result-card">
+            <h2><span class="icon">📊</span> Résultat</h2>
+            <div id="result-content">
+                <p style="color: var(--genius-text-muted); text-align: center; padding: 20px;">
+                    🧪 Les résultats des tests s'afficheront ici...
+                </p>
+            </div>
+        </div>
+
+    </div><!-- /genius-grid -->
+
+    <div class="genius-footer">
+        GeniusPay Integration — NectarPro Platform — <span id="current-time">---</span>
+    </div>
+</div>
+
+<script>
+// ─── UTILITAIRES ─────────────────────────────────────────────
+
+function setLoading(btn, loading) {
+    if (loading) {
+        btn.classList.add('loading');
+        btn.disabled = true;
+    } else {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+    }
+}
+
+function updateStatus(elementId, status, text) {
+    const el = document.getElementById(elementId);
+    el.className = 'status-indicator';
+    const dotClass = status === 'ok' ? 'dot-ok' : (status === 'err' ? 'dot-err' : 'dot-pending');
+    const statusClass = status === 'ok' ? 'status-ok' : (status === 'err' ? 'status-err' : 'status-pending');
+    el.classList.add(statusClass);
+    el.innerHTML = `<span class="status-dot ${dotClass}"></span><span class="status-text">${text}</span>`;
+}
+
+function displayResult(containerId, data, success = null) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    let cls = '';
+    if (success === true) cls = ' success';
+    else if (success === false) cls = ' error';
+
+    container.innerHTML = `<div class="result-box${cls}">${JSON.stringify(data, null, 2)}</div>`;
+}
+
+// Met à jour le #result-content avec un tableau propre
+function displayTransactionTable(data) {
+    const container = document.getElementById('result-content');
+    if (!container) return;
+
+    let html = '<table class="genius-table">';
+    const rows = [
+        ['transaction_id', 'ID Transaction'],
+        ['reference', 'Référence'],
+        ['status', 'Statut'],
+        ['amount', 'Montant'],
+        ['currency', 'Devise'],
+        ['fees', 'Frais'],
+        ['net_amount', 'Montant net'],
+        ['gateway', 'Gateway'],
+        ['environment', 'Environnement'],
+        ['payment_url', 'URL Paiement'],
+        ['message', 'Message'],
+        ['response_time', 'Temps de réponse'],
+    ];
+
+    for (const [key, label] of rows) {
+        let value = data[key] !== undefined ? data[key] : '—';
+        if (key === 'payment_url' && value && value !== '—') {
+            value = `<a href="${value}" target="_blank" style="color:#A29BFE;">🔗 Ouvrir</a>`;
+        }
+        if (key === 'qr_code' && value && value !== '—') {
+            value = `<img src="${value}" alt="QR Code" style="max-width:150px;border-radius:8px;">`;
+        }
+        if (key === 'response_time' && value && value !== '—') {
+            value = `${value} secondes`;
+        }
+        html += `<tr><th>${label}</th><td>${value}</td></tr>`;
+    }
+    html += '</table>';
+    container.innerHTML = html;
+}
+
+// ─── FONCTIONS API ───────────────────────────────────────────
+
+async function testConnection() {
+    const btn = event.target.closest('button');
+    setLoading(btn, true);
+
+    try {
+        const resp = await fetch('/genius/api/ping');
+        const data = await resp.json();
+
+        if (data.success) {
+            updateStatus('status-connection', 'ok', `✅ API accessible — ${data.response_time}s`);
+        } else {
+            updateStatus('status-connection', 'err', `❌ API inaccessible : ${data.data?.error || 'Erreur inconnue'}`);
+        }
+        displayResult('result-content', data, data.success);
+    } catch (e) {
+        updateStatus('status-connection', 'err', `❌ Erreur réseau : ${e.message}`);
+        displayResult('result-content', {error: e.message}, false);
+    } finally {
+        setLoading(btn, false);
+    }
+}
+
+async function testAuth() {
+    const btn = event.target.closest('button');
+    setLoading(btn, true);
+
+    try {
+        const resp = await fetch('/genius/api/ping');
+        const data = await resp.json();
+
+        if (data.success) {
+            updateStatus('status-auth', 'ok', '✅ Authentification OK');
+        } else {
+            updateStatus('status-auth', 'err', `❌ Auth échouée : ${data.data?.error || 'Erreur'}`);
+        }
+        displayResult('result-content', data, data.success);
+    } catch (e) {
+        updateStatus('status-auth', 'err', `❌ Erreur : ${e.message}`);
+        displayResult('result-content', {error: e.message}, false);
+    } finally {
+        setLoading(btn, false);
+    }
+}
+
+async function createPayment(event) {
+    event.preventDefault();
+    const btn = document.getElementById('payment-btn');
+    setLoading(btn, true);
+
+    const paymentMethod = document.getElementById('payment_method').value;
+    const payload = {
+        amount: parseFloat(document.getElementById('amount').value),
+        currency: document.getElementById('currency').value || 'XOF',
+        payment_method: paymentMethod || null,
+        reference: document.getElementById('reference').value || '',
+        description: document.getElementById('description').value || '',
+        customer_name: document.getElementById('customer_name').value || '',
+        customer_email: document.getElementById('customer_email').value || '',
+        customer_phone: document.getElementById('customer_phone').value || '',
+    };
+
+    try {
+        const resp = await fetch('/genius/api/create-payment', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload),
+        });
+        const data = await resp.json();
+
+        if (data.success) {
+            displayTransactionTable({
+            transaction_id: data.reference || data.id || 'N/A',
+                reference: data.reference || payload.reference || 'N/A',
+                status: data.status || 'N/A',
+                amount: payload.amount,
+                currency: payload.currency,
+                fees: data.fees || 0,
+                net_amount: data.net_amount || payload.amount,
+                gateway: data.gateway || 'N/A',
+                environment: data.environment || 'N/A',
+                payment_url: data.payment_url || data.checkout_url || null,
+                message: '✅ Paiement créé avec succès',
+                response_time: data.response_time,
+            });
+        } else {
+            displayResult('result-content', data, false);
+        }
+    } catch (e) {
+        displayResult('result-content', {error: e.message}, false);
+    } finally {
+        setLoading(btn, false);
+    }
+}
+
+async function checkTransaction() {
+    const btn = event.target.closest('button');
+    const txId = document.getElementById('tx-id').value.trim();
+    if (!txId) { alert('Veuillez entrer un ID de transaction.'); return; }
+    setLoading(btn, true);
+
+    try {
+        const resp = await fetch(`/genius/api/payment/${encodeURIComponent(txId)}`);
+        const data = await resp.json();
+        displayResult('tx-result', data, data.success);
+        if (data.success) {
+            displayTransactionTable({
+            transaction_id: txId,
+                reference: data.reference || 'N/A',
+                status: data.status || data.state || 'N/A',
+                amount: data.amount || 'N/A',
+                currency: data.currency || 'N/A',
+                fees: data.fees || 0,
+                net_amount: data.net_amount || 0,
+                gateway: data.gateway || data.payment_provider || 'N/A',
+                environment: data.environment || 'N/A',
+                payment_url: data.payment_url || null,
+                message: data.message || '',
+                response_time: data.response_time,
+            });
+        }
+    } catch (e) {
+        displayResult('tx-result', {error: e.message}, false);
+    } finally {
+        setLoading(btn, false);
+    }
+}
+
+async function verifyTransaction() {
+    const btn = event.target.closest('button');
+    const ref = document.getElementById('tx-ref').value.trim();
+    if (!ref) { alert('Veuillez entrer une référence.'); return; }
+    setLoading(btn, true);
+
+    try {
+        const resp = await fetch(`/genius/api/payment/${encodeURIComponent(ref)}`);
+        const data = await resp.json();
+        displayResult('tx-result', data, data.success);
+        if (data.success) {
+            displayTransactionTable({
+            transaction_id: data.reference || data.id || 'N/A',
+                reference: ref,
+                status: data.status || data.state || 'N/A',
+                amount: data.amount || 'N/A',
+                currency: data.currency || 'N/A',
+                fees: data.fees || 0,
+                net_amount: data.net_amount || 0,
+                gateway: data.gateway || data.payment_provider || 'N/A',
+                environment: data.environment || 'N/A',
+                payment_url: data.payment_url || null,
+                message: data.message || JSON.stringify(data),
+                response_time: data.response_time,
+            });
+        }
+    } catch (e) {
+        displayResult('tx-result', {error: e.message}, false);
+    } finally {
+        setLoading(btn, false);
+    }
+}
+
+// ─── INIT ────────────────────────────────────────────────────
+document.getElementById('current-time').textContent = new Date().toLocaleString();
+// Auto-test au chargement
+window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(testConnection, 500);
+});
+</script>
+</body>
+</html>
