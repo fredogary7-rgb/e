@@ -659,7 +659,7 @@ document.getElementById('canalForm').addEventListener('submit', async function(e
                 await fetch('/api/push/send-all', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title: pushTitle, body: pushBody.substring(0,120), tag: 'canal-msg', url: '/chaine' })
+                    body: JSON.stringify({ titre: pushTitle, message: pushBody.substring(0,120), tag: 'canal-msg', url: '/chaine' })
                 });
             } catch(e) {}
 
@@ -722,12 +722,12 @@ async function loadCanalViaAPI() {
 
 function sendPushFromCanal() {
     const content = document.querySelector('#canalForm textarea[name="content"]').value;
-    const title = '📢 Nouvelle annonce';
-    const body = content ? content.substring(0, 120) : 'Un nouveau message a été publié dans le canal';
+    const titre = '📢 Nouvelle annonce';
+    const message = content ? content.substring(0, 120) : 'Un nouveau message a été publié dans le canal';
     fetch('/api/push/send-all', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, body, tag: 'canal-msg', url: '/chaine' })
+        body: JSON.stringify({ titre, message, tag: 'canal-msg', url: '/chaine' })
     }).then(r => {
         if (r.ok) toast('Notification push envoyée à tous !');
         else toast('Erreur push', true);
@@ -908,15 +908,15 @@ async function loadFinance() {
    PUSH
    ═══════════════════════════════════ */
 async function sendPush() {
-    const title = document.getElementById('pushTitle').value || '📢 NectarPro';
-    const body = document.getElementById('pushBody').value || '';
+    const titre = document.getElementById('pushTitle').value || '📢 NectarPro';
+    const message = document.getElementById('pushBody').value || '';
     const url = document.getElementById('pushUrl').value || '/dashboard';
-    if (!body) { toast('Veuillez entrer un message', true); return; }
+    if (!message) { toast('Veuillez entrer un message', true); return; }
     try {
         const resp = await fetch('/api/push/send-all', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, body, tag: 'admin-push', url })
+            body: JSON.stringify({ titre, message, tag: 'admin-push', url })
         });
         if (resp.ok) {
             toast('Notification push envoyée à tous !');
@@ -928,13 +928,10 @@ async function sendPush() {
 }
 
 async function sendPushTest() {
-    const title = '🧪 Test Notification';
-    const body = 'Ceci est un test de notification push.';
     try {
         const resp = await fetch('/api/push/test', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, body, tag: 'admin-test', url: '/dashboard' })
+            headers: { 'Content-Type': 'application/json' }
         });
         if (resp.ok) toast('Notification de test envoyée !');
         else toast('Erreur test push', true);
