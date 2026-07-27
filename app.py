@@ -5822,11 +5822,6 @@ def confirmer_commande(commande_id):
     commande.statut = "confirmee"
     commande.date_modification = datetime.utcnow()
     
-    # Créditer le vendeur
-    montant_vente = commande.total - commande.frais_livraison
-    vendeur = boutique.proprietaire
-    vendeur.solde_revenu = (vendeur.solde_revenu or 0) + montant_vente
-    
     # Mettre à jour les statistiques de ventes
     for article in commande.articles:
         produit = article.produit
