@@ -1760,7 +1760,17 @@ def classement_soldes():
         User.premier_depot
     ).order_by(User.solde_revenu.desc()).all()
 
-    return render_template("classement.html", utilisateurs=utilisateurs)
+    # On retourne un fragment HTML (pas un layout complet) pour être chargé via AJAX dans /admin
+    import flask
+    html = '<div class="stats-row">'
+    html += f'<div class="stat-card"><div class="stat-icon pink"><i class="fa fa-users"></i></div><div class="stat-info"><div class="stat-val">{len(utilisateurs)}</div><div class="stat-lbl">Utilisateurs classés</div></div></div>'
+    html += f'<div class="stat-card"><div class="stat-icon gold"><i class="fa fa-coins"></i></div><div class="stat-info"><div class="stat-val">{sum(u.solde_revenu or 0 for u in utilisateurs):,.0f} F</div><div class="stat-lbl">Total soldes</div></div></div>'
+    html += '</div>'
+    html += '<div class="card"><h3><i class="fa fa-trophy"></i> Classement par solde</h3><div class="table-wrap"><table><thead><tr><th>#</th><th>Pseudo</th><th>Téléphone</th><th>Solde Revenu</th><th>Solde Jeux</th><th>Solde Parrainage</th><th>Bonus</th><th>1er Dépôt</th></tr></thead><tbody>'
+    for i, u in enumerate(utilisateurs, 1):
+        html += f'<tr><td>{i}</td><td>{flask.escape(u.username)}</td><td>{flask.escape(u.phone or "")}</td><td>{(u.solde_revenu or 0):,.0f} F</td><td>{(u.solde_jeux or 0):,.0f} F</td><td>{(u.solde_parrainage or 0):,.0f} F</td><td>{(u.bonus or 0):,.0f} F</td><td>{"Oui" if u.premier_depot else "Non"}</td></tr>'
+    html += '</tbody></table></div></div>'
+    return html
 
 
 @app.route("/admin/chaine/post", methods=["POST"])
