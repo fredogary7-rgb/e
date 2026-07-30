@@ -1749,33 +1749,46 @@ def update_solde():
 
 @app.route("/admin/classement-soldes")
 def classement_soldes():
+    import traceback as _tb
     try:
-        # On ne récupère que le strict nécessaire pour la mémoire vive
-        utilisateurs = User.query.with_entities(
-            User.username,
-            User.phone,
-            User.solde_revenu,
-            User.solde_jeux,
-            User.solde_parrainage,
-            User.bonus,
-            User.premier_depot
-        ).order_by(User.solde_revenu.desc()).all()
+        # Utiliser raw SQL pour éviter tout problème ORM
+        sql = text("""
+            SELECT username, phone, solde_revenu, solde_jeux, solde_parrainage,
+                   bonus, premier_depot
+            FROM "user"
+            ORDER BY solde_revenu DESC NULLS LAST
+            LIMIT 500
+        """)
+        result = db.session.execute(sql)
+        rows = result.fetchall()
 
-        # On retourne un fragment HTML (pas un layout complet) pour être chargé via AJAX dans /admin
-        import flask
+        from markupsafe import escape as _esc
         html = '<div class="stats-row">'
-        html += f'<div class="stat-card"><div class="stat-icon pink"><i class="fa fa-users"></i></div><div class="stat-info"><div class="stat-val">{len(utilisateurs)}</div><div class="stat-lbl">Utilisateurs classés</div></div></div>'
-        html += f'<div class="stat-card"><div class="stat-icon gold"><i class="fa fa-coins"></i></div><div class="stat-info"><div class="stat-val">{sum(u.solde_revenu or 0 for u in utilisateurs):,.0f} F</div><div class="stat-lbl">Total soldes revenu</div></div></div>'
+        html += f'<div class="stat-card"><div class="stat-icon pink"><i class="fa fa-users"></i></div><div class="stat-info"><div class="stat-val">{len(rows)}</div><div class="stat-lbl">Utilisateurs classés</div></div></div>'
+        total = sum((r.solde_revenu or 0) for r in rows)
+        html += f'<div class="stat-card"><div class="stat-icon gold"><i class="fa fa-coins"></i></div><div class="stat-info"><div class="stat-val">{total:,.0f} F</div><div class="stat-lbl">Total soldes revenu</div></div></div>'
         html += '</div>'
         html += '<div class="card"><h3><i class="fa fa-trophy"></i> Classement par solde</h3><div class="table-wrap"><table><thead><tr><th>#</th><th>Pseudo</th><th>Téléphone</th><th>Solde Revenu</th><th>Solde Jeux</th><th>Solde Parrainage</th><th>Bonus</th><th>1er Dépôt</th></tr></thead><tbody>'
-        for i, u in enumerate(utilisateurs, 1):
-            html += f'<tr><td>{i}</td><td>{flask.escape(u.username)}</td><td>{flask.escape(u.phone or "")}</td><td>{(u.solde_revenu or 0):,.0f} F</td><td>{(u.solde_jeux or 0):,.0f} F</td><td>{(u.solde_parrainage or 0):,.0f} F</td><td>{(u.bonus or 0):,.0f} F</td><td>{"Oui" if u.premier_depot else "Non"}</td></tr>'
+        for i, r in enumerate(rows, 1):
+            sd = r.solde_revenu or 0
+            sj = r.solde_jeux or 0
+            sp = r.solde_parrainage or 0
+            bo = r.bonus or 0
+            pd_text = "Oui" if r.premier_depot else "Non"
+            html += f'<tr><td>{i}</td><td>{_esc(str(r.username or ""))}</td><td>{_esc(str(r.phone or ""))}</td><td>{sd:,.0f} F</td><td>{sj:,.0f} F</td><td>{sp:,.0f} F</td><td>{bo:,.0f} F</td><td>{pd_text}</td></tr>'
         html += '</tbody></table></div></div>'
         return html
     except Exception as e:
-        import logging
-        logging.error(f"classement_soldes error: {e}", exc_info=True)
-        return '<div class="empty"><i class="fa fa-exclamation-triangle"></i><p>Erreur lors du chargement du classement. Veuillez réessayer.</p></div>', 500
+        logging.error(f"classement_soldes error: {e}\n{_tb.format_exc()}")
+        msg = str(e)[:300]
+        return f'''<div class="stats-row">
+<div class="stat-card"><div class="stat-icon red"><i class="fa fa-exclamation-triangle"></i></div><div class="stat-info"><div class="stat-val">Erreur</div><div class="stat-lbl">Classement indisponible</div></div></div>
+</div>
+<div class="card"><h3><i class="fa fa-trophy"></i> Classement par solde</h3>
+<div class="table-wrap">
+<table><thead><tr><th>⚠️ Erreur serveur</th></tr></thead>
+<tbody><tr><td><div class="empty"><i class="fa fa-bug"></i><p>{msg}</p></div></td></tr></tbody></table>
+</div></div>'''
 
 
 @app.route("/admin/chaine/post", methods=["POST"])
