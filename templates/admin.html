@@ -878,29 +878,17 @@ function filterUsers() {
    FINANCE
    ═══════════════════════════════════ */
 async function loadFinance() {
+    const tabFinance = document.getElementById('tab-finance');
     try {
-        const html = await fetch('/admin/classement-soldes').then(r => r.text());
-        const div = document.createElement('div');
-        div.innerHTML = html;
-        const financeStats = document.getElementById('financeStats');
-        const classementTable = document.getElementById('classementTable');
-
-        // Stats
-        const stats = div.querySelectorAll('.stat-card, [class*="stat"]');
-        if (stats.length > 0) {
-            financeStats.innerHTML = Array.from(stats).map(s => s.outerHTML).join('');
-        }
-
-        // Classement
-        const table = div.querySelector('table');
-        if (table) {
-            classementTable.innerHTML = table.outerHTML;
-        } else {
-            const main = div.querySelector('.container') || div.querySelector('main') || div.body;
-            classementTable.innerHTML = main ? main.innerHTML : '<div class="empty"><p>Chargement...</p></div>';
-        }
+        const resp = await fetch('/admin/classement-soldes');
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const html = await resp.text();
+        // Vérifier que le HTML contient bien un tableau (pas une page d'erreur)
+        if (html.indexOf('<table') === -1) throw new Error('Pas de tableau dans la réponse');
+        tabFinance.innerHTML = html;
     } catch(e) {
-        document.getElementById('classementTable').innerHTML = '<div class="empty"><i class="fa fa-exclamation-triangle"></i><p>Erreur de chargement</p></div>';
+        console.error('loadFinance error:', e);
+        tabFinance.innerHTML = '<div class="empty"><i class="fa fa-exclamation-triangle"></i><p>Erreur de chargement du classement. Veuillez réessayer.</p></div>';
     }
 }
 
