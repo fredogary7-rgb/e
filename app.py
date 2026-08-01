@@ -1763,7 +1763,7 @@ def classement_soldes():
     try:
         # Utiliser raw SQL pour éviter tout problème ORM
         sql = text("""
-            SELECT username, phone, solde_revenu, solde_jeux, solde_parrainage,
+            SELECT username, phone, parrain, solde_revenu, solde_jeux, solde_parrainage,
                    bonus, premier_depot
             FROM "user"
             ORDER BY solde_revenu DESC NULLS LAST
@@ -1778,14 +1778,15 @@ def classement_soldes():
         total = sum((r.solde_revenu or 0) for r in rows)
         html += f'<div class="stat-card"><div class="stat-icon gold"><i class="fa fa-coins"></i></div><div class="stat-info"><div class="stat-val">{total:,.0f} F</div><div class="stat-lbl">Total soldes revenu</div></div></div>'
         html += '</div>'
-        html += '<div class="card"><h3><i class="fa fa-trophy"></i> Classement par solde</h3><div class="table-wrap"><table><thead><tr><th>#</th><th>Pseudo</th><th>Téléphone</th><th>Solde Revenu</th><th>Solde Jeux</th><th>Solde Parrainage</th><th>Bonus</th><th>1er Dépôt</th></tr></thead><tbody>'
+        html += '<div class="card"><h3><i class="fa fa-trophy"></i> Classement par solde</h3><div class="table-wrap"><table><thead><tr><th>#</th><th>Pseudo</th><th>Téléphone</th><th>Parrain</th><th>Solde Revenu</th><th>Solde Jeux</th><th>Solde Parrainage</th><th>Bonus</th><th>1er Dépôt</th></tr></thead><tbody>'
         for i, r in enumerate(rows, 1):
             sd = r.solde_revenu or 0
             sj = r.solde_jeux or 0
             sp = r.solde_parrainage or 0
             bo = r.bonus or 0
             pd_text = "Oui" if r.premier_depot else "Non"
-            html += f'<tr><td>{i}</td><td>{_esc(str(r.username or ""))}</td><td>{_esc(str(r.phone or ""))}</td><td>{sd:,.0f} F</td><td>{sj:,.0f} F</td><td>{sp:,.0f} F</td><td>{bo:,.0f} F</td><td>{pd_text}</td></tr>'
+            parrain_text = _esc(str(r.parrain or "")) if r.parrain else "—"
+            html += f'<tr><td>{i}</td><td>{_esc(str(r.username or ""))}</td><td>{_esc(str(r.phone or ""))}</td><td>{parrain_text}</td><td>{sd:,.0f} F</td><td>{sj:,.0f} F</td><td>{sp:,.0f} F</td><td>{bo:,.0f} F</td><td>{pd_text}</td></tr>'
         html += '</tbody></table></div></div>'
         return html
     except Exception as e:
