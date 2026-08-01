@@ -14,7 +14,7 @@ import multiprocessing
 # Nombre de workers : (2 * CPU) + 1
 # Pour Render Standard (2 vCPUs) = 5 workers
 # Pour Render Pro (4 vCPUs) = 9 workers
-workers = int(os.getenv("WEB_CONCURRENCY", multiprocessing.cpu_count() * 2 + 1))
+workers = int(os.getenv("WEB_CONCURRENCY", min(multiprocessing.cpu_count() * 2 + 1, 8)))
 
 # Type de worker - Gevent pour le parallélisme I/O
 # Gevent est idéal pour :

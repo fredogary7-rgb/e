@@ -1,4 +1,8 @@
 
+# Patch Gevent AVANT toute autre import (compatibilité SSL avec requests)
+from gevent import monkey
+monkey.patch_all(ssl=False, socket=True, dns=True, time=True)
+
 import time
 import requests
 import os

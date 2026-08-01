@@ -1,1 +1,1 @@
-web: gunicorn app:app --workers 4 --worker-class gevent --worker-connections 1000 --max-requests 10000 --max-requests-jitter 1000 --timeout 120 --keep-alive 5 --preload --log-level warning --access-logfile - --error-logfile -
+web: gunicorn app:app -c gunicorn.conf.py --workers 4 --log-level warning
