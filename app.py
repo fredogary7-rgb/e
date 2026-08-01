@@ -4592,8 +4592,10 @@ def allowed_file(filename):
 
 def save_product_image(file):
     """
-    Sauvegarde une image de produit et retourne le chemin relatif
-    Retourne None si le fichier n'est pas valide
+    Upload une image de produit vers Cloudinary et retourne l'URL sécurisée.
+    Retourne None si le fichier n'est pas valide.
+    
+    Avec fallback local si Cloudinary n'est pas configuré.
     """
     if not file or not file.filename:
         return None
@@ -4601,19 +4603,45 @@ def save_product_image(file):
     if not allowed_file(file.filename):
         return None
     
-    # Générer un nom de fichier unique
     import uuid
+    
+    # Tenter l'upload vers Cloudinary d'abord
+    try:
+        cloudinary_ok = all([
+            os.environ.get('CLOUDINARY_CLOUD_NAME'),
+            os.environ.get('CLOUDINARY_API_KEY'),
+            os.environ.get('CLOUDINARY_API_SECRET'),
+        ])
+        
+        if cloudinary_ok:
+            ext = file.filename.rsplit('.', 1)[1].lower()
+            public_id = f"products/{uuid.uuid4().hex}"
+            
+            upload_result = cloudinary.uploader.upload(
+                file,
+                folder="products",
+                public_id=public_id,
+                resource_type="image",
+                quality="auto",
+                fetch_format="auto",
+            )
+            cloudinary_url = upload_result.get("secure_url")
+            if cloudinary_url:
+                logging.info(f"[UPLOAD] Image uploadée sur Cloudinary: {cloudinary_url}")
+                return cloudinary_url
+    except Exception as e:
+        logging.warning(f"[UPLOAD] Échec Cloudinary, fallback local: {e}")
+    
+    # Fallback : stockage local (pour développement ou si Cloudinary non configuré)
     ext = file.filename.rsplit('.', 1)[1].lower()
     unique_filename = f"{uuid.uuid4().hex}.{ext}"
     
-    # Créer le dossier s'il n'existe pas
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
     
-    # Sauvegarder le fichier
     filepath = os.path.join(UPLOAD_FOLDER, unique_filename)
     file.save(filepath)
     
-    # Retourner le chemin relatif pour la base de données
+    logging.info(f"[UPLOAD] Image sauvegardée en local: {filepath}")
     return f"uploads/products/{unique_filename}"
 
 @app.route("/boutique/<int:boutique_id>/produit/ajouter", methods=["GET", "POST"])
