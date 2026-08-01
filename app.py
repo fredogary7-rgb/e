@@ -1,8 +1,3 @@
-
-# Patch Gevent AVANT toute autre import (compatibilité SSL avec requests)
-from gevent import monkey
-monkey.patch_all(ssl=False, socket=True, dns=True, time=True)
-
 import time
 import requests
 import os
@@ -87,14 +82,6 @@ def verify_pin(user, pin, log_context=""):
         db.session.commit()
         remaining_attempts = MAX_PIN_ATTEMPTS - user.pin_failed_attempts
         return False, f"Code PIN incorrect. {remaining_attempts} tentative(s) restante(s)."
-from dotenv import load_dotenv
-from flask import Flask, render_template, request, redirect, url_for, flash, session, g, jsonify, send_from_directory, abort
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func, create_engine, text
-from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.utils import secure_filename
-from flask_login import LoginManager, login_user, logout_user, current_user, login_required, UserMixin
-from flask_migrate import Migrate
 
 # ─── FLASK APP ───────────────────────────────────────────
 app = Flask(__name__, template_folder="templates", static_folder="static")
@@ -3674,7 +3661,7 @@ def admin_finance():
         if user and check_password_hash(user.password, password):
             session["admin_id"] = user.id  # Stocke l'id de l'admin
             # Redirection vers admin_deposits après connexion
-            return redirect(url_for("admin_deposits"))
+            return redirect(url_for("admin"))
         else:
             flash("Nom d'utilisateur ou mot de passe incorrect.", "danger")
             # Reste sur la page avec le message flash

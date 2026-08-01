@@ -22,14 +22,11 @@ workers = int(os.getenv("WEB_CONCURRENCY", min(multiprocessing.cpu_count() * 2 +
 # - API externes (SoleasPay, Cloudinary)
 # - Uploads de fichiers
 # - WebSockets (chaines, notifications push)
-worker_class = "gevent"
+worker_class = "gthread"
 
-# Connexions simultanées par worker
-# 1000 connexions × 5 workers = 5000 utilisateurs max
-worker_connections = 1000
-
-# Threads additionnels (1 seul avec Gevent)
-threads = 1
+# Threads par worker (gthread)
+# 4 workers × 4 threads = 16 requêtes simultanées
+threads = 4
 
 # ==========================================
 # Timeouts - Protection contre les requêtes lentes
@@ -108,13 +105,13 @@ limit_request_field_size = 0
 
 def on_starting(server):
     """Appelé quand Gunicorn démarre"""
-    print(f"[GUNICORN] Démarrage avec {workers} workers (Gevent) sur {bind}")
+    print(f"[GUNICORN] Démarrage avec {workers} workers (GThread) sur {bind}")
 
 def when_ready(server):
     """Appelé quand Gunicorn est prêt à accepter des connexions"""
     print(f"[GUNICORN] Serveur prêt - {workers} workers démarrés")
     print(f"[GUNICORN] Worker class: {worker_class}")
-    print(f"[GUNICORN] Worker connections: {worker_connections}")
+    print(f"[GUNICORN] Threads per worker: {threads}")
     print(f"[GUNICORN] Max requests per worker: {max_requests}")
     print(f"[GUNICORN] Timeout: {timeout}s")
 
