@@ -2639,6 +2639,10 @@ def webhook_soleaspay():
             if user:
                 user.premier_depot = True
 
+                if user.parrain:
+                   donner_commission(user.parrain, depot.montant)
+
+
         elif status in ["FAILED", "REJECTED"]:
             depot.statut = "failed"
 
