@@ -3650,11 +3650,16 @@ def team_page():
         "commissions_total": float(user.solde_revenu or 0)
     }
 
+    total_commission = float(user.solde_revenu or 0)
+    team_total = len(level1) + len(level2) + len(level3)
+
     return render_template(
         "team.html",
         user=user,
         referral_link=referral_link,
         stats=stats,
+        total_commission=total_commission,
+        team_total=team_total,
         level1_users=level1,
         level2_users=level2,
         level3_users=level3
