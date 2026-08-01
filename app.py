@@ -621,11 +621,21 @@ class Produit(db.Model):
         """Retourne la première image ou une image par défaut"""
         images = self.liste_images
         if images:
-            img = images[0]
-            # Si le chemin ne commence pas par /static/ ou http, l'ajouter
-            if not img.startswith('/') and not img.startswith('http'):
+            img = images[0].strip()
+            # URL externe (Cloudinary, etc.) → retourner tel quel
+            if img.startswith('http'):
+                return img
+            # Déjà un chemin absolu commençant par /static/ → retourner tel quel
+            if img.startswith('/static/'):
+                return img
+            # Chemin relatif static/ → ajouter /
+            if img.startswith('static/'):
+                return f"/{img}"
+            # uploads/products/... → dans static/uploads/products/
+            if img.startswith('uploads/'):
                 return f"/static/{img}"
-            return img
+            # Autre chemin relatif → préfixer /static/
+            return f"/static/{img}"
         # Image placeholder par défaut
         return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%23e2e8f0' width='200' height='200'/%3E%3Ctext fill='%2394a3b8' font-family='Arial' font-size='40' text-anchor='middle' y='115'%3E📷%3C/text%3E%3C/svg%3E"
 
