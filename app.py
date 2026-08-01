@@ -19,6 +19,11 @@ import cloudinary
 socket.setdefaulttimeout(300)  # 300 secondes (5 min) pour les uploads vidéo
 
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask import Flask, render_template, request, redirect, url_for, flash, session, g, jsonify, send_from_directory, abort
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func, create_engine, text
+from flask_login import LoginManager, login_user, logout_user, current_user, login_required, UserMixin
+from flask_migrate import Migrate
 
 # Configuration sécurité PIN
 MAX_PIN_ATTEMPTS = 3
