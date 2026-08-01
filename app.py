@@ -5754,13 +5754,14 @@ def market_page():
     # Récupérer toutes les boutiques actives
     boutiques = Boutique.query.filter_by(est_actif=True).order_by(Boutique.date_creation.desc()).limit(12).all()
     
-    # Récupérer les produits récents (du plus récent au plus ancien)
+    # Récupérer les produits récents (du plus récent au plus ancien) — 12 initiaux
     query = Produit.query.filter_by(est_actif=True)
     
     if categorie_id:
         query = query.filter_by(categorie_id=categorie_id)
     
-    produits = query.order_by(Produit.date_creation.desc()).limit(24).all()
+    total_produits = query.count()
+    produits = query.order_by(Produit.date_creation.desc()).limit(12).all()
     
     # Récupérer toutes les catégories pour les filtres
     categories = Categorie.query.order_by(Categorie.nom).all()
@@ -5768,10 +5769,59 @@ def market_page():
     return render_template("market.html",
         boutiques=boutiques,
         produits=produits,
+        total_produits=total_produits,
         categories=categories,
         categorie_actuelle=categorie_id,
         user=user
     )
+
+
+@app.route("/api/market/produits")
+def api_market_produits():
+    """API : retourne les produits paginés pour le bouton 'Voir plus'"""
+    try:
+        offset = request.args.get("offset", 0, type=int)
+        limit = 12
+        categorie_id = request.args.get("categorie", type=int)
+        
+        query = Produit.query.filter_by(est_actif=True)
+        if categorie_id:
+            query = query.filter_by(categorie_id=categorie_id)
+        
+        total = query.count()
+        produits = query.order_by(Produit.date_creation.desc()).offset(offset).limit(limit).all()
+        
+        produits_json = []
+        for p in produits:
+            promo_pct = 0
+            if p.est_en_promo and p.prix_promo and p.prix and p.prix > 0:
+                promo_pct = int((1 - p.prix_promo / p.prix) * 100)
+            
+            produits_json.append({
+                "id": p.id,
+                "slug": p.slug,
+                "nom": p.nom,
+                "image": p.image_principale,
+                "prix": int(p.prix),
+                "prix_promo": int(p.prix_promo) if p.prix_promo else None,
+                "devise": p.devise,
+                "est_en_promo": p.est_en_promo,
+                "promo_pct": promo_pct,
+                "boutique_nom": p.boutique.nom,
+                "categorie_nom": p.categorie.nom if p.categorie else "",
+                "vues": p.vues or 0,
+                "boutique_url": url_for('boutique_publique', username=p.boutique.proprietaire.username),
+                "produit_url": url_for('voir_produit_public', slug=p.slug)
+            })
+        
+        return jsonify({
+            "success": True,
+            "produits": produits_json,
+            "total": total,
+            "has_more": (offset + limit) < total
+        })
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
 
 
 # ==============================

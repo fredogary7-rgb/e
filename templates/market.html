@@ -493,6 +493,40 @@
         }
         @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 
+        /* ██████ VOIR PLUS BUTTON ██████ */
+        .voir-plus-section{
+            text-align:center;margin:30px 0 50px;
+        }
+        .btn-voir-plus{
+            display:inline-flex;align-items:center;gap:8px;
+            padding:14px 36px;
+            background:linear-gradient(135deg,#ec4899,#db2777);
+            color:#fff;
+            font-size:14px;font-weight:800;
+            border:none;border-radius:30px;
+            cursor:pointer;transition:all .3s;
+            box-shadow:0 4px 20px rgba(219,39,119,0.3);
+            letter-spacing:.5px;
+        }
+        .btn-voir-plus:hover{
+            transform:translateY(-3px);
+            box-shadow:0 8px 28px rgba(219,39,119,0.45);
+            background:linear-gradient(135deg,#f472b6,#ec4899);
+        }
+        .btn-voir-plus:disabled{
+            opacity:0.5;cursor:not-allowed;transform:none;
+            box-shadow:none;
+        }
+        .btn-voir-plus .spinner{
+            display:none;width:18px;height:18px;
+            border:2px solid rgba(255,255,255,0.4);
+            border-top:2px solid #fff;
+            border-radius:50%;
+            animation:spin .7s linear infinite;
+        }
+        .btn-voir-plus.loading .spinner{display:inline-block}
+        .btn-voir-plus.loading .btn-text{display:none}
+
         /* ██████ FOOTER ██████ */
         footer{
             text-align:center;padding:24px;
@@ -692,13 +726,21 @@
                 </div>
                 {% endif %}
             </section>
+
+            <!-- BOUTON VOIR PLUS (produits paginés) -->
+            <div class="voir-plus-section" id="voirPlusSection" style="display:none;">
+                <button class="btn-voir-plus" id="btnVoirPlus" onclick="chargerPlus()">
+                    <span class="spinner"></span>
+                    <span class="btn-text">Voir plus de produits</span>
+                </button>
+            </div>
         </main>
 
         <footer>2026 © NectarPro by Nina Academy ✨</footer>
     </div>
 
     <script>
-        // Recherche de produits
+        // ─── RECHERCHE PRODUITS ────────────────────────────
         function searchProducts() {
             const query = document.getElementById('productSearch').value.toLowerCase();
             const cards = document.querySelectorAll('#productsGrid .product-card');
@@ -716,7 +758,7 @@
             });
         }
 
-        // Recherche de boutiques
+        // ─── RECHERCHE BOUTIQUES ───────────────────────────
         function searchShops() {
             const query = document.getElementById('shopSearch').value.toLowerCase();
             const cards = document.querySelectorAll('#shopsGrid .shop-card');
@@ -730,6 +772,93 @@
                 } else {
                     card.style.display = 'none';
                 }
+            });
+        }
+
+        // ─── CHARGEMENT PRODUITS PAGINÉS (Voir plus) ──────
+        let offsetProduits = {{ produits|length }};
+        const totalProduits = {{ total_produits }};
+        const limitProduits = 12;
+        const urlParams = new URLSearchParams(window.location.search);
+        const categorieActive = urlParams.get('categorie') || '';
+
+        // Afficher le bouton seulement si plus de produits disponibles
+        (function initVoirPlus() {
+            if (offsetProduits < totalProduits) {
+                document.getElementById('voirPlusSection').style.display = 'block';
+            }
+        })();
+
+        function chargerPlus() {
+            const btn = document.getElementById('btnVoirPlus');
+            if (btn.disabled) return;
+            btn.disabled = true;
+            btn.classList.add('loading');
+
+            let url = '/api/market/produits?offset=' + offsetProduits + '&limit=' + limitProduits;
+            if (categorieActive) url += '&categorie=' + categorieActive;
+
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    btn.classList.remove('loading');
+                    if (!data.success) {
+                        console.error('Erreur API:', data.error);
+                        btn.disabled = false;
+                        return;
+                    }
+                    const nouveaux = data.produits;
+                    if (nouveaux.length === 0) {
+                        document.getElementById('voirPlusSection').style.display = 'none';
+                        return;
+                    }
+                    ajouterProduitsAuDOM(nouveaux);
+                    offsetProduits += nouveaux.length;
+                    if (offsetProduits >= totalProduits) {
+                        document.getElementById('voirPlusSection').style.display = 'none';
+                    }
+                    btn.disabled = false;
+                })
+                .catch(err => {
+                    console.error('Erreur réseau:', err);
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                });
+        }
+
+        function ajouterProduitsAuDOM(produits) {
+            const grid = document.getElementById('productsGrid');
+            produits.forEach(function(p) {
+                let html = '<a href="' + p.produit_url + '" class="product-card">';
+                // image
+                html += '<div class="product-image">';
+                html += '<img src="' + p.image + '" alt="' + p.nom + '" loading="lazy">';
+                html += '<div class="product-image-overlay"></div>';
+                if (p.est_en_promo && p.promo_pct > 0) {
+                    html += '<span class="product-badge">-' + p.promo_pct + '%</span>';
+                }
+                html += '</div>';
+                // details
+                html += '<div class="product-details">';
+                html += '<div class="product-shop"><i class="fas fa-store"></i> ' + p.boutique_nom + '</div>';
+                html += '<h3 class="product-name">' + p.nom + '</h3>';
+                html += '<div class="product-price">';
+                if (p.est_en_promo && p.prix_promo) {
+                    html += '<span class="current-price">' + p.prix_promo + ' ' + p.devise + '</span>';
+                    html += '<span class="old-price">' + p.prix + ' ' + p.devise + '</span>';
+                } else {
+                    html += '<span class="current-price">' + p.prix + ' ' + p.devise + '</span>';
+                }
+                html += '</div>';
+                html += '<div class="product-meta">';
+                if (p.categorie_nom) {
+                    html += '<span class="product-category">' + p.categorie_nom + '</span>';
+                }
+                html += '<span class="product-views"><i class="fas fa-eye"></i> ' + (p.vues || 0) + '</span>';
+                html += '</div>';
+                html += '</div>';
+                html += '</a>';
+                grid.insertAdjacentHTML('beforeend', html);
             });
         }
     </script>
