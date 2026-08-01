@@ -91,9 +91,9 @@ body{background:var(--bg);min-height:100vh;color:var(--text);font-style:italic;o
 .main{padding:0;max-width:480px;margin:0 auto;position:relative;z-index:1;min-height:100vh}
 
 /* TIKTOK STYLE VIDEO FEED */
-.video-feed{position:relative;width:100%;max-width:480px;margin:0 auto;overflow:hidden;background:#000;height:calc(100dvh - 62px);overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:smooth}
-.video-item{position:relative;width:100%;height:100%;min-height:calc(100dvh - 62px);background:#000;overflow:hidden;scroll-snap-align:start;scroll-snap-stop:always;flex-shrink:0}
-.video-item video{width:100%;height:100%;object-fit:cover}
+.video-feed{position:relative;width:100%;max-width:480px;margin:0 auto;overflow:hidden;background:#000;height:calc(100dvh - 62px);overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch}
+.video-item{position:relative;width:100%;height:100%;min-height:calc(100dvh - 62px);background:#000;overflow:hidden;scroll-snap-align:start;scroll-snap-stop:always;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.video-item video{width:100%;height:100%;object-fit:contain;background:#000}
 
 /* ACTION BUTTONS (RIGHT) */
 .video-actions{position:absolute;right:12px;bottom:120px;display:flex;flex-direction:column;gap:16px;align-items:center;z-index:10}
@@ -227,7 +227,7 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.bottom-nav *{font-style:ital
     <div class="video-feed" id="videoFeed">
         {% for pub in publicites %}
         <div class="video-item" id="video-{{ pub.id }}" data-pub-id="{{ pub.id }}">
-            <video src="{{ pub.video_url }}" muted loop{% if loop.first %} autoplay{% endif %}></video>
+            <video src="{{ pub.video_url }}" playsinline loop{% if loop.first %} autoplay{% endif %}></video>
 
             <!-- Seller Avatar (top of actions) -->
             <div class="seller-avatar-action" style="position:absolute;top:70px;right:18px;z-index:10;">
@@ -342,19 +342,24 @@ document.addEventListener('DOMContentLoaded',function(){
             if(index===0){video.play().catch(()=>{});}
         }
     });
-    // Play/pause on scroll snap
+    // Play/pause on scroll snap + unmute visible, mute hidden
     const observer=new IntersectionObserver((entries)=>{
         entries.forEach(entry=>{
             const video=entry.target.querySelector('video');
             if(!video)return;
             if(entry.isIntersecting&&entry.intersectionRatio>=0.7){
+                video.muted = false;
                 video.play().catch(()=>{});
             }else{
+                video.muted = true;
                 video.pause();
             }
         });
     },{threshold:0.7});
     items.forEach(item=>observer.observe(item));
+    // Ensure first video unmuted on load
+    const firstVideo = items[0]?.querySelector('video');
+    if(firstVideo) { firstVideo.muted = false; firstVideo.play().catch(()=>{}); }
 });
 
 // LIKE
