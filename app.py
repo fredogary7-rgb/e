@@ -129,12 +129,14 @@ def allowed_file(filename):
 # ─── DATABASE CONFIG ─────────────────────────────────────
 DATABASE_URL = "postgresql://neondb_owner:npg_YaC69HIAGyZn@ep-muddy-darkness-ai9gl7w1-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require"
 
+# Pool PostgreSQL optimisé pour Neon (timeout idle = 300s) et 3000+ utilisateurs
 engine = create_engine(
     DATABASE_URL,
-    pool_size=10,
-    max_overflow=20,
-    pool_timeout=30,
-    pool_recycle=1800,
+    pool_size=20,
+    max_overflow=40,
+    pool_timeout=10,
+    pool_recycle=280,
+    pool_pre_ping=True,
 )
 
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
@@ -142,7 +144,9 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "pool_pre_ping": True,
     "pool_recycle": 280,
-    "pool_timeout": 20
+    "pool_timeout": 10,
+    "pool_size": 20,
+    "max_overflow": 40,
 }
 
 # ─── INITIALISATION DE LA BASE DE DONNÉES ───────────────
