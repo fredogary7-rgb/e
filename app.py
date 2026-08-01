@@ -2139,7 +2139,7 @@ def reseau_leader_brice():
 
 @app.route("/inscription", methods=["GET", "POST"])
 def inscription_page():
-    date_ouverture = datetime(2026, 8, 1, 00, 0, 0)
+    date_ouverture = datetime(2026, 8, 1, 12, 0, 0)
     if datetime.now() < date_ouverture:
         return render_template("maintenance_inscription.html")
 
@@ -2235,7 +2235,7 @@ from flask import render_template
 
 def verification_lancement():
     # Date cible : 11 Avril 2026 à 12h00
-    date_lancement = datetime(2026, 8, 1, 00, 0, 0)
+    date_lancement = datetime(2026, 8, 1, 12, 0, 0)
     if datetime.now() < date_lancement:
         # On renvoie directement le template de maintenance
         return render_template("maintenance_inscription.html")
