@@ -607,10 +607,10 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.market-section *,.whatsapp-c
             <div class="stat-card-sub"><i class="fa fa-arrow-up"></i> Produits vendus</div>
         </div>
         <div class="stat-card">
-            <div class="stat-card-icon"><i class="fa fa-box"></i></div>
-            <div class="stat-card-label">Produits validés</div>
-            <div class="stat-card-value">{{ "{:,}".format(total_produits_boutique or 0) }}</div>
-            <div class="stat-card-sub"><i class="fa fa-check-circle"></i> Dans ma boutique</div>
+            <div class="stat-card-icon"><i class="fa fa-video"></i></div>
+            <div class="stat-card-label">Solde des publicites</div>
+            <div class="stat-card-value">XOF {{ "{:,}".format(user.solde_jeux or 0) }}</div>
+            <div class="stat-card-sub"><i class="fa fa-ad"></i> Publicités</div>
         </div>
         <div class="stat-card">
             <div class="stat-card-icon"><i class="fa fa-hand-holding-usd"></i></div>
