@@ -2890,6 +2890,15 @@ def dashboard_page():
     # --- PRODUITS DES VENDEURS (carousel dashboard) ---
     produits_recents = Produit.query.filter_by(est_actif=True).order_by(Produit.date_creation.desc()).limit(20).all()
 
+    # --- STATS BOUTIQUE DU PROPRIÉTAIRE ---
+    total_ventes = 0
+    total_produits_boutique = 0
+    boutiques_user = Boutique.query.filter_by(user_id=user.id).all()
+    for boutique in boutiques_user:
+        produits_boutique = Produit.query.filter_by(boutique_id=boutique.id, est_actif=True).all()
+        total_produits_boutique += len(produits_boutique)
+        for produit in produits_boutique:
+            total_ventes += (produit.ventes or 0)
 
     return render_template(
         "dashboard.html",
@@ -2916,7 +2925,11 @@ def dashboard_page():
 
         # --- VARIABLES DASHBOARD PREMIUM ---
         now=now,
-        total_filleuls=User.query.filter_by(parrain=user.username).count()
+        total_filleuls=User.query.filter_by(parrain=user.username).count(),
+
+        # --- STATS BOUTIQUE DU PROPRIÉTAIRE ---
+        total_ventes=total_ventes,
+        total_produits_boutique=total_produits_boutique
     )
 
 
