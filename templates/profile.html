@@ -325,18 +325,21 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
     <!-- Securite -->
     <div class="section">
         <h2 class="section-title"><i class="fa fa-lock"></i> Securite</h2>
-        <form method="POST" action="/change_pin_profile">
-            <div class="input-group">
-                <label><i class="fa fa-key"></i> Nouveau code PIN (6 chiffres)</label>
-                <input type="password" name="nouveau_pin" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" placeholder="Nouveau PIN" required>
-            </div>
-            <div class="input-group">
-                <label><i class="fa fa-key"></i> Confirmer le nouveau code PIN</label>
-                <input type="password" name="confirmer_pin" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" placeholder="Confirmer le PIN" required>
-            </div>
+        <form method="POST" action="/profile">
+            <input type="hidden" name="update_pin" value="1">
+            {% if user.pin_code %}
             <div class="input-group">
                 <label><i class="fa fa-lock"></i> PIN actuel</label>
                 <input type="password" name="pin_actuel" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" placeholder="PIN actuel" required>
+            </div>
+            {% endif %}
+            <div class="input-group">
+                <label><i class="fa fa-key"></i> Nouveau code PIN (6 chiffres)</label>
+                <input type="password" name="pin" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" placeholder="Nouveau PIN" required>
+            </div>
+            <div class="input-group">
+                <label><i class="fa fa-key"></i> Confirmer le nouveau code PIN</label>
+                <input type="password" name="confirm_pin" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" placeholder="Confirmer le PIN" required>
             </div>
             <button type="submit" class="btn btn-primary"><i class="fa fa-shield"></i> Changer le code PIN</button>
         </form>

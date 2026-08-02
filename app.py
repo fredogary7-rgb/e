@@ -3576,12 +3576,23 @@ def profile_page():
         elif "update_pin" in request.form:
             pin = request.form.get("pin")
             confirm_pin = request.form.get("confirm_pin")
+            pin_actuel = request.form.get("pin_actuel")
             if not pin or not confirm_pin:
                 flash("Champs obligatoires.", "danger")
             elif not pin.isdigit() or len(pin) != 6:
                 flash("PIN : 6 chiffres requis.", "danger")
             elif pin != confirm_pin:
                 flash("Les PIN ne correspondent pas.", "danger")
+            elif user.pin_code and (not pin_actuel or not pin_actuel.isdigit() or len(pin_actuel) != 6):
+                flash("Veuillez saisir votre PIN actuel (6 chiffres).", "danger")
+            elif user.pin_code:
+                success, message = verify_pin(user, pin_actuel, log_context="profile_pin_change")
+                if not success:
+                    flash(message, "danger")
+                else:
+                    user.pin_code = generate_password_hash(pin)
+                    db.session.commit()
+                    flash("Code PIN mis à jour ! 🔐", "success")
             else:
                 user.pin_code = generate_password_hash(pin)
                 db.session.commit()
