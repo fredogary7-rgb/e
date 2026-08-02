@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notifications - NectarPro</title>
+<link rel="icon" href="/static/images/favicon-48.png" sizes="48x48" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+:root{
+    --bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);
+    --glass:rgba(255,255,255,0.72);
+    --accent:#db2777;
+    --accent2:#ec4899;
+    --text:#000;
+    --text2:#1f2937;
+    --muted:#6b7280;
+    --border:rgba(236,72,153,0.2);
+    --shadow:0 8px 32px rgba(236,72,153,0.12);
+    --radius-lg:24px;
+    --radius:18px;
+}
+body{background:var(--bg);min-height:100vh;color:var(--text);font-style:italic;overflow-x:hidden}
+.main{max-width:600px;margin:0 auto;padding:20px 16px;position:relative;z-index:1}
+.header{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.back-btn{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--glass);border:1px solid var(--border);color:var(--accent2);text-decoration:none;font-size:18px;transition:all .2s}
+.back-btn:hover{background:rgba(255,255,255,0.9)}
+.header h1{font-size:20px;font-weight:800}
+.header-actions{margin-left:auto}
+.mark-all-btn{background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;border:none;padding:8px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;font-style:italic;transition:all .2s}
+.mark-all-btn:hover{transform:scale(1.05);box-shadow:0 4px 12px rgba(219,39,119,0.3)}
+.notif-card{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;transition:all .2s;cursor:pointer;text-decoration:none;color:var(--text)}
+.notif-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.notif-card.unread{border-left:3px solid var(--accent2);background:rgba(236,72,153,0.06)}
+.notif-icon{width:44px;height:44px;border-radius:14px;background:rgba(236,72,153,0.1);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;color:var(--accent2)}
+.notif-body{flex:1;min-width:0}
+.notif-title{font-weight:700;font-size:14px;color:var(--text);margin-bottom:4px}
+.notif-message{font-size:12px;color:var(--text2);line-height:1.5;opacity:.85}
+.notif-time{font-size:10px;color:var(--muted);margin-top:6px;font-weight:600}
+.notif-dot{width:8px;height:8px;border-radius:50%;background:var(--accent2);flex-shrink:0;margin-top:8px}
+.empty-state{text-align:center;padding:80px 20px}
+.empty-state i{font-size:64px;color:var(--accent2);opacity:.4;margin-bottom:16px;display:block}
+.empty-state h2{font-size:18px;font-weight:700;margin-bottom:8px}
+.empty-state p{font-size:13px;color:var(--muted)}
+.pagination{display:flex;justify-content:center;gap:8px;margin-top:24px}
+.pagination a,.pagination span{padding:8px 14px;border-radius:12px;font-weight:600;font-size:13px;text-decoration:none;background:var(--glass);border:1px solid var(--border);color:var(--text);transition:all .2s}
+.pagination a:hover{background:rgba(236,72,153,0.1);color:var(--accent2)}
+.pagination .current{background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;border:none}
+body,.main *{font-style:italic!important}
+@media(max-width:420px){.main{padding:16px 10px}}
+</style>
+</head>
+<body>
+
+<div class="main">
+    <div class="header">
+        <a href="/dashboard" class="back-btn"><i class="fa fa-arrow-left"></i></a>
+        <h1><i class="fa fa-bell" style="color:var(--accent2)"></i> Notifications</h1>
+        <div class="header-actions">
+            <button class="mark-all-btn" onclick="markAllRead()"><i class="fa fa-check-double"></i> Tout marquer lu</button>
+        </div>
+    </div>
+
+    {% if notifications and notifications.items %}
+        {% for notif in notifications.items %}
+        <a href="{{ notif.url or '/dashboard' }}" class="notif-card{% if not notif.lu %} unread{% endif %}" onclick="markRead({{ notif.id }}, event)">
+            <div class="notif-icon">{{ notif.icon or '🔔' }}</div>
+            <div class="notif-body">
+                <div class="notif-title">{{ notif.titre }}</div>
+                <div class="notif-message">{{ notif.message }}</div>
+                <div class="notif-time">
+                    <i class="fa fa-clock"></i>
+                    {% if notif.date_creation %}
+                        {{ notif.date_creation.strftime('%d/%m/%Y à %H:%M') }}
+                    {% endif %}
+                </div>
+            </div>
+            {% if not notif.lu %}<div class="notif-dot"></div>{% endif %}
+        </a>
+        {% endfor %}
+
+        {% if notifications.pages > 1 %}
+        <div class="pagination">
+            {% if notifications.has_prev %}
+            <a href="?page={{ notifications.prev_num }}"><i class="fa fa-chevron-left"></i></a>
+            {% endif %}
+            {% for page_num in notifications.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                {% if page_num %}
+                <a href="?page={{ page_num }}" class="{% if page_num == notifications.page %}current{% endif %}">{{ page_num }}</a>
+                {% else %}
+                <span>…</span>
+                {% endif %}
+            {% endfor %}
+            {% if notifications.has_next %}
+            <a href="?page={{ notifications.next_num }}"><i class="fa fa-chevron-right"></i></a>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% else %}
+    <div class="empty-state">
+        <i class="fa fa-bell-slash"></i>
+        <h2>Aucune notification</h2>
+        <p>Vous recevrez des notifications lorsque l'admin enverra des annonces ou lorsqu'il y aura des mises à jour importantes.</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function markRead(notifId, event) {
+    event.preventDefault();
+    fetch('/api/notifications/read/' + notifId, { method: 'POST' })
+        .then(r => r.json())
+        .then(() => {
+            const link = event.currentTarget;
+            link.classList.remove('unread');
+            const dot = link.querySelector('.notif-dot');
+            if (dot) dot.remove();
+            // Navigate after marking read
+            window.location.href = link.href;
+        });
+}
+function markAllRead() {
+    fetch('/api/notifications/read-all', { method: 'POST' })
+        .then(r => r.json())
+        .then(() => {
+            document.querySelectorAll('.notif-card.unread').forEach(c => {
+                c.classList.remove('unread');
+                const dot = c.querySelector('.notif-dot');
+                if (dot) dot.remove();
+            });
+        });
+}
+</script>
+
+</body>
+</html>

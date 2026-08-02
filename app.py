@@ -921,6 +921,19 @@ class Notification(db.Model):
     date_envoi = db.Column(db.DateTime)
     date_lecture = db.Column(db.DateTime)
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "titre": self.titre,
+            "message": self.message,
+            "icon": self.icon,
+            "image": self.image,
+            "url": self.url,
+            "type": self.type,
+            "lu": self.lu,
+            "date_creation": self.date_creation.isoformat() if self.date_creation else None,
+        }
+
 class NotificationQueue(db.Model):
     """File d'attente pour l'envoi des notifications push."""
     __tablename__ = "notification_queue"
@@ -2900,6 +2913,9 @@ def dashboard_page():
         for produit in produits_boutique:
             total_ventes += (produit.ventes or 0)
 
+    # --- NOTIFICATIONS NON LUES ---
+    unread_count = Notification.query.filter_by(user_id=user.id, lu=False).count() if 'Notification' in globals() else 0
+
     return render_template(
         "dashboard.html",
         user=user,
@@ -2929,7 +2945,10 @@ def dashboard_page():
 
         # --- STATS BOUTIQUE DU PROPRIÉTAIRE ---
         total_ventes=total_ventes,
-        total_produits_boutique=total_produits_boutique
+        total_produits_boutique=total_produits_boutique,
+
+        # --- NOTIFICATIONS ---
+        unread_count=unread_count
     )
 
 
@@ -6815,6 +6834,28 @@ def api_notification_read(notif_id):
         notif.lu = True
         db.session.commit()
     return jsonify({"success": True})
+
+
+@app.route('/notifications')
+@login_required
+def notifications_page():
+    """Page qui affiche toutes les notifications de l'utilisateur."""
+    user = get_logged_in_user()
+    page = request.args.get('page', 1, type=int)
+    per_page = 20
+
+    notifs = (
+        Notification.query
+        .filter_by(user_id=user.id)
+        .order_by(Notification.date_creation.desc())
+        .paginate(page=page, per_page=per_page, error_out=False)
+    )
+
+    # Marquer tout comme lu quand on visite la page
+    Notification.query.filter_by(user_id=user.id, lu=False).update({"lu": True})
+    db.session.commit()
+
+    return render_template("notifications.html", user=user, notifications=notifs)
 
 
 @app.route('/api/notifications/read-all', methods=['POST'])
