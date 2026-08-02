@@ -1751,6 +1751,25 @@ def credit_user(username, montant):
 
     return f"{montant} XOF ajouté au compte de {username}"
 
+@app.route("/admin/user-lookup")
+def admin_user_lookup():
+    """Recherche un utilisateur par username et retourne ses soldes en JSON."""
+    username = request.args.get("username", "").strip().lower()
+    if not username:
+        return jsonify({"found": False, "error": "Username requis"}), 400
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({"found": False, "error": "Utilisateur non trouvé"})
+    return jsonify({
+        "found": True,
+        "username": user.username,
+        "solde_revenu": user.solde_revenu or 0,
+        "solde_jeux": user.solde_jeux or 0,
+        "solde_parrainage": user.solde_parrainage or 0,
+        "total_retrait": user.total_retrait or 0,
+    })
+
+
 @app.route("/admin/update-solde", methods=["POST"])
 def update_solde():
     data = request.get_json()

@@ -443,6 +443,17 @@ tr:hover td{background:rgba(236,72,153,0.03)}
 
 <!-- ██████ TAB: FINANCE ██████ -->
 <div class="tab-panel" id="tab-finance">
+    <div class="card">
+        <h3><i class="fa fa-pen-to-square"></i> Modifier les soldes utilisateur</h3>
+        <div class="search-bar">
+            <input type="text" id="financeUserSearch" placeholder="🔍 Nom d'utilisateur..." onkeyup="if(event.key==='Enter')searchFinanceUser()">
+            <button class="btn btn-pink btn-sm" onclick="searchFinanceUser()"><i class="fa fa-search"></i> Rechercher</button>
+        </div>
+        <div id="financeUserResult" style="display:none;margin-top:16px">
+            <div class="stats-row" id="financeUserStats"></div>
+            <div id="financeUserForm"></div>
+        </div>
+    </div>
     <div class="stats-row" id="financeStats"></div>
     <div class="card">
         <h3><i class="fa fa-trophy"></i> Classement par solde</h3>
@@ -877,18 +888,101 @@ function filterUsers() {
 /* ═══════════════════════════════════
    FINANCE
    ═══════════════════════════════════ */
+async function searchFinanceUser() {
+    const username = document.getElementById('financeUserSearch').value.trim().toLowerCase();
+    if (!username) { toast('Entrez un nom d\'utilisateur', true); return; }
+    try {
+        const resp = await fetch('/admin/user-lookup?username=' + encodeURIComponent(username));
+        const data = await resp.json();
+        const resultDiv = document.getElementById('financeUserResult');
+        const statsDiv = document.getElementById('financeUserStats');
+        const formDiv = document.getElementById('financeUserForm');
+        if (!data.found) {
+            resultDiv.style.display = 'block';
+            statsDiv.innerHTML = '<div class="stat-card"><div class="stat-icon red"><i class="fa fa-user-slash"></i></div><div class="stat-info"><div class="stat-val">Introuvable</div><div class="stat-lbl">Utilisateur</div></div></div>';
+            formDiv.innerHTML = '';
+            toast('Utilisateur non trouvé', true);
+            return;
+        }
+        resultDiv.style.display = 'block';
+        statsDiv.innerHTML = `
+            <div class="stat-card"><div class="stat-icon sky"><i class="fa fa-user"></i></div><div class="stat-info"><div class="stat-val">${data.username}</div><div class="stat-lbl">Utilisateur</div></div></div>
+            <div class="stat-card"><div class="stat-icon gold"><i class="fa fa-coins"></i></div><div class="stat-info"><div class="stat-val">${data.solde_revenu.toLocaleString('fr-FR')} F</div><div class="stat-lbl">Solde Revenu</div></div></div>
+            <div class="stat-card"><div class="stat-icon emerald"><i class="fa fa-gamepad"></i></div><div class="stat-info"><div class="stat-val">${(data.solde_jeux||0).toLocaleString('fr-FR')} F</div><div class="stat-lbl">Solde Jeux</div></div></div>
+            <div class="stat-card"><div class="stat-icon pink"><i class="fa fa-users"></i></div><div class="stat-info"><div class="stat-val">${(data.solde_parrainage||0).toLocaleString('fr-FR')} F</div><div class="stat-lbl">Solde Parrainage</div></div></div>
+        `;
+        formDiv.innerHTML = `
+            <div class="card" style="margin-top:12px">
+                <h4><i class="fa fa-edit"></i> Modifier les soldes de <b>${data.username}</b></h4>
+                <div class="form-group">
+                    <label><i class="fa fa-coins"></i> Solde Revenu (FCFA)</label>
+                    <input type="number" id="editSoldeRevenu" value="${data.solde_revenu}" step="100" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:12px;font-size:14px;font-family:'Poppins',sans-serif">
+                </div>
+                <div class="form-group">
+                    <label><i class="fa fa-gamepad"></i> Solde Jeux (FCFA)</label>
+                    <input type="number" id="editSoldeJeux" value="${data.solde_jeux||0}" step="100" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:12px;font-size:14px;font-family:'Poppins',sans-serif">
+                </div>
+                <div class="form-group">
+                    <label><i class="fa fa-users"></i> Solde Parrainage (FCFA)</label>
+                    <input type="number" id="editSoldeParrainage" value="${data.solde_parrainage||0}" step="100" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:12px;font-size:14px;font-family:'Poppins',sans-serif">
+                </div>
+                <button class="btn btn-pink" onclick="saveFinanceUser('${data.username}')"><i class="fa fa-save"></i> Enregistrer les modifications</button>
+            </div>
+        `;
+        toast('Utilisateur trouvé !');
+    } catch(e) {
+        toast('Erreur réseau', true);
+    }
+}
+
+async function saveFinanceUser(username) {
+    const soldeRevenu = parseFloat(document.getElementById('editSoldeRevenu').value) || 0;
+    const soldeJeux = parseFloat(document.getElementById('editSoldeJeux').value) || 0;
+    const soldeParrainage = parseFloat(document.getElementById('editSoldeParrainage').value) || 0;
+    const btn = event.target;
+    const origHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Sauvegarde...';
+    try {
+        const fields = [
+            {field:'solde_revenu', value:soldeRevenu},
+            {field:'solde_jeux', value:soldeJeux},
+            {field:'solde_parrainage', value:soldeParrainage},
+        ];
+        for (const f of fields) {
+            const resp = await fetch('/admin/update-solde', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username, field:f.field, value:f.value})
+            });
+            if (!resp.ok) throw new Error('Erreur ' + f.field);
+        }
+        toast('Soldes mis à jour avec succès !');
+        searchFinanceUser(); // Rafraîchir l'affichage
+    } catch(e) {
+        toast('Erreur lors de la sauvegarde', true);
+    }
+    btn.disabled = false;
+    btn.innerHTML = origHtml;
+}
+
 async function loadFinance() {
-    const tabFinance = document.getElementById('tab-finance');
+    // Charger seulement le classement (les stats viennent de /admin/classement-soldes)
     try {
         const resp = await fetch('/admin/classement-soldes');
         if (!resp.ok) throw new Error('HTTP ' + resp.status);
         const html = await resp.text();
-        // Vérifier que le HTML contient bien un tableau (pas une page d'erreur)
         if (html.indexOf('<table') === -1) throw new Error('Pas de tableau dans la réponse');
-        tabFinance.innerHTML = html;
+        // Extraire la partie stats et le tableau
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        const statsRow = div.querySelector('.stats-row');
+        const card = div.querySelector('.card');
+        if (statsRow) document.getElementById('financeStats').innerHTML = statsRow.outerHTML;
+        if (card) document.getElementById('classementTable').innerHTML = card.innerHTML;
     } catch(e) {
         console.error('loadFinance error:', e);
-        tabFinance.innerHTML = '<div class="empty"><i class="fa fa-exclamation-triangle"></i><p>Erreur de chargement du classement. Veuillez réessayer.</p></div>';
+        document.getElementById('classementTable').innerHTML = '<div class="empty"><i class="fa fa-exclamation-triangle"></i><p>Erreur de chargement du classement.</p></div>';
     }
 }
 
