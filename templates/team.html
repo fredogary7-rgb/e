@@ -264,7 +264,7 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
     <!-- Stats -->
     <div class="stats-grid">
         <div class="stat-card"><div class="stat-icon"><i class="fa fa-users"></i></div><div class="stat-value">{{ team_total }}</div><div class="stat-label">Total Equipe</div></div>
-        <div class="stat-card"><div class="stat-icon"><i class="fa fa-user-plus"></i></div><div class="stat-value">{{ user.downlines.count() if user.downlines else 0 }}</div><div class="stat-label">Niveau 1</div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fa fa-user-plus"></i></div><div class="stat-value">{{ stats.level1 }}</div><div class="stat-label">Niveau 1</div></div>
         <div class="stat-card"><div class="stat-icon"><i class="fa fa-coins"></i></div><div class="stat-value">{{ "%.0f"|format(total_commission) }} XOF</div><div class="stat-label">Commissions</div></div>
     </div>
 
@@ -289,9 +289,9 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
             <i class="fa fa-search search-icon"></i>
             <input type="text" id="searchN1" placeholder="Rechercher un filleul... (Ctrl+F)" oninput="filterTeam('n1')">
         </div>
-        {% if direct_downlines %}
+        {% if level1_users %}
         <div class="team-list" id="teamN1">
-            {% for dl in direct_downlines %}
+            {% for dl in level1_users %}
             <div class="team-member" data-name="{{ dl.username }}">
                 <div class="member-avatar n1">{{ dl.username[0] }}</div>
                 <div class="member-info">
@@ -314,9 +314,9 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
             <i class="fa fa-search search-icon"></i>
             <input type="text" id="searchN2" placeholder="Rechercher... (Ctrl+F)" oninput="filterTeam('n2')">
         </div>
-        {% if level2 %}
+        {% if level2_users %}
         <div class="team-list" id="teamN2">
-            {% for dl in level2 %}
+            {% for dl in level2_users %}
             <div class="team-member" data-name="{{ dl.username }}">
                 <div class="member-avatar n2">{{ dl.username[0] }}</div>
                 <div class="member-info">
@@ -339,9 +339,9 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
             <i class="fa fa-search search-icon"></i>
             <input type="text" id="searchN3" placeholder="Rechercher... (Ctrl+F)" oninput="filterTeam('n3')">
         </div>
-        {% if level3 %}
+        {% if level3_users %}
         <div class="team-list" id="teamN3">
-            {% for dl in level3 %}
+            {% for dl in level3_users %}
             <div class="team-member" data-name="{{ dl.username }}">
                 <div class="member-avatar n3">{{ dl.username[0] }}</div>
                 <div class="member-info">
