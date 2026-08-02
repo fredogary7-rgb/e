@@ -520,16 +520,16 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.market-section *,.whatsapp-c
 <!-- TOPBAR -->
 <div class="topbar">
     <div class="menu-toggle" id="menuToggle"><i class="fa fa-bars"></i></div>
-    <div class="topbar-logo">
-        <img src="/static/images/net.jpg" alt="NectarPro">
-        <span class="brand-name"><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></span>
-    </div>
-    <a href="/notifications" class="notif-bell" style="position:relative;color:var(--text);font-size:20px;text-decoration:none;">
+    <a href="/notifications" class="notif-bell" style="position:relative;color:var(--text);font-size:20px;text-decoration:none;margin-right:12px;">
         <i class="fa fa-bell"></i>
         {% if unread_count and unread_count > 0 %}
         <span class="notif-badge" style="position:absolute;top:-8px;right:-10px;background:var(--accent);color:#fff;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;box-shadow:0 2px 6px rgba(219,39,119,0.4);">{{ unread_count }}</span>
         {% endif %}
     </a>
+    <div class="topbar-logo">
+        <img src="/static/images/net.jpg" alt="NectarPro">
+        <span class="brand-name"><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></span>
+    </div>
     <div class="user-pill" id="userToggle">
         <i class="fa fa-user-circle"></i> {{ user.username }}
         <div class="user-dropdown" id="userDropdown">
