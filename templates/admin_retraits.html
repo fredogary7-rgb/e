@@ -298,9 +298,19 @@ tr:hover td{background:rgba(236,72,153,0.03)}
                         </td>
                         <td>{{ r.date.strftime('%d/%m/%Y %H:%M') if r.date else '—' }}</td>
                         <td style="text-align:right">
+                            {% if r.statut == 'en_attente' %}
+                            <a href="{{ url_for('valider_retrait', retrait_id=r.id) }}" class="btn btn-emerald btn-xs" onclick="return confirm('Valider le retrait #{{ r.id }} de {{ '%.0f'|format(r.montant) }} F ?')">
+                                <i class="fas fa-check"></i> Valider
+                            </a>
+                            <a href="{{ url_for('refuser_retrait', retrait_id=r.id) }}" class="btn btn-red btn-xs" onclick="return confirm('Refuser le retrait #{{ r.id }} de {{ '%.0f'|format(r.montant) }} F ?')">
+                                <i class="fas fa-times"></i> Refuser
+                            </a>
+                            {% endif %}
+                            {% if r.statut == 'validé' %}
                             <a href="{{ url_for('rembourser_retrait', retrait_id=r.id) }}" class="btn btn-gold btn-xs" onclick="return confirm('Rembourser {{ '%.0f'|format(r.montant) }} F à {{ r.username_display }} ?')">
                                 <i class="fas fa-undo-alt"></i> Rembourser
                             </a>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
