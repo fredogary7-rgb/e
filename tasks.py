@@ -126,30 +126,68 @@ def taches_page():
 
 def api_share_task():
     """API pour partager une tâche."""
+    import logging
     from datetime import datetime, date
     from flask import request, jsonify, session
     from app import get_logged_in_user, user_is_activated, db, DailyTask, UserTask, Publicite
 
+    logger = logging.getLogger(__name__)
+
     user = get_logged_in_user()
+    logger.info(f"[SHARE-TASK] User: {user.id if user else 'None'} ({user.username if user else 'anonyme'}) - Début")
     if not user or not user_is_activated(user):
+        logger.warning(f"[SHARE-TASK] ÉCHEC - User non connecté ou non activé. user={user is not None}, activated={user_is_activated(user) if user else False}")
         return jsonify({'success': False, 'error': 'Utilisateur non activé'}), 403
 
+    # Log du corps brut de la requête
+    raw_body = request.get_data(as_text=True)
+    logger.info(f"[SHARE-TASK] Corps brut reçu: {raw_body}")
+
     data = request.get_json()
-    task_id = data.get('task_id')
+    logger.info(f"[SHARE-TASK] JSON parsé: {data}")
+
+    task_id = data.get('task_id') if data else None
+    logger.info(f"[SHARE-TASK] task_id extrait: {task_id}")
+
     if not task_id:
+        logger.warning(f"[SHARE-TASK] ÉCHEC - task_id manquant. data={data}")
         return jsonify({'success': False, 'error': 'task_id manquant'}), 400
 
     now = datetime.now()
     today = now.date()
-    if now.weekday() >= 5 or now.hour < 8 or now.hour >= 23:
-        return jsonify({'success': False, 'error': 'Hors plage horaire (Lun-Ven 8h-23h)'}), 400
+    logger.info(f"[SHARE-TASK] Now: {now}, Today: {today}, Weekday: {now.weekday()} (0=Lun..6=Dim), Hour: {now.hour}")
+
+    # Check plage horaire
+    horaire_check = {
+        'weekday': now.weekday(),
+        'weekend': now.weekday() >= 5,
+        'hour': now.hour,
+        'before_8': now.hour < 8,
+        'after_23': now.hour >= 23,
+        'reason': None
+    }
+    if now.weekday() >= 5:
+        horaire_check['reason'] = 'weekend (Lun-Ven uniquement)'
+    elif now.hour < 8:
+        horaire_check['reason'] = 'avant 08h00'
+    elif now.hour >= 23:
+        horaire_check['reason'] = 'après 23h00'
+
+    if horaire_check['reason']:
+        logger.warning(f"[SHARE-TASK] ÉCHEC - Hors plage horaire: {horaire_check}")
+        return jsonify({'success': False, 'error': f"Hors plage horaire : {horaire_check['reason']}", 'debug': horaire_check}), 400
 
     task = DailyTask.query.get(task_id)
+    logger.info(f"[SHARE-TASK] Tâche trouvée: {task is not None}, actif: {task.actif if task else 'N/A'}, date: {task.date if task else 'N/A'}, today: {today}")
     if not task or not task.actif or task.date != today:
-        return jsonify({'success': False, 'error': 'Tâche non trouvée ou inactive'}), 400
+        task_reason = 'inexistante' if not task else ('inactive' if not task.actif else f"date mismatch (task.date={task.date}, today={today})")
+        logger.warning(f"[SHARE-TASK] ÉCHEC - Tâche {task_reason}")
+        return jsonify({'success': False, 'error': f"Tâche non trouvée ou inactive ({task_reason})", 'debug': {'task_exists': task is not None, 'task_actif': task.actif if task else None, 'task_date': str(task.date) if task and task.date else None, 'today': str(today)}}), 400
 
     ut = UserTask.query.filter_by(user_id=user.id, task_id=task_id).first()
+    logger.info(f"[SHARE-TASK] UserTask existant: {ut is not None}, shared: {ut.shared if ut else 'N/A'}")
     if ut and ut.shared:
+        logger.warning(f"[SHARE-TASK] ÉCHEC - Déjà partagé")
         return jsonify({'success': False, 'error': 'Déjà partagé'}), 400
 
     if ut:
