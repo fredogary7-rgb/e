@@ -264,7 +264,9 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
     <!-- Stats -->
     <div class="stats-grid">
         <div class="stat-card"><div class="stat-icon"><i class="fa fa-users"></i></div><div class="stat-value">{{ team_total }}</div><div class="stat-label">Total Equipe</div></div>
-        <div class="stat-card"><div class="stat-icon"><i class="fa fa-check-circle"></i></div><div class="stat-value">{{ stats.level1 + stats.level2 + stats.level3 }}</div><div class="stat-label">Actifs</div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fa fa-user-plus"></i></div><div class="stat-value">{{ stats.level1 }}</div><div class="stat-label">Actifs niveau 1</div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fa fa-user-group"></i></div><div class="stat-value">{{ stats.level2 }}</div><div class="stat-label">Actifs niveau 2</div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fa fa-layer-group"></i></div><div class="stat-value">{{ stats.level3 }}</div><div class="stat-label">Actifs niveau 3</div></div>
         <div class="stat-card"><div class="stat-icon"><i class="fa fa-clock"></i></div><div class="stat-value">{{ stats.inactifs }}</div><div class="stat-label">Inactifs</div></div>
         <div class="stat-card"><div class="stat-icon"><i class="fa fa-coins"></i></div><div class="stat-value">{{ "%.0f"|format(total_commission) }} XOF</div><div class="stat-label">Commissions</div></div>
     </div>
