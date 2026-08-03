@@ -1008,6 +1008,11 @@ def index_page():
         return redirect(url_for("dashboard_page"))
     return render_template("index.html", user=None)
 
+
+@app.route("/favicon.ico")
+def favicon():
+    return send_from_directory('static/images', 'net.jpg', mimetype='image/jpeg')
+
 # -----------------------
 # Utilisateur connecté
 # -----------------------
