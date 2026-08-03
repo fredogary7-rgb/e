@@ -297,7 +297,11 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
                 <div class="member-avatar n1">{{ dl.username[0] }}</div>
                 <div class="member-info">
                     <div class="member-name">{{ dl.username }} <span class="level-badge">Niv.1</span></div>
-                    <div class="member-meta"><i class="fa fa-calendar"></i> {{ dl.date_creation.strftime('%d/%m/%Y') if dl.date_creation else '--' }}</div>
+                    <div class="member-meta">
+                        <i class="fa fa-envelope"></i> {{ dl.email or '—' }}
+                        <i class="fa fa-phone"></i> {{ dl.phone or '—' }}
+                        <i class="fa fa-calendar"></i> {{ dl.date_creation.strftime('%d/%m/%Y') if dl.date_creation else '--' }}
+                    </div>
                 </div>
                 <span class="member-status active">Actif</span>
             </div>
@@ -322,14 +326,18 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
                 <div class="member-avatar n2">{{ dl.username[0] }}</div>
                 <div class="member-info">
                     <div class="member-name">{{ dl.username }} <span class="level-badge">Niv.2</span></div>
-                    <div class="member-meta"><i class="fa fa-calendar"></i> {{ dl.date_creation.strftime('%d/%m/%Y') if dl.date_creation else '--' }}</div>
+                    <div class="member-meta">
+                        <i class="fa fa-envelope"></i> {{ dl.email or '—' }}
+                        <i class="fa fa-phone"></i> {{ dl.phone or '—' }}
+                        <i class="fa fa-calendar"></i> {{ dl.date_creation.strftime('%d/%m/%Y') if dl.date_creation else '--' }}
+                    </div>
                 </div>
                 <span class="member-status active">Actif</span>
             </div>
             {% endfor %}
         </div>
         {% else %}
-        <div class="empty-state"><i class="fa fa-user-slash"></i><h3>Aucun filleul de niveau 2 actif</h3><p>Vos filleuls n'ont pas encore parraine de nouveaux membres actifs.</p></div>
+        <div class="empty-state"><i class="fa fa-user-slash"></i><h3>Aucun filleul de niveau 2 actif</h3></div>
         {% endif %}
     </div>
 
@@ -347,14 +355,18 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
                 <div class="member-avatar n3">{{ dl.username[0] }}</div>
                 <div class="member-info">
                     <div class="member-name">{{ dl.username }} <span class="level-badge">Niv.3</span></div>
-                    <div class="member-meta"><i class="fa fa-calendar"></i> {{ dl.date_creation.strftime('%d/%m/%Y') if dl.date_creation else '--' }}</div>
+                    <div class="member-meta">
+                        <i class="fa fa-envelope"></i> {{ dl.email or '—' }}
+                        <i class="fa fa-phone"></i> {{ dl.phone or '—' }}
+                        <i class="fa fa-calendar"></i> {{ dl.date_creation.strftime('%d/%m/%Y') if dl.date_creation else '--' }}
+                    </div>
                 </div>
                 <span class="member-status active">Actif</span>
             </div>
             {% endfor %}
         </div>
         {% else %}
-        <div class="empty-state"><i class="fa fa-user-slash"></i><h3>Aucun filleul de niveau 3 actif</h3><p>Continuez a developper votre reseau !</p></div>
+        <div class="empty-state"><i class="fa fa-user-slash"></i><h3>Aucun filleul de niveau 3 actif</h3></div>
         {% endif %}
     </div>
 
@@ -372,14 +384,18 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
                 <div class="member-avatar" style="background:linear-gradient(135deg,#d1d5db,#9ca3af);color:#fff;">{{ dl.username[0] }}</div>
                 <div class="member-info">
                     <div class="member-name">{{ dl.username }} <span class="level-badge" style="background:rgba(239,68,68,0.1);color:#ef4444;">Inactif</span></div>
-                    <div class="member-meta"><i class="fa fa-calendar"></i> {{ dl.date_creation.strftime('%d/%m/%Y') if dl.date_creation else '--' }}</div>
+                    <div class="member-meta">
+                        <i class="fa fa-envelope"></i> {{ dl.email or '—' }}
+                        <i class="fa fa-phone"></i> {{ dl.phone or '—' }}
+                        <i class="fa fa-calendar"></i> {{ dl.date_creation.strftime('%d/%m/%Y') if dl.date_creation else '--' }}
+                    </div>
                 </div>
                 <span class="member-status inactive">Inactif</span>
             </div>
             {% endfor %}
         </div>
         {% else %}
-        <div class="empty-state"><i class="fa fa-check-circle"></i><h3>Tous vos filleuls sont actifs !</h3><p>Excellent ! Continuez comme ca.</p></div>
+        <div class="empty-state"><i class="fa fa-check-circle"></i><h3>Tous vos filleuls sont actifs !</h3><p>Excellent ! Continuez comme ça.</p></div>
         {% endif %}
     </div>
 

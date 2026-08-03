@@ -3695,7 +3695,7 @@ def team_page():
     # On ne récupère que les infos nécessaires pour l'affichage (Username, Phone, Pays, Premier_depot)
     # Niveau 1
     level1_all = User.query.with_entities(
-        User.username, User.phone, User.country, User.premier_depot, User.date_creation
+        User.username, User.email, User.phone, User.country, User.premier_depot, User.date_creation
     ).filter_by(parrain=user.username).all()
     
     level1_active = [u for u in level1_all if u.premier_depot]
@@ -3709,7 +3709,7 @@ def team_page():
     level2_usernames = []
     if level1_usernames:
         level2_all = User.query.with_entities(
-            User.username, User.phone, User.country, User.premier_depot, User.date_creation
+            User.username, User.email, User.phone, User.country, User.premier_depot, User.date_creation
         ).filter(User.parrain.in_(level1_usernames)).all()
         level2_active = [u for u in level2_all if u.premier_depot]
         level2_inactive = [u for u in level2_all if not u.premier_depot]
@@ -3721,7 +3721,7 @@ def team_page():
     level3_inactive = []
     if level2_usernames:
         level3_all = User.query.with_entities(
-            User.username, User.phone, User.country, User.premier_depot, User.date_creation
+            User.username, User.email, User.phone, User.country, User.premier_depot, User.date_creation
         ).filter(User.parrain.in_(level2_usernames)).all()
         level3_active = [u for u in level3_all if u.premier_depot]
         level3_inactive = [u for u in level3_all if not u.premier_depot]
