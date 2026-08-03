@@ -2024,7 +2024,7 @@ def new_password_page():
         return redirect(url_for('connexion_page'))
 
     if request.method == 'POST':
-        password = request.form.get('password')
+        password = request.form.get('new_password')
         confirm = request.form.get('confirm_password')
 
         if password != confirm:
