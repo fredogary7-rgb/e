@@ -85,17 +85,6 @@ def taches_page():
                                total=TASK_COUNT, can_start=False, reward_amount=rw.montant,
                                message=f"✅ +{int(rw.montant)} FCFA aujourd'hui!")
 
-    # Régénérer les tâches du jour
-    DailyTask.query.filter_by(date=today).delete()
-    for i, (ctype, cid) in enumerate(_sel(today)):
-        t = (
-            DailyTask(produit_id=cid, content_type='produit', date=today, ordre=i)
-            if ctype == 'produit'
-            else DailyTask(publicite_id=cid, content_type='publicite', date=today, ordre=i)
-        )
-        db.session.add(t)
-    db.session.commit()
-
     tasks = _tasks(today)
     sc, utm = _prog(user.id, today)
     td = []
