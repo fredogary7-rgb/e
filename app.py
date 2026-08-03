@@ -3694,37 +3694,51 @@ def team_page():
 
     # On ne récupère que les infos nécessaires pour l'affichage (Username, Phone, Pays, Premier_depot)
     # Niveau 1
-    level1 = User.query.with_entities(
+    level1_all = User.query.with_entities(
         User.username, User.phone, User.country, User.premier_depot, User.date_creation
     ).filter_by(parrain=user.username).all()
     
-    level1_usernames = [u.username for u in level1]
+    level1_active = [u for u in level1_all if u.premier_depot]
+    level1_inactive = [u for u in level1_all if not u.premier_depot]
+    level1_usernames = [u.username for u in level1_all]
 
     # Niveau 2
-    level2 = []
+    level2_all = []
+    level2_active = []
+    level2_inactive = []
     level2_usernames = []
     if level1_usernames:
-        level2 = User.query.with_entities(
+        level2_all = User.query.with_entities(
             User.username, User.phone, User.country, User.premier_depot, User.date_creation
         ).filter(User.parrain.in_(level1_usernames)).all()
-        level2_usernames = [u.username for u in level2]
+        level2_active = [u for u in level2_all if u.premier_depot]
+        level2_inactive = [u for u in level2_all if not u.premier_depot]
+        level2_usernames = [u.username for u in level2_all]
 
     # Niveau 3
-    level3 = []
+    level3_all = []
+    level3_active = []
+    level3_inactive = []
     if level2_usernames:
-        level3 = User.query.with_entities(
+        level3_all = User.query.with_entities(
             User.username, User.phone, User.country, User.premier_depot, User.date_creation
         ).filter(User.parrain.in_(level2_usernames)).all()
+        level3_active = [u for u in level3_all if u.premier_depot]
+        level3_inactive = [u for u in level3_all if not u.premier_depot]
+
+    # Tous les inactifs confondus (pour la section dédiée)
+    all_inactive = level1_inactive + level2_inactive + level3_inactive
 
     stats = {
-        "level1": len(level1),
-        "level2": len(level2),
-        "level3": len(level3),
+        "level1": len(level1_active),
+        "level2": len(level2_active),
+        "level3": len(level3_active),
+        "inactifs": len(all_inactive),
         "commissions_total": float(user.solde_revenu or 0)
     }
 
     total_commission = float(user.solde_revenu or 0)
-    team_total = len(level1) + len(level2) + len(level3)
+    team_total = len(level1_all) + len(level2_all) + len(level3_all)
 
     return render_template(
         "team.html",
@@ -3733,9 +3747,10 @@ def team_page():
         stats=stats,
         total_commission=total_commission,
         team_total=team_total,
-        level1_users=level1,
-        level2_users=level2,
-        level3_users=level3
+        level1_users=level1_active,
+        level2_users=level2_active,
+        level3_users=level3_active,
+        inactive_users=all_inactive
     )
 
 # ===== Page de connexion admin =====

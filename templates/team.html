@@ -264,7 +264,8 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
     <!-- Stats -->
     <div class="stats-grid">
         <div class="stat-card"><div class="stat-icon"><i class="fa fa-users"></i></div><div class="stat-value">{{ team_total }}</div><div class="stat-label">Total Equipe</div></div>
-        <div class="stat-card"><div class="stat-icon"><i class="fa fa-user-plus"></i></div><div class="stat-value">{{ stats.level1 }}</div><div class="stat-label">Niveau 1</div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fa fa-check-circle"></i></div><div class="stat-value">{{ stats.level1 + stats.level2 + stats.level3 }}</div><div class="stat-label">Actifs</div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fa fa-clock"></i></div><div class="stat-value">{{ stats.inactifs }}</div><div class="stat-label">Inactifs</div></div>
         <div class="stat-card"><div class="stat-icon"><i class="fa fa-coins"></i></div><div class="stat-value">{{ "%.0f"|format(total_commission) }} XOF</div><div class="stat-label">Commissions</div></div>
     </div>
 
@@ -282,9 +283,9 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
         </div>
     </div>
 
-    <!-- Team List - Niveau 1 -->
+    <!-- Team List - Niveau 1 Actifs -->
     <div class="section">
-        <h2 class="section-title"><i class="fa fa-user-plus"></i> Filleuls Niveau 1</h2>
+        <h2 class="section-title"><i class="fa fa-user-plus"></i> Filleuls Niveau 1 Actifs <span style="font-size:12px;color:var(--emerald);margin-left:6px;">({{ stats.level1 }})</span></h2>
         <div class="search-box">
             <i class="fa fa-search search-icon"></i>
             <input type="text" id="searchN1" placeholder="Rechercher un filleul... (Ctrl+F)" oninput="filterTeam('n1')">
@@ -303,13 +304,13 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
             {% endfor %}
         </div>
         {% else %}
-        <div class="empty-state"><i class="fa fa-user-slash"></i><h3>Aucun filleul direct</h3><p>Partagez votre lien de parrainage pour inviter vos amis !</p></div>
+        <div class="empty-state"><i class="fa fa-user-slash"></i><h3>Aucun filleul direct actif</h3><p>Partagez votre lien de parrainage pour inviter vos amis !</p></div>
         {% endif %}
     </div>
 
-    <!-- Team List - Niveau 2 -->
+    <!-- Team List - Niveau 2 Actifs -->
     <div class="section">
-        <h2 class="section-title"><i class="fa fa-user-group"></i> Filleuls Niveau 2</h2>
+        <h2 class="section-title"><i class="fa fa-user-group"></i> Filleuls Niveau 2 Actifs <span style="font-size:12px;color:var(--emerald);margin-left:6px;">({{ stats.level2 }})</span></h2>
         <div class="search-box">
             <i class="fa fa-search search-icon"></i>
             <input type="text" id="searchN2" placeholder="Rechercher... (Ctrl+F)" oninput="filterTeam('n2')">
@@ -328,13 +329,13 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
             {% endfor %}
         </div>
         {% else %}
-        <div class="empty-state"><i class="fa fa-user-slash"></i><h3>Aucun filleul de niveau 2</h3><p>Vos filleuls n'ont pas encore parraine de nouveaux membres.</p></div>
+        <div class="empty-state"><i class="fa fa-user-slash"></i><h3>Aucun filleul de niveau 2 actif</h3><p>Vos filleuls n'ont pas encore parraine de nouveaux membres actifs.</p></div>
         {% endif %}
     </div>
 
-    <!-- Team List - Niveau 3 -->
+    <!-- Team List - Niveau 3 Actifs -->
     <div class="section">
-        <h2 class="section-title"><i class="fa fa-layer-group"></i> Filleuls Niveau 3</h2>
+        <h2 class="section-title"><i class="fa fa-layer-group"></i> Filleuls Niveau 3 Actifs <span style="font-size:12px;color:var(--emerald);margin-left:6px;">({{ stats.level3 }})</span></h2>
         <div class="search-box">
             <i class="fa fa-search search-icon"></i>
             <input type="text" id="searchN3" placeholder="Rechercher... (Ctrl+F)" oninput="filterTeam('n3')">
@@ -353,7 +354,32 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
             {% endfor %}
         </div>
         {% else %}
-        <div class="empty-state"><i class="fa fa-user-slash"></i><h3>Aucun filleul de niveau 3</h3><p>Continuez a developper votre reseau !</p></div>
+        <div class="empty-state"><i class="fa fa-user-slash"></i><h3>Aucun filleul de niveau 3 actif</h3><p>Continuez a developper votre reseau !</p></div>
+        {% endif %}
+    </div>
+
+    <!-- Team List - Filleuls Inactifs (tous niveaux) -->
+    <div class="section">
+        <h2 class="section-title"><i class="fa fa-user-clock"></i> Filleuls Inactifs <span style="font-size:12px;color:#ef4444;margin-left:6px;">({{ stats.inactifs }})</span></h2>
+        <div class="search-box">
+            <i class="fa fa-search search-icon"></i>
+            <input type="text" id="searchInactif" placeholder="Rechercher un inactif... (Ctrl+F)" oninput="filterTeam('inactif')">
+        </div>
+        {% if inactive_users %}
+        <div class="team-list" id="teamInactif">
+            {% for dl in inactive_users %}
+            <div class="team-member" data-name="{{ dl.username }}">
+                <div class="member-avatar" style="background:linear-gradient(135deg,#d1d5db,#9ca3af);color:#fff;">{{ dl.username[0] }}</div>
+                <div class="member-info">
+                    <div class="member-name">{{ dl.username }} <span class="level-badge" style="background:rgba(239,68,68,0.1);color:#ef4444;">Inactif</span></div>
+                    <div class="member-meta"><i class="fa fa-calendar"></i> {{ dl.date_creation.strftime('%d/%m/%Y') if dl.date_creation else '--' }}</div>
+                </div>
+                <span class="member-status inactive">Inactif</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="fa fa-check-circle"></i><h3>Tous vos filleuls sont actifs !</h3><p>Excellent ! Continuez comme ca.</p></div>
         {% endif %}
     </div>
 
