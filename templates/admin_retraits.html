@@ -227,7 +227,7 @@ tr:hover td{background:rgba(236,72,153,0.03)}
         <div class="stat-card">
             <div class="stat-icon emerald"><i class="fas fa-check-circle"></i></div>
             <div class="stat-info">
-                <div class="stat-val">{{ retraits|selectattr('statut','equalto','validé')|list|length }}</div>
+                <div class="stat-val">{{ retraits|selectattr('statut','in',['validé','successful'])|list|length }}</div>
                 <div class="stat-lbl">Retraits validés</div>
             </div>
         </div>
@@ -236,7 +236,7 @@ tr:hover td{background:rgba(236,72,153,0.03)}
                 <i class="fas fa-times-circle"></i>
             </div>
             <div class="stat-info">
-                <div class="stat-val">{{ retraits|selectattr('statut','equalto','refusé')|list|length }}</div>
+                <div class="stat-val">{{ retraits|selectattr('statut','in',['refusé','refused','failed','cancelled'])|list|length }}</div>
                 <div class="stat-lbl">Retraits refusés</div>
             </div>
         </div>
@@ -286,11 +286,15 @@ tr:hover td{background:rgba(236,72,153,0.03)}
                             {% endif %}
                         </td>
                         <td>
-                            {% if r.statut == 'validé' %}
+                            {% if r.statut in ['validé','successful'] %}
                             <span class="badge badge-emerald"><i class="fas fa-check"></i> Validé</span>
-                            {% elif r.statut == 'refusé' %}
+                            {% elif r.statut in ['refusé','refused'] %}
                             <span class="badge badge-red"><i class="fas fa-times"></i> Refusé</span>
-                            {% elif r.statut == 'successful' %}
+                            {% elif r.statut == 'failed' %}
+                            <span class="badge badge-red"><i class="fas fa-times"></i> Échoué</span>
+                            {% elif r.statut == 'cancelled' %}
+                            <span class="badge badge-red"><i class="fas fa-ban"></i> Annulé</span>
+                            {% elif r.statut in ['en_attente','accepte'] %}
                             <span class="badge badge-sky"><i class="fas fa-clock"></i> En attente</span>
                             {% else %}
                             <span class="badge badge-pink">{{ r.statut }}</span>
@@ -298,7 +302,7 @@ tr:hover td{background:rgba(236,72,153,0.03)}
                         </td>
                         <td>{{ r.date.strftime('%d/%m/%Y %H:%M') if r.date else '—' }}</td>
                         <td style="text-align:right">
-                            {% if r.statut == 'en_attente' %}
+                            {% if r.statut in ['en_attente','accepte'] %}
                             <a href="{{ url_for('valider_retrait', retrait_id=r.id) }}" class="btn btn-emerald btn-xs" onclick="return confirm('Valider le retrait #{{ r.id }} de {{ '%.0f'|format(r.montant) }} F ?')">
                                 <i class="fas fa-check"></i> Valider
                             </a>
@@ -306,7 +310,7 @@ tr:hover td{background:rgba(236,72,153,0.03)}
                                 <i class="fas fa-times"></i> Refuser
                             </a>
                             {% endif %}
-                            {% if r.statut == 'validé' %}
+                            {% if r.statut in ['validé','successful'] %}
                             <a href="{{ url_for('rembourser_retrait', retrait_id=r.id) }}" class="btn btn-gold btn-xs" onclick="return confirm('Rembourser {{ '%.0f'|format(r.montant) }} F à {{ r.username_display }} ?')">
                                 <i class="fas fa-undo-alt"></i> Rembourser
                             </a>
