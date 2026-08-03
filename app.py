@@ -3993,11 +3993,10 @@ def admin_retraits():
         flash("Accès refusé.", "danger")
         return redirect(url_for("admin_finance"))
 
-    # Récupération avec join
+    # Récupération avec join sur user_id (pas phone : Retrait.phone = numéro wallet mobile money)
     retraits_query = (
         db.session.query(Retrait, User.username)
-        .join(User, User.phone == Retrait.phone)
-        .filter(Retrait.statut == "successful")
+        .outerjoin(User, User.id == Retrait.user_id)
         .order_by(Retrait.date.desc())
     )
 
