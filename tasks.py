@@ -218,7 +218,7 @@ def api_claim_task_reward():
         return jsonify({'success': False}), 400
 
     m = random.randint(TASK_REWARD_MIN, TASK_REWARD_MAX)
-    user.solde_parrainage = (user.solde_parrainage or 0) + m
+    user.solde_jeux = (user.solde_jeux or 0) + m
     db.session.add(TaskReward(user_id=user.id, date=today, montant=m))
     db.session.commit()
     return jsonify({'success': True, 'montant': int(m), 'message': f'+{int(m)} FCFA 🎉'})
