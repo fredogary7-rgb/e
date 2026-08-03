@@ -113,7 +113,7 @@ def taches_page():
             p = task.produit
             td.append({
                 'task_id': task.id, 'type': 'produit', 'nom': p.nom if p else '?',
-                'image': (p.liste_images[0] if p and p.liste_images else None),
+                'image': (p.image_principale if p else None),
                 'boutique_nom': p.boutique.nom if p and p.boutique else 'NovaTrade',
                 'shared': ut.shared if ut else False
             })
@@ -132,25 +132,25 @@ def api_share_task():
 
     user = get_logged_in_user()
     if not user or not user_is_activated(user):
-        return jsonify({'success': False}), 403
+        return jsonify({'success': False, 'error': 'Utilisateur non activé'}), 403
 
     data = request.get_json()
     task_id = data.get('task_id')
     if not task_id:
-        return jsonify({'success': False}), 400
+        return jsonify({'success': False, 'error': 'task_id manquant'}), 400
 
     now = datetime.now()
     today = now.date()
     if now.weekday() >= 5 or now.hour < 8 or now.hour >= 23:
-        return jsonify({'success': False}), 400
+        return jsonify({'success': False, 'error': 'Hors plage horaire (Lun-Ven 8h-23h)'}), 400
 
     task = DailyTask.query.get(task_id)
     if not task or not task.actif or task.date != today:
-        return jsonify({'success': False}), 400
+        return jsonify({'success': False, 'error': 'Tâche non trouvée ou inactive'}), 400
 
     ut = UserTask.query.filter_by(user_id=user.id, task_id=task_id).first()
     if ut and ut.shared:
-        return jsonify({'success': False}), 400
+        return jsonify({'success': False, 'error': 'Déjà partagé'}), 400
 
     if ut:
         ut.shared = True
