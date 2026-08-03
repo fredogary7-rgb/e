@@ -197,6 +197,7 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.bottom-nav *{font-style:ital
         <img src="/static/images/net.jpg" alt="NectarPro">
         <span class="brand-name"><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></span>
     </div>
+    {% if user %}
     <div class="user-pill" id="userToggle">
         <i class="fa fa-user-circle"></i> {{ user.username }}
         <div class="user-dropdown" id="userDropdown">
@@ -213,6 +214,11 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.bottom-nav *{font-style:ital
             <a href="/logout" class="user-dd-logout"><i class="fa fa-sign-out"></i> Deconnexion</a>
         </div>
     </div>
+    {% else %}
+    <a href="/connexion" class="btn btn-pink" style="text-decoration:none;font-weight:700;font-size:13px;padding:8px 16px;border-radius:12px;color:#fff;background:linear-gradient(135deg,#ec4899,#db2777);">
+        <i class="fa fa-sign-in"></i> Se connecter
+    </a>
+    {% endif %}
 </div>
 
 <div class="main">
