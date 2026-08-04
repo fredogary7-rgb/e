@@ -301,11 +301,36 @@
             justify-content: center;
             gap: 10px;
             margin-top: 20px;
+            position: relative;
         }
 
-        .btn-submit:hover {
+        .btn-submit:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(219,39,119,0.4);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 3px 10px rgba(219,39,119,0.2);
+        }
+
+        /* LOADER SPINNER */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loader-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            flex-shrink: 0;
         }
 
         .alert {
@@ -471,7 +496,7 @@
                 <div class="hint">Séparez les couleurs par des virgules</div>
             </div>
 
-            <button type="submit" class="btn-submit">
+            <button type="submit" class="btn-submit" id="btn-submit">
                 <i class="fa fa-plus-circle"></i> Ajouter le produit
             </button>
         </form>
@@ -538,16 +563,30 @@
         input.value = activeSizes.join(', ');
     }
 
-    function previewImage(input) {
-        if (input.files && input.files[0]) {
-            const fileName = input.files[0].name;
-            const uploadBox = input.previousElementSibling;
-            uploadBox.innerHTML = '<i class="fa fa-check-circle" style="color: var(--accent2);"></i><p>' + fileName + '</p>';
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const fileName = input.files[0].name;
+                const uploadBox = input.previousElementSibling;
+                uploadBox.innerHTML = '<i class="fa fa-check-circle" style="color: var(--accent2);"></i><p>' + fileName + '</p>';
+            }
         }
-    }
 
-    // Initialiser les presets au chargement
-    document.addEventListener('DOMContentLoaded', updateSizePresets);
+        // EMPÊCHER LE DOUBLE CLIC SUR LE BOUTON AJOUTER
+        document.addEventListener('DOMContentLoaded', function() {
+            updateSizePresets();
+
+            const form = document.querySelector('form');
+            const btn = document.getElementById('btn-submit');
+
+            form.addEventListener('submit', function(e) {
+                if (btn.disabled) {
+                    e.preventDefault();
+                    return false;
+                }
+                btn.disabled = true;
+                btn.innerHTML = '<span class="loader-spinner"></span> Ajout en cours...';
+            });
+        });
 </script>
 </body>
 </html>
