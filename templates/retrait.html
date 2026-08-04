@@ -118,6 +118,8 @@ body{background:var(--bg);min-height:100vh;min-height:100dvh;color:var(--text);f
 .balance-label{font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:2px;opacity:.85;margin-bottom:6px;position:relative;z-index:1}
 .balance-amount{font-weight:900;font-size:38px;position:relative;z-index:1;text-shadow:0 2px 8px rgba(0,0,0,0.15)}
 .balance-sub{font-weight:600;font-size:12px;opacity:.8;margin-top:4px;position:relative;z-index:1}
+.retrait-counter{position:relative;z-index:1;font-weight:700;font-size:13px;margin-top:10px;background:rgba(255,255,255,0.18);display:inline-block;padding:6px 14px;border-radius:20px;letter-spacing:.5px}
+.retrait-counter.epuise{background:rgba(255,255,255,0.25);color:#fef3c7}
 
 /* SECTION */
 .section{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:var(--radius-lg);padding:24px;margin-bottom:20px;box-shadow:var(--shadow-sm);border:1px solid var(--border);transition:all .3s}
@@ -295,6 +297,7 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
         <div class="balance-label"><i class="fa fa-wallet"></i> Solde disponible</div>
         <div class="balance-amount">{{ "%.0f"|format(user.solde_parrainage or 0) }} XOF</div>
 <div class="balance-sub">Minimum de retrait : 5 000 XOF | Frais : 500 XOF (débités en plus)</div>
+<div class="retrait-counter" id="retraitCounter">🔄 {{ retraits_restants }}/{{ max_retraits_jour }} retraits restants aujourd'hui</div>
     </div>
 
     <form method="POST" id="retraitForm">
