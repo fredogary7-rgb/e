@@ -55,7 +55,7 @@ def _prog(user_id, date_obj):
 def taches_page():
     """Page /taches - affiche les tâches quotidiennes."""
     from datetime import datetime, date
-    from flask import render_template, redirect, url_for, flash
+    from flask import render_template, redirect, url_for, flash, session
     from app import get_logged_in_user, user_is_activated, db, DailyTask, TaskReward
 
     user = get_logged_in_user()
@@ -109,6 +109,7 @@ def taches_page():
 
     import random
     est = random.randint(TASK_REWARD_MIN, TASK_REWARD_MAX)
+    session['task_reward_estimation'] = est
     return render_template('tiktok_v3.html', user=user, taches=td, shared_count=sc,
                            total=TASK_COUNT, can_start=True, estimated_reward=est)
 
@@ -202,7 +203,7 @@ def api_claim_task_reward():
     """API pour réclamer la récompense après avoir partagé toutes les tâches."""
     import random
     from datetime import datetime, date
-    from flask import request, jsonify
+    from flask import request, jsonify, session
     from app import get_logged_in_user, db, TaskReward
 
     user = get_logged_in_user()
@@ -217,7 +218,10 @@ def api_claim_task_reward():
     if sc < TASK_COUNT:
         return jsonify({'success': False}), 400
 
-    m = random.randint(TASK_REWARD_MIN, TASK_REWARD_MAX)
+    # Réutiliser le montant stocké en session (affiché à l'utilisateur)
+    m = session.pop('task_reward_estimation', None)
+    if m is None:
+        m = random.randint(TASK_REWARD_MIN, TASK_REWARD_MAX)
     user.solde_jeux = (user.solde_jeux or 0) + m
     db.session.add(TaskReward(user_id=user.id, date=today, montant=m))
     db.session.commit()
