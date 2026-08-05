@@ -1196,15 +1196,12 @@ def stats_depots():
     # Total utilisateurs
     total_users = User.query.count()
 
-    # Top utilisateurs par équipe (nombre de filleuls directs)
-    top_equipes = []
-    users_avec_equipe = User.query.all()
-    for u in users_avec_equipe:
-        nb = u.downlines.count()
-        if nb > 0:
-            top_equipes.append({'username': u.username, 'filleuls': nb})
-    top_equipes.sort(key=lambda x: x['filleuls'], reverse=True)
-    top_equipes = top_equipes[:10]
+    # Top utilisateurs par équipe (nombre de filleuls directs) — 1 seule requête SQL
+    top_equipes_raw = db.session.query(
+        User.parrain, func.count(User.id).label('filleuls')
+    ).filter(User.parrain != None).group_by(User.parrain)\
+     .order_by(func.count(User.id).desc()).limit(10).all()
+    top_equipes = [{'username': p, 'filleuls': c} for p, c in top_equipes_raw]
 
     # Stats dépôts globaux
     total_depots = Depot.query.count()
