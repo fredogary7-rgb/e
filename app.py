@@ -1195,6 +1195,7 @@ def stats_depots():
 
     # Total utilisateurs
     total_users = User.query.count()
+    sans_parrain = User.query.filter(User.parrain == None).count()
 
     # Top utilisateurs par équipe (nombre de filleuls directs) — 1 seule requête SQL
     top_equipes_raw = db.session.query(
@@ -1245,7 +1246,7 @@ def stats_depots():
 
     return render_template("admin_stats.html",
         actifs=total_actifs, passifs=total_passifs,
-        total_users=total_users, total_depots=total_depots, total_montant=float(total_montant),
+        total_users=total_users, sans_parrain=sans_parrain, total_depots=total_depots, total_montant=float(total_montant),
         status_data=status_data, pays_data=pays_data,
         operator_data=operator_data, jours_data=jours_data,
         top_data=top_data, derniers=derniers,
