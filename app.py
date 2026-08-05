@@ -4947,8 +4947,14 @@ def voir_produit(produit_id):
 
 @app.route("/product/<slug>")
 def voir_produit_public(slug):
-    """Page produit publique pour les clients (URL avec slug)"""
-    produit = Produit.query.filter_by(slug=slug, est_actif=True).first_or_404()
+    """Page produit publique pour les clients (URL avec slug ou ID numérique)"""
+    # Essayer d'abord par slug
+    produit = Produit.query.filter_by(slug=slug, est_actif=True).first()
+    # Si pas trouvé et que slug est numérique, essayer par ID (compatibilité anciens liens)
+    if not produit and slug.isdigit():
+        produit = Produit.query.filter_by(id=int(slug), est_actif=True).first()
+    if not produit:
+        abort(404)
     
     # Incrémenter le compteur de vues
     produit.vues = (produit.vues or 0) + 1

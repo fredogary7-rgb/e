@@ -282,7 +282,7 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.bottom-nav *{font-style:ital
                     <span class="video-price">{{ "%.0f"|format(pub.prix) }} {{ pub.devise or 'XOF' }}</span>
                     {% endif %}
                     {% if pub.produit_id %}
-                    <a href="/product/{{ pub.produit_id }}" class="btn-commander" style="text-decoration:none;">
+                    <a href="/product/{{ pub.produit.slug }}" class="btn-commander" style="text-decoration:none;">
                         <i class="fa fa-shopping-cart"></i> Commander
                     </a>
                     {% endif %}
