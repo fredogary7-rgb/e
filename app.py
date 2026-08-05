@@ -1177,24 +1177,69 @@ from sqlalchemy import func
 
 @app.route("/admin/stats-depots")
 def stats_depots():
-    # On groupe par la colonne premier_depot et on compte
-    # Cela renvoie une liste de tuples : [(True, 150), (False, 45)]
-    stats = db.session.query(
+    """Tableau de bord statistiques des dépôts."""
+    from sqlalchemy import func, extract, case
+
+    # Stats utilisateurs (premier dépôt)
+    user_stats = db.session.query(
         User.premier_depot, 
         func.count(User.id)
     ).group_by(User.premier_depot).all()
-
-    # On initialise les compteurs
-    total_actifs = 0   # premier_depot = True
-    total_passifs = 0  # premier_depot = False
-
-    for status, count in stats:
+    total_actifs = 0
+    total_passifs = 0
+    for status, count in user_stats:
         if status is True:
             total_actifs = count
         else:
             total_passifs = count
 
-    return render_template("admin_stats.html", actifs=total_actifs, passifs=total_passifs)
+    # Stats dépôts globaux
+    total_depots = Depot.query.count()
+    total_montant = db.session.query(func.coalesce(func.sum(Depot.montant), 0)).scalar()
+
+    # Par statut
+    stats_status = db.session.query(
+        Depot.statut, func.count(Depot.id), func.coalesce(func.sum(Depot.montant), 0)
+    ).group_by(Depot.statut).all()
+    status_data = {}
+    for s, cnt, amt in stats_status:
+        status_data[s] = {'count': cnt, 'montant': float(amt)}
+
+    # Par pays
+    stats_pays = db.session.query(
+        Depot.country, func.count(Depot.id), func.coalesce(func.sum(Depot.montant), 0)
+    ).group_by(Depot.country).order_by(func.count(Depot.id).desc()).limit(10).all()
+    pays_data = [{'pays': p, 'count': c, 'montant': float(m)} for p, c, m in stats_pays]
+
+    # Par opérateur
+    stats_operator = db.session.query(
+        Depot.operator, func.count(Depot.id), func.coalesce(func.sum(Depot.montant), 0)
+    ).group_by(Depot.operator).order_by(func.count(Depot.id).desc()).all()
+    operator_data = [{'operator': o, 'count': c, 'montant': float(m)} for o, c, m in stats_operator]
+
+    # 7 derniers jours
+    seven_days_ago = datetime.utcnow() - timedelta(days=7)
+    stats_jour = db.session.query(
+        func.date(Depot.date), func.count(Depot.id), func.coalesce(func.sum(Depot.montant), 0)
+    ).filter(Depot.date >= seven_days_ago).group_by(func.date(Depot.date)).order_by(func.date(Depot.date)).all()
+    jours_data = [{'date': str(d), 'count': c, 'montant': float(m)} for d, c, m in stats_jour]
+
+    # Top déposants
+    top_deposants = db.session.query(
+        Depot.user_name, func.count(Depot.id), func.coalesce(func.sum(Depot.montant), 0)
+    ).filter(Depot.user_name != None).group_by(Depot.user_name).order_by(func.sum(Depot.montant).desc()).limit(10).all()
+    top_data = [{'username': u, 'count': c, 'montant': float(m)} for u, c, m in top_deposants]
+
+    # Derniers dépôts
+    derniers = Depot.query.order_by(Depot.date.desc()).limit(10).all()
+
+    return render_template("admin_stats.html",
+        actifs=total_actifs, passifs=total_passifs,
+        total_depots=total_depots, total_montant=float(total_montant),
+        status_data=status_data, pays_data=pays_data,
+        operator_data=operator_data, jours_data=jours_data,
+        top_data=top_data, derniers=derniers
+    )
 
 @app.route("/admin/validate-deposit/<int:deposit_id>")
 def admin_validate_deposit(deposit_id):

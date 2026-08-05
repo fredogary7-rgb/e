@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stats Dépôts — NectarPro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #f8fafc; --surface: #ffffff; --border: #e2e8f0;
+            --text: #1e293b; --muted: #64748b;
+            --accent: #3b82f6; --accent-light: #eff6ff;
+            --green: #10b981; --green-light: #ecfdf5;
+            --amber: #f59e0b; --amber-light: #fffbeb;
+            --red: #ef4444; --red-light: #fef2f2;
+            --purple: #8b5cf6; --purple-light: #f5f3ff;
+            --radius: 10px;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+        .top-nav { background:var(--surface); border-bottom:1px solid var(--border); padding:0 28px; height:60px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:10; }
+        .brand { font-size:20px; font-weight:700; color:var(--accent); display:flex; align-items:center; gap:10px; }
+        .brand i { font-size:22px; }
+        .nav-links { display:flex; gap:4px; list-style:none; }
+        .nav-links a { display:flex; align-items:center; gap:6px; padding:8px 16px; border-radius:8px; text-decoration:none; color:var(--muted); font-weight:500; font-size:13px; transition:all .2s; }
+        .nav-links a:hover, .nav-links a.active { background:var(--accent-light); color:var(--accent); }
+        .container { max-width:1280px; margin:0 auto; padding:28px; }
+        .page-title { font-size:24px; font-weight:700; margin-bottom:4px; }
+        .page-subtitle { font-size:14px; color:var(--muted); margin-bottom:28px; }
+        .kpi-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-bottom:28px; }
+        .kpi-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px 24px; display:flex; align-items:center; gap:16px; }
+        .kpi-icon { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+        .kpi-icon.blue { background:var(--accent-light); color:var(--accent); }
+        .kpi-icon.green { background:var(--green-light); color:var(--green); }
+        .kpi-icon.amber { background:var(--amber-light); color:var(--amber); }
+        .kpi-icon.red { background:var(--red-light); color:var(--red); }
+        .kpi-icon.purple { background:var(--purple-light); color:var(--purple); }
+        .kpi-val { font-size:24px; font-weight:700; line-height:1.2; }
+        .kpi-lbl { font-size:12px; color:var(--muted); font-weight:500; }
+        .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px; }
+        @media (max-width:768px) { .grid-2 { grid-template-columns:1fr; } .kpi-grid { grid-template-columns:repeat(2,1fr); } }
+        .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px 24px; margin-bottom:20px; }
+        .card h3 { font-size:15px; font-weight:600; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+        .card h3 i { color:var(--accent); }
+        table { width:100%; border-collapse:collapse; font-size:13px; }
+        th { text-align:left; padding:10px 12px; font-weight:600; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.5px; border-bottom:2px solid var(--border); }
+        td { padding:10px 12px; border-bottom:1px solid var(--border); }
+        tr:hover td { background:var(--accent-light); }
+        .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; }
+        .badge-green { background:var(--green-light); color:var(--green); }
+        .badge-amber { background:var(--amber-light); color:var(--amber); }
+        .badge-red { background:var(--red-light); color:var(--red); }
+        .montant { font-weight:700; font-variant-numeric:tabular-nums; }
+        .empty { text-align:center; padding:40px 20px; color:var(--muted); font-size:14px; }
+        .empty i { font-size:40px; opacity:.3; margin-bottom:12px; display:block; }
+    </style>
+</head>
+<body>
+<div class="top-nav">
+    <div class="brand"><i class="fa fa-chart-bar"></i> NectarPro <span style="font-weight:400;color:var(--muted)">Admin</span></div>
+    <ul class="nav-links">
+        <li><a href="/admin"><i class="fa fa-home"></i> Dashboard</a></li>
+        <li><a href="/admin/deposits"><i class="fa fa-wallet"></i> Dépôts</a></li>
+        <li><a href="/admin/retraits"><i class="fa fa-arrow-right-from-bracket"></i> Retraits</a></li>
+        <li><a href="/admin/utilisateurs"><i class="fa fa-users"></i> Utilisateurs</a></li>
+        <li><a href="/admin/stats-depots" class="active"><i class="fa fa-chart-pie"></i> Stats</a></li>
+    </ul>
+</div>
+
+<div class="container">
+    <h1 class="page-title">📊 Statistiques des Dépôts</h1>
+    <p class="page-subtitle">Vue d'ensemble des transactions de dépôt</p>
+
+    <!-- KPI CARDS -->
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-icon blue"><i class="fa fa-wallet"></i></div>
+            <div>
+                <div class="kpi-val">{{ total_depots }}</div>
+                <div class="kpi-lbl">Total dépôts</div>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon green"><i class="fa fa-coins"></i></div>
+            <div>
+                <div class="kpi-val">{{ "%.0f"|format(total_montant) }} F</div>
+                <div class="kpi-lbl">Montant total</div>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon purple"><i class="fa fa-user-check"></i></div>
+            <div>
+                <div class="kpi-val">{{ actifs }}</div>
+                <div class="kpi-lbl">Utilisateurs avec dépôt</div>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon amber"><i class="fa fa-user-clock"></i></div>
+            <div>
+                <div class="kpi-val">{{ passifs }}</div>
+                <div class="kpi-lbl">Utilisateurs sans dépôt</div>
+            </div>
+        </div>
+        {% if status_data.get('validated') %}
+        <div class="kpi-card">
+            <div class="kpi-icon green"><i class="fa fa-check-circle"></i></div>
+            <div>
+                <div class="kpi-val">{{ "%.0f"|format(status_data['validated'].montant) }} F</div>
+                <div class="kpi-lbl">Montant validé</div>
+            </div>
+        </div>
+        {% endif %}
+        {% if status_data.get('pending') %}
+        <div class="kpi-card">
+            <div class="kpi-icon amber"><i class="fa fa-clock"></i></div>
+            <div>
+                <div class="kpi-val">{{ status_data['pending'].count }}</div>
+                <div class="kpi-lbl">En attente</div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- STATUT DETAIL -->
+    <div class="card">
+        <h3><i class="fa fa-tags"></i> Répartition par statut</h3>
+        {% if status_data %}
+        <table>
+            <thead>
+                <tr><th>Statut</th><th>Nombre</th><th>Montant</th><th>% du total</th></tr>
+            </thead>
+            <tbody>
+                {% for s, d in status_data.items() %}
+                <tr>
+                    <td>
+                        {% if s == 'validated' %}<span class="badge badge-green">Validé</span>
+                        {% elif s == 'pending' %}<span class="badge badge-amber">En attente</span>
+                        {% elif s == 'rejected' %}<span class="badge badge-red">Rejeté</span>
+                        {% else %}{{ s }}{% endif %}
+                    </td>
+                    <td>{{ d.count }}</td>
+                    <td class="montant">{{ "%.0f"|format(d.montant) }} F</td>
+                    <td>{{ "%.1f"|format(d.montant / total_montant * 100) if total_montant > 0 else 0 }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty"><i class="fa fa-inbox"></i> Aucune donnée</div>
+        {% endif %}
+    </div>
+
+    <div class="grid-2">
+        <!-- PAR PAYS -->
+        <div class="card">
+            <h3><i class="fa fa-globe"></i> Top pays</h3>
+            {% if pays_data %}
+            <table>
+                <thead><tr><th>Pays</th><th>Dépôts</th><th>Montant</th></tr></thead>
+                <tbody>
+                    {% for p in pays_data %}
+                    <tr>
+                        <td>{{ p.pays }}</td>
+                        <td>{{ p.count }}</td>
+                        <td class="montant">{{ "%.0f"|format(p.montant) }} F</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty"><i class="fa fa-inbox"></i> Aucune donnée</div>
+            {% endif %}
+        </div>
+
+        <!-- PAR OPÉRATEUR -->
+        <div class="card">
+            <h3><i class="fa fa-mobile-alt"></i> Par opérateur</h3>
+            {% if operator_data %}
+            <table>
+                <thead><tr><th>Opérateur</th><th>Dépôts</th><th>Montant</th></tr></thead>
+                <tbody>
+                    {% for o in operator_data %}
+                    <tr>
+                        <td>{{ o.operator }}</td>
+                        <td>{{ o.count }}</td>
+                        <td class="montant">{{ "%.0f"|format(o.montant) }} F</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty"><i class="fa fa-inbox"></i> Aucune donnée</div>
+            {% endif %}
+        </div>
+
+    <div class="grid-2">
+        <!-- 7 DERNIERS JOURS -->
+        <div class="card">
+            <h3><i class="fa fa-calendar-week"></i> 7 derniers jours</h3>
+            {% if jours_data %}
+            <table>
+                <thead><tr><th>Date</th><th>Dépôts</th><th>Montant</th></tr></thead>
+                <tbody>
+                    {% for j in jours_data %}
+                    <tr>
+                        <td>{{ j.date }}</td>
+                        <td>{{ j.count }}</td>
+                        <td class="montant">{{ "%.0f"|format(j.montant) }} F</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty"><i class="fa fa-inbox"></i> Aucun dépôt récent</div>
+            {% endif %}
+        </div>
+
+        <!-- TOP DÉPOSANTS -->
+        <div class="card">
+            <h3><i class="fa fa-trophy"></i> Top déposants</h3>
+            {% if top_data %}
+            <table>
+                <thead><tr><th>#</th><th>Utilisateur</th><th>Dépôts</th><th>Montant</th></tr></thead>
+                <tbody>
+                    {% for t in top_data %}
+                    <tr>
+                        <td style="font-weight:700;color:var(--muted)">{{ loop.index }}</td>
+                        <td>{{ t.username }}</td>
+                        <td>{{ t.count }}</td>
+                        <td class="montant">{{ "%.0f"|format(t.montant) }} F</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty"><i class="fa fa-inbox"></i> Aucun déposant</div>
+            {% endif %}
+        </div>
+    <!-- DERNIERS DÉPÔTS -->
+    <div class="card">
+        <h3><i class="fa fa-history"></i> Derniers dépôts</h3>
+        {% if derniers %}
+        <table><thead><tr><th>ID</th><th>Utilisateur</th><th>Montant</th><th>Opérateur</th><th>Pays</th><th>Statut</th><th>Date</th></tr></thead><tbody>
+        {% for d in derniers %}
+        <tr>
+            <td>#{{ d.id }}</td>
+            <td>{{ d.user_name or '—' }}</td>
+            <td class="montant">{{ "%.0f"|format(d.montant) }} F</td>
+            <td>{{ d.operator }}</td>
+            <td>{{ d.country }}</td>
+            <td>{% if d.statut == 'validated' %}<span class="badge badge-green">Validé</span>{% elif d.statut == 'pending' %}<span class="badge badge-amber">En attente</span>{% elif d.statut == 'rejected' %}<span class="badge badge-red">Rejeté</span>{% else %}{{ d.statut }}{% endif %}</td>
+            <td>{{ d.date.strftime('%d/%m/%Y %H:%M') if d.date else '—' }}</td>
+        </tr>
+        {% endfor %}
+        </tbody></table>
+        {% else %}<div class="empty"><i class="fa fa-inbox"></i> Aucun dépôt</div>{% endif %}
+    </div>
+</div>
+
+</body>
+</html>
+    </div>
