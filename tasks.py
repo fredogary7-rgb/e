@@ -9,6 +9,16 @@ TASK_REWARD_MIN = 25
 TASK_REWARD_MAX = 100
 
 
+def _cloudinary_poster(video_url):
+    """Génère l'URL du poster (1ʳᵉ frame) d'une vidéo Cloudinary."""
+    import re
+    if not video_url or 'cloudinary.com' not in video_url:
+        return None
+    url = re.sub(r'/upload/(?:v\d+/)?', '/upload/so_0,w_400,c_fill,q_auto,f_auto/', video_url)
+    url = re.sub(r'\.(mp4|webm|mov|avi)$', '.jpg', url, flags=re.IGNORECASE)
+    return url
+
+
 def _sel(date_obj):
     """Sélectionne aléatoirement TASK_COUNT produits/publicités pour la date donnée."""
     import random
@@ -95,6 +105,7 @@ def taches_page():
             td.append({
                 'task_id': task.id, 'type': 'publicite', 'nom': p.titre,
                 'image': p.video_url,
+                'poster': _cloudinary_poster(p.video_url),
                 'boutique_nom': p.boutique.nom if p.boutique else 'NovaTrade',
                 'shared': ut.shared if ut else False
             })
