@@ -1193,6 +1193,19 @@ def stats_depots():
         else:
             total_passifs = count
 
+    # Total utilisateurs
+    total_users = User.query.count()
+
+    # Top utilisateurs par équipe (nombre de filleuls directs)
+    top_equipes = []
+    users_avec_equipe = User.query.all()
+    for u in users_avec_equipe:
+        nb = u.downlines.count()
+        if nb > 0:
+            top_equipes.append({'username': u.username, 'filleuls': nb})
+    top_equipes.sort(key=lambda x: x['filleuls'], reverse=True)
+    top_equipes = top_equipes[:10]
+
     # Stats dépôts globaux
     total_depots = Depot.query.count()
     total_montant = db.session.query(func.coalesce(func.sum(Depot.montant), 0)).scalar()
@@ -1235,10 +1248,11 @@ def stats_depots():
 
     return render_template("admin_stats.html",
         actifs=total_actifs, passifs=total_passifs,
-        total_depots=total_depots, total_montant=float(total_montant),
+        total_users=total_users, total_depots=total_depots, total_montant=float(total_montant),
         status_data=status_data, pays_data=pays_data,
         operator_data=operator_data, jours_data=jours_data,
-        top_data=top_data, derniers=derniers
+        top_data=top_data, derniers=derniers,
+        top_equipes=top_equipes
     )
 
 @app.route("/admin/validate-deposit/<int:deposit_id>")

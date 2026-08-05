@@ -83,6 +83,13 @@
             </div>
         </div>
         <div class="kpi-card">
+            <div class="kpi-icon blue"><i class="fa fa-users"></i></div>
+            <div>
+                <div class="kpi-val">{{ total_users }}</div>
+                <div class="kpi-lbl">Total utilisateurs</div>
+            </div>
+        </div>
+        <div class="kpi-card">
             <div class="kpi-icon green"><i class="fa fa-coins"></i></div>
             <div>
                 <div class="kpi-val">{{ "%.0f"|format(total_montant) }} F</div>
@@ -238,6 +245,24 @@
             <div class="empty"><i class="fa fa-inbox"></i> Aucun déposant</div>
             {% endif %}
         </div>
+
+        <!-- TOP ÉQUIPES -->
+        <div class="card">
+            <h3><i class="fa fa-sitemap"></i> Top Équipes (filleuls)</h3>
+            {% if top_equipes %}
+            <table><thead><tr><th>#</th><th>Utilisateur</th><th>Filleuls</th></tr></thead><tbody>
+            {% for e in top_equipes %}
+            <tr>
+                <td style="font-weight:700;color:var(--muted)">{{ loop.index }}</td>
+                <td>{{ e.username }}</td>
+                <td class="montant">{{ e.filleuls }}</td>
+            </tr>
+            {% endfor %}
+            </tbody></table>
+            {% else %}<div class="empty"><i class="fa fa-inbox"></i> Aucune équipe</div>{% endif %}
+        </div>
+    </div>
+
     <!-- DERNIERS DÉPÔTS -->
     <div class="card">
         <h3><i class="fa fa-history"></i> Derniers dépôts</h3>
