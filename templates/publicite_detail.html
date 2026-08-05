@@ -230,10 +230,7 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.glass-card *,.bottom-nav *{f
 <div class="main">
     <!-- Video -->
     <div class="video-container">
-        <video controls autoplay muted loop poster="{{ publicite.thumbnail or '' }}">
-            <source src="{{ publicite.video_url }}" type="video/mp4">
-            Votre navigateur ne supporte pas la lecture de videos.
-        </video>
+        <video src="{{ publicite.video_url }}" controls autoplay muted playsinline loop onerror="this.parentElement.innerHTML='<div style=&quot;display:flex;align-items:center;justify-content:center;min-height:200px;color:#fff;background:#1a1a2e;text-align:center;padding:20px;font-size:14px;border-radius:16px&quot;><div><i class=&quot;fa fa-video-slash&quot; style=&quot;font-size:40px;opacity:.5;margin-bottom:12px&quot;></i><p>Vidéo indisponible</p></div></div>'"></video>
     </div>
 
     <!-- Video Stats -->

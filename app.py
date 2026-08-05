@@ -3356,6 +3356,19 @@ def retrait_page():
     MIN_RETRAIT = 5000
     MAX_RETRAIT = 100000
     FRAIS = 500
+    MAX_RETRAITS_PAR_JOUR = 10
+
+    # Vérifier la limite quotidienne de retraits
+    today_start = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    retraits_aujourdhui = Retrait.query.filter(
+        Retrait.user_id == user.id,
+        Retrait.date >= today_start
+    ).count()
+    retraits_restants = MAX_RETRAITS_PAR_JOUR - retraits_aujourdhui
+
+    if request.method == "POST" and retraits_restants <= 0:
+        flash(f"Limite de {MAX_RETRAITS_PAR_JOUR} retraits par 24h atteinte. Réessayez demain.", "danger")
+        return redirect(url_for("retrait_page"))
 
     # On s'assure que c'est bien un float
     solde_actuel = float(user.solde_parrainage or 0)
@@ -3537,7 +3550,8 @@ def retrait_page():
             flash("Erreur lors de l'enregistrement du retrait. Veuillez réessayer.", "danger")
             return redirect(url_for("retrait_page"))
 
-    return render_template("retrait.html", user=user, stats=stats, services=services)
+    return render_template("retrait.html", user=user, stats=stats, services=services,
+                           retraits_restants=retraits_restants, max_retraits_jour=MAX_RETRAITS_PAR_JOUR)
 
 
 def get_team_total(user):
@@ -6334,38 +6348,6 @@ def api_ajouter_commentaire(pub_id):
         "success": True,
         "message": "Commentaire ajouté"
     })
-
-
-@app.route("/api/publicite/<int:pub_id>/share", methods=["POST"])
-def api_share_publicite(pub_id):
-    """API pour incrémenter le compteur de partages"""
-    publicite = Publicite.query.get_or_404(pub_id)
-    publicite.partages = (publicite.partages or 0) + 1
-    db.session.commit()
-    
-    return jsonify({"success": True, "partages": publicite.partages})
-
-
-@app.route("/api/publicite/<int:pub_id>/vue", methods=["POST"])
-def api_vue_publicite(pub_id):
-    """API pour incrémenter le compteur de vues (une seule vue par utilisateur)"""
-    publicite = Publicite.query.get_or_404(pub_id)
-    user = get_logged_in_user()
-    
-    # Pour les utilisateurs connectés, vérifier s'ils ont déjà vu
-    if user:
-        # On utilise une table de suivi des vues (à créer) ou on vérifie si la vue a déjà été comptée
-        # Pour simplifier, on utilise le fait que l'utilisateur ne peut voter qu'une fois
-        # On pourrait créer une table VuePublicite pour tracker les vues uniques
-        pass
-    
-    # Incrémenter seulement si c'est une nouvelle vue
-    # Note: Pour une solution parfaite, il faudrait créer une table VuePublicite
-    # Pour l'instant, on se base sur le fait que le frontend n'envoie qu'une seule fois
-    publicite.vues = (publicite.vues or 0) + 1
-    db.session.commit()
-    
-    return jsonify({"success": True, "vues": publicite.vues})
 
 
 # ==============================

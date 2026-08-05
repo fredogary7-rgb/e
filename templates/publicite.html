@@ -93,7 +93,7 @@ body{background:var(--bg);min-height:100vh;color:var(--text);font-style:italic;o
 /* TIKTOK STYLE VIDEO FEED */
 .video-feed{position:relative;width:100%;max-width:480px;margin:0 auto;overflow:hidden;background:#000;height:calc(100dvh - 62px);overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch}
 .video-item{position:relative;width:100%;height:100%;min-height:calc(100dvh - 62px);background:#000;overflow:hidden;scroll-snap-align:start;scroll-snap-stop:always;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.video-item video{width:100%;height:100%;object-fit:contain;background:#000}
+.video-item video{width:100%;height:100%;object-fit:cover;background:#000}
 
 /* ACTION BUTTONS (RIGHT) */
 .video-actions{position:absolute;right:12px;bottom:120px;display:flex;flex-direction:column;gap:16px;align-items:center;z-index:10}
@@ -233,7 +233,7 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.bottom-nav *{font-style:ital
     <div class="video-feed" id="videoFeed">
         {% for pub in publicites %}
         <div class="video-item" id="video-{{ pub.id }}" data-pub-id="{{ pub.id }}">
-            <video src="{{ pub.video_url }}" playsinline loop{% if loop.first %} autoplay{% endif %}></video>
+            <video src="{{ pub.video_url }}" muted playsinline loop data-pub-id="{{ pub.id }}" onerror="this.parentElement.innerHTML='<div style=&quot;display:flex;align-items:center;justify-content:center;height:100%;color:#fff;background:#1a1a2e;text-align:center;padding:20px;font-size:14px&quot;><div><i class=&quot;fa fa-video-slash&quot; style=&quot;font-size:40px;opacity:.5;margin-bottom:12px&quot;></i><p>Vidéo indisponible</p></div></div>'"></video>
 
             <!-- Seller Avatar (top of actions) -->
             <div class="seller-avatar-action" style="position:absolute;top:70px;right:18px;z-index:10;">

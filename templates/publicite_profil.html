@@ -267,9 +267,7 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.bottom-nav *{font-style:ital
     <div class="video-grid">
         {% for pub in publicites %}
         <a href="/publicite/{{ pub.id }}" class="video-thumb">
-            <video muted preload="metadata">
-                <source src="{{ pub.video_url }}" type="video/mp4">
-            </video>
+            <video src="{{ pub.video_url }}" muted preload="metadata" playsinline></video>
             <div class="video-overlay">
                 <div class="video-views">
                     <i class="fa fa-play"></i> {{ pub.vues or 0 }}
