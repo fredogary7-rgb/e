@@ -2122,11 +2122,15 @@ def connexion_page():
             return redirect(url_for("connexion_page"))
 
         remember_me = request.form.get("remember_me") == "1"
+        # Sauvegarder le parrain en attente avant de nettoyer la session
+        pending_parrain = session.get('pending_parrain', '')
         session.clear()
         session["user_id"] = user.id
         session["username"] = user.username
         session["_remember_me"] = remember_me
         session.permanent = remember_me
+        if pending_parrain:
+            session['pending_parrain'] = pending_parrain
 
         flash(f"Connexion réussie ! Bienvenue {user.username}.", "success")
         next_url = request.args.get("next")
@@ -2134,7 +2138,7 @@ def connexion_page():
             return redirect(next_url)
         return redirect(url_for("dashboard_page"))
 
-    return render_template("connexion.html")
+    return render_template("connexion.html", parrain=session.get('pending_parrain', ''))
 
 @app.route("/admin/reseau/leaderbrice")
 @login_required
@@ -2192,6 +2196,12 @@ def inscription_page():
         return render_template("maintenance_inscription.html")
 
     ref_code = request.args.get("ref", "").strip().lower()
+    # Conserver le parrain en session pour qu'il survive aux navigations (connexion ↔ inscription)
+    if ref_code:
+        session['pending_parrain'] = ref_code
+    elif 'pending_parrain' in session:
+        ref_code = session['pending_parrain']
+    
     session.pop("username_exists", None)
 
     if request.method == "POST":
@@ -2266,6 +2276,7 @@ def inscription_page():
             db.session.commit()
 
             session["user_id"] = new_user.id
+            session.pop('pending_parrain', None)  # Nettoyer le parrain après inscription réussie
 
             flash("Compte créé avec succès 🎉", "success")
             return redirect(url_for("dashboard_bloque"))
