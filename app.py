@@ -3422,7 +3422,7 @@ def retrait_page():
     logging.info(f"[RETRAIT] User {user.id} ({user.username}) - Début traitement retrait")
 
     MIN_RETRAIT = 5000
-    MAX_RETRAIT = 100000
+    MAX_RETRAIT = 50000
     FRAIS = 500
     MAX_RETRAITS_PAR_JOUR = 10
 
