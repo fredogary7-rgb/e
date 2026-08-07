@@ -3335,47 +3335,6 @@ def whatsapp_number():
 
     return redirect("/dashboard")
 
-@app.route("/netflix-view")
-def netflix_view_page():
-    return render_template("netflix2.html")
-
-
-@app.route("/apk")
-def apk_page():
-    """
-    Retourne la liste des APK disponibles via liens Google Drive.
-    """
-    apk_files = [
-        {
-            "name": "Netflix",
-            "filename": "Netflix.apk",
-            "link": "https://drive.google.com/file/d/1afSa24_oVoTWRCgpO07Lbu4qjKMUhwLC/view?usp=drivesdk"
-        },
-        {
-            "name": "Chat",
-            "filename": "chat.apk",
-            "link": "https://drive.google.com/file/d/1-4idwrgNxjNilpLzR8zHkdMroVo41g9b/view?usp=drivesdk"
-        },
-        {
-            "name": "CapCut",
-            "filename": "capcut.apk",
-            "link": "https://drive.google.com/file/d/1hwEzqwQWV2FKnTg1u0QAWrPjjOEyZCyj/view?usp=drivesdk"
-        }
-    ]
-
-    return render_template("apk.html", apk_files=apk_files)
-
-@app.route("/apk-canal")
-def apk_canal_page():
-    # Lien de ton application
-    canal_apk = {
-        "name": "Canal+ Premium",
-        "filename": "canal_plus_vavoo.apk",
-        "link": "https://play.google.com/store/apps/details?id=net.vypn.app", # Lien direct vers le téléchargement
-        "reference": "Vavoo.to"
-    }
-    return render_template("apk_canal.html", app=canal_apk)
-
 
 @app.route("/transafrik")
 def transafrik_page():

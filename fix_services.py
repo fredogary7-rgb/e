@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+import os
+
+html = """<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -26,4 +28,17 @@ p{font-size:14px;color:#94a3b8;line-height:1.7;margin-bottom:24px}
 <a href="/dashboard" class="btn-back"><i class="fa fa-arrow-left"></i> Retour au dashboard</a>
 </div>
 </body>
-</html>
+</html>"""
+
+base = "c:/Users/user/Documents/d/e/templates"
+
+for name in ["netflix2.html", "apk_canal.html"]:
+    tmp = base + "/" + name + ".tmp"
+    dst = base + "/" + name
+    try:
+        with open(tmp, "w", encoding="utf-8") as f:
+            f.write(html)
+        os.replace(tmp, dst)
+        print(f"OK - {name}")
+    except Exception as e:
+        print(f"ERROR {name}: {e}")
