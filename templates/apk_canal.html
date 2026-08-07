@@ -1,58 +1,33 @@
-<!DOCTYPE html>
+{% endraw %}<!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canal+ Premium APK | NectarPro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
-
-        :root {
-            --bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);
-            --glass:rgba(255,255,255,0.72);
-            --accent:#db2777;
-            --accent2:#ec4899;
-            --accent-light:#f9a8d4;
-            --gold:#f59e0b;
-            --gold-light:#fef3c7;
-            --emerald:#10b981;
-            --emerald-light:#d1fae5;
-            --violet:#8b5cf6;
-            --violet-light:#ede9fe;
-            --sky:#0ea5e9;
-            --sky-light:#e0f2fe;
-            --text:#0f172a;
-            --text2:#1e293b;
-            --muted:#64748b;
-            --border:rgba(236,72,153,0.2);
-            --shadow-sm:0 2px 8px rgba(236,72,153,0.08);
-            --shadow:0 8px 32px rgba(236,72,153,0.12);
-            --shadow-lg:0 16px 48px rgba(236,72,153,0.18);
-            --radius-sm:12px;
-            --radius:18px;
-            --radius-lg:24px;
-            --radius-xl:32px;
-        }
-
-        body {
-            background: var(--bg);
-            min-height:100vh;min-height:100dvh;
-            color:var(--text);
-            overflow-x:hidden;
-            line-height:1.6;
-            font-style:italic;
-            position:relative;
-        }
-
-        /* PARTICULES */
-        .bg-particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-        .particle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,0.18),transparent 70%);animation:floatUp linear infinite}
-        .particle:nth-child(1){width:180px;height:180px;left:5%;top:70%;animation-duration:18s;animation-delay:0s}
-        .particle:nth-child(2){width:120px;height:120px;left:60%;top:80%;animation-duration:14s;animation-delay:3s}
-        .particle:nth-child(3){width:200px;height:200px;left:30%;top:75%;animation-duration:22s;animation-delay:6s}
-        .particle:nth-child(4){width:100px;height:100px;left:80%;top:85%;animation-duration:16s;animation-delay:9s}
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Service indisponible — NectarPro</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#0f0f1a,#1a1a2e,#16213e);min-height:100vh;display:flex;align-items:center;justify-content:center;color:#fff;text-align:center;padding:20px}
+.card{background:rgba(255,255,255,.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:60px 40px;max-width:500px;width:100%}
+.icon{font-size:64px;color:#ef4444;margin-bottom:20px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+h1{font-size:24px;font-weight:900;margin-bottom:8px}
+h1 span{color:#ef4444}
+p{font-size:14px;color:#94a3b8;line-height:1.7;margin-bottom:24px}
+.btn-back{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);border-radius:50px;text-decoration:none;font-weight:600;font-size:14px;transition:all .3s}
+.btn-back:hover{background:rgba(239,68,68,.25);transform:translateY(-2px)}
+</style>
+</head>
+<body>
+<div class="card">
+<div class="icon"><i class="fa fa-shield-halved"></i></div>
+<h1>Service <span>indisponible</span></h1>
+<p>Pour des raisons de securite et de conformite, ce service est temporairement suspendu. Notre equipe travaille a sa remise en conformite. Veuillez nous excuser pour la gene occasionnee.</p>
+<a href="/dashboard" class="btn-back"><i class="fa fa-arrow-left"></i> Retour au dashboard</a>
+</div>
+</body>
+</html>
+{% endraw %}
         .particle:nth-child(5){width:150px;height:150px;left:50%;top:90%;animation-duration:20s;animation-delay:2s}
         .particle:nth-child(6){width:90px;height:90px;left:15%;top:50%;animation-duration:12s;animation-delay:5s}
         .particle:nth-child(7){width:160px;height:160px;left:75%;top:60%;animation-duration:24s;animation-delay:8s}
