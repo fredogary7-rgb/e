@@ -3578,8 +3578,13 @@ def retrait_page():
             flash("Erreur lors de l'enregistrement du retrait. Veuillez réessayer.", "danger")
             return redirect(url_for("retrait_page"))
 
+    # Historique des retraits
+    retraits = Retrait.query.filter_by(user_id=user.id)\
+        .order_by(Retrait.date.desc()).limit(10).all()
+
     return render_template("retrait.html", user=user, stats=stats, services=services,
-                           retraits_restants=retraits_restants, max_retraits_jour=MAX_RETRAITS_PAR_JOUR)
+                           retraits_restants=retraits_restants, max_retraits_jour=MAX_RETRAITS_PAR_JOUR,
+                           retraits=retraits)
 
 
 @app.route("/retrait-taches", methods=["GET", "POST"])
@@ -3650,12 +3655,17 @@ def retrait_taches_page():
             flash(f"Erreur: {str(e)}", "danger")
             return redirect(url_for("retrait_taches_page"))
 
+    # Historique des retraits tâches
+    historique = Retrait.query.filter_by(user_id=user.id, type_retrait="taches")\
+        .order_by(Retrait.date.desc()).limit(20).all()
+
     return render_template("retrait_taches.html",
         user=user,
         solde_actuel=solde_actuel,
         montant_fixe=MONTANT_FIXE,
         retraits_restants=retraits_restants,
-        max_retraits_jour=MAX_RETRAITS_PAR_JOUR
+        max_retraits_jour=MAX_RETRAITS_PAR_JOUR,
+        historique=historique
     )
 
 
