@@ -348,10 +348,10 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.stat-card *,.section *{font-
         {% if retraits %}
             {% for r in retraits %}
             <div class="history-item">
-                <div class="history-icon {{ r.statut }}">{% if r.statut == 'valide' %}<i class="fa fa-check"></i>{% elif r.statut == 'refuse' %}<i class="fa fa-times"></i>{% else %}<i class="fa fa-clock"></i>{% endif %}</div>
-                <div class="history-info"><div class="history-title">{% if r.statut == 'valide' %}Retrait valide{% elif r.statut == 'refuse' %}Retrait refuse{% else %}En attente{% endif %}</div><div class="history-date">{{ r.date }}</div></div>
+                <div class="history-icon {% if r.statut == 'successful' %}valide{% elif r.statut in ['failed','refused','refuse'] %}refuse{% else %}en_attente{% endif %}">{% if r.statut == 'successful' %}<i class="fa fa-check"></i>{% elif r.statut in ['failed','refused','refuse'] %}<i class="fa fa-times"></i>{% else %}<i class="fa fa-clock"></i>{% endif %}</div>
+                <div class="history-info"><div class="history-title">{% if r.statut == 'successful' %}Approuvé{% elif r.statut in ['failed','refused','refuse'] %}Refusé{% elif r.statut == 'accepte' %}Accepté{% else %}En attente{% endif %}</div><div class="history-date">{{ r.date }}</div></div>
                 <div class="history-amount">{{ "%.0f"|format(r.montant) }} XOF</div>
-                <span class="history-status {{ r.statut }}">{% if r.statut == 'valide' %}Valide{% elif r.statut == 'refuse' %}Refuse{% else %}En attente{% endif %}</span>
+                <span class="history-status {% if r.statut == 'successful' %}valide{% elif r.statut in ['failed','refused','refuse'] %}refuse{% else %}en_attente{% endif %}">{% if r.statut == 'successful' %}Approuvé{% elif r.statut in ['failed','refused','refuse'] %}Refusé{% elif r.statut == 'accepte' %}Accepté{% else %}En attente{% endif %}</span>
             </div>
             {% endfor %}
         {% else %}
