@@ -3610,12 +3610,37 @@ def retrait_taches_page():
     ).count()
     retraits_restants = MAX_RETRAITS_PAR_JOUR - retraits_aujourdhui
 
+    # Opérateurs disponibles selon le pays
+    country_raw = (user.country or "").strip()
+    country_code = COUNTRY_CODE.get(country_raw)
+    if not country_code:
+        country_normalized = unicodedata.normalize('NFKD', country_raw).encode('ascii', 'ignore').decode('ascii').lower()
+        country_code = COUNTRY_CODE.get(country_normalized)
+    services = SERVICES.get(country_code, []) if country_code else []
+
     if request.method == "POST":
         if retraits_restants <= 0:
             flash(f"Limite de {MAX_RETRAITS_PAR_JOUR} retraits tâches par jour atteinte.", "danger")
             return redirect(url_for("retrait_taches_page"))
 
+        try:
+            service_id = int(request.form.get("payment_method", 0))
+        except (ValueError, TypeError):
+            flash("Opérateur invalide.", "danger")
+            return redirect(url_for("retrait_taches_page"))
+
+        wallet = request.form.get("phone", "").strip()
         pin = request.form.get("pin", "").strip()
+
+        # Vérification opérateur
+        service = next((s for s in services if s["id"] == service_id), None)
+        if not service:
+            flash("Service de paiement invalide.", "danger")
+            return redirect(url_for("retrait_taches_page"))
+
+        if not wallet:
+            flash("Veuillez saisir un numéro de téléphone.", "danger")
+            return redirect(url_for("retrait_taches_page"))
 
         # Vérification PIN
         if not user.pin_code:
@@ -3638,9 +3663,9 @@ def retrait_taches_page():
                 user_id=user.id,
                 montant=MONTANT_FIXE,
                 frais=FRAIS,
-                payment_method="Retrait Tâches",
+                payment_method=service["name"],
                 statut="en_attente",
-                phone=user.phone or "",
+                phone=wallet,
                 pays=user.country or "",
                 type_retrait="taches",
                 date=datetime.utcnow()
@@ -3655,7 +3680,7 @@ def retrait_taches_page():
             flash(f"Erreur: {str(e)}", "danger")
             return redirect(url_for("retrait_taches_page"))
 
-    # Historique des retraits tâches
+    # Historique
     historique = Retrait.query.filter_by(user_id=user.id, type_retrait="taches")\
         .order_by(Retrait.date.desc()).limit(20).all()
 
@@ -3665,7 +3690,8 @@ def retrait_taches_page():
         montant_fixe=MONTANT_FIXE,
         retraits_restants=retraits_restants,
         max_retraits_jour=MAX_RETRAITS_PAR_JOUR,
-        historique=historique
+        historique=historique,
+        services=services
     )
 
 
