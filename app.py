@@ -366,6 +366,7 @@ class Retrait(db.Model):
     pays = db.Column(db.String(50), nullable=True)
     frais = db.Column(db.Float, default=0.0)
     motif_refus = db.Column(db.String(255), nullable=True)  # Motif du refus si applicable
+    type_retrait = db.Column(db.String(20), nullable=True)  # "taches" pour retrait jeux, null pour retrait standard
     
     # Champs de synchronisation SoleasPay
     reference_soleaspay = db.Column(db.String(100), nullable=True)  # Référence du retrait chez SoleasPay (ex: MLS109P)
@@ -3579,6 +3580,83 @@ def retrait_page():
 
     return render_template("retrait.html", user=user, stats=stats, services=services,
                            retraits_restants=retraits_restants, max_retraits_jour=MAX_RETRAITS_PAR_JOUR)
+
+
+@app.route("/retrait-taches", methods=["GET", "POST"])
+@login_required
+def retrait_taches_page():
+    """Retrait des gains de tâches/jeux (solde_jeux) — montant fixe 5000 XOF, sans frais."""
+    user = get_logged_in_user()
+    if not user:
+        flash("Veuillez vous connecter.", "danger")
+        return redirect(url_for("connexion_page"))
+
+    MONTANT_FIXE = 5000
+    FRAIS = 0
+    MAX_RETRAITS_PAR_JOUR = 5
+    solde_actuel = float(user.solde_jeux or 0)
+
+    # Limite quotidienne
+    today_start = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    retraits_aujourdhui = Retrait.query.filter(
+        Retrait.user_id == user.id,
+        Retrait.date >= today_start,
+        Retrait.type_retrait == "taches"
+    ).count()
+    retraits_restants = MAX_RETRAITS_PAR_JOUR - retraits_aujourdhui
+
+    if request.method == "POST":
+        if retraits_restants <= 0:
+            flash(f"Limite de {MAX_RETRAITS_PAR_JOUR} retraits tâches par jour atteinte.", "danger")
+            return redirect(url_for("retrait_taches_page"))
+
+        pin = request.form.get("pin", "").strip()
+
+        # Vérification PIN
+        if not user.pin_code:
+            flash("Veuillez définir votre code PIN dans votre profil.", "danger")
+            return redirect(url_for("profile_page"))
+
+        success, message = verify_pin(user, pin, log_context="retrait-taches")
+        if not success:
+            flash(message, "danger")
+            return redirect(url_for("retrait_taches_page"))
+
+        # Vérification solde
+        if solde_actuel < MONTANT_FIXE:
+            flash(f"Solde jeux insuffisant (minimum {MONTANT_FIXE} XOF requis).", "danger")
+            return redirect(url_for("retrait_taches_page"))
+
+        # Créer le retrait
+        try:
+            nouveau_retrait = Retrait(
+                user_id=user.id,
+                montant=MONTANT_FIXE,
+                frais=FRAIS,
+                payment_method="Retrait Tâches",
+                statut="en_attente",
+                phone=user.phone or "",
+                pays=user.country or "",
+                type_retrait="taches",
+                date=datetime.utcnow()
+            )
+            db.session.add(nouveau_retrait)
+            user.solde_jeux = solde_actuel - MONTANT_FIXE
+            db.session.commit()
+            flash("Retrait de 5 000 XOF enregistré avec succès ✅", "success")
+            return redirect(url_for("mes_retraits"))
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Erreur: {str(e)}", "danger")
+            return redirect(url_for("retrait_taches_page"))
+
+    return render_template("retrait_taches.html",
+        user=user,
+        solde_actuel=solde_actuel,
+        montant_fixe=MONTANT_FIXE,
+        retraits_restants=retraits_restants,
+        max_retraits_jour=MAX_RETRAITS_PAR_JOUR
+    )
 
 
 def get_team_total(user):

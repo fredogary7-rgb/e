@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+{% raw %}
+<body>
+{% endraw %}
+
+<div class="topbar">
+    <a href="/dashboard" class="back-btn"><i class="fa fa-arrow-left"></i> Retour</a>
+    <div class="topbar-logo">
+        <img src="/static/images/net.jpg" alt="N">
+        <span><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></span>
+    </div>
+    <div></div>
+</div>
+
+<div class="main">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="flash-msg flash-{{ category }}">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <div class="balance-card">
+        <div class="balance-label"><i class="fa fa-gamepad"></i> Solde Jeux</div>
+        <div class="balance-amount">{{ "%.0f"|format(solde_actuel) }} XOF</div>
+        <div class="balance-sub">Gains cumulés des tâches quotidiennes</div>
+        <div class="retrait-counter">🔄 {{ retraits_restants }}/{{ max_retraits_jour }} retraits restants aujourd'hui</div>
+    </div>
+
+    <div class="info-card">
+        <h3><i class="fa fa-info-circle"></i> Détails du retrait</h3>
+        <div class="info-row"><span>Montant</span><span>{{ "%.0f"|format(montant_fixe) }} XOF</span></div>
+        <div class="info-row"><span>Frais</span><span>0 XOF</span></div>
+        <div class="info-row"><span>Vous recevez</span><span><strong>{{ "%.0f"|format(montant_fixe) }} XOF</strong></span></div>
+    </div>
+
+    <div class="form-card">
+        <form method="POST" action="/retrait-taches" id="retraitForm">
+            <div class="form-group">
+                <label><i class="fa fa-lock"></i> Code PIN</label>
+                <div class="pin-dots" id="pinDots">
+                    <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+                </div>
+                <input type="password" class="pin-input" name="pin" id="pinInput" maxlength="6" placeholder="••••••" inputmode="numeric" autocomplete="off" required>
+            </div>
+            <button type="submit" class="btn-submit" id="submitBtn" disabled>
+                <i class="fa fa-paper-plane"></i> Retirer {{ "%.0f"|format(montant_fixe) }} XOF
+            </button>
+        </form>
+    </div>
+
+    <footer>2026 &copy; NectarPro &#10024;</footer>
+</div>
+
+<script>
+const pinInput=document.getElementById('pinInput');
+const pinDots=document.querySelectorAll('.pin-dot');
+const submitBtn=document.getElementById('submitBtn');
+pinInput.addEventListener('input',function(){
+    const len=this.value.length;
+    pinDots.forEach((d,i)=>d.classList.toggle('filled',i<len));
+    submitBtn.disabled=len<6;
+});
+</script>
+
+{% raw %}
+</body>
+</html>
+{% endraw %}
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retrait Tâches - NectarPro</title>
+<link rel="icon" href="/static/images/favicon-48.png" sizes="48x48" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+:root{
+    --bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);
+    --glass:rgba(255,255,255,0.72);
+    --accent:#db2777;--accent2:#ec4899;--gold:#f59e0b;
+    --gold-light:#fef3c7;--emerald:#10b981;--emerald-light:#d1fae5;
+    --text:#000;--text2:#1f2937;--muted:#6b7280;
+    --border:rgba(236,72,153,0.2);
+    --shadow:0 8px 32px rgba(236,72,153,0.12);
+    --shadow-lg:0 16px 48px rgba(236,72,153,0.18);
+    --radius-sm:12px;--radius:18px;--radius-lg:24px;
+}
+body{background:var(--bg);min-height:100vh;color:var(--text);font-style:italic;overflow-x:hidden}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:rgba(255,255,255,0.7);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000}
+.topbar-logo{display:flex;align-items:center;gap:8px}
+.topbar-logo img{width:32px;height:32px;border-radius:10px}
+.topbar-logo span{font-size:18px;font-weight:900}
+.brand-n{color:var(--accent2)}.brand-p{color:var(--accent)}
+.back-btn{color:var(--accent2);text-decoration:none;font-weight:600;font-size:13px;display:flex;align-items:center;gap:6px}
+.main{padding:20px;max-width:450px;margin:0 auto}
+.balance-card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 24px;text-align:center;margin-bottom:20px;box-shadow:var(--shadow)}
+.balance-label{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:8px}
+.balance-amount{font-size:36px;font-weight:900;color:var(--accent);margin-bottom:4px}
+.balance-sub{font-size:11px;color:var(--muted)}
+.retrait-counter{font-size:12px;color:var(--accent2);font-weight:600;margin-top:12px}
+.info-card{background:var(--gold-light);border:1px solid rgba(245,158,11,0.3);border-radius:var(--radius);padding:16px 20px;margin-bottom:20px}
+.info-card h3{font-size:14px;font-weight:700;color:var(--gold);margin-bottom:8px}
+.info-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:var(--text2)}
+.info-row span:first-child{color:var(--muted)}.info-row span:last-child{font-weight:700}
+.form-card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow)}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:8px;color:var(--text)}
+.pin-dots{display:flex;gap:10px;justify-content:center;margin-bottom:6px}
+.pin-dot{width:14px;height:14px;border-radius:50%;background:var(--border);transition:all .2s}
+.pin-dot.filled{background:var(--accent2)}
+.pin-input{width:100%;padding:14px 16px;background:rgba(255,255,255,0.6);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:20px;text-align:center;letter-spacing:8px;outline:none}
+.pin-input:focus{border-color:var(--accent2)}
+.btn-submit{width:100%;padding:16px;background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;transition:all .3s}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(219,39,119,0.4)}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.flash-msg{padding:14px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;margin-bottom:16px}
+.flash-danger{background:rgba(239,68,68,0.1);color:#dc2626;border:1px solid rgba(239,68,68,0.3)}
+.flash-success{background:var(--emerald-light);color:#059669;border:1px solid rgba(16,185,129,0.3)}
+footer{text-align:center;padding:30px 20px;font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
