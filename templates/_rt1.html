@@ -1,0 +1,39 @@
+{% raw %}<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Retrait Tâches - NectarPro</title>
+<link rel="icon" href="/static/images/favicon-48.png" sizes="48x48" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+:root{--bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);--glass:rgba(255,255,255,.72);--accent:#db2777;--accent2:#ec4899;--gold:#f59e0b;--gold-light:#fef3c7;--emerald:#10b981;--emerald-light:#d1fae5;--text:#000;--text2:#1f2937;--muted:#6b7280;--border:rgba(236,72,153,.2);--shadow:0 8px 32px rgba(236,72,153,.12);--shadow-lg:0 16px 48px rgba(236,72,153,.18);--radius-sm:12px;--radius:18px;--radius-lg:24px}
+body{background:var(--bg);min-height:100vh;color:var(--text);font-style:italic;overflow-x:hidden}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:rgba(255,255,255,.7);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000}
+.topbar-logo{display:flex;align-items:center;gap:8px}.topbar-logo img{width:32px;height:32px;border-radius:10px}
+.topbar-logo span{font-size:18px;font-weight:900}.brand-n{color:var(--accent2)}.brand-p{color:var(--accent)}
+.back-btn{color:var(--accent2);text-decoration:none;font-weight:600;font-size:13px;display:flex;align-items:center;gap:6px}
+.main{padding:20px;max-width:450px;margin:0 auto}
+.balance-card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 24px;text-align:center;margin-bottom:20px;box-shadow:var(--shadow)}
+.balance-label{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:8px}
+.balance-amount{font-size:36px;font-weight:900;color:var(--accent);margin-bottom:4px}
+.balance-sub{font-size:11px;color:var(--muted)}.retrait-counter{font-size:12px;color:var(--accent2);font-weight:600;margin-top:12px}
+.info-card{background:var(--gold-light);border:1px solid rgba(245,158,11,.3);border-radius:var(--radius);padding:16px 20px;margin-bottom:20px}
+.info-card h3{font-size:14px;font-weight:700;color:var(--gold);margin-bottom:8px}
+.info-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:var(--text2)}
+.info-row span:first-child{color:var(--muted)}.info-row span:last-child{font-weight:700}
+.form-card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow)}
+.form-group{margin-bottom:16px}.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:8px;color:var(--text)}
+.pin-dots{display:flex;gap:10px;justify-content:center;margin-bottom:6px}
+.pin-dot{width:14px;height:14px;border-radius:50%;background:var(--border);transition:all .2s}
+.pin-dot.filled{background:var(--accent2)}.pin-input{width:100%;padding:14px 16px;background:rgba(255,255,255,.6);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:20px;text-align:center;letter-spacing:8px;outline:none}
+.pin-input:focus{border-color:var(--accent2)}.btn-submit{width:100%;padding:16px;background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;transition:all .3s}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(219,39,119,.4)}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.flash-msg{padding:14px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;margin-bottom:16px}
+.flash-danger{background:rgba(239,68,68,.1);color:#dc2626;border:1px solid rgba(239,68,68,.3)}
+.flash-success{background:var(--emerald-light);color:#059669;border:1px solid rgba(16,185,129,.3)}
+footer{text-align:center;padding:30px 20px;font-size:12px;color:var(--muted)}
+</style></head>
+<body>{% endraw %}
