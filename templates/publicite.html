@@ -226,13 +226,6 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.bottom-nav *{font-style:ital
 </div>
 
 <div class="main">
-    <div class="header-label">
-        <i class="fa fa-video"></i> Videos tendance
-        <span style="margin-left:auto;font-size:12px;color:var(--muted);">
-            {{ publicites|length if publicites else 0 }} video(s)
-        </span>
-    </div>
-
     {% if publicites and publicites|length > 0 %}
     <div class="video-feed" id="videoFeed">
         {% for pub in publicites %}
