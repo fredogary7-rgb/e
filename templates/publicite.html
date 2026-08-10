@@ -373,9 +373,11 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 
 // INFINITE SCROLL
-let feedOffset=10,feedLoading=false,feedHasMore={{ 'true' if has_more else 'false' }};
-const videoFeed=document.getElementById('videoFeed');
-videoFeed.addEventListener('scroll',function(){
+let feedOffset=10,feedLoading=false,feedHasMore={%- if has_more %}true{% else %}false{% endif %};
+document.addEventListener('DOMContentLoaded',function(){
+const feed=document.getElementById('videoFeed');
+if(!feed)return;
+feed.addEventListener('scroll',function(){
     if(feedLoading||!feedHasMore)return;
     const st=this.scrollTop,sh=this.scrollHeight,ch=this.clientHeight;
     if(st+ch>=sh-200){
@@ -415,6 +417,7 @@ videoFeed.addEventListener('scroll',function(){
             feedLoading=false;
         }).catch(()=>{feedLoading=false;document.getElementById('feedLoader').classList.remove('show')});
     }
+});
 });
 
 // LIKE
