@@ -379,44 +379,33 @@ const feed=document.getElementById('videoFeed');
 if(!feed)return;
 feed.addEventListener('scroll',function(){
     if(feedLoading||!feedHasMore)return;
-    const st=this.scrollTop,sh=this.scrollHeight,ch=this.clientHeight;
-    if(st+ch>=sh-200){
-        feedLoading=true;
-        document.getElementById('feedLoader').classList.add('show');
-        fetch('/api/publicites/feed?offset='+feedOffset).then(r=>r.json()).then(data=>{
-            document.getElementById('feedLoader').classList.remove('show');
-            if(!data.success)return;
-            data.publicites.forEach(pub=>{
-                const div=document.createElement('div');
-                div.className='video-item';
-                div.id='video-'+pub.id;
-                div.setAttribute('data-pub-id',pub.id);
-                div.innerHTML='<video src=\"'+pub.video_url+'\" muted playsinline loop data-pub-id=\"'+pub.id+'\" onerror=\"this.style.display=\\\'none\\\';this.nextElementSibling.style.display=\\\'flex\\\'\"></video><div class=\"media-error\" style=\"display:none;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#fff;text-align:center;padding:20px;font-size:14px;position:absolute;inset:0;z-index:1\"><i class=\"fa fa-video-slash\" style=\"font-size:40px;opacity:.5;margin-bottom:12px\"></i><p>Vidéo indisponible</p></div>'+
-                '<div class=\"seller-avatar-action\" style=\"position:absolute;top:70px;right:18px;z-index:10\">'+
-                (pub.vendeur&&pub.vendeur.id?'<a href=\"/publicite/profil/'+pub.vendeur.id+'\" style=\"text-decoration:none\"><div class=\"seller-avatar-small\">'+pub.vendeur.initial+'</div><div class=\"follow-plus\">+</div></a>':'')+
-                '</div>'+
-                '<div class=\"video-actions\">'+
-                '<button class=\"action-btn\" onclick=\"toggleLike(this,'+pub.id+')\"><i class=\"fa fa-heart\"></i><span class=\"like-count\">'+(pub.likes||0)+'</span></button>'+
-                '<button class=\"action-btn\" onclick=\"window.location.href=\\'/publicite/'+pub.id+'#commentsSection\\'\"><i class=\"fa fa-comment\"></i><span>'+(pub.commentaires_count||0)+'</span></button>'+
-                '<button class=\"action-btn\" onclick=\"sharePublicite('+pub.id+')\"><i class=\"fa fa-share\"></i><span>Partager</span></button>'+
-                '<button class=\"action-btn\" onclick=\"window.location.href=\\'/publicite/'+pub.id+'\\'\"><i class=\"fa fa-external-link-alt\"></i><span>Details</span></button>'+
-                '</div>'+
-                '<div class=\"video-info\">'+
-                (pub.vendeur&&pub.vendeur.username?'<div class=\"seller-info\"><div class=\"seller-avatar2\">'+pub.vendeur.initial+'</div><div class=\"seller-name\">'+pub.vendeur.username+'</div></div>':'')+
-                '<h3>'+pub.titre+'</h3>'+
-                (pub.description?'<p>'+pub.description+'</p>':'')+
-                '<div class=\"video-footer\">'+
-                (pub.prix?'<span class=\"video-price\">'+Math.round(pub.prix)+' '+(pub.devise||'XOF')+'</span>':'')+
-                (pub.produit_id?'<a href=\"/product/'+pub.produit_id+'\" class=\"btn-commander\" style=\"text-decoration:none\"><i class=\"fa fa-shopping-cart\"></i> Commander</a>':'')+
-                '</div></div>';
-                videoFeed.appendChild(div);
-                videoObserver.observe(div);
-            });
-            feedOffset=data.next_offset;
-            feedHasMore=data.has_more;
-            feedLoading=false;
-        }).catch(()=>{feedLoading=false;document.getElementById('feedLoader').classList.remove('show')});
-    }
+    if(this.scrollTop+this.clientHeight<this.scrollHeight-300)return;
+    feedLoading=true;
+    document.getElementById('feedLoader').classList.add('show');
+    fetch('/api/publicites/feed?offset='+feedOffset).then(r=>r.json()).then(data=>{
+        document.getElementById('feedLoader').classList.remove('show');
+        if(!data.success||!data.publicites.length)return;
+        data.publicites.forEach(pub=>{
+            var h='<video src=\"'+pub.video_url+'\" muted playsinline loop></video>';
+            h+='<div class=\"video-actions\">';
+            h+='<button class=\"action-btn\" onclick=\"toggleLike(this,'+pub.id+')\"><i class=\"fa fa-heart\"></i><span class=\"like-count\">'+(pub.likes||0)+'</span></button>';
+            h+='<button class=\"action-btn\" onclick=\"location.href=\\'/publicite/'+pub.id+'#commentsSection\\'\"><i class=\"fa fa-comment\"></i><span>'+(pub.commentaires_count||0)+'</span></button>';
+            h+='<button class=\"action-btn\" onclick=\"sharePublicite('+pub.id+')\"><i class=\"fa fa-share\"></i><span>Partager</span></button>';
+            h+='<button class=\"action-btn\" onclick=\"location.href=\\'/publicite/'+pub.id+'\\'\"><i class=\"fa fa-external-link-alt\"></i><span>Details</span></button>';
+            h+='</div>';
+            h+='<div class=\"video-info\">';
+            if(pub.vendeur&&pub.vendeur.username)h+='<div class=\"seller-info\"><div class=\"seller-avatar2\">'+pub.vendeur.initial+'</div><div class=\"seller-name\">'+pub.vendeur.username+'</div></div>';
+            h+='<h3>'+pub.titre+'</h3>';
+            if(pub.description)h+='<p>'+pub.description+'</p>';
+            h+='<div class=\"video-footer\">';
+            if(pub.prix)h+='<span class=\"video-price\">'+Math.round(pub.prix)+' '+(pub.devise||'XOF')+'</span>';
+            if(pub.produit_id)h+='<a href=\"/product/'+pub.produit_id+'\" class=\"btn-commander\" style=\"text-decoration:none\"><i class=\"fa fa-shopping-cart\"></i> Commander</a>';
+            h+='</div></div>';
+            var d=document.createElement('div');d.className='video-item';d.id='video-'+pub.id;d.setAttribute('data-pub-id',pub.id);d.innerHTML=h;
+            feed.appendChild(d);videoObserver.observe(d);
+        });
+        feedOffset=data.next_offset;feedHasMore=data.has_more;feedLoading=false;
+    }).catch(function(){feedLoading=false;document.getElementById('feedLoader').classList.remove('show')});
 });
 });
 
