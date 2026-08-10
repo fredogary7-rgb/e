@@ -135,6 +135,10 @@ body{background:var(--bg);min-height:100vh;color:var(--text);font-style:italic;o
 .btn-primary{display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;border-radius:var(--radius-sm);text-decoration:none;font-weight:600;transition:all .3s}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(219,39,119,0.3)}
 
+/* LOADER */
+.loader-more{text-align:center;padding:20px;color:var(--muted);font-size:13px;display:none}
+.loader-more.show{display:block}
+
 /* Bottom Nav */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;justify-content:space-around;padding:10px 0;padding-bottom:max(10px,env(safe-area-inset-bottom));z-index:100;border-top:1px solid var(--border)}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);text-decoration:none;font-size:11px;padding:5px 15px;font-weight:600}
@@ -290,6 +294,7 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.bottom-nav *{font-style:ital
             </div>
         </div>
         {% endfor %}
+    <div class="loader-more" id="feedLoader"><i class="fa fa-spinner fa-spin"></i> Chargement...</div>
     </div>
     {% else %}
     <div class="empty-state">
@@ -337,19 +342,18 @@ moiT.onclick=e=>{e.preventDefault();subM.style.display==="none"?(subM.style.disp
 (function(){let u=document.querySelector('.topbar .user-pill');if(!u)return;u.addEventListener('click',e=>{e.stopPropagation();document.getElementById('userDropdown').classList.toggle('active')});document.addEventListener('click',e=>{let dd=document.getElementById('userDropdown');if(dd&&!u.contains(e.target))dd.classList.remove('active')})})();
 
 // VIDEO FEED LOGIC
+let videoObserver=null;
 document.addEventListener('DOMContentLoaded',function(){
     const feed=document.getElementById('videoFeed');
     if(!feed)return;
     const items=feed.querySelectorAll('.video-item');
-    // Pause all except first
     items.forEach((item,index)=>{
         const video=item.querySelector('video');
         if(video){
             if(index===0){video.play().catch(()=>{});}
         }
     });
-    // Play/pause on scroll snap + unmute visible, mute hidden
-    const observer=new IntersectionObserver((entries)=>{
+    videoObserver=new IntersectionObserver((entries)=>{
         entries.forEach(entry=>{
             const video=entry.target.querySelector('video');
             if(!video)return;
@@ -362,10 +366,55 @@ document.addEventListener('DOMContentLoaded',function(){
             }
         });
     },{threshold:0.7});
-    items.forEach(item=>observer.observe(item));
+    items.forEach(item=>videoObserver.observe(item));
     // Ensure first video unmuted on load
     const firstVideo = items[0]?.querySelector('video');
     if(firstVideo) { firstVideo.muted = false; firstVideo.play().catch(()=>{}); }
+});
+
+// INFINITE SCROLL
+let feedOffset=10,feedLoading=false,feedHasMore={{ 'true' if has_more else 'false' }};
+const videoFeed=document.getElementById('videoFeed');
+videoFeed.addEventListener('scroll',function(){
+    if(feedLoading||!feedHasMore)return;
+    const st=this.scrollTop,sh=this.scrollHeight,ch=this.clientHeight;
+    if(st+ch>=sh-200){
+        feedLoading=true;
+        document.getElementById('feedLoader').classList.add('show');
+        fetch('/api/publicites/feed?offset='+feedOffset).then(r=>r.json()).then(data=>{
+            document.getElementById('feedLoader').classList.remove('show');
+            if(!data.success)return;
+            data.publicites.forEach(pub=>{
+                const div=document.createElement('div');
+                div.className='video-item';
+                div.id='video-'+pub.id;
+                div.setAttribute('data-pub-id',pub.id);
+                div.innerHTML='<video src=\"'+pub.video_url+'\" muted playsinline loop data-pub-id=\"'+pub.id+'\" onerror=\"this.style.display=\\\'none\\\';this.nextElementSibling.style.display=\\\'flex\\\'\"></video><div class=\"media-error\" style=\"display:none;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#fff;text-align:center;padding:20px;font-size:14px;position:absolute;inset:0;z-index:1\"><i class=\"fa fa-video-slash\" style=\"font-size:40px;opacity:.5;margin-bottom:12px\"></i><p>Vidéo indisponible</p></div>'+
+                '<div class=\"seller-avatar-action\" style=\"position:absolute;top:70px;right:18px;z-index:10\">'+
+                (pub.vendeur&&pub.vendeur.id?'<a href=\"/publicite/profil/'+pub.vendeur.id+'\" style=\"text-decoration:none\"><div class=\"seller-avatar-small\">'+pub.vendeur.initial+'</div><div class=\"follow-plus\">+</div></a>':'')+
+                '</div>'+
+                '<div class=\"video-actions\">'+
+                '<button class=\"action-btn\" onclick=\"toggleLike(this,'+pub.id+')\"><i class=\"fa fa-heart\"></i><span class=\"like-count\">'+(pub.likes||0)+'</span></button>'+
+                '<button class=\"action-btn\" onclick=\"window.location.href=\\'/publicite/'+pub.id+'#commentsSection\\'\"><i class=\"fa fa-comment\"></i><span>'+(pub.commentaires_count||0)+'</span></button>'+
+                '<button class=\"action-btn\" onclick=\"sharePublicite('+pub.id+')\"><i class=\"fa fa-share\"></i><span>Partager</span></button>'+
+                '<button class=\"action-btn\" onclick=\"window.location.href=\\'/publicite/'+pub.id+'\\'\"><i class=\"fa fa-external-link-alt\"></i><span>Details</span></button>'+
+                '</div>'+
+                '<div class=\"video-info\">'+
+                (pub.vendeur&&pub.vendeur.username?'<div class=\"seller-info\"><div class=\"seller-avatar2\">'+pub.vendeur.initial+'</div><div class=\"seller-name\">'+pub.vendeur.username+'</div></div>':'')+
+                '<h3>'+pub.titre+'</h3>'+
+                (pub.description?'<p>'+pub.description+'</p>':'')+
+                '<div class=\"video-footer\">'+
+                (pub.prix?'<span class=\"video-price\">'+Math.round(pub.prix)+' '+(pub.devise||'XOF')+'</span>':'')+
+                (pub.produit_id?'<a href=\"/product/'+pub.produit_id+'\" class=\"btn-commander\" style=\"text-decoration:none\"><i class=\"fa fa-shopping-cart\"></i> Commander</a>':'')+
+                '</div></div>';
+                videoFeed.appendChild(div);
+                videoObserver.observe(div);
+            });
+            feedOffset=data.next_offset;
+            feedHasMore=data.has_more;
+            feedLoading=false;
+        }).catch(()=>{feedLoading=false;document.getElementById('feedLoader').classList.remove('show')});
+    }
 });
 
 // LIKE

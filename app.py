@@ -6268,8 +6268,8 @@ def publicites_page():
     """Page principale des publicités (style TikTok)"""
     user = get_logged_in_user()
     
-    # Récupérer les publicités actives, triées par date
-    publicites = Publicite.query.filter_by(est_actif=True).order_by(Publicite.date_creation.desc()).limit(20).all()
+    # Récupérer les publicités actives, triées par date (première page)
+    publicites = Publicite.query.filter_by(est_actif=True).order_by(Publicite.date_creation.desc()).limit(10).all()
     
     # Récupérer les IDs des utilisateurs que l'utilisateur courant suit
     following_ids = []
@@ -6279,7 +6279,45 @@ def publicites_page():
     return render_template("publicite.html", 
         publicites=publicites, 
         user=user,
-        following_ids=following_ids)
+        following_ids=following_ids,
+        has_more=len(publicites) >= 10
+    )
+
+
+@app.route("/api/publicites/feed")
+def api_publicites_feed():
+    """API pour le scroll infini — retourne les publicités paginées."""
+    offset = request.args.get("offset", 0, type=int)
+    publicites = Publicite.query.filter_by(est_actif=True)\
+        .order_by(Publicite.date_creation.desc())\
+        .offset(offset).limit(10).all()
+    
+    result = []
+    for pub in publicites:
+        result.append({
+            "id": pub.id,
+            "video_url": pub.video_url,
+            "titre": pub.titre,
+            "description": pub.description or "",
+            "prix": pub.prix,
+            "devise": pub.devise or "XOF",
+            "likes": pub.likes or 0,
+            "commentaires_count": pub.commentaires_count or 0,
+            "vues": pub.vues or 0,
+            "produit_id": pub.produit_id,
+            "vendeur": {
+                "id": pub.createur.id if pub.createur else None,
+                "username": pub.createur.username if pub.createur else "NectarPro",
+                "initial": pub.createur.username[0].upper() if pub.createur and pub.createur.username else "N"
+            }
+        })
+    
+    return jsonify({
+        "success": True,
+        "publicites": result,
+        "has_more": len(result) >= 10,
+        "next_offset": offset + len(result)
+    })
 
 
 @app.route("/publicite/creer", methods=["GET", "POST"])
