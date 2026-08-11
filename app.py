@@ -4272,15 +4272,21 @@ def rembourser_retrait(retrait_id):
         return redirect(url_for("admin_finance"))
 
     retrait = Retrait.query.get_or_404(retrait_id)
-    user = User.query.filter_by(phone=retrait.phone).first()
+    
+    # Chercher par user_id d'abord, puis par phone en fallback
+    user = None
+    if retrait.user_id:
+        user = User.query.get(retrait.user_id)
+    if not user:
+        user = User.query.filter_by(phone=retrait.phone).first()
 
     if not user:
         flash("Utilisateur introuvable.", "danger")
         return redirect(url_for("admin_retraits"))
 
     # Recréditer le solde de parrainage
-    montant_total = retrait.montant + (retrait.frais or 0)
-    user.solde_parrainage += montant_total
+    montant_total = float(retrait.montant or 0) + float(retrait.frais or 0)
+    user.solde_parrainage = float(user.solde_parrainage or 0) + montant_total
     retrait.statut = "remboursé"
 
     db.session.commit()
