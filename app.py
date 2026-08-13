@@ -4107,9 +4107,9 @@ def valider_depot(depot_id):
     if premier_depot_valide:
         user.premier_depot = True
 
-        # Commission parrain
-        if user.parrain:
-            donner_commission(user.parrain, depot.montant)
+    # Commission parrain (à chaque dépôt)
+    if user.parrain:
+        donner_commission(user.parrain, depot.montant)
 
     db.session.commit()
 
