@@ -2691,13 +2691,18 @@ def webhook_soleaspay():
     # ✅ Récupération correcte des données
     details = data.get("data") or {}
 
-    operation = (
+    # Normaliser (enlever les accents) pour comparer proprement
+    def _norm(s):
+        import unicodedata
+        return unicodedata.normalize('NFKD', str(s or '')).encode('ascii', 'ignore').decode('ascii').upper().strip()
+
+    operation = _norm(
         details.get("operation")
         or data.get("operation")
         or ""
-    ).upper()
+    )
 
-    status = str(data.get("status", "")).upper()
+    status = _norm(data.get("status", ""))
 
     print("OPERATION :", operation)
     print("STATUS :", status)
@@ -2787,12 +2792,17 @@ def webhook_soleaspay():
     # ======================================================
     # 🟢 CAS RETRAIT (WITHDRAW)
     # ======================================================
-    elif operation in ["WITHDRAW", "WITHDRAWAL"]:
+    elif operation in ["WITHDRAW", "WITHDRAWAL", "RETRAIT", "TRANSFER", "TRANSFERT", "PAYOUT"]:
 
         reference = (
             details.get("reference")
-            or data.get("internalRef")
             or data.get("reference")
+            or details.get("internalRef")
+            or data.get("internalRef")
+            or details.get("external_reference")
+            or data.get("external_reference")
+            or details.get("externalRef")
+            or data.get("externalRef")
         )
 
         print("RETRAIT reference :", reference)
@@ -2800,8 +2810,10 @@ def webhook_soleaspay():
         if not reference:
             return jsonify({"error": "No reference"}), 400
 
-        retrait = Retrait.query.filter_by(
-            reference_soleaspay=reference
+        retrait = Retrait.query.filter(
+            (Retrait.reference_soleaspay == reference) |
+            (Retrait.transaction_reference == reference) |
+            (Retrait.external_reference == reference)
         ).first()
 
         if not retrait:
@@ -2811,13 +2823,11 @@ def webhook_soleaspay():
         if retrait.statut in ["successful", "failed", "refused", "cancelled"]:
             return jsonify({"received": True}), 200
 
-        if status in ["SUCCESS", "COMPLETED", "APPROVED"]:
+        if status in ["SUCCESS", "SUCCES", "SUCCÈS", "COMPLETED", "COMPLETE", "APPROVED", "ACCEPTED", "PROCESSED"]:
             new_status = "successful"
-        elif status == "FAILED":
-            new_status = "failed"
-        elif status == "REJECTED":
-            new_status = "refused"
-        elif status == "CANCELLED":
+        elif status in ["FAILED", "ECHEC", "ECHOUE", "REJECTED", "REJETE"]:
+            new_status = "failed" if "FAIL" in status or "ECHEC" in status else "refused"
+        elif status == "CANCELLED" or status == "ANNULE":
             new_status = "cancelled"
         else:
             new_status = "en_attente"
