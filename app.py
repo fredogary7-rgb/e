@@ -3346,10 +3346,10 @@ def transafrik_page():
     return render_template("transafrik.html")
 
 
-@app.route("/streaming")
-def streaming_page():
+@app.route("/new")
+def new_page():
     """Page unique de streaming : Netflix + Canal+."""
-    return render_template("streaming.html")
+    return render_template("new.html")
 
 
 @app.route("/ecom")
