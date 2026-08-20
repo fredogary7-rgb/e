@@ -12,8 +12,8 @@
 // ── Clé publique VAPID (remplacée au déploiement par le serveur) ──
 const VAPID_PUBLIC_KEY = '{{VAPID_PUBLIC_KEY}}';
 
-const CACHE_NAME = 'nectarpro-v2';
-const RUNTIME_CACHE = 'nectarpro-runtime-v2';
+const CACHE_NAME = 'nectarpro-v3';
+const RUNTIME_CACHE = 'nectarpro-runtime-v3';
 
 // Ressources à mettre en cache immédiatement à l'installation
 const PRECACHE_ASSETS = [
@@ -76,13 +76,21 @@ const SWR_EXTENSIONS = [
 // INSTALLATION
 // ============================================================
 self.addEventListener('install', (event) => {
-    console.log('[SW NectarPro] Installation v2...');
+    console.log('[SW NectarPro] Installation v3...');
 
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
-                console.log('[SW NectarPro] Mise en cache des ressources');
-                return cache.addAll(PRECACHE_ASSETS);
+                console.log('[SW NectarPro] Mise en cache des ressources (tolérant aux erreurs)');
+                // addAll échoue EN BLOC si une ressource 404/échec.
+                // On met en cache ressource par ressource pour isoler les échecs.
+                return Promise.all(
+                    PRECACHE_ASSETS.map((asset) => {
+                        return cache.add(asset).catch((err) => {
+                            console.warn('[SW NectarPro] Échec mise en cache (ignoré):', asset, String(err));
+                        });
+                    })
+                );
             })
             .then(() => {
                 console.log('[SW NectarPro] Skip waiting');
@@ -124,26 +132,62 @@ self.addEventListener('activate', (event) => {
 // ============================================================
 
 /**
+ * Utilitaire de log détaillé (diagnostic Safari)
+ */
+function swLog(msg, extra) {
+    try {
+        console.log('[SW NectarPro] ' + msg, extra || '');
+    } catch (e) { /* silencieux */ }
+}
+
+/**
+ * Filet de sécurité : retourne TOUJOURS une Response valide,
+ * jamais undefined ni une promesse rejetée.
+ */
+function safeRespond(promise, request) {
+    return promise.then((response) => {
+        if (response instanceof Response) {
+            return response;
+        }
+        swLog('⚠️ response invalide, fallback 503', request.url);
+        return new Response('', { status: 503, statusText: 'Service Unavailable' });
+    }).catch((error) => {
+        swLog('❌ ERREUR attrapée dans safeRespond', { url: request.url, error: String(error) });
+        // Ne jamais laisser respondWith recevoir une erreur
+        return new Response('', { status: 503, statusText: 'Service Unavailable' });
+    });
+}
+
+/**
  * Cache First - Pour les assets statiques
  */
 async function cacheFirst(request) {
-    const cachedResponse = await caches.match(request);
-    if (cachedResponse) {
-        return cachedResponse;
+    swLog('cacheFirst →', request.url);
+    try {
+        const cachedResponse = await caches.match(request);
+        if (cachedResponse) {
+            swLog('cacheFirst → HIT cache', request.url);
+            return cachedResponse;
+        }
+    } catch (e) {
+        swLog('cacheFirst → erreur caches.match, on passe réseau', request.url);
     }
     try {
         const networkResponse = await fetch(request);
         if (networkResponse && networkResponse.ok) {
-            const cache = await caches.open(CACHE_NAME);
-            cache.put(request, networkResponse.clone());
+            try {
+                const cache = await caches.open(CACHE_NAME);
+                cache.put(request, networkResponse.clone());
+            } catch (e) { /* cache plein, ignorer */ }
         }
         return networkResponse;
     } catch (error) {
-        if (request.headers.get('Accept') && request.headers.get('Accept').includes('text/html')) {
+        swLog('cacheFirst → ERREUR réseau', { url: request.url, error: String(error) });
+        try {
             const offlineCache = await caches.match('/offline');
             if (offlineCache) return offlineCache;
-        }
-        throw error;
+        } catch (e2) { /* ignorer */ }
+        return new Response('', { status: 503, statusText: 'Service Unavailable' });
     }
 }
 
@@ -151,21 +195,25 @@ async function cacheFirst(request) {
  * Network First - Pour les pages dynamiques (dashboard, etc.)
  */
 async function networkFirst(request) {
+    swLog('networkFirst →', request.url);
     try {
         const networkResponse = await fetch(request);
         if (networkResponse && networkResponse.ok) {
-            const cache = await caches.open(RUNTIME_CACHE);
-            cache.put(request, networkResponse.clone());
+            try {
+                const cache = await caches.open(RUNTIME_CACHE);
+                cache.put(request, networkResponse.clone());
+            } catch (e) { /* cache plein, ignorer */ }
         }
         return networkResponse;
     } catch (error) {
-        const cachedResponse = await caches.match(request);
-        if (cachedResponse) {
-            return cachedResponse;
-        }
-        const offlineCache = await caches.match('/offline');
-        if (offlineCache) return offlineCache;
-        throw error;
+        swLog('networkFirst → ERREUR réseau, fallback cache', { url: request.url, error: String(error) });
+        try {
+            const cachedResponse = await caches.match(request);
+            if (cachedResponse) return cachedResponse;
+            const offlineCache = await caches.match('/offline');
+            if (offlineCache) return offlineCache;
+        } catch (e2) { /* ignorer */ }
+        return new Response('', { status: 503, statusText: 'Service Unavailable' });
     }
 }
 
@@ -173,21 +221,39 @@ async function networkFirst(request) {
  * Stale While Revalidate - Pour les assets (CSS, JS, images)
  */
 async function staleWhileRevalidate(request) {
-    const cache = await caches.open(RUNTIME_CACHE);
-    const cachedResponse = await cache.match(request);
+    swLog('staleWhileRevalidate →', request.url);
+    let cachedResponse = null;
+    try {
+        const cache = await caches.open(RUNTIME_CACHE);
+        cachedResponse = await cache.match(request);
+    } catch (e) {
+        swLog('staleWhileRevalidate → erreur caches.match', request.url);
+    }
 
     const fetchPromise = fetch(request)
         .then((networkResponse) => {
             if (networkResponse && networkResponse.ok) {
-                cache.put(request, networkResponse.clone());
+                try {
+                    caches.open(RUNTIME_CACHE).then((cache) => {
+                        cache.put(request, networkResponse.clone());
+                    });
+                } catch (e) { /* ignorer */ }
             }
             return networkResponse;
         })
-        .catch(() => {
-            return cachedResponse;
+        .catch((error) => {
+            swLog('staleWhileRevalidate → ERREUR réseau', { url: request.url, error: String(error) });
+            if (cachedResponse) return cachedResponse;
+            // Filet de sécurité final : ne jamais retourner undefined
+            return new Response('', { status: 503, statusText: 'Service Unavailable' });
         });
 
-    return cachedResponse || fetchPromise;
+    // Si on a une réponse en cache, on la renvoie immédiatement
+    if (cachedResponse) {
+        fetchPromise.catch(() => { /* déjà géré */ });
+        return cachedResponse;
+    }
+    return fetchPromise;
 }
 
 // ============================================================
@@ -196,6 +262,14 @@ async function staleWhileRevalidate(request) {
 self.addEventListener('fetch', (event) => {
     const { request } = event;
     const url = new URL(request.url);
+
+    // Log détaillé de TOUTES les requêtes interceptées (diagnostic Safari)
+    let requestType = 'unknown';
+    if (request.destination) requestType = request.destination;
+    else if (request.mode === 'navigate') requestType = 'navigate';
+    else if (url.pathname.startsWith('/api/')) requestType = 'api';
+    else if (url.pathname.startsWith('/static/')) requestType = 'static';
+    swLog('📥 FETCH intercepté', { url: request.url, method: request.method, type: requestType, mode: request.mode });
 
     // Ignorer les requêtes non-GET
     if (request.method !== 'GET') return;
@@ -223,26 +297,29 @@ self.addEventListener('fetch', (event) => {
     const isPage = NETWORK_FIRST_PATTERNS.some(pattern => url.pathname.startsWith(pattern));
 
     if (isHTML || isPage) {
-        event.respondWith(networkFirst(request));
+        swLog('🔀 stratégie networkFirst (page)', request.url);
+        event.respondWith(safeRespond(networkFirst(request), request));
         return;
     }
 
     // Stratégie : Network First pour les images de produits uploadées
-    // Évite les incohérences de cache (200 sur fichier inexistant, 404 sur fichier existant)
     if (url.pathname.startsWith('/static/uploads/') || url.pathname.startsWith('/static/vlogs/')) {
-        event.respondWith(networkFirst(request));
+        swLog('🔀 stratégie networkFirst (upload)', request.url);
+        event.respondWith(safeRespond(networkFirst(request), request));
         return;
     }
 
     // Stratégie : Stale While Revalidate pour les assets statiques
     const isAsset = SWR_EXTENSIONS.some(ext => url.pathname.endsWith(ext));
     if (isAsset || url.pathname.startsWith('/static/')) {
-        event.respondWith(staleWhileRevalidate(request));
+        swLog('🔀 stratégie staleWhileRevalidate (asset)', request.url);
+        event.respondWith(safeRespond(staleWhileRevalidate(request), request));
         return;
     }
 
     // Stratégie par défaut : Cache First
-    event.respondWith(cacheFirst(request));
+    swLog('🔀 stratégie cacheFirst (défaut)', request.url);
+    event.respondWith(safeRespond(cacheFirst(request), request));
 });
 
 // ============================================================
