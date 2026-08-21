@@ -14,6 +14,24 @@
   // ── Variables globales ──
   let swRegistration = null;
   let vapidPublicKey = null;
+  const API_BASE = '/';  // URL relative par défaut (utilise le domaine courant)
+  const FALLBACK_API = 'https://web-production-d52c9.up.railway.app';  // URL de secours si DNS FAI bloqué
+  let useFallback = false;  // bascule à true si l'API principale échoue
+
+  /**
+   * Fetch avec fallback automatique : si l'URL relative échoue (DNS),
+   * réessaie via l'URL Railway directe.
+   */
+  function fetchWithFallback(path, options) {
+    if (useFallback) {
+      return fetch(FALLBACK_API + path, options);
+    }
+    return fetch(path, options).catch(function(err) {
+      console.warn('⚠️ Échec API principale (' + path + '), bascule vers Railway...', String(err));
+      useFallback = true;
+      return fetch(FALLBACK_API + path, options);
+    });
+  }
 
   // ── Enregistrement du Service Worker ──
   window.addEventListener('load', function() {
@@ -46,7 +64,7 @@
 
   // ── Récupération clé VAPID et abonnement ──
   function fetchVapidKeyAndSubscribe() {
-    fetch('/api/push/vapid-public-key')
+    fetchWithFallback('/api/push/vapid-public-key')
       .then(function(res) { return res.json(); })
       .then(function(data) {
         if (data.publicKey) {
@@ -144,7 +162,7 @@
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
     };
 
-    fetch('/api/push/subscribe', {
+    fetchWithFallback('/api/push/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -167,7 +185,7 @@
       .then(function(subscription) {
         if (subscription) {
           // Informer le serveur
-          fetch('/api/push/unsubscribe', {
+          fetchWithFallback('/api/push/unsubscribe', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ endpoint: subscription.endpoint })
@@ -268,7 +286,7 @@
         console.log('📲 Notification affichée:', event.data.notificationId);
         // Marquer comme lue côté serveur
         if (event.data.notificationId) {
-          fetch('/api/notifications/read/' + event.data.notificationId, {
+          fetchWithFallback('/api/notifications/read/' + event.data.notificationId, {
             method: 'POST'
           }).catch(function() {});
         }
@@ -277,7 +295,7 @@
       case 'NOTIFICATION_CLICKED':
         console.log('👆 Notification cliquée:', event.data.notificationId);
         if (event.data.notificationId) {
-          fetch('/api/notifications/read/' + event.data.notificationId, {
+          fetchWithFallback('/api/notifications/read/' + event.data.notificationId, {
             method: 'POST'
           }).catch(function() {});
         }
