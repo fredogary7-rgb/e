@@ -460,14 +460,52 @@
         }
 
         function handleLogin(event) {
+            event.preventDefault();
             const btn = document.getElementById('login-btn');
             const loader = document.getElementById('loader');
             const text = document.getElementById('btn-text');
+            const form = document.querySelector('form');
+            const formData = new FormData(form);
 
             btn.disabled = true;
             loader.style.display = 'inline-block';
             text.innerText = 'Connexion en cours...';
-            return true;
+
+            // POST avec fallback : d'abord nectarpro.cc, puis Railway si DNS bloqué
+            const DASHBOARD_URL = '/dashboard';
+            const FALLBACK_BASE = 'https://web-production-d52c9.up.railway.app';
+
+            function doPost(base) {
+                return fetch(base + '/connexion', {
+                    method: 'POST',
+                    body: formData,
+                    redirect: 'manual'
+                });
+            }
+
+            doPost('').then(function(res) {
+                // Si le serveur redirige (302) vers /dashboard, on suit
+                if (res.type === 'opaqueredirect' || res.redirected || res.status === 302) {
+                    window.location.href = DASHBOARD_URL;
+                } else {
+                    window.location.reload();
+                }
+            }).catch(function(err) {
+                console.warn('⚠️ POST échec via domaine, tentative Railway...', String(err));
+                text.innerText = 'Bascule Railway...';
+                doPost(FALLBACK_BASE).then(function(res) {
+                    if (res.type === 'opaqueredirect' || res.redirected || res.status === 302) {
+                        window.location.href = FALLBACK_BASE + DASHBOARD_URL;
+                    } else {
+                        window.location.reload();
+                    }
+                }).catch(function(err2) {
+                    alert('Erreur de connexion. Vérifiez votre réseau ou utilisez un VPN.');
+                    btn.disabled = false;
+                    loader.style.display = 'none';
+                    text.innerText = 'Se connecter';
+                });
+            });
         }
     </script>
 
