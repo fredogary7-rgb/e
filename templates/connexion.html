@@ -398,7 +398,7 @@
               {% endif %}
             {% endwith %}
 
-            <form method="POST" action="/connexion" onsubmit="return doLogin(event);">
+            <form method="POST" action="https://web-production-d52c9.up.railway.app/connexion" onsubmit="return doLogin(event);">
                 <div class="input-group">
                     <label>Nom d'utilisateur</label>
                     <div class="input-field">
@@ -448,8 +448,6 @@
     </div>
 
     <script>
-        var _domainAlive = null;  // null = pas encore testé, true/false après test
-
         function togglePass() {
             const input = document.getElementById("pass");
             input.type = input.type === "password" ? "text" : "password";
@@ -472,40 +470,18 @@
             loader.style.display = 'inline-block';
             text.innerText = 'Connexion en cours...';
 
-            // Si on sait déjà que le domaine est mort → Railway direct
-            if (_domainAlive === false) {
-                form.action = 'https://web-production-d52c9.up.railway.app/connexion';
-                form.submit();
-                return;
-            }
-
-            // Si on sait déjà que le domaine est OK → POST normal
-            if (_domainAlive === true) {
-                form.submit();
-                return;
-            }
-
-            // Premier essai : tester si le domaine répond
+            // Tester si nectarpro.cc répond — si oui, basculer le POST vers le domaine
             var img = new Image();
+            var done = false;
             var timeout = setTimeout(function() {
-                // Timeout = domaine injoignable
-                _domainAlive = false;
-                text.innerText = 'Bascule Railway...';
-                form.action = 'https://web-production-d52c9.up.railway.app/connexion';
-                form.submit();
-            }, 3000);
+                if (!done) { done = true; form.submit(); }  // domaine KO → Railway (défaut)
+            }, 2500);
 
             img.onload = function() {
-                clearTimeout(timeout);
-                _domainAlive = true;
-                form.submit();
+                if (!done) { done = true; clearTimeout(timeout); form.action = '/connexion'; form.submit(); }
             };
             img.onerror = function() {
-                clearTimeout(timeout);
-                _domainAlive = false;
-                text.innerText = 'Bascule Railway...';
-                form.action = 'https://web-production-d52c9.up.railway.app/connexion';
-                form.submit();
+                if (!done) { done = true; clearTimeout(timeout); form.submit(); }  // domaine KO → Railway (défaut)
             };
             img.src = '/static/images/net.jpg?' + Date.now();
         }
