@@ -174,6 +174,9 @@ body,.card *,.btn{font-style:italic!important}
         <button class="btn btn-primary" onclick="window.location.reload()">
             <i class="fa fa-rotate-right"></i> Réessayer
         </button>
+        <button class="btn btn-secondary" onclick="caches.keys().then(function(names){return Promise.all(names.map(function(n){return caches.delete(n)}))}).then(function(){navigator.serviceWorker.getRegistrations().then(function(regs){regs.forEach(function(r){r.unregister()});setTimeout(function(){location.href='/'},500)})})" style="background:rgba(239,68,68,.15);color:#dc2626;border:1px solid rgba(239,68,68,.3);margin-top:8px">
+            <i class="fa fa-trash"></i> Vider le cache
+        </button>
     </div>
 
     <footer>2026 &copy; NectarPro &#10024;</footer>
