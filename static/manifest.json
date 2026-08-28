@@ -13,7 +13,7 @@
   "lang": "fr-FR",
   "dir": "ltr",
   "prefer_related_applications": false,
-  "id": "https://nectarpro.cc",
+  "id": "https://nectar-pro.cc",
   "protocol_handlers": [
     {
       "protocol": "web+nectarpro",

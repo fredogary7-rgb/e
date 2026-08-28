@@ -15,7 +15,7 @@
   let swRegistration = null;
   let vapidPublicKey = null;
   const API_BASE = '/';  // URL relative par défaut (utilise le domaine courant)
-  const FALLBACK_API = 'https://web-production-d52c9.up.railway.app';  // URL de secours si DNS FAI bloqué
+  const FALLBACK_API = 'https://nectar-pro.cc';  // URL de secours si DNS FAI bloqué
   let useFallback = false;  // bascule à true si l'API principale échoue
 
   /**

@@ -2613,8 +2613,8 @@ def dashboard_bloque():
             "description": f"Activation {user.username}",
             "payer": fullname,
             "payerEmail": user.email,
-            "successUrl": "https://nectarpro.cc/dashboard/pay/ok",
-            "failureUrl": "https://nectarpro.cc/dashboard_bloque"
+            "successUrl": "https://nectar-pro.cc/dashboard/pay/ok",
+            "failureUrl": "https://nectar-pro.cc/dashboard_bloque"
         }
 
         headers = {

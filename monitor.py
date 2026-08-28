@@ -6,7 +6,7 @@
 
 Usage :
     python monitor.py                    # Surveiller localhost:5000
-    python monitor.py --url https://nectarpro.cc  # Surveiller la production
+    python monitor.py --url https://nectar-pro.cc  # Surveiller la production
     python monitor.py --url http://localhost:5000 --duration 300  # Pendant 5 minutes
 
 Ce script :

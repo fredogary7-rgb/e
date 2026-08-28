@@ -63,7 +63,7 @@ def _get_vapid_private_key():
 
 def _get_vapid_claims():
     """Retourne les claims VAPID (sub, aud)."""
-    domain = os.environ.get("VAPID_SUBJECT", "mailto:admin@nectarpro.cc")
+    domain = os.environ.get("VAPID_SUBJECT", "mailto:admin@nectar-pro.cc")
     return {"sub": domain}
 
 def generate_vapid_keys():
