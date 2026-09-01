@@ -3352,12 +3352,11 @@ def new_page():
     """Page unique de streaming : Netflix + Canal+."""
     user_id = session.get("user_id")
     if not user_id:
-        flash("Vous devez vous connecter.", "danger")
-        return redirect(url_for("connexion_page"))
+        return redirect(url_for("connexion_page", next="/new"))
     user = db.session.get(User, user_id)
     if not user:
         session.clear()
-        return redirect(url_for("connexion_page"))
+        return redirect(url_for("connexion_page", next="/new"))
     return render_template("new.html")
 
 
