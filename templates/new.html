@@ -2,13 +2,13 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Streaming - NectarPro</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-body{background:linear-gradient(135deg,#0f0f0f,#1a1a2e,#16213e,#0f0f0f);min-height:100vh;color:#fff;font-style:italic;padding:20px}
+body{background:linear-gradient(135deg,#0f0f0f,#1a1a2e,#16213e,#0f0f0f);min-height:100vh;color:#fff;font-style:italic;padding:20px;touch-action:manipulation}
 .header{text-align:center;padding:30px 20px 10px}
 .header h1{font-size:28px;font-weight:900;margin-bottom:6px}
 .header h1 span{color:#e50914}
@@ -49,8 +49,8 @@ body{background:linear-gradient(135deg,#0f0f0f,#1a1a2e,#16213e,#0f0f0f);min-heig
 .pin-dots{display:flex;justify-content:center;gap:14px;margin-bottom:24px}
 .pin-dot{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.2);background:transparent;transition:all .2s}
 .pin-dot.filled{background:#e50914;border-color:#e50914;box-shadow:0 0 12px rgba(229,9,20,.5)}
-.pin-keyboard{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
-.pin-key{padding:18px;font-size:22px;font-weight:800;border:2px solid rgba(255,255,255,.15);border-radius:14px;background:rgba(255,255,255,.06);cursor:pointer;transition:all .2s;color:#fff;-webkit-user-select:none;user-select:none}
+.pin-keyboard{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;touch-action:manipulation}
+.pin-key{padding:18px;font-size:22px;font-weight:800;border:2px solid rgba(255,255,255,.15);border-radius:14px;background:rgba(255,255,255,.06);cursor:pointer;transition:all .2s;color:#fff;-webkit-user-select:none;user-select:none;touch-action:manipulation}
 .pin-key:hover{background:rgba(229,9,20,.2);border-color:#e50914}
 .pin-key:active{transform:scale(.93);background:#e50914}
 .pin-key.delete{font-size:16px;color:#e50914}
