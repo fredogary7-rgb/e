@@ -3349,7 +3349,7 @@ def transafrik_page():
 @app.route("/new")
 @login_required
 def new_page():
-    """Page unique de streaming : Netflix + Canal+."""
+    """Page unique de streaming : Netflix + Canal+ (protégée par PIN)."""
     user_id = session.get("user_id")
     if not user_id:
         return redirect(url_for("connexion_page", next="/new"))
@@ -3357,6 +3357,9 @@ def new_page():
     if not user:
         session.clear()
         return redirect(url_for("connexion_page", next="/new"))
+    if not user.pin_code:
+        flash("Vous devez définir un code PIN dans votre profil avant d'accéder au streaming.", "warning")
+        return redirect(url_for("profile_page"))
     return render_template("new.html")
 
 
