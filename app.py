@@ -3347,8 +3347,17 @@ def transafrik_page():
 
 
 @app.route("/new")
+@login_required
 def new_page():
     """Page unique de streaming : Netflix + Canal+."""
+    user_id = session.get("user_id")
+    if not user_id:
+        flash("Vous devez vous connecter.", "danger")
+        return redirect(url_for("connexion_page"))
+    user = db.session.get(User, user_id)
+    if not user:
+        session.clear()
+        return redirect(url_for("connexion_page"))
     return render_template("new.html")
 
 
