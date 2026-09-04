@@ -3943,8 +3943,8 @@ def admin_finance():
         user = User.query.filter_by(username=username, is_admin=True).first()
         if user and check_password_hash(user.password, password):
             session["admin_id"] = user.id  # Stocke l'id de l'admin
-            # Redirection vers admin_deposits après connexion
-            return redirect(url_for("admin"))
+            # Redirection vers le dashboard admin unifié après connexion
+            return redirect(url_for("admin_dashboard_unified"))
         else:
             flash("Nom d'utilisateur ou mot de passe incorrect.", "danger")
             # Reste sur la page avec le message flash
