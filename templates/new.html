@@ -39,30 +39,6 @@ body{background:linear-gradient(135deg,#0f0f0f,#1a1a2e,#16213e,#0f0f0f);min-heig
 .btn-back{display:inline-flex;align-items:center;gap:6px;margin:20px auto 0;color:#aaa;text-decoration:none;font-weight:600;font-size:13px;transition:all .3s;justify-content:center}
 .btn-back:hover{color:#fff}
 .info{margin-top:16px;font-size:11px;color:#666;text-align:center}
-
-/* PIN OVERLAY */
-.pin-overlay{display:flex;align-items:center;justify-content:center;position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#0f0f0f,#1a1a2e,#16213e,#0f0f0f)}
-.pin-overlay.hidden{display:none}
-.pin-box{background:rgba(20,20,30,.95);backdrop-filter:blur(30px);border-radius:24px;padding:32px 24px;width:90%;max-width:380px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.1)}
-.pin-box h3{font-weight:800;font-size:20px;color:#fff;margin-bottom:6px}
-.pin-box p{font-size:13px;color:#94a3b8;margin-bottom:20px;font-weight:600}
-.pin-dots{display:flex;justify-content:center;gap:14px;margin-bottom:24px}
-.pin-dot{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.2);background:transparent;transition:all .2s}
-.pin-dot.filled{background:#e50914;border-color:#e50914;box-shadow:0 0 12px rgba(229,9,20,.5)}
-.pin-keyboard{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;touch-action:manipulation}
-.pin-key{padding:18px;font-size:22px;font-weight:800;border:2px solid rgba(255,255,255,.15);border-radius:14px;background:rgba(255,255,255,.06);cursor:pointer;transition:all .2s;color:#fff;-webkit-user-select:none;user-select:none;touch-action:manipulation}
-.pin-key:hover{background:rgba(229,9,20,.2);border-color:#e50914}
-.pin-key:active{transform:scale(.93);background:#e50914}
-.pin-key.delete{font-size:16px;color:#e50914}
-.pin-actions{display:flex;gap:10px}
-.pin-actions .btn-pin{flex:1;padding:14px;font-size:15px;font-weight:700;border:none;border-radius:14px;cursor:pointer;transition:all .2s}
-.btn-pin.cancel{background:rgba(255,255,255,.1);color:#aaa}
-.btn-pin.cancel:hover{background:rgba(255,255,255,.2)}
-.btn-pin.confirm{background:#e50914;color:#fff;opacity:.4;pointer-events:none}
-.btn-pin.confirm.active{opacity:1;pointer-events:auto}
-.btn-pin.confirm.active:hover{background:#f40612;transform:translateY(-2px)}
-.pin-error{color:#ef4444;font-size:12px;font-weight:600;margin-top:10px;display:none}
-.pin-error.show{display:block}
 </style>
 </head>
 <body>
@@ -110,90 +86,5 @@ body{background:linear-gradient(135deg,#0f0f0f,#1a1a2e,#16213e,#0f0f0f);min-heig
 
     <a href="/dashboard" class="btn-back"><i class="fa fa-arrow-left"></i> Retour au tableau de bord</a>
 </div>
-
-<!-- PIN OVERLAY -->
-<div class="pin-overlay" id="pinOverlay">
-    <div class="pin-box">
-        <h3>🔐 Vérification PIN</h3>
-        <p>Saisissez votre code PIN à 6 chiffres pour accéder au streaming</p>
-        <div class="pin-dots" id="pinDots">
-            <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
-            <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
-        </div>
-        <div class="pin-keyboard">
-            <button type="button" class="pin-key" onclick="addDigit('1')">1</button>
-            <button type="button" class="pin-key" onclick="addDigit('2')">2</button>
-            <button type="button" class="pin-key" onclick="addDigit('3')">3</button>
-            <button type="button" class="pin-key" onclick="addDigit('4')">4</button>
-            <button type="button" class="pin-key" onclick="addDigit('5')">5</button>
-            <button type="button" class="pin-key" onclick="addDigit('6')">6</button>
-            <button type="button" class="pin-key" onclick="addDigit('7')">7</button>
-            <button type="button" class="pin-key" onclick="addDigit('8')">8</button>
-            <button type="button" class="pin-key" onclick="addDigit('9')">9</button>
-            <button type="button" class="pin-key" onclick="addDigit('0')">0</button>
-            <button type="button" class="pin-key delete" onclick="removeDigit()"><i class="fa fa-delete-left"></i></button>
-        </div>
-        <div class="pin-error" id="pinError"></div>
-        <div class="pin-actions">
-            <button type="button" class="btn-pin cancel" onclick="goToDashboard()">Annuler</button>
-            <button type="button" class="btn-pin confirm" id="confirmBtn" disabled onclick="verifyPin()">Confirmer</button>
-        </div>
-    </div>
-</div>
-
-<script>
-let pin = '';
-function addDigit(d){
-    if(pin.length>=6) return;
-    pin+=d;
-    updateDots();
-    if(pin.length===6){
-        document.getElementById('confirmBtn').classList.add('active');
-        document.getElementById('confirmBtn').disabled=false;
-    }
-}
-function removeDigit(){
-    pin=pin.slice(0,-1);
-    updateDots();
-    document.getElementById('confirmBtn').classList.remove('active');
-    document.getElementById('confirmBtn').disabled=true;
-}
-function updateDots(){
-    document.querySelectorAll('#pinDots .pin-dot').forEach((d,i)=>{
-        d.classList.toggle('filled',i<pin.length);
-    });
-}
-function goToDashboard(){
-    window.location.href='/dashboard';
-}
-function verifyPin(){
-    if(pin.length!==6) return;
-    document.getElementById('confirmBtn').disabled=true;
-    fetch('/api/verify_pin',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({pin:pin})
-    })
-    .then(r=>r.json())
-    .then(d=>{
-        if(d.success){
-            document.getElementById('pinOverlay').classList.add('hidden');
-        }else{
-            document.getElementById('pinError').textContent=d.message||'PIN incorrect';
-            document.getElementById('pinError').classList.add('show');
-            pin='';
-            updateDots();
-            document.getElementById('confirmBtn').classList.remove('active');
-        }
-    })
-    .catch(()=>{
-        document.getElementById('pinError').textContent='Erreur de connexion';
-        document.getElementById('pinError').classList.add('show');
-        pin='';
-        updateDots();
-        document.getElementById('confirmBtn').classList.remove('active');
-    });
-}
-</script>
 </body>
 </html>
