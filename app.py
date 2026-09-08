@@ -3146,23 +3146,13 @@ def admin_users_actifs():
 
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-        # Vérifie l'utilisateur admin
-        user = User.query.filter_by(username=username, is_admin=True).first()
-        if user and check_password_hash(user.password, password):
-            session["admin_id"] = user.id
-            return redirect(url_for("admin_canal_edit"))
-        else:
-            flash("Nom d'utilisateur ou mot de passe incorrect.", "danger")
-            return redirect(url_for("admin_login"))
-    return render_template("admin_login.html")
+    """Page de connexion admin unifiée — redirige vers /admin/finance."""
+    return redirect(url_for("admin_finance"))
 
 @app.route("/admin/parrainage", methods=["GET", "POST"])
 def admin_parrainage():
     if "admin_id" not in session:
-        return redirect(url_for("admin_login"))
+        return redirect(url_for("admin_finance"))
 
     users = User.query.order_by(User.username.asc()).all()
 
