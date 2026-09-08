@@ -3086,7 +3086,7 @@ def admin_users():
 
     if not user:
         flash("Accès refusé.", "danger")
-        return redirect(url_for("admin_finance"))
+        return redirect(url_for("admin_finance", next=request.path))
 
     users = User.query.order_by(User.date_creation.desc()).all()
 
@@ -3116,7 +3116,7 @@ def admin_users_inactifs():
 
     if not user:
         flash("Accès refusé.", "danger")
-        return redirect(url_for("admin_finance"))
+        return redirect(url_for("admin_finance", next=request.path))
 
     inactifs = User.query.filter_by(premier_depot=False).order_by(User.date_creation.desc()).all()
 
@@ -3133,7 +3133,7 @@ def admin_users_actifs():
 
     if not user:
         flash("Accès refusé.", "danger")
-        return redirect(url_for("admin_finance"))
+        return redirect(url_for("admin_finance", next=request.path))
 
     actifs = User.query.filter_by(premier_depot=True).order_by(User.date_creation.desc()).all()
 
@@ -3152,7 +3152,7 @@ def admin_login():
 @app.route("/admin/parrainage", methods=["GET", "POST"])
 def admin_parrainage():
     if "admin_id" not in session:
-        return redirect(url_for("admin_finance"))
+        return redirect(url_for("admin_finance", next=request.path))
 
     users = User.query.order_by(User.username.asc()).all()
 
@@ -3929,7 +3929,10 @@ def admin_finance():
         user = User.query.filter_by(username=username, is_admin=True).first()
         if user and check_password_hash(user.password, password):
             session["admin_id"] = user.id  # Stocke l'id de l'admin
-            # Redirection vers le dashboard admin unifié après connexion
+            # Redirige vers la page demandée (next) ou le dashboard admin
+            next_url = request.args.get("next")
+            if next_url and next_url.startswith("/") and not next_url.startswith("//"):
+                return redirect(next_url)
             return redirect(url_for("admin_dashboard_unified"))
         else:
             flash("Nom d'utilisateur ou mot de passe incorrect.", "danger")
@@ -3958,7 +3961,7 @@ def admin_deposits():
     user = get_logged_in_admin()
     if not user:
         flash("Accès refusé.", "danger")
-        return redirect(url_for("admin_finance"))
+        return redirect(url_for("admin_finance", next=request.path))
 
     page = request.args.get("page", 1, type=int)
     search = request.args.get("q", "").strip()
@@ -4154,7 +4157,7 @@ def admin_retraits():
     user = get_logged_in_admin()
     if not user:
         flash("Accès refusé.", "danger")
-        return redirect(url_for("admin_finance"))
+        return redirect(url_for("admin_finance", next=request.path))
 
     # Récupération avec join sur user_id (pas phone : Retrait.phone = numéro wallet mobile money)
     retraits_query = (
@@ -4179,7 +4182,7 @@ def delete_all_deposits():
     user_admin = get_logged_in_admin()
     if not user_admin:
         flash("Accès refusé.", "danger")
-        return redirect(url_for("admin_finance"))
+        return redirect(url_for("admin_finance", next=request.path))
     try:
         count = Depot.query.delete()
         db.session.commit()
@@ -4194,7 +4197,7 @@ def delete_all_retraits():
     user_admin = get_logged_in_admin()
     if not user_admin:
         flash("Accès refusé.", "danger")
-        return redirect(url_for("admin_finance"))
+        return redirect(url_for("admin_finance", next=request.path))
     try:
         count = Retrait.query.delete()
         db.session.commit()
@@ -4272,7 +4275,7 @@ def rembourser_retrait(retrait_id):
     user_admin = get_logged_in_admin()
     if not user_admin:
         flash("Accès refusé.", "danger")
-        return redirect(url_for("admin_finance"))
+        return redirect(url_for("admin_finance", next=request.path))
 
     retrait = Retrait.query.get_or_404(retrait_id)
     
@@ -4303,7 +4306,7 @@ def admin_activer_user(username):
     admin = get_logged_in_admin()
     if not admin:
         flash("Accès refusé.", "danger")
-        return redirect(url_for("admin_finance"))
+        return redirect(url_for("admin_finance", next=request.path))
 
     user = User.query.filter_by(username=username).first()
     if not user:
@@ -7274,7 +7277,7 @@ def admin_push_dashboard():
     admin_user = get_logged_in_admin()
     if not admin_user:
         flash("Accès refusé.", "danger")
-        return redirect(url_for("admin_finance"))
+        return redirect(url_for("admin_finance", next=request.path))
 
     stats = get_push_stats()
     return render_template("admin_push.html", user=admin_user, stats=stats)
@@ -7287,7 +7290,7 @@ def admin_dashboard_unified():
     admin_user = get_logged_in_admin()
     if not admin_user:
         flash("Accès refusé.", "danger")
-        return redirect(url_for("admin_finance"))
+        return redirect(url_for("admin_finance", next=request.path))
     return render_template("admin.html", user=admin_user)
 
 
