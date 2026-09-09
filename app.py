@@ -3253,6 +3253,19 @@ def download_contact():
     return send_from_directory(directory, filename, as_attachment=True)
 
 
+@app.route('/download/tiktok')
+def download_tiktok():
+    """Télécharge le document de formation TikTok (PDF)."""
+    directory = os.path.join(app.root_path, 'static', 'files')
+    filename = 'Nectar_Pro_Formation_TikTok_Nouveau_v39.pdf'
+
+    if not os.path.exists(os.path.join(directory, filename)):
+        flash("Le document TikTok n'est pas encore disponible.", "error")
+        return redirect(url_for('academy_tiktok'))
+
+    return send_from_directory(directory, filename, as_attachment=True)
+
+
 from flask import send_from_directory
 
 
