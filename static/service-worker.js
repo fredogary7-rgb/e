@@ -12,8 +12,8 @@
 // ── Clé publique VAPID (remplacée au déploiement par le serveur) ──
 const VAPID_PUBLIC_KEY = '{{VAPID_PUBLIC_KEY}}';
 
-const CACHE_NAME = 'nectarpro-v3';
-const RUNTIME_CACHE = 'nectarpro-runtime-v3';
+const CACHE_NAME = 'nectarpro-v4';
+const RUNTIME_CACHE = 'nectarpro-runtime-v4';
 
 // Ressources à mettre en cache immédiatement à l'installation
 const PRECACHE_ASSETS = [
@@ -278,6 +278,13 @@ self.addEventListener('fetch', (event) => {
     if (url.pathname.startsWith('/api/')) return;
     if (url.pathname.startsWith('/admin/')) return;
     if (url.pathname.startsWith('/webhook')) return;
+
+    // Ne PAS intercepter les téléchargements (PDF, VCF, etc.).
+    // Un Service Worker qui répond à une navigation "Content-Disposition: attachment"
+    // empêche le téléchargement de se lancer (surtout sur mobile) et peut
+    // provoquer une page blanche. On laisse le navigateur gérer la requête.
+    if (url.pathname.startsWith('/download/')) return;
+    if (request.destination === 'download') return;
 
     // Ignorer les requêtes externes (sauf CDN connus)
     if (url.origin !== self.location.origin) {

@@ -2277,6 +2277,9 @@ def inscription_page():
 
         errors = []
 
+        if not request.form.get("accept_policy"):
+            errors.append("Vous devez accepter les politiques d'utilisation pour vous inscrire.")
+
         if not all([username, email, country, phone, password, confirm]):
             errors.append("Tous les champs sont obligatoires.")
 
@@ -3259,11 +3262,24 @@ def download_tiktok():
     directory = os.path.join(app.root_path, 'static', 'files')
     filename = 'Nectar_Pro_Formation_TikTok_Nouveau_v39.pdf'
 
-    if not os.path.exists(os.path.join(directory, filename)):
+    filepath = os.path.join(directory, filename)
+
+    if not os.path.exists(filepath):
         flash("Le document TikTok n'est pas encore disponible.", "error")
         return redirect(url_for('academy_tiktok'))
 
-    return send_from_directory(directory, filename, as_attachment=True)
+    try:
+        return send_from_directory(
+            directory,
+            filename,
+            as_attachment=True,
+            mimetype='application/pdf',
+            download_name=filename,
+        )
+    except Exception as e:
+        logging.error("Erreur téléchargement PDF TikTok: %s", e)
+        flash("Impossible de télécharger le document pour le moment. Réessayez plus tard.", "error")
+        return redirect(url_for('academy_tiktok'))
 
 
 from flask import send_from_directory

@@ -355,6 +355,122 @@
             text-decoration: underline;
         }
 
+        /* ── MODALE POLITIQUE D'UTILISATION ── */
+        .policy-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .policy-modal.active {
+            display: flex;
+        }
+        .pm-dialog {
+            background: #ffffff;
+            width: 100%;
+            max-width: 560px;
+            max-height: 88vh;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 24px 60px rgba(219, 39, 119, 0.3);
+            animation: pmPop 0.3s ease;
+        }
+        @keyframes pmPop {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .pm-header {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(236, 72, 153, 0.2);
+            background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+        }
+        .pm-header h3 {
+            font-size: 16px;
+            font-weight: 800;
+            font-style: italic;
+            color: #be185d;
+        }
+        .pm-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #db2777;
+            cursor: pointer;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .pm-close:hover { background: rgba(236, 72, 153, 0.12); }
+        .pm-body {
+            padding: 20px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            flex: 1;
+        }
+        .pm-section { margin-bottom: 16px; }
+        .pm-section:last-child { margin-bottom: 0; }
+        .pm-section h4 {
+            font-size: 14px;
+            font-weight: 800;
+            color: #be185d;
+            margin-bottom: 6px;
+        }
+        .pm-section p,
+        .pm-section li {
+            font-size: 12.5px;
+            color: #1f2937;
+            line-height: 1.7;
+            font-style: italic;
+            font-weight: 500;
+        }
+        .pm-section ul { margin-left: 18px; }
+        .pm-section li { margin-bottom: 3px; }
+        .pm-section strong { color: #9d174d; }
+        .pm-footer {
+            padding: 14px 20px;
+            border-top: 1px solid rgba(236, 72, 153, 0.2);
+            background: #ffffff;
+            text-align: center;
+        }
+        .pm-hint {
+            font-size: 12px;
+            color: #6b7280;
+            font-style: italic;
+        }
+        .pm-finish-btn {
+            display: none;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #ec4899, #db2777);
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 15px;
+            font-style: italic;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .pm-finish-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(219, 39, 119, 0.4);
+        }
+
         /* Responsive */
         @media (max-width: 480px) {
             .register-card {
@@ -459,7 +575,7 @@
             </div>
 
             <label class="policy-check">
-                <input type="checkbox" id="check-policy" onchange="togglePolicies()">
+                <input type="checkbox" id="check-policy" name="accept_policy" value="1" onchange="togglePolicies()">
                 <span>J'accepte les politiques d'utilisation</span>
             </label>
 
@@ -483,6 +599,104 @@
         </div>
     </div>
 
+    <!-- ── MODALE POLITIQUE D'UTILISATION ── -->
+    <div class="policy-modal" id="policy-modal">
+        <div class="pm-dialog">
+            <div class="pm-header">
+                <h3><i class="fa fa-file-contract"></i> Politique d'utilisation</h3>
+                <button type="button" class="pm-close" onclick="cancelPolicy()" aria-label="Fermer">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="pm-body" id="pm-body">
+                <div class="pm-section">
+                    <h4>1. Nature de la plateforme</h4>
+                    <p><strong>NectarPro est une plateforme de marketing d'affiliation et de tâches rémunérées.</strong> Elle met en relation les annonceurs avec une communauté d'utilisateurs qui réalisent des actions concrètes : partage de publicités, tâches quotidiennes, parrainage.</p>
+                    <p>Les revenus proviennent <strong>exclusivement de récompenses pour un travail réellement effectué</strong>, et non d'un placement de capital.</p>
+                    <p style="margin-top:8px"><strong style="color:#db2777">❗ NectarPro n'est PAS une plateforme d'investissement.</strong> Aucun rendement n'est promis en échange d'un dépôt.</p>
+                </div>
+                <div class="pm-section">
+                    <h4>2. Investissement vs Marketing d'affiliation</h4>
+                    <p><strong>Plateforme d'investissement :</strong> vous déposez de l'argent et on vous promet des intérêts sans travail de votre part. Retraits souvent bloqués.</p>
+                    <p><strong>Marketing d'affiliation (NectarPro) :</strong> vous gagnez uniquement en échange d'actions réelles. Le gain dépend de votre activité, pas d'un capital investi.</p>
+                    <p style="margin-top:8px"><strong style="color:#db2777">📌 Aucun site d'investissement ne peut garantir des retraits automatiques comme NectarPro.</strong></p>
+                </div>
+                <div class="pm-section">
+                    <h4>3. Création de compte</h4>
+                    <p>Chaque utilisateur est autorisé à posséder <strong>un seul compte</strong>. Interdiction de créer plusieurs comptes, d'utiliser une fausse identité, de partager ses identifiants ou d'utiliser le compte d'autrui.</p>
+                </div>
+                <div class="pm-section">
+                    <h4>4. Activation du compte (une seule fois)</h4>
+                    <p>L'activation se fait <strong>une seule et unique fois</strong>, avec un paiement unique de <strong>4 800 FCFA</strong>.</p>
+                    <p style="margin-top:8px"><strong style="color:#db2777">✔️ Aucun paiement supplémentaire n'est exigé.</strong> Aucun frais récurrent, aucun abonnement, aucune demande de re-paiement.</p>
+                </div>
+                <div class="pm-section">
+                    <h4>5. Programme d'affiliation &amp; Parrainage</h4>
+                    <p>Commissions sur l'activation de vos filleuls, sur 3 niveaux :</p>
+                    <ul>
+                        <li><strong>Niveau 1 :</strong> 2 200 FCFA par filleul direct</li>
+                        <li><strong>Niveau 2 :</strong> 800 FCFA (2ᵉ niveau)</li>
+                        <li><strong>Niveau 3 :</strong> 300 FCFA (3ᵉ niveau)</li>
+                    </ul>
+                </div>
+                <div class="pm-section">
+                    <h4>6. Tâches rémunérées</h4>
+                    <p style="margin-bottom:6px">Les tâches sont disponibles pendant les périodes définies.</p>
+                    <ul>
+                        <li>Une seule série de tâches par jour</li>
+                        <li>Une seule récompense quotidienne</li>
+                        <li>Toute manipulation entraîne l'annulation de la récompense</li>
+                    </ul>
+                </div>
+                <div class="pm-section">
+                    <h4>7. Publicités et partages</h4>
+                    <ul>
+                        <li>Interdiction de simuler des partages</li>
+                        <li>Interdiction d'utiliser des robots ou logiciels automatisés</li>
+                        <li>Interdiction de modifier les liens publicitaires</li>
+                    </ul>
+                </div>
+                <div class="pm-section">
+                    <h4>8. Lutte contre la fraude</h4>
+                    <p><strong>Toute fraude est strictement interdite.</strong> Faux comptes, faux numéros, faux partages, manipulation des récompenses, exploitation de bugs, VPN, usurpation d'identité.</p>
+                    <p style="margin-top:8px"><strong style="color:#db2777">⚠️ La plateforme peut bloquer immédiatement tout compte suspect sans préavis.</strong></p>
+                </div>
+                <div class="pm-section">
+                    <h4>9. Retraits automatiques (API Payout)</h4>
+                    <p>NectarPro dispose d'une <strong>API de paiement (payout)</strong> qui assure un traitement <strong>automatique des retraits</strong>.</p>
+                    <ul style="margin-top:8px">
+                        <li><strong>Retrait parrainage :</strong> 5 000 à 50 000 FCFA (frais 500 FCFA)</li>
+                        <li><strong>Retrait tâches :</strong> 5 000 FCFA fixe, sans frais</li>
+                        <li>Demande protégée par votre <strong>code PIN personnel</strong></li>
+                    </ul>
+                    <p style="margin-top:8px">Le traitement côté NectarPro est automatique.</p>
+                </div>
+                <div class="pm-section">
+                    <h4>10. Sanctions</h4>
+                    <p style="margin-bottom:0">En cas de fraude : suspension, blocage définitif, suppression des récompenses, annulation des retraits, suppression des gains.</p>
+                </div>
+                <div class="pm-section">
+                    <h4>11. Vendeurs &amp; Communauté</h4>
+                    <p style="margin-bottom:0">Les vendeurs sont responsables de leurs produits. Comportement respectueux exigé.</p>
+                </div>
+                <div class="pm-section">
+                    <h4>12. Données &amp; Modifications</h4>
+                    <p style="margin-bottom:0">Données protégées. Les conditions peuvent être modifiées pour améliorer les services.</p>
+                </div>
+                <div class="pm-section">
+                    <h4>13. Acceptation</h4>
+                    <p style="margin-bottom:0"><strong>En utilisant cette plateforme, vous acceptez l'ensemble de cette politique. Le non-respect entraîne la suppression définitive du compte.</strong></p>
+                </div>
+            </div>
+            <div class="pm-footer">
+                <p class="pm-hint" id="pm-hint"><i class="fa fa-arrow-down"></i> Faites défiler jusqu'en bas pour lire l'intégralité de la politique</p>
+                <button type="button" class="pm-finish-btn" id="pm-finish-btn" onclick="finishPolicy()">
+                    <i class="fa fa-check-circle"></i> Terminer
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function togglePass(id) {
             const input = document.getElementById(id);
@@ -494,11 +708,78 @@
 
         function togglePolicies() {
             const check = document.getElementById('check-policy');
-            const box = document.getElementById('policy-box');
-            const btn = document.getElementById('submit-btn');
-            box.style.display = check.checked ? 'block' : 'none';
-            btn.disabled = !check.checked;
+
+            if (check.checked) {
+                // On ouvre la modale de la politique
+                const modal = document.getElementById('policy-modal');
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+
+                // Réinitialise l'état de lecture
+                document.getElementById('pm-body').scrollTop = 0;
+                document.getElementById('pm-finish-btn').style.display = 'none';
+                document.getElementById('policy-box').style.display = 'none';
+                document.getElementById('submit-btn').disabled = true;
+            } else {
+                // Décocher = reset complet
+                closePolicyModal();
+                document.getElementById('policy-box').style.display = 'none';
+                document.getElementById('submit-btn').disabled = true;
+            }
         }
+
+        function closePolicyModal() {
+            const modal = document.getElementById('policy-modal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function cancelPolicy() {
+            // Fermer = refuser la politique
+            document.getElementById('check-policy').checked = false;
+            closePolicyModal();
+            document.getElementById('policy-box').style.display = 'none';
+            document.getElementById('submit-btn').disabled = true;
+        }
+
+        function finishPolicy() {
+            // L'utilisateur a lu et accepte : on ferme la politique
+            closePolicyModal();
+            // La case reste cochée et on active le bouton d'inscription
+            document.getElementById('submit-btn').disabled = false;
+        }
+
+        // Détection de la fin de lecture : afficher le bouton "Terminer"
+        function initPolicyScroll() {
+            const body = document.getElementById('pm-body');
+            const hint = document.getElementById('pm-hint');
+            const finishBtn = document.getElementById('pm-finish-btn');
+
+            if (!body) return;
+
+            body.addEventListener('scroll', function () {
+                const tolerance = 10; // px
+                const atBottom = body.scrollTop + body.clientHeight >= body.scrollHeight - tolerance;
+
+                if (atBottom) {
+                    finishBtn.style.display = 'block';
+                    hint.style.display = 'none';
+                }
+            });
+
+            // Sécurité mobile : re-vérifier après redimensionnement
+            window.addEventListener('resize', function () {
+                if (document.getElementById('policy-modal').classList.contains('active')) {
+                    if (body.scrollTop + body.clientHeight >= body.scrollHeight - 10) {
+                        finishBtn.style.display = 'block';
+                        hint.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // Initialisation au chargement
+        initPolicyScroll();
 
         function showLoading() {
             const btn = document.getElementById('submit-btn');
