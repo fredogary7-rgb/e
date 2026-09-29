@@ -3295,6 +3295,12 @@ def about():
 def politique():
     return render_template("politique_v2.html")
 
+
+@app.route("/faq")
+def faq():
+    user = get_logged_in_user()
+    return render_template("faq.html", user=user)
+
 def get_service_name(service_id):
     """
     Cherche le nom du service dans tous les pays pour un ID donné.

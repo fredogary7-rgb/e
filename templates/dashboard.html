@@ -445,6 +445,10 @@ body{
 
 /* ██████ FOOTER ██████ */
 footer{text-align:center;padding:22px;font-size:12px;color:var(--muted);font-weight:700}
+.footer-links-row{display:flex;justify-content:center;flex-wrap:wrap;gap:18px;margin-bottom:4px}
+.footer-links-row a{color:var(--muted);text-decoration:none;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;transition:color .2s}
+.footer-links-row a:hover{color:var(--accent)}
+.footer-links-row a i{color:var(--accent2);font-size:12px}
 
 /* ██████ TEXTE GLOBAL ██████ */
 body,.main *,.sidebar a,.topbar *,.user-dropdown *,.market-section *,.whatsapp-card *,.stat-card *,.motiv-card *,.progress-section *,.hero-card *,.balance-card *,.quick-action *{font-style:italic!important}
@@ -513,6 +517,7 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.market-section *,.whatsapp-c
     <a href="/transafrik"><i class="fa fa-globe-africa"></i> TransAfrik Transfert</a>
     <a href="/about"><i class="fa fa-info-circle"></i> À propos</a>
     <a href="/politique"><i class="fa fa-file-contract"></i> Politique</a>
+    <a href="/faq"><i class="fa fa-question-circle"></i> FAQ</a>
     <a href="/logout" style="color:#db2777;"><i class="fa fa-sign-out"></i> Déconnexion</a>
 </div>
 
@@ -753,7 +758,15 @@ body,.main *,.sidebar a,.topbar *,.user-dropdown *,.market-section *,.whatsapp-c
     </div>
     {% endif %}
 
-    <footer>2026 © NectarPro ✨</footer>
+    <footer>
+        <div class="footer-links-row">
+            <a href="/faq"><i class="fa fa-question-circle"></i> FAQ</a>
+            <a href="/politique"><i class="fa fa-file-contract"></i> Politique</a>
+            <a href="/about"><i class="fa fa-info-circle"></i> À propos</a>
+            <a href="/contact"><i class="fa fa-address-book"></i> Contacts</a>
+        </div>
+        <div style="margin-top:10px;">2026 © NectarPro ✨</div>
+    </footer>
 </div>
 
 <script>

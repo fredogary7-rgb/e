@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FAQ - Questions fréquentes - NectarPro</title>
+<meta name="description" content="Questions fréquentes sur NectarPro : activation, retraits automatiques, parrainage, tâches rémunérées et sécurité.">
+<link rel="icon" href="/static/images/net.jpg" type="image/jpeg">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+:root{
+    --bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);
+    --accent:#db2777;
+    --accent2:#ec4899;
+    --text:#0f172a;
+    --text2:#1e293b;
+    --muted:#64748b;
+    --border:rgba(236,72,153,0.2);
+    --shadow:0 8px 32px rgba(236,72,153,0.12);
+    --radius-lg:24px;
+}
+body{background:var(--bg);min-height:100vh;min-height:100dvh;color:var(--text);font-weight:600;font-style:italic;position:relative;overflow-x:hidden}
+
+/* PARTICULES */
+.bg-particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.particle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,0.18),transparent 70%);animation:floatUp linear infinite}
+.particle:nth-child(1){width:180px;height:180px;left:5%;top:70%;animation-duration:18s}
+.particle:nth-child(2){width:120px;height:120px;left:60%;top:80%;animation-duration:14s;animation-delay:3s}
+.particle:nth-child(3){width:200px;height:200px;left:30%;top:75%;animation-duration:22s;animation-delay:6s}
+.particle:nth-child(4){width:100px;height:100px;left:80%;top:85%;animation-duration:16s;animation-delay:9s}
+.particle:nth-child(5){width:150px;height:150px;left:50%;top:90%;animation-duration:20s;animation-delay:2s}
+@keyframes floatUp{0%{transform:translateY(0)scale(0.6);opacity:0}10%{opacity:0.7}90%{opacity:0.4}100%{transform:translateY(-110vh)scale(1.4);opacity:0}}
+
+.topnav{background:rgba(255,255,255,0.7);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.topnav a{color:var(--accent);text-decoration:none;font-weight:700;display:flex;align-items:center;gap:8px;font-size:13px;font-style:italic}
+.topnav .brand{font-size:22px;font-weight:900;letter-spacing:1px}
+.topnav .brand .brand-n{color:var(--accent2)}
+.topnav .brand .brand-p{color:var(--accent)}
+.hero{text-align:center;padding:40px 20px 10px;position:relative;z-index:1}
+.hero .icon{font-size:52px;margin-bottom:8px;animation:floaticon 3s ease-in-out infinite}
+@keyframes floaticon{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.hero h1{font-weight:900;font-size:34px;letter-spacing:1px;margin-bottom:4px;background:linear-gradient(135deg,#ec4899,#db2777);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero .sub{font-size:14px;color:var(--muted);font-weight:600}
+.hero .date{font-size:12px;color:var(--muted);margin-top:8px}
+.container{max-width:820px;margin:0 auto;padding:24px 20px 40px;position:relative;z-index:1}
+
+/* RECHERCHE */
+.search-box{background:rgba(255,255,255,0.85);border:1px solid var(--border);border-radius:16px;padding:6px 18px;display:flex;align-items:center;gap:10px;margin-bottom:24px;box-shadow:var(--shadow)}
+.search-box i{color:var(--accent2)}
+.search-box input{flex:1;border:none;outline:none;background:transparent;font-size:14px;font-weight:500;color:var(--text);font-style:italic;padding:12px 0}
+
+/* CATEGORIES */
+.cat-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+.cat-tab{background:rgba(255,255,255,0.7);border:1px solid var(--border);color:var(--text2);padding:9px 18px;border-radius:30px;font-size:13px;font-weight:700;cursor:pointer;transition:all .3s;font-style:italic}
+.cat-tab:hover{background:rgba(236,72,153,0.1)}
+.cat-tab.active{background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(219,39,119,0.3)}
+
+/* FAQ ITEMS */
+.faq-group-title{font-size:15px;font-weight:800;color:var(--accent);margin:26px 0 12px;display:flex;align-items:center;gap:8px}
+.faq-group-title i{color:var(--accent2)}
+.faq-item{background:rgba(255,255,255,0.85);border:1px solid var(--border);border-radius:16px;margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow);transition:all .3s}
+.faq-item:hover{border-color:rgba(236,72,153,0.4)}
+.faq-question{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;cursor:pointer;user-select:none}
+.faq-question .q{font-weight:700;font-size:14px;color:var(--text);flex:1}
+.faq-question .chev{color:var(--accent2);transition:transform .3s;flex-shrink:0}
+.faq-item.open .chev{transform:rotate(180deg)}
+.faq-answer{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.faq-answer .inner{padding:0 20px 18px;font-size:13px;color:var(--text2);line-height:1.8;font-weight:500}
+.faq-answer .inner ul{margin:8px 0 0 18px}
+.faq-answer .inner li{margin-bottom:4px}
+.faq-answer .inner strong{color:var(--accent)}
+.highlight{background:rgba(219,39,119,0.08);border-left:3px solid var(--accent);padding:10px 14px;border-radius:8px;margin-top:8px}
+.no-result{text-align:center;padding:40px;color:var(--muted);display:none}
+.no-result i{font-size:40px;opacity:.3;margin-bottom:12px;display:block}
+.footer{text-align:center;padding:30px;color:var(--muted);font-size:12px;position:relative;z-index:1}
+</style>
+</head>
+<body>
+
+<div class="bg-particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div>
+</div>
+
+<div class="topnav"><a href="/dashboard"><i class="fa fa-arrow-left"></i> Tableau de bord</a><div class="brand"><span class="brand-n">Nectar</span><span class="brand-p">Pro</span></div><div style="width:60px"></div></div>
+
+<div class="hero"><div class="icon">❓</div><h1>FAQ</h1><div class="sub">Questions fréquentes — tout ce qu'il faut savoir sur NectarPro</div><div class="date"><i class="fa fa-calendar"></i> Mise à jour : 17 septembre 2026</div></div>
+
+<div class="container">
+
+    <div class="search-box"><i class="fa fa-search"></i><input type="text" id="faqSearch" placeholder="Rechercher une question… (ex : retrait, activation, parrainage)"></div>
+
+    <div class="cat-tabs" id="catTabs">
+        <button class="cat-tab active" data-cat="all">Tout</button>
+        <button class="cat-tab" data-cat="general">Général</button>
+        <button class="cat-tab" data-cat="activation">Activation</button>
+        <button class="cat-tab" data-cat="gains">Gains &amp; Tâches</button>
+        <button class="cat-tab" data-cat="retraits">Retraits</button>
+        <button class="cat-tab" data-cat="parrainage">Parrainage</button>
+        <button class="cat-tab" data-cat="securite">Sécurité</button>
+    </div>
+
+    <!-- GÉNÉRAL -->
+    <div class="faq-group-title" data-cat="general"><i class="fa fa-info-circle"></i> Général</div>
+    <div class="faq-item" data-cat="general">
+        <div class="faq-question"><span class="q">Qu'est-ce que NectarPro ?</span><i class="fa fa-chevron-down chev"></i></div>
+        <div class="faq-answer"><div class="inner">NectarPro est une <strong>plateforme de marketing d'affiliation et de tâches rémunérées</strong>. Elle met en relation des annonceurs avec une communauté d'utilisateurs qui réalisent des actions concrètes (partage de publicités, tâches quotidiennes, parrainage) et sont récompensés pour leur travail.</div></div>
+    </div>
+    <div class="faq-item" data-cat="general">
+        <div class="faq-question"><span class="q">NectarPro est-il une plateforme d'investissement ?</span><i class="fa fa-chevron-down chev"></i></div>
+        <div class="faq-answer"><div class="inner"><strong>Non.</strong> NectarPro n'est <strong>pas</strong> une plateforme d'investissement.<div class="highlight">Les revenus proviennent exclusivement de récompenses pour un travail réellement effectué. Aucun rendement n'est promis en échange d'un dépôt d'argent, et votre argent n'est jamais « placé ».</div></div></div>
+    </div>
+    <div class="faq-item" data-cat="general">
+        <div class="faq-question"><span class="q">Quelle est la différence entre investissement et marketing d'affiliation ?</span><i class="fa fa-chevron-down chev"></i></div>
+        <div class="faq-answer"><div class="inner"><strong>Plateforme d'investissement :</strong> vous déposez de l'argent et on vous promet des intérêts sans travail de votre part. Retraits souvent bloqués.<br><br><strong>Marketing d'affiliation (NectarPro) :</strong> vous gagnez uniquement en échange d'actions réelles. Le gain dépend de votre activité, pas d'un capital investi.</div></div>
+    </div>
+
+    <!-- ACTIVATION -->
+    <div class="faq-group-title" data-cat="activation"><i class="fa fa-check-circle"></i> Activation du compte</div>
+    <div class="faq-item" data-cat="activation">
+        <div class="faq-question"><span class="q">Combien coûte l'activation du compte ?</span><i class="fa fa-chevron-down chev"></i></div>
+        <div class="faq-answer"><div class="inner">L'activation se fait avec un paiement unique de <strong>4 800 FCFA</strong>. C'est le seul et unique paiement demandé.</div></div>
+    </div>
+    <div class="faq-item" data-cat="activation">
+        <div class="faq-question"><span class="q">Dois-je payer plusieurs fois pour rester actif ?</span><i class="fa fa-chevron-down chev"></i></div>
+        <div class="faq-answer"><div class="inner"><strong>Non.</strong> L'activation est <strong>unique et définitive</strong>.<div class="highlight">✔️ Aucun frais récurrent, aucun abonnement, aucune demande de re-paiement. Si quelqu'un vous réclame un paiement supplémentaire, signalez-le : c'est une fraude.</div></div></div>
+    </div>
+    <div class="faq-item" data-cat="activation">
+        <div class="faq-question"><span class="q">Comment activer mon compte ?</span><i class="fa fa-chevron-down chev"></i></div>
+        <div class="faq-answer"><div class="inner">Après inscription, vous êtes dirigé vers la page d'activation. Choisissez votre opérateur mobile money, saisissez votre numéro et validez le paiement de 4 800 FCFA. Une fois le paiement confirmé, votre compte est activé automatiquement.</div></div>
+    </div>
+
+    <!-- GAINS & TÂCHES -->
+    <div class="faq-group-title" data-cat="gains"><i class="fa fa-tasks"></i> Gains &amp; Tâches</div>
+    <div class="faq-item" data-cat="gains">
+        <div class="faq-question"><span class="q">Comment gagner de l'argent sur NectarPro ?</span><i class="fa fa-chevron-down chev"></i></div>
+        <div class="faq-answer"><div class="inner"><ul><li>Réaliser des <strong>tâches rémunérées</strong></li><li>Partager des <strong>publicités</strong> conformément aux instructions</li><li><strong>Parrainer</strong> de nouveaux membres</li><li>Acheter/vendre des produits sur le <strong>Market</strong></li></ul></div></div>
+    </div>
+    <div class="faq-item" data-cat="gains">
+        <div class="faq-question"><span class="q">Combien de tâches puis-je faire par jour ?</span><i class="fa fa-chevron-down chev"></i></div>
+        <div class="faq-answer"><div class="inner">Une <strong>seule série de tâches par jour</strong>, avec une seule récompense quotidienne. Toute manipulation entraîne l'annulation de la récompense.</div></div>
+    </div>
+    <div class="faq-item" data-cat="gains">
+        <div class="faq-question"><span class="q">Les partages de publicités sont-ils obligatoires ?</span><i class="fa fa-chevron-down chev"></i></div>
+        <div class="faq-answer"><div class="inner">Les partages font partie des actions rémunérées. Ils doivent être faits conformément aux instructions : il est interdit de simuler des partages, d'utiliser des robots ou de modifier les liens publicitaires.</div></div>
+    </div>
+
+    <!-- RETRAITS -->
+    <div class="faq-group-title" data-cat="retraits"><i class="fa fa-wallet"></i> Retraits</div>
+    <div class="faq-item" data-cat="retraits">
+        <div class="faq-question"><span class="q">Les retraits sont-ils automatiques ?</span><i class="fa fa-chevron-down chev"></i></div>
+        <div class="faq-answer"><div class="inner"><strong>Oui.</strong> NectarPro utilise une <strong>API de paiement (payout)</strong> qui traite les retraits automatiquement vers votre compte mobile money.<div class="highlight">⚡ C'est ce qui distingue NectarPro des sites d'investissement : ces derniers ne peuvent pas garantir des retraits automatiques.</div></div></div>
+    </div>
+    <div class="faq-item" data-cat="retraits">
+        <div class="faq-question"><span class="q">Quels sont les montants de retrait ?</span><i class="fa fa-chevron-down chev"></i></div>
+        <div class="faq-answer"><div class="inner"><ul><li><strong>Gains de parrainage :</strong> de 5 000 à 50 000 FCFA (frais 500 FCFA, 10 retraits max/jour)</li><li><strong>Gains de tâches :</strong> 5 000 FCFA fixe, sans frais (5 retraits max/jour)</li></ul></div></div>
+    </div>
+    <div class="faq-item" data-cat="retraits">
+        <div class="faq-question"><span class="q">Pourquoi un code PIN est-il demandé ?</span><i class="fa fa-chevron-down chev"></i></div>
+        <div class="faq-answer"><div class="inner">Le <strong>code PIN</strong> protège vos retraits. Définissez-le dans votre profil, puis saisissez-le à chaque demande de retrait pour sécuriser vos gains.</div></div>
+    </div>
+
+    <!-- PARRAINAGE -->
+    <div class="faq-group-title" data-cat="parrainage"><i class="fa fa-users"></i> Parrainage</div>
+    <div class="faq-item" data-cat="parrainage">
+        <div class="faq-question"><span class="q">Comment fonctionne le parrainage ?</span><i class="fa fa-chevron-down chev"></i></div>
+        <div class="faq-answer"><div class="inner">Partagez votre lien de parrainage. À chaque filleul activé, vous percevez une commission sur 3 niveaux :<ul><li><strong>Niveau 1 :</strong> 2 200 FCFA</li><li><strong>Niveau 2 :</strong> 800 FCFA</li><li><strong>Niveau 3 :</strong> 300 FCFA</li></ul></div></div>
+    </div>
+
+    <!-- SÉCURITÉ -->
+    <div class="faq-group-title" data-cat="securite"><i class="fa fa-shield-alt"></i> Sécurité &amp; Règles</div>
+    <div class="faq-item" data-cat="securite">
+        <div class="faq-question"><span class="q">Puis-je créer plusieurs comptes ?</span><i class="fa fa-chevron-down chev"></i></div>
+        <div class="faq-answer"><div class="inner"><strong>Non.</strong> Un seul compte par personne. La création de plusieurs comptes est considérée comme une fraude et entraîne le blocage immédiat du compte.</div></div>
+    </div>
+    <div class="faq-item" data-cat="securite">
+        <div class="faq-question"><span class="q">Que se passe-t-il en cas de fraude ?</span><i class="fa fa-chevron-down chev"></i></div>
+        <div class="faq-answer"><div class="inner">Toute fraude (faux comptes, faux numéros, faux partages, manipulation des récompenses, VPN, robots…) entraîne des sanctions : suspension, blocage définitif, suppression des récompenses et des gains.</div></div>
+    </div>
+
+    <div class="no-result" id="noResult"><i class="fa fa-search"></i>Aucune question ne correspond à votre recherche.</div>
+
+</div>
+
+<div class="footer">© 2026 NectarPro — <i class="fa fa-shield"></i> Sécurité · Transparence · Équité</div>
+
+<script>
+// ── Accordéon (ouvrir/fermer une question) ──
+document.querySelectorAll('.faq-question').forEach(function(q){
+    q.addEventListener('click', function(){
+        var item = q.closest('.faq-item');
+        var answer = item.querySelector('.faq-answer');
+        var isOpen = item.classList.contains('open');
+        // Fermer toutes les autres
+        document.querySelectorAll('.faq-item.open').forEach(function(o){
+            o.classList.remove('open');
+            o.querySelector('.faq-answer').style.maxHeight = null;
+        });
+        if(!isOpen){
+            item.classList.add('open');
+            answer.style.maxHeight = answer.scrollHeight + 'px';
+        }
+    });
+});
+
+// ── Filtres par catégorie ──
+var currentCat = 'all';
+document.querySelectorAll('.cat-tab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+        document.querySelectorAll('.cat-tab').forEach(function(t){ t.classList.remove('active'); });
+        tab.classList.add('active');
+        currentCat = tab.getAttribute('data-cat');
+        applyFilters();
+    });
+});
+
+// ── Recherche ──
+var searchInput = document.getElementById('faqSearch');
+searchInput.addEventListener('input', applyFilters);
+
+function applyFilters(){
+    var query = searchInput.value.toLowerCase().trim();
+    var anyVisible = false;
+
+    document.querySelectorAll('.faq-item').forEach(function(item){
+        var cat = item.getAttribute('data-cat');
+        var text = item.textContent.toLowerCase();
+        var matchCat = (currentCat === 'all') || (cat === currentCat);
+        var matchSearch = !query || text.indexOf(query) !== -1;
+        var show = matchCat && matchSearch;
+        item.style.display = show ? '' : 'none';
+        if(show) anyVisible = true;
+    });
+
+    // Masquer/afficher les titres de groupe vides
+    document.querySelectorAll('.faq-group-title').forEach(function(group){
+        var gcat = group.getAttribute('data-cat');
+        var matchCat = (currentCat === 'all') || (gcat === currentCat);
+        var hasVisible = false;
+        document.querySelectorAll('.faq-item[data-cat="' + gcat + '"]').forEach(function(it){
+            if(it.style.display !== 'none') hasVisible = true;
+        });
+        group.style.display = (matchCat && hasVisible) ? '' : 'none';
+    });
+
+    document.getElementById('noResult').style.display = anyVisible ? 'none' : 'block';
+}
+
+// Ouverture automatique du premier résultat lors d'une recherche
+searchInput.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){
+        var first = document.querySelector('.faq-item:not([style*="none"])');
+        if(first){
+            first.classList.add('open');
+            first.querySelector('.faq-answer').style.maxHeight = first.querySelector('.faq-answer').scrollHeight + 'px';
+            first.scrollIntoView({behavior:'smooth', block:'center'});
+        }
+    }
+});
+</script>
+</body>
+</html>
+
