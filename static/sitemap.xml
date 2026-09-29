@@ -2,25 +2,31 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
-    <loc>https://nectarpro.cc/</loc>
+    <loc>https://nectar-pro.cc/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   <url>
-    <loc>https://nectarpro.cc/inscription</loc>
+    <loc>https://nectar-pro.cc/inscription</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://nectarpro.cc/market</loc>
+    <loc>https://nectar-pro.cc/market</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://nectarpro.cc/connexion</loc>
+    <loc>https://nectar-pro.cc/connexion</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://nectar-pro.cc/politique</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
