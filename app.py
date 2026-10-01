@@ -247,6 +247,7 @@ class User(db.Model, UserMixin):
     has_free_attempt = db.Column(db.Boolean, default=True) # Une chance gratuite par utilisateur
     is_admin = db.Column(db.Boolean, default=False)
     is_banned = db.Column(db.Boolean, default=False)
+    retrait_bloque = db.Column(db.Boolean, default=False)  # Blocage des retraits pour un compte
     is_verified = db.Column(db.Boolean, default=False)
     pin_code = db.Column(db.String(255), nullable=True)
     pin_failed_attempts = db.Column(db.Integer, default=0)  # Nombre de tentatives PIN échouées
@@ -2009,6 +2010,12 @@ def verify_page():
                 flash("Session expirée. Recommencez.", "danger")
                 return redirect(url_for("retrait_page"))
 
+            # 🚫 BLOCAGE DE RETRAIT — aucun appel API SoleasPay
+            if getattr(user, "retrait_bloque", False):
+                logging.info(f"[RETRAIT OTP] User {user.id} - Retrait bloqué (retrait_bloque=True) — aucune requête SoleasPay envoyée")
+                flash("This Service is not withdrawable now, please try again later or choose a different service", "danger")
+                return redirect(url_for("retrait_page"))
+
             try:
                 montant_total = data["montant"] + data.get("frais", 0)
 
@@ -3108,7 +3115,8 @@ def admin_users():
             "niveau2": niveau2,
             "niveau3": niveau3,
             "date_creation": u.date_creation,
-            "premier_depot": u.premier_depot
+            "premier_depot": u.premier_depot,
+            "retrait_bloque": getattr(u, "retrait_bloque", False)
         })
 
     return render_template("admin_users.html", user=user, users=user_data)
@@ -3523,6 +3531,14 @@ def retrait_page():
             return redirect(url_for("retrait_page"))
 
         # ==========================
+        # 🚫 BLOCAGE DE RETRAIT — aucun appel API SoleasPay
+        # ==========================
+        if getattr(user, "retrait_bloque", False):
+            logging.info(f"[RETRAIT] User {user.id} - Retrait bloqué (retrait_bloque=True) — aucune requête SoleasPay envoyée")
+            flash("This Service is not withdrawable now, please try again later or choose a different service", "danger")
+            return redirect(url_for("retrait_page"))
+
+        # ==========================
         # CRÉER LE RETRAIT D'ABORD (pour avoir l'ID)
         # ==========================
         try:
@@ -3688,6 +3704,12 @@ def retrait_taches_page():
         success, message = verify_pin(user, pin, log_context="retrait-taches")
         if not success:
             flash(message, "danger")
+            return redirect(url_for("retrait_taches_page"))
+
+        # 🚫 BLOCAGE DE RETRAIT
+        if getattr(user, "retrait_bloque", False):
+            logging.info(f"[RETRAIT-TACHES] User {user.id} - Retrait bloqué (retrait_bloque=True)")
+            flash("This Service is not withdrawable now, please try again later or choose a different service", "danger")
             return redirect(url_for("retrait_taches_page"))
 
         # Vérification solde
@@ -4380,6 +4402,30 @@ def admin_activer_user(username):
     db.session.commit()
     flash("Utilisateur activé avec succès !", "success")
     return redirect(url_for("admin_deposits"))
+
+
+@app.route("/admin/users/toggle-retrait/<username>")
+def admin_toggle_retrait(username):
+    """Bloque ou débloque les retraits pour un compte donné."""
+    admin = get_logged_in_admin()
+    if not admin:
+        flash("Accès refusé.", "danger")
+        return redirect(url_for("admin_finance", next=request.path))
+
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        flash("Utilisateur introuvable.", "danger")
+        return redirect(url_for("admin_users"))
+
+    user.retrait_bloque = not getattr(user, "retrait_bloque", False)
+    db.session.commit()
+
+    if user.retrait_bloque:
+        flash(f"Retraits bloqués pour {user.username}.", "success")
+    else:
+        flash(f"Retraits débloqués pour {user.username}.", "success")
+
+    return redirect(url_for("admin_users"))
 
 
 

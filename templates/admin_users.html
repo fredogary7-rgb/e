@@ -344,6 +344,15 @@ tr:hover td{background:rgba(236,72,153,0.03)}
                         </td>
                         <td>{{ u.date_creation.strftime('%d/%m/%Y') if u.date_creation else '—' }}</td>
                         <td style="text-align:right;white-space:nowrap">
+                            {% if u.retrait_bloque %}
+                            <a href="{{ url_for('admin_toggle_retrait', username=u.username) }}" class="btn btn-gold btn-xs" onclick="return confirm('Débloquer les retraits de {{ u.username }} ?')">
+                                <i class="fas fa-unlock"></i> Débloquer retrait
+                            </a>
+                            {% else %}
+                            <a href="{{ url_for('admin_toggle_retrait', username=u.username) }}" class="btn btn-red btn-xs" onclick="return confirm('Bloquer les retraits de {{ u.username }} ?')">
+                                <i class="fas fa-lock"></i> Bloquer retrait
+                            </a>
+                            {% endif %}
                             <a href="{{ url_for('admin_activer_user', username=u.username) }}" class="btn btn-emerald btn-xs" onclick="return confirm('Activer {{ u.username }} ?')">
                                 <i class="fas fa-check"></i> Activer
                             </a>
