@@ -3100,6 +3100,7 @@ def admin_users():
 
     page = request.args.get("page", 1, type=int)
     per_page = 100
+    q = request.args.get("q", "").strip()
 
     # ── STATS GLOBALES (SQL direct, sans charger tous les objets) ──
     total_users = User.query.count()
@@ -3121,11 +3122,24 @@ def admin_users():
         niveau2_map[p] = sum(niveau1_map.get(c, 0) for c in cs)
         niveau3_map[p] = sum(niveau2_map.get(c, 0) for c in cs)
 
-    # ── PAGINATION ──
-    pagination = User.query.order_by(User.date_creation.desc()).paginate(
+    # ── RECHERCHE (serveur, utilise les index username/email/phone) + PAGINATION ──
+    query = User.query
+    if q:
+        like = f"%{q}%"
+        query = query.filter(
+            db.or_(
+                User.username.ilike(like),
+                User.email.ilike(like),
+                User.phone.ilike(like),
+                User.parrain.ilike(like),
+            )
+        )
+
+    pagination = query.order_by(User.date_creation.desc()).paginate(
         page=page, per_page=per_page, error_out=False
     )
     users_page = pagination.items
+    result_count = pagination.total
 
     user_data = []
     for u in users_page:
@@ -3154,6 +3168,8 @@ def admin_users():
         total_pages=pagination.pages,
         has_prev=pagination.has_prev,
         has_next=pagination.has_next,
+        q=q,
+        result_count=result_count,
     )
 
 @app.route("/admin/users/inactifs")

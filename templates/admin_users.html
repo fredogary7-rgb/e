@@ -312,10 +312,14 @@ tr:hover td{background:rgba(236,72,153,0.03)}
     <div class="card">
         <h2><i class="fas fa-table"></i> Liste des utilisateurs</h2>
 
-        <!-- Barre de recherche -->
-        <div class="search-bar">
-            <input type="text" id="userSearch" placeholder="&#128269; Rechercher par nom, email ou téléphone..." onkeyup="filterUsers()">
-        </div>
+        <!-- Barre de recherche (serveur) -->
+        <form class="search-bar" method="GET" action="{{ url_for('admin_users') }}">
+            <input type="text" name="q" id="userSearch" placeholder="&#128269; Rechercher par nom, email, téléphone ou parrain..." value="{{ q }}" autocomplete="off">
+            <button type="submit" class="btn btn-pink btn-sm"><i class="fas fa-search"></i> Rechercher</button>
+            {% if q %}
+            <a href="{{ url_for('admin_users') }}" class="btn btn-gold btn-sm"><i class="fas fa-times"></i> Effacer</a>
+            {% endif %}
+        </form>
 
         {% if users %}
         <div class="table-wrap">
@@ -378,17 +382,22 @@ tr:hover td{background:rgba(236,72,153,0.03)}
             </table>
         </div>
         <div class="page-info">
-            <i class="fas fa-database"></i> {{ total_users }} utilisateur(s) au total — page {{ page }} / {{ total_pages }} ({{ users|length }} affichés)
+            <i class="fas fa-database"></i>
+            {% if q %}
+                {{ result_count }} résultat(s) pour « {{ q }} » — page {{ page }} / {{ total_pages }}
+            {% else %}
+                {{ total_users }} utilisateur(s) au total — page {{ page }} / {{ total_pages }} ({{ users|length }} affichés)
+            {% endif %}
         </div>
 
         {% if total_pages > 1 %}
         <div class="pagination">
             {% if has_prev %}
-            <a href="{{ url_for('admin_users', page=page-1) }}" class="page-btn"><i class="fas fa-chevron-left"></i> Précédent</a>
+            <a href="{{ url_for('admin_users', page=page-1, q=q) }}" class="page-btn"><i class="fas fa-chevron-left"></i> Précédent</a>
             {% endif %}
             <span class="page-current">Page {{ page }} / {{ total_pages }}</span>
             {% if has_next %}
-            <a href="{{ url_for('admin_users', page=page+1) }}" class="page-btn">Suivant <i class="fas fa-chevron-right"></i></a>
+            <a href="{{ url_for('admin_users', page=page+1, q=q) }}" class="page-btn">Suivant <i class="fas fa-chevron-right"></i></a>
             {% endif %}
         </div>
         {% endif %}
@@ -403,27 +412,6 @@ tr:hover td{background:rgba(236,72,153,0.03)}
 </div>
 
 <script>
-// ═══════════ RECHERCHE DYNAMIQUE ═══════════
-function filterUsers(){
-    const input = document.getElementById('userSearch');
-    const filter = input.value.toLowerCase();
-    const table = document.getElementById('userTable');
-    const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-
-    for(let i = 0; i < rows.length; i++){
-        const cells = rows[i].getElementsByTagName('td');
-        let match = false;
-        for(let j = 0; j < Math.min(cells.length, 3); j++){
-            const txt = cells[j].textContent || cells[j].innerText;
-            if(txt.toLowerCase().indexOf(filter) > -1){
-                match = true;
-                break;
-            }
-        }
-        rows[i].style.display = match ? '' : 'none';
-    }
-}
-
 // ═══════════ TRI PAR COLONNE ═══════════
 let sortDir = {};
 function sortTable(colIndex){
