@@ -3424,6 +3424,8 @@ def api_drimpay_initiate():
             code = 409
         elif err == "RATE_LIMITED":
             code = 429
+        elif err == "TIMEOUT":
+            code = 504
         elif err == "INTERNAL_ERROR":
             code = 500
         return jsonify({"success": False, "error": err, "message": msg}), code

@@ -80,9 +80,13 @@ def initiate_payin(amount, currency, country_code, operator, phone, order_id,
             json=payload,
             timeout=30,
         )
+    except requests.exceptions.ReadTimeout:
+        return False, {"error": "TIMEOUT", "message": "DrimPay ne répond pas (délai dépassé). Réessayez plus tard."}
+    except requests.exceptions.ConnectTimeout:
+        return False, {"error": "TIMEOUT", "message": "Connexion à DrimPay impossible (délai dépassé)."}
     except requests.RequestException as e:
         logger.error("[DRIMPAY] initiate réseau: %s", e)
-        return False, {"error": "NETWORK_ERROR", "message": str(e)}
+        return False, {"error": "NETWORK_ERROR", "message": "Erreur de connexion au service de paiement."}
 
     try:
         data = r.json()
@@ -106,8 +110,10 @@ def get_payin_status(reference):
             headers=_headers(),
             timeout=30,
         )
+    except requests.exceptions.ReadTimeout:
+        return False, {"error": "TIMEOUT", "message": "DrimPay ne répond pas (délai dépassé)."}
     except requests.RequestException as e:
-        return False, {"error": "NETWORK_ERROR", "message": str(e)}
+        return False, {"error": "NETWORK_ERROR", "message": "Erreur de connexion au service de paiement."}
 
     try:
         data = r.json()
