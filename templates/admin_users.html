@@ -218,6 +218,21 @@ tr:hover td{background:rgba(236,72,153,0.03)}
     color:var(--muted);font-weight:600;
 }
 
+/* ██████ PAGINATION ██████ */
+.pagination{
+    display:flex;align-items:center;justify-content:center;gap:14px;
+    padding:10px 0 4px;flex-wrap:wrap;
+}
+.page-btn{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:8px 16px;border-radius:var(--radius-sm);
+    background:var(--glass);border:1px solid var(--border);
+    color:var(--accent2);text-decoration:none;font-weight:700;font-size:12px;
+    transition:all .2s;
+}
+.page-btn:hover{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+.page-current{font-size:12px;font-weight:700;color:var(--muted)}
+
 /* ██████ RESPONSIVE ██████ */
 @media(max-width:768px){
     .topbar{padding:10px 16px}
@@ -266,28 +281,28 @@ tr:hover td{background:rgba(236,72,153,0.03)}
         <div class="stat-card">
             <div class="stat-icon pink"><i class="fas fa-users"></i></div>
             <div class="stat-info">
-                <div class="stat-val">{{ users|length }}</div>
+                <div class="stat-val">{{ total_users }}</div>
                 <div class="stat-lbl">Total utilisateurs</div>
             </div>
         </div>
         <div class="stat-card">
             <div class="stat-icon emerald"><i class="fas fa-user-check"></i></div>
             <div class="stat-info">
-                <div class="stat-val">{{ users|selectattr('premier_depot','equalto',true)|list|length }}</div>
+                <div class="stat-val">{{ total_actifs }}</div>
                 <div class="stat-lbl">Actifs (1er dépôt)</div>
             </div>
         </div>
         <div class="stat-card">
             <div class="stat-icon gold"><i class="fas fa-user-clock"></i></div>
             <div class="stat-info">
-                <div class="stat-val">{{ users|selectattr('premier_depot','equalto',false)|list|length }}</div>
+                <div class="stat-val">{{ total_inactifs }}</div>
                 <div class="stat-lbl">Inactifs</div>
             </div>
         </div>
         <div class="stat-card">
             <div class="stat-icon sky"><i class="fas fa-sitemap"></i></div>
             <div class="stat-info">
-                <div class="stat-val">{{ users|sum(attribute='niveau1') }}</div>
+                <div class="stat-val">{{ total_filleuls }}</div>
                 <div class="stat-lbl">Total Filleuls Niv.1</div>
             </div>
         </div>
@@ -363,8 +378,20 @@ tr:hover td{background:rgba(236,72,153,0.03)}
             </table>
         </div>
         <div class="page-info">
-            <i class="fas fa-database"></i> {{ users|length }} utilisateur(s) affiché(s)
+            <i class="fas fa-database"></i> {{ total_users }} utilisateur(s) au total — page {{ page }} / {{ total_pages }} ({{ users|length }} affichés)
         </div>
+
+        {% if total_pages > 1 %}
+        <div class="pagination">
+            {% if has_prev %}
+            <a href="{{ url_for('admin_users', page=page-1) }}" class="page-btn"><i class="fas fa-chevron-left"></i> Précédent</a>
+            {% endif %}
+            <span class="page-current">Page {{ page }} / {{ total_pages }}</span>
+            {% if has_next %}
+            <a href="{{ url_for('admin_users', page=page+1) }}" class="page-btn">Suivant <i class="fas fa-chevron-right"></i></a>
+            {% endif %}
+        </div>
+        {% endif %}
         {% else %}
         <div class="empty-state">
             <i class="fas fa-users-slash"></i>

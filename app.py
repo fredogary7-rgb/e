@@ -3098,28 +3098,63 @@ def admin_users():
         flash("Accès refusé.", "danger")
         return redirect(url_for("admin_finance", next=request.path))
 
-    users = User.query.order_by(User.date_creation.desc()).all()
+    page = request.args.get("page", 1, type=int)
+    per_page = 100
+
+    # ── STATS GLOBALES (SQL direct, sans charger tous les objets) ──
+    total_users = User.query.count()
+    total_actifs = User.query.filter_by(premier_depot=True).count()
+    total_inactifs = User.query.filter_by(premier_depot=False).count()
+    total_filleuls = User.query.filter(User.parrain.isnot(None)).count()
+
+    # ── NIVEAUX 1/2/3 calculés en UNE seule passe (léger) ──
+    pairs = db.session.query(User.username, User.parrain).all()
+    children = {}
+    for username, parrain in pairs:
+        if parrain:
+            children.setdefault(parrain, []).append(username)
+
+    niveau1_map = {p: len(cs) for p, cs in children.items()}
+    niveau2_map = {}
+    niveau3_map = {}
+    for p, cs in children.items():
+        niveau2_map[p] = sum(niveau1_map.get(c, 0) for c in cs)
+        niveau3_map[p] = sum(niveau2_map.get(c, 0) for c in cs)
+
+    # ── PAGINATION ──
+    pagination = User.query.order_by(User.date_creation.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+    users_page = pagination.items
 
     user_data = []
-    for u in users:
-        niveau1 = u.downlines.count()
-        niveau2 = sum([child.downlines.count() for child in u.downlines])
-        niveau3 = sum([sum([c.downlines.count() for c in child.downlines]) for child in u.downlines])
-
+    for u in users_page:
         user_data.append({
             "username": u.username,
             "email": u.email,
             "phone": u.phone,
             "parrain": u.parrain if u.parrain else "—",
-            "niveau1": niveau1,
-            "niveau2": niveau2,
-            "niveau3": niveau3,
+            "niveau1": niveau1_map.get(u.username, 0),
+            "niveau2": niveau2_map.get(u.username, 0),
+            "niveau3": niveau3_map.get(u.username, 0),
             "date_creation": u.date_creation,
             "premier_depot": u.premier_depot,
             "retrait_bloque": getattr(u, "retrait_bloque", False)
         })
 
-    return render_template("admin_users.html", user=user, users=user_data)
+    return render_template(
+        "admin_users.html",
+        user=user,
+        users=user_data,
+        total_users=total_users,
+        total_actifs=total_actifs,
+        total_inactifs=total_inactifs,
+        total_filleuls=total_filleuls,
+        page=page,
+        total_pages=pagination.pages,
+        has_prev=pagination.has_prev,
+        has_next=pagination.has_next,
+    )
 
 @app.route("/admin/users/inactifs")
 def admin_users_inactifs():
