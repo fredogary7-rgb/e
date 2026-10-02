@@ -3360,6 +3360,115 @@ def faq():
     user = get_logged_in_user()
     return render_template("faq.html", user=user)
 
+
+# =====================================================================
+# 💳 DRIMPAY — Page de test Pay-in (indépendant de SoleasPay)
+# =====================================================================
+
+@app.route("/pay")
+def pay_drimpay_page():
+    """Page de test de paiement DrimPay."""
+    user = get_logged_in_user()
+    return render_template("pay_drimpay.html", user=user)
+
+
+@app.route("/api/drimpay/initiate", methods=["POST"])
+def api_drimpay_initiate():
+    """Initie un pay-in DrimPay depuis le backend (jamais côté navigateur)."""
+    import drimpay
+
+    data = request.get_json(silent=True) or request.form
+
+    amount = data.get("amount")
+    currency = data.get("currency", "XOF")
+    country_code = (data.get("country_code") or "").upper()
+    operator = (data.get("operator") or "").lower()
+    phone = data.get("phone") or ""
+    description = data.get("description", "")
+    operator_otp = data.get("operator_otp", "")
+
+    if not amount or not country_code or not operator or not phone:
+        return jsonify({"success": False, "error": "INVALID_REQUEST",
+                        "message": "Champs manquants."}), 400
+
+    # order_id unique pour l'idempotence
+    order_id = f"NP-{uuid.uuid4().hex[:20]}"
+
+    # URL de webhook public
+    webhook_url = url_for("webhook_drimpay", _external=True)
+
+    success, resp = drimpay.initiate_payin(
+        amount=amount,
+        currency=currency,
+        country_code=country_code,
+        operator=operator,
+        phone=phone,
+        order_id=order_id,
+        webhook_url=webhook_url,
+        description=description or f"Paiement NectarPro {order_id}",
+        expires_in_minutes=5,
+        operator_otp=operator_otp or None,
+    )
+
+    if not success:
+        code = 400
+        err = (resp or {}).get("error", "INTERNAL_ERROR")
+        msg = (resp or {}).get("message", "Erreur DrimPay.")
+        if err in ("UNAUTHORIZED",):
+            code = 401
+        elif err in ("GEO_ISOLATION_VIOLATION", "LIMIT_EXCEEDED"):
+            code = 403
+        elif err == "NOT_FOUND":
+            code = 404
+        elif err == "DUPLICATE_ORDER":
+            code = 409
+        elif err == "RATE_LIMITED":
+            code = 429
+        elif err == "INTERNAL_ERROR":
+            code = 500
+        return jsonify({"success": False, "error": err, "message": msg}), code
+
+    return jsonify({"success": True, **resp})
+
+
+@app.route("/api/drimpay/status/<reference>")
+def api_drimpay_status(reference):
+    """Polling du statut d'un paiement DrimPay."""
+    import drimpay
+
+    success, resp = drimpay.get_payin_status(reference)
+    if not success:
+        code = 404 if (resp or {}).get("error") == "NOT_FOUND" else 400
+        return jsonify({"success": False, **resp}), code
+
+    return jsonify({"success": True, **resp})
+
+
+@app.route("/webhooks/drimpay", methods=["POST"])
+def webhook_drimpay():
+    """Reçoit les notifications de statut DrimPay (signature HMAC vérifiée)."""
+    import drimpay
+
+    raw_body = request.get_data(as_text=True)
+    signature = request.headers.get("X-DrimPay-Signature", "")
+
+    if not drimpay.verify_webhook_signature(raw_body, signature):
+        logging.warning("[DRIMPAY] Webhook signature invalide.")
+        return jsonify({"error": "INVALID_SIGNATURE"}), 401
+
+    event = request.get_json(silent=True) or {}
+    reference = event.get("reference")
+    status = event.get("status")
+    order_id = event.get("order_id")
+    logging.info("[DRIMPAY] Webhook reçu: event=%s ref=%s order_id=%s status=%s",
+                 event.get("event"), reference, order_id, status)
+
+    # TODO: brancher ici la logique métier (créditer l'utilisateur, marquer le
+    # paiement comme payé, etc.) une fois le test validé.
+
+    return jsonify({"received": True}), 200
+
+
 def get_service_name(service_id):
     """
     Cherche le nom du service dans tous les pays pour un ID donné.

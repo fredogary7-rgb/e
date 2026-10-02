@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paiement DrimPay — NectarPro</title>
+<link rel="icon" href="/static/images/net.jpg" type="image/jpeg">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+:root{
+    --bg:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 30%,#fbcfe8 60%,#fce7f3 100%);
+    --accent:#db2777;--accent2:#ec4899;
+    --emerald:#10b981;--amber:#f59e0b;--red:#ef4444;
+    --text:#0f172a;--text2:#1f2937;--muted:#64748b;
+    --border:rgba(236,72,153,0.2);
+    --shadow:0 8px 32px rgba(236,72,153,0.12);
+    --radius:18px;
+}
+body{background:var(--bg);min-height:100vh;min-height:100dvh;color:var(--text);font-style:italic;display:flex;align-items:center;justify-content:center;padding:20px;overflow-x:hidden}
+.card{background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:24px;width:100%;max-width:480px;padding:32px 28px;box-shadow:var(--shadow)}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.top .back{color:var(--accent2);text-decoration:none;font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px}
+.top .brand{font-size:20px;font-weight:900}
+.top .brand .n{color:var(--accent2)}
+.top .brand .p{color:var(--accent)}
+h1{font-size:20px;font-weight:800;margin-bottom:4px}
+.sub{font-size:13px;color:var(--muted);margin-bottom:24px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px}
+.field input,.field select{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:12px;font-size:14px;font-weight:500;color:var(--text);background:rgba(255,255,255,0.8);outline:none;transition:border-color .2s}
+.field input:focus,.field select:focus{border-color:var(--accent2)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.otp-hint{display:none;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:10px 14px;font-size:12px;color:#92400e;margin-bottom:16px}
+.otp-hint.show{display:block}
+.otp-field{display:none}
+.otp-field.show{display:block}
+.pay-btn{width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;font-weight:800;font-size:15px;cursor:pointer;transition:transform .2s,box-shadow .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.pay-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(219,39,119,0.4)}
+.pay-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.status-box{display:none;margin-top:20px;padding:18px;border-radius:16px;text-align:center;font-weight:600;font-size:14px}
+.status-box.show{display:block}
+.status-box.pending{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:#92400e}
+.status-box.success{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:#065f46}
+.status-box.failed{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#991b1b}
+.spinner{width:36px;height:36px;border:3px solid rgba(219,39,119,0.2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.wave-link{display:inline-block;margin-top:10px;padding:12px 20px;border-radius:12px;background:#1dc8ff;color:#fff;font-weight:700;text-decoration:none;font-size:14px}
+</style>
+</head>
+<body>
+
+<div class="card">
+    <div class="top">
+        <a href="/dashboard" class="back"><i class="fa fa-arrow-left"></i> Retour</a>
+        <div class="brand"><span class="n">Nectar</span><span class="p">Pro</span></div>
+    </div>
+
+    <h1>💳 Paiement DrimPay</h1>
+    <p class="sub">Page de test — collecte Mobile Money (pay-in) via DrimPay.</p>
+
+    <form id="payForm">
+        <div class="field">
+            <label>Montant (FCFA)</label>
+            <input type="number" id="amount" name="amount" value="100" min="1" required>
+        </div>
+
+        <div class="row">
+            <div class="field">
+                <label>Pays</label>
+                <select id="country" name="country_code" required>
+                    <option value="">— Choisir —</option>
+                    <option value="TG">🇹🇬 Togo</option>
+                    <option value="BJ">🇧🇯 Bénin</option>
+                    <option value="CM">🇨🇲 Cameroun</option>
+                    <option value="BF">🇧🇫 Burkina Faso</option>
+                    <option value="ML">🇲🇱 Mali</option>
+                    <option value="SN">🇸🇳 Sénégal</option>
+                    <option value="CI">🇨🇮 Côte d'Ivoire</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>Opérateur</label>
+                <select id="operator" name="operator" required>
+                    <option value="">— Choisir —</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="field">
+            <label>Numéro Mobile Money (format international)</label>
+            <input type="tel" id="phone" name="phone" placeholder="+22890000000" required>
+        </div>
+
+        <div class="otp-hint" id="otpHint">
+            <i class="fa fa-info-circle"></i> Pour Orange Money dans ce pays, un code OTP USSD est requis.
+        </div>
+
+        <div class="field otp-field" id="otpField">
+            <label>Code OTP Orange Money</label>
+            <input type="text" id="otp" name="operator_otp" placeholder="123456" inputmode="numeric">
+        </div>
+
+        <button type="submit" class="pay-btn" id="payBtn">
+            <i class="fa fa-mobile-screen"></i> Payer maintenant
+        </button>
+    </form>
+
+    <div class="status-box" id="statusBox">
+        <div id="statusIcon"></div>
+        <div id="statusText"></div>
+        <a href="#" class="wave-link" id="waveLink" target="_blank" style="display:none;">Ouvrir Wave</a>
+    </div>
+</div>
+
+<script>
+const OPERATORS = {
+    TG: [['tmoney','TMoney'], ['moov','Moov Money']],
+    BJ: [['mtn','MTN MoMo'], ['moov','Moov Money']],
+    CM: [['mtn','MTN MoMo'], ['orange','Orange Money']],
+    BF: [['orange','Orange Money'], ['moov','Moov Money']],
+    ML: [['orange','Orange Money'], ['moov','Moov Money']],
+    SN: [['wave','Wave'], ['orange','Orange Money'], ['wizall','Wizall']],
+    CI: [['mtn','MTN MoMo'], ['orange','Orange Money'], ['wave','Wave']]
+};
+const OTP_COUNTRIES = ['CI','SN','BF','ML'];
+
+const countrySel = document.getElementById('country');
+const operatorSel = document.getElementById('operator');
+const otpHint = document.getElementById('otpHint');
+const otpField = document.getElementById('otpField');
+const statusBox = document.getElementById('statusBox');
+const statusIcon = document.getElementById('statusIcon');
+const statusText = document.getElementById('statusText');
+const waveLink = document.getElementById('waveLink');
+const payBtn = document.getElementById('payBtn');
+
+countrySel.addEventListener('change', function(){
+    const c = this.value;
+    operatorSel.innerHTML = '<option value="">— Choisir —</option>';
+    if (OPERATORS[c]) {
+        OPERATORS[c].forEach(function(op){
+            const o = document.createElement('option');
+            o.value = op[0];
+            o.textContent = op[1];
+            operatorSel.appendChild(o);
+        });
+    }
+    toggleOtp();
+});
+operatorSel.addEventListener('change', toggleOtp);
+
+function toggleOtp(){
+    const c = countrySel.value;
+    const op = operatorSel.value;
+    const need = OTP_COUNTRIES.includes(c) && op === 'orange';
+    otpHint.classList.toggle('show', need);
+    otpField.classList.toggle('show', need);
+    if (!need) document.getElementById('otp').value = '';
+}
+
+function showStatus(kind, iconHtml, text){
+    statusBox.className = 'status-box show ' + kind;
+    statusIcon.innerHTML = iconHtml;
+    statusText.textContent = text;
+    waveLink.style.display = 'none';
+}
+
+document.getElementById('payForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const amount = document.getElementById('amount').value;
+    const country_code = countrySel.value;
+    const operator = operatorSel.value;
+    const phone = document.getElementById('phone').value.trim();
+    const operator_otp = document.getElementById('otp').value.trim();
+
+    if (!amount || !country_code || !operator || !phone) {
+        alert('Veuillez remplir tous les champs.');
+        return;
+    }
+
+    payBtn.disabled = true;
+    showStatus('pending', '<div class="spinner"></div>', 'Envoi de la demande...');
+
+    try {
+        const res = await fetch('/api/drimpay/initiate', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                amount: parseInt(amount, 10),
+                currency: country_code === 'CM' ? 'XAF' : 'XOF',
+                country_code: country_code,
+                operator: operator,
+                phone: phone,
+                operator_otp: operator_otp || null,
+                description: 'Test NectarPro DrimPay'
+            })
+        });
+        const data = await res.json();
+
+        if (!data.success) {
+            showStatus('failed', '<i class="fa fa-times-circle" style="font-size:32px;color:var(--red)"></i>',
+                data.message || data.error || 'Erreur inconnue');
+            payBtn.disabled = false;
+            return;
+        }
+
+        if (data.payment_url) {
+            waveLink.href = data.payment_url;
+            waveLink.style.display = 'inline-block';
+            showStatus('pending', '<i class="fa fa-qrcode" style="font-size:32px"></i>',
+                (data.message || 'Ouvrez le lien Wave pour confirmer le paiement') + ' — référence ' + data.reference);
+        } else {
+            showStatus('pending', '<div class="spinner"></div>',
+                'Confirmez le paiement sur votre téléphone — référence ' + data.reference);
+        }
+
+        pollStatus(data.reference);
+
+    } catch (err) {
+        showStatus('failed', '<i class="fa fa-times-circle" style="font-size:32px;color:var(--red)"></i>',
+            'Erreur réseau : ' + err.message);
+        payBtn.disabled = false;
+    }
+});
+
+async function pollStatus(reference){
+    const terminal = ['success','failed','expired','cancelled','reversed'];
+    let attempts = 0;
+    const timer = setInterval(async function(){
+        attempts++;
+        try {
+            const res = await fetch('/api/drimpay/status/' + reference);
+            const data = await res.json();
+            const st = data.status;
+
+            if (terminal.includes(st)) {
+                clearInterval(timer);
+                payBtn.disabled = false;
+                if (st === 'success') {
+                    showStatus('success', '<i class="fa fa-check-circle" style="font-size:32px;color:var(--emerald)"></i>', 'Paiement confirmé ✓');
+                } else {
+                    showStatus('failed', '<i class="fa fa-times-circle" style="font-size:32px;color:var(--red)"></i>',
+                        'Paiement ' + st + (data.failure_reason ? ' : ' + data.failure_reason : ''));
+                }
+            } else if (st === 'processing') {
+                showStatus('pending', '<div class="spinner"></div>', 'Paiement en cours de traitement...');
+            } else if (st === 'pending') {
+                showStatus('pending', '<div class="spinner"></div>', 'Confirmez le paiement sur votre téléphone...');
+            }
+        } catch (err) {
+            // continue polling
+        }
+        if (attempts > 24) {
+            clearInterval(timer);
+            payBtn.disabled = false;
+        }
+    }, 5000);
+}
+</script>
+
+</body>
+</html>
