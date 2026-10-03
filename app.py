@@ -2810,60 +2810,79 @@ from urllib.parse import urlencode
 # ============================================================
 @app.route("/drimpay/webhook", methods=["POST"])
 def drimpay_webhook():
-
     import logging
     from datetime import datetime
 
     logger = logging.getLogger(__name__)
 
-    # --------------------------------------------------------
-    # 1. Récupérer le corps BRUT
-    # --------------------------------------------------------
+    # =========================================================
+    # 1. CORPS BRUT
+    # =========================================================
+
     raw_body = request.get_data()
 
-    # --------------------------------------------------------
-    # 2. Récupérer la signature DrimPay
-    # --------------------------------------------------------
+    # IMPORTANT :
+    # Ne jamais utiliser request.json ou request.get_json()
+    # pour calculer la signature avant sa vérification.
+    #
+    # DrimPay signe le corps HTTP brut.
+
+    # =========================================================
+    # 2. HEADERS DRIMPAY
+    # =========================================================
+
     signature = request.headers.get("X-DrimPay-Signature")
+    timestamp_header = request.headers.get("X-DrimPay-Timestamp")
+    event_header = request.headers.get("X-DrimPay-Event")
 
-    print("=" * 60)
-    print("WEBHOOK DRIMPAY RECU")
-    print("EVENT HEADER :", request.headers.get("X-DrimPay-Event"))
-    print("TIMESTAMP HEADER :", request.headers.get("X-DrimPay-Timestamp"))
-    print("SIGNATURE :", signature)
-    print("RAW BODY :", raw_body)
-    print("=" * 60)
+    logger.info(
+        "[DRIMPAY WEBHOOK] Requête reçue | "
+        "method=%s | path=%s | body_length=%s",
+        request.method,
+        request.path,
+        len(raw_body)
+    )
 
-    # --------------------------------------------------------
-    # 3. Vérification HMAC-SHA256
+    # IMPORTANT :
+    # On NE LOG PAS le secret.
     #
-    # La fonction verify_webhook_signature() vérifie :
-    #
-    # HMAC_SHA256(
-    #     DRIMPAY_WEBHOOK_SECRET,
-    #     timestamp + "." + raw_body
-    # )
-    #
-    # + protection anti-rejeu de 5 minutes
-    # --------------------------------------------------------
+    # On peut cependant afficher la signature reçue pour diagnostic.
+    logger.info(
+        "[DRIMPAY WEBHOOK] Headers | "
+        "event=%s | timestamp=%s | signature_present=%s",
+        event_header,
+        timestamp_header,
+        bool(signature)
+    )
+
+    # =========================================================
+    # 3. VÉRIFICATION HMAC
+    # =========================================================
+
     if not verify_webhook_signature(
         raw_body,
-        signature
+        signature,
+        timestamp_header=timestamp_header
     ):
         logger.warning(
-            "[DRIMPAY WEBHOOK] Signature invalide."
+            "[DRIMPAY WEBHOOK] Signature invalide -> HTTP 403"
         )
 
         return jsonify({
             "error": "Unauthorized"
         }), 403
 
-    # --------------------------------------------------------
-    # 4. Lecture du JSON
-    # --------------------------------------------------------
+    logger.info(
+        "[DRIMPAY WEBHOOK] Signature validée."
+    )
+
+    # =========================================================
+    # 4. JSON
+    # =========================================================
+
     data = request.get_json(silent=True)
 
-    if not data:
+    if not isinstance(data, dict):
         logger.error(
             "[DRIMPAY WEBHOOK] JSON invalide."
         )
@@ -2872,11 +2891,10 @@ def drimpay_webhook():
             "error": "Invalid JSON"
         }), 400
 
-    print("DRIMPAY JSON :", data)
+    # =========================================================
+    # 5. INFORMATIONS DU WEBHOOK
+    # =========================================================
 
-    # --------------------------------------------------------
-    # 5. Récupération des informations
-    # --------------------------------------------------------
     event = str(
         data.get("event", "")
     ).lower().strip()
@@ -2895,30 +2913,25 @@ def drimpay_webhook():
     operator = data.get("operator")
     phone = data.get("phone")
 
-    print("EVENT       :", event)
-    print("REFERENCE   :", reference)
-    print("ORDER ID    :", order_id)
-    print("STATUS      :", status)
-    print("AMOUNT      :", amount)
-    print("CURRENCY    :", currency)
-    print("COUNTRY     :", country_code)
-    print("OPERATOR    :", operator)
-    print("PHONE       :", phone)
-
     logger.info(
         "[DRIMPAY WEBHOOK] "
-        "event=%s reference=%s order_id=%s status=%s",
+        "event=%s reference=%s order_id=%s status=%s "
+        "amount=%s currency=%s country=%s operator=%s",
         event,
         reference,
         order_id,
-        status
+        status,
+        amount,
+        currency,
+        country_code,
+        operator
     )
 
-    # --------------------------------------------------------
-    # 6. Vérification de order_id
-    # --------------------------------------------------------
-    if not order_id:
+    # =========================================================
+    # 6. ORDER ID
+    # =========================================================
 
+    if not order_id:
         logger.error(
             "[DRIMPAY WEBHOOK] order_id absent."
         )
@@ -2927,14 +2940,9 @@ def drimpay_webhook():
             "error": "Missing order_id"
         }), 400
 
-    # Notre dashboard crée :
-    #
-    # E-123
-    # E-124
-    # E-125
-    #
-    if not str(order_id).startswith("E-"):
+    order_id = str(order_id).strip()
 
+    if not order_id.startswith("E-"):
         logger.error(
             "[DRIMPAY WEBHOOK] order_id invalide : %s",
             order_id
@@ -2944,20 +2952,19 @@ def drimpay_webhook():
             "error": "Invalid order_id"
         }), 400
 
-    # --------------------------------------------------------
-    # 7. Extraire l'ID du dépôt
-    # --------------------------------------------------------
-    try:
+    # =========================================================
+    # 7. EXTRACTION ID DEPOT
+    # =========================================================
 
+    try:
         depot_id = int(
-            str(order_id).split("-", 1)[1]
+            order_id.split("-", 1)[1]
         )
 
     except (ValueError, IndexError):
-
         logger.error(
             "[DRIMPAY WEBHOOK] "
-            "Impossible de convertir order_id : %s",
+            "Impossible de convertir order_id=%s",
             order_id
         )
 
@@ -2965,13 +2972,13 @@ def drimpay_webhook():
             "error": "Invalid depot ID"
         }), 400
 
-    # --------------------------------------------------------
-    # 8. Recherche du dépôt
-    # --------------------------------------------------------
+    # =========================================================
+    # 8. RECHERCHE DEPOT
+    # =========================================================
+
     depot = Depot.query.get(depot_id)
 
     if not depot:
-
         logger.error(
             "[DRIMPAY WEBHOOK] "
             "DEPOT NOT FOUND : %s",
@@ -2982,14 +2989,19 @@ def drimpay_webhook():
             "error": "Depot not found"
         }), 404
 
-    print("DEPOT TROUVE :", depot.id)
-    print("USER ID      :", depot.user_id)
-    print("MONTANT      :", depot.montant)
-    print("STATUT       :", depot.statut)
+    logger.info(
+        "[DRIMPAY WEBHOOK] "
+        "Depot trouvé : id=%s user_id=%s montant=%s statut=%s",
+        depot.id,
+        depot.user_id,
+        depot.montant,
+        depot.statut
+    )
 
-    # --------------------------------------------------------
-    # 9. Vérification du montant
-    # --------------------------------------------------------
+    # =========================================================
+    # 9. VÉRIFICATION MONTANT
+    # =========================================================
+
     try:
         webhook_amount = int(amount)
     except (TypeError, ValueError):
@@ -3001,8 +3013,8 @@ def drimpay_webhook():
 
             logger.error(
                 "[DRIMPAY WEBHOOK] "
-                "Montant différent ! "
-                "Depot=%s DrimPay=%s",
+                "Montant différent : "
+                "depot=%s drimpay=%s",
                 depot.montant,
                 webhook_amount
             )
@@ -3011,29 +3023,33 @@ def drimpay_webhook():
                 "error": "Amount mismatch"
             }), 400
 
-    # --------------------------------------------------------
-    # 10. Vérification de la devise
-    # --------------------------------------------------------
-    if currency and str(currency).upper() != "XOF":
+    # =========================================================
+    # 10. VÉRIFICATION DEVISE
+    # =========================================================
 
-        logger.error(
-            "[DRIMPAY WEBHOOK] "
-            "Devise inattendue : %s",
-            currency
-        )
+    if currency:
 
-        return jsonify({
-            "error": "Invalid currency"
-        }), 400
+        if str(currency).upper() != "XOF":
 
-    # --------------------------------------------------------
-    # 11. Éviter le double traitement
-    # --------------------------------------------------------
+            logger.error(
+                "[DRIMPAY WEBHOOK] "
+                "Devise inattendue : %s",
+                currency
+            )
+
+            return jsonify({
+                "error": "Invalid currency"
+            }), 400
+
+    # =========================================================
+    # 11. IDEMPOTENCE
+    # =========================================================
+
     if depot.statut == "success":
 
         logger.info(
             "[DRIMPAY WEBHOOK] "
-            "Dépôt déjà traité : %s",
+            "Dépôt déjà marqué success : %s",
             depot.id
         )
 
@@ -3041,26 +3057,19 @@ def drimpay_webhook():
             "received": True
         }), 200
 
-    # --------------------------------------------------------
-    # Sauvegarder l'ancien statut
-    # --------------------------------------------------------
     old_depot_statut = depot.statut
 
-    # ========================================================
-    # PAYIN SUCCESS
-    # ========================================================
+    # =========================================================
+    # 12. PAYIN SUCCESS
+    # =========================================================
+
     if event == "payin.success" and status == "success":
 
         depot.statut = "success"
 
-        # Référence officielle DrimPay
         if reference:
-
             depot.reference = reference
 
-        # ----------------------------------------------
-        # Utilisateur
-        # ----------------------------------------------
         user = db.session.get(
             User,
             depot.user_id
@@ -3068,12 +3077,12 @@ def drimpay_webhook():
 
         if user:
 
-            # Premier dépôt
             user.premier_depot = True
 
-            # ------------------------------------------
+            # -------------------------------------------------
             # Commission parrain
-            # ------------------------------------------
+            # -------------------------------------------------
+
             if user.parrain:
 
                 try:
@@ -3091,9 +3100,17 @@ def drimpay_webhook():
                         e
                     )
 
-    # ========================================================
-    # PAYIN FAILED
-    # ========================================================
+        logger.info(
+            "[DRIMPAY WEBHOOK] "
+            "PAYIN SUCCESS : depot=%s reference=%s",
+            depot.id,
+            reference
+        )
+
+    # =========================================================
+    # 13. PAYIN FAILED
+    # =========================================================
+
     elif event == "payin.failed" and status == "failed":
 
         depot.statut = "failed"
@@ -3103,13 +3120,15 @@ def drimpay_webhook():
 
         logger.warning(
             "[DRIMPAY WEBHOOK] "
-            "Paiement échoué : depot=%s",
-            depot.id
+            "PAYIN FAILED : depot=%s reference=%s",
+            depot.id,
+            reference
         )
 
-    # ========================================================
-    # PAYIN EXPIRED
-    # ========================================================
+    # =========================================================
+    # 14. PAYIN EXPIRED
+    # =========================================================
+
     elif event == "payin.expired" and status == "expired":
 
         depot.statut = "failed"
@@ -3119,13 +3138,15 @@ def drimpay_webhook():
 
         logger.warning(
             "[DRIMPAY WEBHOOK] "
-            "Paiement expiré : depot=%s",
-            depot.id
+            "PAYIN EXPIRED : depot=%s reference=%s",
+            depot.id,
+            reference
         )
 
-    # ========================================================
-    # PAYIN PROCESSING
-    # ========================================================
+    # =========================================================
+    # 15. PAYIN PROCESSING
+    # =========================================================
+
     elif event == "payin.processing" and status == "processing":
 
         depot.statut = "pending"
@@ -3135,17 +3156,17 @@ def drimpay_webhook():
 
         logger.info(
             "[DRIMPAY WEBHOOK] "
-            "Paiement en traitement : depot=%s",
-            depot.id
+            "PAYIN PROCESSING : depot=%s reference=%s",
+            depot.id,
+            reference
         )
 
-    # ========================================================
-    # PAYIN REVERSED
-    # ========================================================
+    # =========================================================
+    # 16. PAYIN REVERSED
+    # =========================================================
+
     elif event == "payin.reversed" and status == "reversed":
 
-        # Le paiement était auparavant réussi
-        # mais DrimPay indique maintenant un reverse/refund.
         depot.statut = "failed"
 
         if reference:
@@ -3153,40 +3174,58 @@ def drimpay_webhook():
 
         logger.warning(
             "[DRIMPAY WEBHOOK] "
-            "Paiement reversé : depot=%s",
-            depot.id
+            "PAYIN REVERSED : depot=%s reference=%s",
+            depot.id,
+            reference
         )
 
-    # ========================================================
-    # ÉVÉNEMENT INCONNU
-    # ========================================================
+    # =========================================================
+    # 17. EVENEMENT INCONNU
+    # =========================================================
+
     else:
 
         logger.info(
             "[DRIMPAY WEBHOOK] "
-            "Événement reçu mais non traité : "
+            "Événement ignoré : "
             "event=%s status=%s depot=%s",
             event,
             status,
             depot.id
         )
 
-        # On ne modifie PAS le dépôt pour un événement
-        # inattendu.
         return jsonify({
             "received": True,
             "ignored": True
         }), 200
 
-    # --------------------------------------------------------
-    # 12. Synchronisation
-    # --------------------------------------------------------
+    # =========================================================
+    # 18. LAST SYNC
+    # =========================================================
+
     depot.last_sync = datetime.utcnow()
 
-    # --------------------------------------------------------
-    # 13. Sauvegarde
-    # --------------------------------------------------------
-    db.session.commit()
+    # =========================================================
+    # 19. COMMIT
+    # =========================================================
+
+    try:
+
+        db.session.commit()
+
+    except Exception as e:
+
+        db.session.rollback()
+
+        logger.exception(
+            "[DRIMPAY WEBHOOK] "
+            "Erreur DB pendant commit : %s",
+            e
+        )
+
+        return jsonify({
+            "error": "Database error"
+        }), 500
 
     logger.info(
         "[DRIMPAY WEBHOOK] "
@@ -3195,16 +3234,10 @@ def drimpay_webhook():
         depot.statut
     )
 
-    print(
-        "DEPOT UPDATED :",
-        depot.id,
-        "->",
-        depot.statut
-    )
+    # =========================================================
+    # 20. NOTIFICATIONS
+    # =========================================================
 
-    # ========================================================
-    # 14. NOTIFICATIONS
-    # ========================================================
     if old_depot_statut != depot.statut:
 
         try:
@@ -3233,9 +3266,10 @@ def drimpay_webhook():
                 e
             )
 
-    # ========================================================
-    # 15. Réponse à DrimPay
-    # ========================================================
+    # =========================================================
+    # 21. RÉPONSE DRIMPAY
+    # =========================================================
+
     return jsonify({
         "received": True
     }), 200
