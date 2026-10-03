@@ -130,47 +130,187 @@ def get_payin_status(reference):
 
     return True, data
 
-
-def verify_webhook_signature(raw_body, signature_header, tolerance=300):
-    """Vérifie la signature HMAC-SHA256 d'un webhook DrimPay.
-
-    signature_header: "t={timestamp},v1={hex_signature}"
-    raw_body: corps brut de la requête (str/bytes)
+def verify_webhook_signature(
+    raw_body,
+    signature_header,
+    timestamp_header=None,
+    tolerance=300
+):
     """
+    Vérifie la signature HMAC-SHA256 des webhooks DrimPay.
+
+    Signature DrimPay :
+
+        HMAC_SHA256(
+            DRIMPAY_WEBHOOK_SECRET,
+            timestamp + "." + raw_body
+        )
+
+    Header :
+        X-DrimPay-Signature: t=TIMESTAMP,v1=SIGNATURE
+
+    Header complémentaire :
+        X-DrimPay-Timestamp
+    """
+
+    # =========================================================
+    # 1. SECRET
+    # =========================================================
+
     if not WEBHOOK_SECRET:
-        logger.warning("[DRIMPAY] Webhook secret non configuré.")
+        logger.error(
+            "[DRIMPAY] DRIMPAY_WEBHOOK_SECRET absent."
+        )
         return False
+
+    # =========================================================
+    # 2. SIGNATURE
+    # =========================================================
 
     if not signature_header:
+        logger.error(
+            "[DRIMPAY] Header X-DrimPay-Signature absent."
+        )
         return False
 
-    parts = {}
-    for part in signature_header.split(","):
-        if "=" in part:
-            k, v = part.split("=", 1)
-            parts[k.strip()] = v.strip()
+    # =========================================================
+    # 3. RAW BODY
+    # =========================================================
 
-    timestamp = parts.get("t")
-    signature = parts.get("v1")
-    if not timestamp or not signature:
-        return False
-
-    # Protection contre le rejeu (5 minutes)
-    try:
-        ts = int(timestamp)
-        if abs(time.time() - ts) > tolerance:
-            logger.warning("[DRIMPAY] Webhook timestamp hors tolérance.")
-            return False
-    except ValueError:
+    if raw_body is None:
+        logger.error(
+            "[DRIMPAY] raw_body absent."
+        )
         return False
 
     if isinstance(raw_body, bytes):
         raw_body = raw_body.decode("utf-8")
 
-    expected = hmac.new(
+    # =========================================================
+    # 4. PARSING SIGNATURE
+    # =========================================================
+
+    timestamp = None
+    signature = None
+
+    for part in signature_header.split(","):
+
+        part = part.strip()
+
+        if "=" not in part:
+            continue
+
+        key, value = part.split("=", 1)
+
+        key = key.strip()
+        value = value.strip()
+
+        if key == "t":
+            timestamp = value
+
+        elif key == "v1":
+            signature = value
+
+    # =========================================================
+    # 5. TIMESTAMP DE SECOURS
+    # =========================================================
+
+    if not timestamp and timestamp_header:
+        timestamp = str(timestamp_header).strip()
+
+    if not timestamp:
+        logger.error(
+            "[DRIMPAY] Timestamp absent."
+        )
+        return False
+
+    if not signature:
+        logger.error(
+            "[DRIMPAY] Signature v1 absente."
+        )
+        return False
+
+    # =========================================================
+    # 6. VALIDATION TIMESTAMP
+    # =========================================================
+
+    try:
+        timestamp_int = int(timestamp)
+
+    except (TypeError, ValueError):
+
+        logger.error(
+            "[DRIMPAY] Timestamp invalide : %s",
+            timestamp
+        )
+
+        return False
+
+    # =========================================================
+    # 7. PROTECTION ANTI-REJEU
+    # =========================================================
+
+    current_time = int(time.time())
+
+    difference = abs(
+        current_time - timestamp_int
+    )
+
+    if difference > tolerance:
+
+        logger.warning(
+            "[DRIMPAY] Timestamp hors tolérance : "
+            "difference=%ss tolerance=%ss",
+            difference,
+            tolerance
+        )
+
+        return False
+
+    # =========================================================
+    # 8. PAYLOAD SIGNÉ
+    # =========================================================
+
+    signed_payload = (
+        f"{timestamp}.{raw_body}"
+    )
+
+    # =========================================================
+    # 9. CALCUL HMAC
+    # =========================================================
+
+    expected_signature = hmac.new(
         WEBHOOK_SECRET.encode("utf-8"),
-        f"{timestamp}.{raw_body}".encode("utf-8"),
-        hashlib.sha256,
+        signed_payload.encode("utf-8"),
+        hashlib.sha256
     ).hexdigest()
 
-    return hmac.compare_digest(expected, signature)
+    # =========================================================
+    # 10. COMPARAISON SÉCURISÉE
+    # =========================================================
+
+    valid = hmac.compare_digest(
+        expected_signature.lower(),
+        signature.lower()
+    )
+
+    if valid:
+
+        logger.info(
+            "[DRIMPAY] Signature HMAC valide | "
+            "timestamp=%s body_length=%s",
+            timestamp,
+            len(raw_body)
+        )
+
+    else:
+
+        logger.error(
+            "[DRIMPAY] Signature HMAC invalide | "
+            "timestamp=%s body_length=%s signature_length=%s",
+            timestamp,
+            len(raw_body),
+            len(signature)
+        )
+
+    return valid
