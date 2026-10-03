@@ -2543,31 +2543,57 @@ def get_global_stats():
     total_withdrawn = db.session.query(func.sum(User.total_retrait)).scalar() or 0  # ← On utilise maintenant total_retrait
     return total_users, total_deposits, total_withdrawn
 
+from drimpay import (
+    initiate_payin,
+    get_payin_status,
+    verify_webhook_signature,
+    OPERATORS_BY_COUNTRY
+)
+
 
 # --------------------------------------
 # 1️⃣ Page dashboard_bloque (initiation paiement)
+# --------------------------------------
 # --------------------------------------
 @app.route("/dashboard_bloque", methods=["GET", "POST"])
 def dashboard_bloque():
     import logging
 
     user = get_logged_in_user()
+
     if not user:
         flash("Veuillez vous connecter.", "danger")
         return redirect(url_for("connexion_page"))
 
+    # Si le compte est déjà activé
     if user_is_activated(user):
         return redirect(url_for("dashboard_page"))
 
     pending_depot = None
     user_has_pending_depot = bool(pending_depot)
 
+    # --------------------------------------
+    # Pays de l'utilisateur
+    # --------------------------------------
     user_country = (user.country or "").strip()
     country_code = COUNTRY_CODE.get(user_country) if user_country else None
+
     if not country_code:
         flash("Pays non supporté.", "danger")
         return redirect(url_for("connexion_page"))
 
+    # --------------------------------------
+    # OPERATEURS DRIMPAY
+    # --------------------------------------
+    drimpay_operators = OPERATORS_BY_COUNTRY.get(country_code, [])
+
+    if not drimpay_operators:
+        flash("Aucun opérateur de paiement disponible pour votre pays.", "danger")
+        return redirect(url_for("connexion_page"))
+
+    # --------------------------------------
+    # TRAITEMENT DU PAIEMENT
+    # --------------------------------------
     if request.method == "POST":
 
         operator_name = request.form.get("operator")
@@ -2575,30 +2601,53 @@ def dashboard_bloque():
         fullname = request.form.get("fullname")
         phone = request.form.get("phone", "").strip()
 
+        # Vérification des champs
         if not operator_name or not amount or not fullname or not phone:
             flash("Tous les champs sont requis.", "danger")
             return redirect(url_for("dashboard_bloque"))
 
+        # Montant obligatoire
         if amount != 4800:
-            flash("Le montant d'activation est exactement 4800 FCFA.", "danger")
+            flash(
+                "Le montant d'activation est exactement 4800 FCFA.",
+                "danger"
+            )
             return redirect(url_for("dashboard_bloque"))
 
-        phone = phone.replace(" ", "").replace("-", "")
+        # Nettoyage du numéro
+        phone = (
+            phone
+            .replace(" ", "")
+            .replace("-", "")
+            .replace("(", "")
+            .replace(")", "")
+        )
 
         if not phone.isdigit() or len(phone) < 8:
             flash("Numéro de paiement invalide.", "danger")
             return redirect(url_for("dashboard_bloque"))
 
-        service = next(
-            (s for s in SERVICES[country_code] if s["name"] == operator_name),
+        # --------------------------------------
+        # Recherche de l'opérateur DrimPay
+        # --------------------------------------
+        operator = next(
+            (
+                op for op in drimpay_operators
+                if op["label"] == operator_name
+                or op["slug"] == operator_name
+            ),
             None
         )
 
-        if not service:
+        if not operator:
             flash("Opérateur non supporté.", "danger")
             return redirect(url_for("dashboard_bloque"))
 
+        operator_slug = operator["slug"]
+
+        # --------------------------------------
         # Création du dépôt
+        # --------------------------------------
         new_depot = Depot(
             user_id=user.id,
             user_name=user.username,
@@ -2613,262 +2662,575 @@ def dashboard_bloque():
         db.session.add(new_depot)
         db.session.commit()
 
-        logging.info(f"DEPOT CREE : id={new_depot.id} user_id={new_depot.user_id}")
+        logging.info(
+            f"DEPOT DRIMPAY CREE : "
+            f"id={new_depot.id} "
+            f"user_id={new_depot.user_id}"
+        )
 
-        payload = {
-            "wallet": phone,
-            "amount": amount,
-            "currency": "XOF",
-            "order_id": f"E-{new_depot.id}",
-            "description": f"Activation {user.username}",
-            "payer": fullname,
-            "payerEmail": user.email,
-            "successUrl": "https://nectar-pro.cc/dashboard/pay/ok",
-            "failureUrl": "https://nectar-pro.cc/dashboard_bloque"
-        }
+        # --------------------------------------
+        # Référence interne de la commande
+        # --------------------------------------
+        order_id = f"E-{new_depot.id}"
 
-        headers = {
-            "x-api-key": SOLEAS_API_KEY,
-            "operation": "2",
-            "service": str(service["id"]),
-            "Content-Type": "application/json"
-        }
-
+        # --------------------------------------
+        # Initialisation du paiement DrimPay
+        # --------------------------------------
         try:
-            response = requests.post(
-                "https://soleaspay.com/api/agent/bills/v3",
-                headers=headers,
-                json=payload,
-                timeout=30
+
+            success, result = initiate_payin(
+                amount=amount,
+                currency="XOF",
+                country_code=country_code,
+                operator=operator_slug,
+                phone=phone,
+                order_id=order_id,
+
+                # Ton endpoint webhook
+                webhook_url="https://nectar-pro.cc/drimpay/webhook",
+
+                description=f"Activation {user.username}",
+
+                expires_in_minutes=5,
+
+                metadata={
+                    "depot_id": str(new_depot.id),
+                    "user_id": str(user.id),
+                    "username": user.username,
+                    "email": user.email,
+                    "fullname": fullname,
+                    "purpose": "activation"
+                }
             )
 
-            result = response.json()
-
-            logging.info(f"SOLEASPAY RESPONSE : {result}")
+            logging.info(
+                f"DRIMPAY RESPONSE : {result}"
+            )
 
         except Exception as e:
-            logging.exception(e)
-            flash("Impossible de contacter SoleasPay.", "danger")
+
+            logging.exception(
+                "Erreur lors de l'appel DrimPay"
+            )
+
+            flash(
+                "Impossible de contacter DrimPay.",
+                "danger"
+            )
+
             return redirect(url_for("dashboard_bloque"))
 
-        # Vérification de la réponse
-        if not result.get("success", False):
-            flash(result.get("message", "Erreur de paiement"), "danger")
+        # --------------------------------------
+        # Vérification de la réponse DrimPay
+        # --------------------------------------
+        if not success:
+
+            logging.error(
+                f"DRIMPAY PAYMENT ERROR : {result}"
+            )
+
+            message = result.get(
+                "message",
+                "Erreur lors de l'initialisation du paiement."
+            )
+
+            flash(message, "danger")
+
             return redirect(url_for("dashboard_bloque"))
 
-        # Sauvegarde de la référence SoleasPay si disponible
-        data = result.get("data", {})
+        # --------------------------------------
+        # Récupération de la référence DrimPay
+        # --------------------------------------
+        reference = (
+            result.get("reference")
+            or result.get("transaction_reference")
+            or result.get("data", {}).get("reference")
+            or result.get("data", {}).get("transaction_reference")
+        )
 
-        if data.get("reference"):
-            new_depot.reference = data.get("reference")
+        if reference:
+
+            new_depot.reference = reference
+
             db.session.commit()
 
-        flash("Veuillez confirmer le paiement sur votre téléphone.", "info")
+            logging.info(
+                f"REFERENCE DRIMPAY ENREGISTREE : "
+                f"depot_id={new_depot.id} "
+                f"reference={reference}"
+            )
+
+        else:
+
+            logging.warning(
+                f"DRIMPAY : aucune référence trouvée dans la réponse : "
+                f"{result}"
+            )
+
+        # --------------------------------------
+        # Paiement initié
+        # --------------------------------------
+        flash(
+            "Veuillez confirmer le paiement sur votre téléphone.",
+            "info"
+        )
+
         return redirect(url_for("dashboard_bloque"))
 
+    # --------------------------------------
+    # AFFICHAGE DE LA PAGE
+    # --------------------------------------
     return render_template(
         "dashboard_bloque.html",
         user=user,
         user_has_pending_depot=user_has_pending_depot,
+
+        # On peut conserver cette variable si ton template
+        # utilise encore services_by_country
         services_by_country=SERVICES,
-        country_code=country_code
+
+        country_code=country_code,
+
+        # Nouveaux opérateurs DrimPay
+        drimpay_operators=drimpay_operators
     )
 
 from urllib.parse import urlencode
 
-@app.route("/api/webhook/soleaspay", methods=["POST"])
-def webhook_soleaspay():
+# ============================================================
+# WEBHOOK DRIMPAY - PAYIN
+# ============================================================
+@app.route("/drimpay/webhook", methods=["POST"])
+def drimpay_webhook():
 
     import logging
     from datetime import datetime
 
+    logger = logging.getLogger(__name__)
+
+    # --------------------------------------------------------
+    # 1. Récupérer le corps BRUT
+    # --------------------------------------------------------
+    raw_body = request.get_data()
+
+    # --------------------------------------------------------
+    # 2. Récupérer la signature DrimPay
+    # --------------------------------------------------------
+    signature = request.headers.get("X-DrimPay-Signature")
+
+    print("=" * 60)
+    print("WEBHOOK DRIMPAY RECU")
+    print("EVENT HEADER :", request.headers.get("X-DrimPay-Event"))
+    print("TIMESTAMP HEADER :", request.headers.get("X-DrimPay-Timestamp"))
+    print("SIGNATURE :", signature)
+    print("RAW BODY :", raw_body)
+    print("=" * 60)
+
+    # --------------------------------------------------------
+    # 3. Vérification HMAC-SHA256
+    #
+    # La fonction verify_webhook_signature() vérifie :
+    #
+    # HMAC_SHA256(
+    #     DRIMPAY_WEBHOOK_SECRET,
+    #     timestamp + "." + raw_body
+    # )
+    #
+    # + protection anti-rejeu de 5 minutes
+    # --------------------------------------------------------
+    if not verify_webhook_signature(
+        raw_body,
+        signature
+    ):
+        logger.warning(
+            "[DRIMPAY WEBHOOK] Signature invalide."
+        )
+
+        return jsonify({
+            "error": "Unauthorized"
+        }), 403
+
+    # --------------------------------------------------------
+    # 4. Lecture du JSON
+    # --------------------------------------------------------
     data = request.get_json(silent=True)
 
-    print("=" * 50)
-    print("WEBHOOK RECU")
-    print("HEADERS:", dict(request.headers))
-    print("JSON:", data)
-    print("=" * 50)
-
     if not data:
-        return jsonify({"error": "Invalid JSON"}), 400
-
-    # 🔒 Sécurité
-    received_key = request.headers.get("x-private-key")
-    if not received_key or received_key != SOLEAS_WEBHOOK_SECRET:
-        return jsonify({"error": "Unauthorized"}), 403
-
-    # ✅ Récupération correcte des données
-    details = data.get("data") or {}
-
-    operation = (
-        details.get("operation")
-        or data.get("operation")
-        or ""
-    ).upper()
-
-    status = str(data.get("status", "")).upper()
-
-    print("OPERATION :", operation)
-    print("STATUS :", status)
-
-    # ======================================================
-    # 🔵 CAS DEPOT (PURCHASE)
-    # ======================================================
-    if operation == "PURCHASE":
-
-        external_ref = (
-            details.get("external_reference")
-            or data.get("externalRef")
+        logger.error(
+            "[DRIMPAY WEBHOOK] JSON invalide."
         )
 
-        internal_ref = (
-            details.get("reference")
-            or data.get("internalRef")
-            or data.get("reference")
+        return jsonify({
+            "error": "Invalid JSON"
+        }), 400
+
+    print("DRIMPAY JSON :", data)
+
+    # --------------------------------------------------------
+    # 5. Récupération des informations
+    # --------------------------------------------------------
+    event = str(
+        data.get("event", "")
+    ).lower().strip()
+
+    reference = data.get("reference")
+
+    order_id = data.get("order_id")
+
+    status = str(
+        data.get("status", "")
+    ).lower().strip()
+
+    amount = data.get("amount")
+    currency = data.get("currency")
+    country_code = data.get("country_code")
+    operator = data.get("operator")
+    phone = data.get("phone")
+
+    print("EVENT       :", event)
+    print("REFERENCE   :", reference)
+    print("ORDER ID    :", order_id)
+    print("STATUS      :", status)
+    print("AMOUNT      :", amount)
+    print("CURRENCY    :", currency)
+    print("COUNTRY     :", country_code)
+    print("OPERATOR    :", operator)
+    print("PHONE       :", phone)
+
+    logger.info(
+        "[DRIMPAY WEBHOOK] "
+        "event=%s reference=%s order_id=%s status=%s",
+        event,
+        reference,
+        order_id,
+        status
+    )
+
+    # --------------------------------------------------------
+    # 6. Vérification de order_id
+    # --------------------------------------------------------
+    if not order_id:
+
+        logger.error(
+            "[DRIMPAY WEBHOOK] order_id absent."
         )
 
-        print("DEPOT external_ref :", external_ref)
-        print("DEPOT internal_ref :", internal_ref)
+        return jsonify({
+            "error": "Missing order_id"
+        }), 400
 
-        if not external_ref or not external_ref.startswith("E-"):
-            return jsonify({"error": "Invalid depot reference"}), 400
+    # Notre dashboard crée :
+    #
+    # E-123
+    # E-124
+    # E-125
+    #
+    if not str(order_id).startswith("E-"):
+
+        logger.error(
+            "[DRIMPAY WEBHOOK] order_id invalide : %s",
+            order_id
+        )
+
+        return jsonify({
+            "error": "Invalid order_id"
+        }), 400
+
+    # --------------------------------------------------------
+    # 7. Extraire l'ID du dépôt
+    # --------------------------------------------------------
+    try:
+
+        depot_id = int(
+            str(order_id).split("-", 1)[1]
+        )
+
+    except (ValueError, IndexError):
+
+        logger.error(
+            "[DRIMPAY WEBHOOK] "
+            "Impossible de convertir order_id : %s",
+            order_id
+        )
+
+        return jsonify({
+            "error": "Invalid depot ID"
+        }), 400
+
+    # --------------------------------------------------------
+    # 8. Recherche du dépôt
+    # --------------------------------------------------------
+    depot = Depot.query.get(depot_id)
+
+    if not depot:
+
+        logger.error(
+            "[DRIMPAY WEBHOOK] "
+            "DEPOT NOT FOUND : %s",
+            order_id
+        )
+
+        return jsonify({
+            "error": "Depot not found"
+        }), 404
+
+    print("DEPOT TROUVE :", depot.id)
+    print("USER ID      :", depot.user_id)
+    print("MONTANT      :", depot.montant)
+    print("STATUT       :", depot.statut)
+
+    # --------------------------------------------------------
+    # 9. Vérification du montant
+    # --------------------------------------------------------
+    try:
+        webhook_amount = int(amount)
+    except (TypeError, ValueError):
+        webhook_amount = None
+
+    if webhook_amount is not None:
+
+        if webhook_amount != int(depot.montant):
+
+            logger.error(
+                "[DRIMPAY WEBHOOK] "
+                "Montant différent ! "
+                "Depot=%s DrimPay=%s",
+                depot.montant,
+                webhook_amount
+            )
+
+            return jsonify({
+                "error": "Amount mismatch"
+            }), 400
+
+    # --------------------------------------------------------
+    # 10. Vérification de la devise
+    # --------------------------------------------------------
+    if currency and str(currency).upper() != "XOF":
+
+        logger.error(
+            "[DRIMPAY WEBHOOK] "
+            "Devise inattendue : %s",
+            currency
+        )
+
+        return jsonify({
+            "error": "Invalid currency"
+        }), 400
+
+    # --------------------------------------------------------
+    # 11. Éviter le double traitement
+    # --------------------------------------------------------
+    if depot.statut == "success":
+
+        logger.info(
+            "[DRIMPAY WEBHOOK] "
+            "Dépôt déjà traité : %s",
+            depot.id
+        )
+
+        return jsonify({
+            "received": True
+        }), 200
+
+    # --------------------------------------------------------
+    # Sauvegarder l'ancien statut
+    # --------------------------------------------------------
+    old_depot_statut = depot.statut
+
+    # ========================================================
+    # PAYIN SUCCESS
+    # ========================================================
+    if event == "payin.success" and status == "success":
+
+        depot.statut = "success"
+
+        # Référence officielle DrimPay
+        if reference:
+
+            depot.reference = reference
+
+        # ----------------------------------------------
+        # Utilisateur
+        # ----------------------------------------------
+        user = db.session.get(
+            User,
+            depot.user_id
+        )
+
+        if user:
+
+            # Premier dépôt
+            user.premier_depot = True
+
+            # ------------------------------------------
+            # Commission parrain
+            # ------------------------------------------
+            if user.parrain:
+
+                try:
+
+                    donner_commission(
+                        user.parrain,
+                        depot.montant
+                    )
+
+                except Exception as e:
+
+                    logger.error(
+                        "[DRIMPAY WEBHOOK] "
+                        "Erreur commission parrain : %s",
+                        e
+                    )
+
+    # ========================================================
+    # PAYIN FAILED
+    # ========================================================
+    elif event == "payin.failed" and status == "failed":
+
+        depot.statut = "failed"
+
+        if reference:
+            depot.reference = reference
+
+        logger.warning(
+            "[DRIMPAY WEBHOOK] "
+            "Paiement échoué : depot=%s",
+            depot.id
+        )
+
+    # ========================================================
+    # PAYIN EXPIRED
+    # ========================================================
+    elif event == "payin.expired" and status == "expired":
+
+        depot.statut = "failed"
+
+        if reference:
+            depot.reference = reference
+
+        logger.warning(
+            "[DRIMPAY WEBHOOK] "
+            "Paiement expiré : depot=%s",
+            depot.id
+        )
+
+    # ========================================================
+    # PAYIN PROCESSING
+    # ========================================================
+    elif event == "payin.processing" and status == "processing":
+
+        depot.statut = "pending"
+
+        if reference:
+            depot.reference = reference
+
+        logger.info(
+            "[DRIMPAY WEBHOOK] "
+            "Paiement en traitement : depot=%s",
+            depot.id
+        )
+
+    # ========================================================
+    # PAYIN REVERSED
+    # ========================================================
+    elif event == "payin.reversed" and status == "reversed":
+
+        # Le paiement était auparavant réussi
+        # mais DrimPay indique maintenant un reverse/refund.
+        depot.statut = "failed"
+
+        if reference:
+            depot.reference = reference
+
+        logger.warning(
+            "[DRIMPAY WEBHOOK] "
+            "Paiement reversé : depot=%s",
+            depot.id
+        )
+
+    # ========================================================
+    # ÉVÉNEMENT INCONNU
+    # ========================================================
+    else:
+
+        logger.info(
+            "[DRIMPAY WEBHOOK] "
+            "Événement reçu mais non traité : "
+            "event=%s status=%s depot=%s",
+            event,
+            status,
+            depot.id
+        )
+
+        # On ne modifie PAS le dépôt pour un événement
+        # inattendu.
+        return jsonify({
+            "received": True,
+            "ignored": True
+        }), 200
+
+    # --------------------------------------------------------
+    # 12. Synchronisation
+    # --------------------------------------------------------
+    depot.last_sync = datetime.utcnow()
+
+    # --------------------------------------------------------
+    # 13. Sauvegarde
+    # --------------------------------------------------------
+    db.session.commit()
+
+    logger.info(
+        "[DRIMPAY WEBHOOK] "
+        "DEPOT UPDATED : %s -> %s",
+        depot.id,
+        depot.statut
+    )
+
+    print(
+        "DEPOT UPDATED :",
+        depot.id,
+        "->",
+        depot.statut
+    )
+
+    # ========================================================
+    # 14. NOTIFICATIONS
+    # ========================================================
+    if old_depot_statut != depot.statut:
 
         try:
-            depot_id = int(external_ref.split("-")[1])
-        except Exception:
-            return jsonify({"error": "Bad depot ID"}), 400
 
-        depot = Depot.query.get(depot_id)
+            if depot.statut == "success":
 
-        if not depot:
-            logging.error(f"DEPOT NOT FOUND : {external_ref}")
-            return jsonify({"error": "Depot not found"}), 404
+                notify_deposit_accepted(
+                    depot.user_id,
+                    depot.montant,
+                    depot.reference or f"DEP-{depot.id}"
+                )
 
-        print("DEPOT trouvé :", depot.id)
-        print("USER ID :", depot.user_id)
+            elif depot.statut == "failed":
 
-        # Déjà traité
-        if depot.statut == "success":
-            return jsonify({"received": True}), 200
+                notify_deposit_rejected(
+                    depot.user_id,
+                    depot.montant,
+                    depot.reference or f"DEP-{depot.id}"
+                )
 
-        # Stocker l'ancien statut pour ne pas double-notifier
-        old_depot_statut = depot.statut
+        except Exception as e:
 
-        if status in ["SUCCESS", "COMPLETED", "APPROVED"]:
-            depot.statut = "success"
+            logger.error(
+                "[DRIMPAY WEBHOOK] "
+                "Erreur notification dépôt : %s",
+                e
+            )
 
-            if internal_ref:
-                depot.reference = internal_ref
-
-            user = db.session.get(User, depot.user_id)
-
-            if user:
-                user.premier_depot = True
-
-                if user.parrain:
-                   donner_commission(user.parrain, depot.montant)
-
-
-        elif status in ["FAILED", "REJECTED"]:
-            depot.statut = "failed"
-
-        else:
-            depot.statut = "pending"
-
-        depot.last_sync = datetime.utcnow()
-
-        db.session.commit()
-
-        logging.info(f"DEPOT UPDATED : {depot.id} -> {depot.statut}")
-
-        # 🔔 Notification push via webhook
-        if old_depot_statut != depot.statut:
-            try:
-                if depot.statut == "success":
-                    notify_deposit_accepted(depot.user_id, depot.montant, depot.reference or f"DEP-{depot.id}")
-                elif depot.statut == "failed":
-                    notify_deposit_rejected(depot.user_id, depot.montant, depot.reference or f"DEP-{depot.id}")
-            except Exception as e:
-                logging.error(f"[WEBHOOK PUSH] Erreur notif dépôt: {e}")
-
-        return jsonify({"received": True}), 200
-
-    # ======================================================
-    # 🟢 CAS RETRAIT (WITHDRAW)
-    # ======================================================
-    elif operation in ["WITHDRAW", "WITHDRAWAL"]:
-
-        reference = (
-            details.get("reference")
-            or data.get("internalRef")
-            or data.get("reference")
-        )
-
-        print("RETRAIT reference :", reference)
-
-        if not reference:
-            return jsonify({"error": "No reference"}), 400
-
-        retrait = Retrait.query.filter_by(
-            reference_soleaspay=reference
-        ).first()
-
-        if not retrait:
-            logging.error(f"RETRAIT NOT FOUND : {reference}")
-            return jsonify({"error": "Retrait not found"}), 404
-
-        if retrait.statut in ["successful", "failed", "refused", "cancelled"]:
-            return jsonify({"received": True}), 200
-
-        if status in ["SUCCESS", "COMPLETED", "APPROVED"]:
-            new_status = "successful"
-        elif status == "FAILED":
-            new_status = "failed"
-        elif status == "REJECTED":
-            new_status = "refused"
-        elif status == "CANCELLED":
-            new_status = "cancelled"
-        else:
-            new_status = "en_attente"
-
-        old_status = retrait.statut
-
-        print("RETRAIT trouvé :", retrait.id)
-        print("Ancien statut :", old_status)
-        print("Nouveau statut :", new_status)
-
-        retrait.statut = new_status
-        retrait.soleaspay_status = status
-        retrait.last_sync = datetime.utcnow()
-
-        if old_status != "successful" and new_status == "successful":
-            user = db.session.get(User, retrait.user_id)
-
-            if user:
-                user.total_retrait = (user.total_retrait or 0) + retrait.montant
-
-        db.session.commit()
-
-        logging.info(f"RETRAIT UPDATED : {retrait.id} -> {new_status}")
-
-        # 🔔 Notification push via webhook
-        if old_status != new_status:
-            try:
-                if new_status == "successful":
-                    notify_retrait_accepted(retrait.user_id, retrait.montant)
-                elif new_status in ["failed", "refused"]:
-                    notify_retrait_rejected(retrait.user_id, retrait.montant)
-            except Exception as e:
-                logging.error(f"[WEBHOOK PUSH] Erreur notif retrait: {e}")
-
-        return jsonify({"received": True}), 200
-
-    # ======================================================
-    # ❌ CAS INCONNU
-    # ======================================================
-    print("Webhook ignoré - operation =", operation)
-    return jsonify({"ignored": True}), 200
+    # ========================================================
+    # 15. Réponse à DrimPay
+    # ========================================================
+    return jsonify({
+        "received": True
+    }), 200
 
 @app.route("/paiement/soleaspay/retour")
 def bkapay_retour():
