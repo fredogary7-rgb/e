@@ -5,9 +5,14 @@ Endpoint: POST /v2/payin/initiate
 Statut:   GET /v2/payin/{reference}
 Webhook:  HMAC-SHA256 (X-DrimPay-Signature: t={ts},v1={hex})
 """
-
 import os
+from dotenv import load_dotenv
+
+# Charger le fichier .env
+load_dotenv()
+
 import hmac
+
 import hashlib
 import time
 import logging

@@ -2550,6 +2550,14 @@ from drimpay import (
     OPERATORS_BY_COUNTRY
 )
 
+import os
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+DRIMPAY_SECRET_KEY = os.getenv("DRIMPAY_SECRET_KEY", "")
+DRIMPAY_WEBHOOK_SECRET = os.getenv("DRIMPAY_WEBHOOK_SECRET", "")
 
 # --------------------------------------
 # 1️⃣ Page dashboard_bloque (initiation paiement)
