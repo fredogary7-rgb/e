@@ -2430,7 +2430,7 @@ def reset_password(username):
 
     return f"Mot de passe réinitialisé pour {username} : {nouveau_mdp}"
 
-SOLEAS_API_KEY = "SP_y7QKkaamPsVTlw8GDDGyzlJ7bmPUvdLorOQqWUXfRLI_AP"
+SOLEAS_API_KEY = ""
 SOLEAS_WEBHOOK_SECRET = "b42ed39b9e0db71db4556a2dfe1b1ad00dcce656fd4dba033f1947f913f1908bc817588c2edb32d92533a1d162e57ad4b1f7299f39695c5671c3ef07baa6f22a"
 
 # Mapping des noms de pays vers les codes utilisés dans SERVICES
@@ -3587,7 +3587,7 @@ from datetime import datetime
 
 
 
-PUBLIC_API_KEY = "SP_y7QKkaamPsVTlw8GDDGyzlJ7bmPUvdLorOQqWUXfRLI_AP"
+PUBLIC_API_KEY = ""
 PRIVATE_SECRET_KEY = "SP_bS4Kwii-Txs1aMunv8D9wpEbdpEVgfpvDvKn-OrWt6Y"
 
 from datetime import datetime
